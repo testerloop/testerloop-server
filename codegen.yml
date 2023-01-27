@@ -1,0 +1,18 @@
+schema: src/schema/**/[^_]*.graphql
+generates:
+  ./src/resolvers/types/generated.ts:
+    config:
+      avoidOptionals:
+        defaultValue: true
+        field: true
+        inputValue: false
+        object: false
+        resolvers: true
+      contextType: ../../context#Context
+      rootValueType: unknown
+      immutableTypes: true
+      makeResolverTypeCallable: false
+      optionalInfoArgument: true
+    plugins:
+      - typescript
+      - typescript-resolvers
