@@ -1,4 +1,4 @@
-FROM public.ecr.aws/lambda/nodejs:16 AS base
+FROM public.ecr.aws/lambda/nodejs:18 AS base
 
 WORKDIR /var/task
 COPY package.json package-lock.json tsconfig.json ./

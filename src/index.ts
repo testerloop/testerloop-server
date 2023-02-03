@@ -6,7 +6,7 @@ import server from './server.js';
 
 export const graphqlHandler = startServerAndCreateLambdaHandler(
     server,
-    handlers.createAPIGatewayProxyEventV2RequestHandler(),
+    handlers.createAPIGatewayProxyEventRequestHandler(),
     {
         async context() {
             return {};
