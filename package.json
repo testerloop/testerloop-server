@@ -13,6 +13,7 @@
   "dependencies": {
     "@apollo/server": "^4.3.2",
     "@as-integrations/aws-lambda": "^2.0.0",
+    "graphql": "^16.6.0",
     "graphql-date-scalars": "^0.2.0",
     "zod": "^3.20.2"
   },

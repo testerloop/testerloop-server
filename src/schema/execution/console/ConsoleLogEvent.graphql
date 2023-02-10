@@ -1,0 +1,6 @@
+type ConsoleLogEvent implements Event & InstantaneousEvent & TestExecutionEvent & ConsoleEvent {
+    at: DateTime!
+    message: String!
+    logLevel: ConsoleLogLevel!
+    testExecution: TestExecution!
+}

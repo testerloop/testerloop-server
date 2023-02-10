@@ -1,0 +1,27 @@
+interface TestExecutionEvent implements Event {
+    at: DateTime!
+    testExecution: TestExecution!
+}
+
+"""
+    Represents the connection to TestExecutionEvents
+
+    See:
+    - https://relay.dev/graphql/connections.htm#sec-Connection-Types
+"""
+type TestExecutionEventConnection {
+    totalCount: Int!
+    edges: [TestExecutionEventEdge!]!
+    pageInfo: PageInfo!
+}
+
+"""
+    Represents and Edge to the TestExecution Node.
+
+    See:
+    - https://relay.dev/graphql/connections.htm#sec-Edge-Types
+"""
+type TestExecutionEventEdge {
+    cursor: Cursor!
+    node: TestExecutionEvent!
+}

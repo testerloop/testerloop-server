@@ -16,9 +16,13 @@ generates:
       onlyResolveTypeForInterfaces: true
       strictScalars: true
       scalars:
+        Cursor: string
         DateTime: Date
       mappers:
+        ConsoleLogEvent: ./mappers#ConsoleLogEventModel
         TestExecution: ./mappers#TestExecutionModel
+        TestExecutionEventConnection: ./mappers#TestExecutionEventConnectionModel
+        TestExecutionEventEdge: ./mappers#TestExecutionEventEdgeModel
     plugins:
       - typescript
       - typescript-resolvers

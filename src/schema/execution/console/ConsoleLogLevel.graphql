@@ -1,0 +1,12 @@
+"""
+    Represents the severity of the log, as according to the specification:
+
+    See:
+    - https://console.spec.whatwg.org/#loglevel-severity
+"""
+enum ConsoleLogLevel {
+    LOG
+    INFO
+    WARN
+    ERROR
+}

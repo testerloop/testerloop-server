@@ -2,6 +2,10 @@ type TestExecution implements Node & Event & IntervalEvent {
     id: ID!
     at: DateTime!
     until: DateTime!
+    events(
+        first: Int
+        after: Cursor
+    ): TestExecutionEventConnection!
 }
 
 extend type Query {
