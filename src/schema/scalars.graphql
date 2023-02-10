@@ -1,0 +1,4 @@
+"""
+    Represents a DateTime in ISO8601 format.
+"""
+scalar DateTime

@@ -1,0 +1,12 @@
+interface Event {
+    at: DateTime!
+}
+
+interface InstantaneousEvent implements Event {
+    at: DateTime!
+}
+
+interface IntervalEvent implements Event {
+    at: DateTime!
+    until: DateTime!
+}

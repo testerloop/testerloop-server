@@ -1,0 +1,9 @@
+type TestExecution implements Node & Event & IntervalEvent {
+    id: ID!
+    at: DateTime!
+    until: DateTime!
+}
+
+extend type Query {
+    testExecution(id: ID!): TestExecution
+}
