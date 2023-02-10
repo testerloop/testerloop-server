@@ -11,8 +11,14 @@ generates:
       contextType: ../../context#Context
       rootValueType: unknown
       immutableTypes: true
-      makeResolverTypeCallable: false
+      makeResolverTypeCallable: true
       optionalInfoArgument: true
+      onlyResolveTypeForInterfaces: true
+      strictScalars: true
+      scalars:
+        DateTime: Date
+      mappers:
+        TestExecution: ./mappers#TestExecutionModel
     plugins:
       - typescript
       - typescript-resolvers
