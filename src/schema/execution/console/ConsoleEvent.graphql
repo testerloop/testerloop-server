@@ -1,0 +1,4 @@
+interface ConsoleEvent implements Event & TestExecutionEvent {
+    at: DateTime!
+    testExecution: TestExecution!
+}

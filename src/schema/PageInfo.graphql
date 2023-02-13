@@ -1,0 +1,13 @@
+"""
+    The PageInfo type as specified in The Relay Connection Spec.
+
+    See:
+    - https://graphql.org/learn/pagination/
+    - https://relay.dev/graphql/connections.htm#sec-undefined.PageInfo
+"""
+type PageInfo {
+    hasNextPage: Boolean!
+    hasPreviousPage: Boolean!
+    startCursor: Cursor
+    endCursor: Cursor
+}
