@@ -20,6 +20,7 @@ generates:
         DateTime: Date
       mappers:
         ConsoleLogEvent: ./mappers#ConsoleLogEventModel
+        NetworkEvent: ./mappers#NetworkEventModel
         TestExecution: ./mappers#TestExecutionModel
         TestExecutionEventConnection: ./mappers#TestExecutionEventConnectionModel
         TestExecutionEventEdge: ./mappers#TestExecutionEventEdgeModel

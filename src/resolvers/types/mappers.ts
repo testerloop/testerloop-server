@@ -3,8 +3,14 @@ export interface ConsoleLogEventModel {
     id: string,
 }
 
+export interface NetworkEventModel {
+    __typename: 'NetworkEvent',
+    id: string,
+}
+
 export type TestExecutionEvent =
-    | ConsoleLogEventModel;
+    | ConsoleLogEventModel
+    | NetworkEventModel;
 
 export interface TestExecutionModel {
     __typename: 'TestExecution',
