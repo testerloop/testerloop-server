@@ -23,7 +23,6 @@ type HttpNetworkRequest {
   method: String!
   url: HttpNetworkRequestUrl!
   queryString: [KeyValuePair]!
-  bodySize: Int!
   body: HttpBody
   cookies: [String]!
   headers: [Header]!
