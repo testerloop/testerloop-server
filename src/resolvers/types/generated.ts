@@ -118,6 +118,7 @@ export type TestExecution = Event & IntervalEvent & Node & {
 export type TestExecutionEventsArgs = {
   after?: InputMaybe<Scalars['Cursor']>;
   first?: InputMaybe<Scalars['Int']>;
+  type: TestExecutionEventType;
 };
 
 export type TestExecutionEvent = {
@@ -149,6 +150,11 @@ export type TestExecutionEventEdge = {
   readonly cursor: Scalars['Cursor'];
   readonly node: TestExecutionEvent;
 };
+
+export enum TestExecutionEventType {
+  Console = 'CONSOLE',
+  Network = 'NETWORK'
+}
 
 
 
@@ -234,6 +240,7 @@ export type ResolversTypes = {
   TestExecutionEvent: ResolversTypes['ConsoleLogEvent'];
   TestExecutionEventConnection: ResolverTypeWrapper<TestExecutionEventConnectionModel>;
   TestExecutionEventEdge: ResolverTypeWrapper<TestExecutionEventEdgeModel>;
+  TestExecutionEventType: TestExecutionEventType;
 };
 
 /** Mapping between all available schema types and the resolvers parents */
@@ -310,7 +317,7 @@ export type QueryResolvers<ContextType = Context, ParentType extends ResolversPa
 
 export type TestExecutionResolvers<ContextType = Context, ParentType extends ResolversParentTypes['TestExecution'] = ResolversParentTypes['TestExecution']> = {
   at: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
-  events: Resolver<ResolversTypes['TestExecutionEventConnection'], ParentType, ContextType, Partial<TestExecutionEventsArgs>>;
+  events: Resolver<ResolversTypes['TestExecutionEventConnection'], ParentType, ContextType, RequireFields<TestExecutionEventsArgs, 'type'>>;
   id: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   until: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
