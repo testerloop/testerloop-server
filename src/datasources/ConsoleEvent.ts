@@ -1,6 +1,6 @@
 import { ConsoleLogLevel } from '../resolvers/types/generated.js';
 
-const data: {
+export const data: {
     [id: string]: {
         __typename: 'ConsoleLogEvent',
         id: string,

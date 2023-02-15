@@ -1,5 +1,7 @@
 import { TestExecutionEvent } from '../resolvers/types/mappers';
 
+import { data as consoleLogData } from './ConsoleEvent';
+
 export class TestExecution {
     getById(id: string) {
         if (id === '1234') {
@@ -17,24 +19,8 @@ export class TestExecution {
         if (id !== '1234')
             throw new Error('Not implemented');
 
-        const data: TestExecutionEvent[] = [
-            {
-                __typename: 'ConsoleLogEvent',
-                id: '1',
-            },
-            {
-                __typename: 'ConsoleLogEvent',
-                id: '2',
-            },
-            {
-                __typename: 'ConsoleLogEvent',
-                id: '3',
-            },
-            {
-                __typename: 'ConsoleLogEvent',
-                id: '4',
-            },
-        ];
+        const data: TestExecutionEvent[] = Object.values(consoleLogData).map(
+            (d) => ({ __typename: d.__typename, id: d.id }))
 
         // TODO: Paginate in a database? Paginate utils?
         let start = 0;
