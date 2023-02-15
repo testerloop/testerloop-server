@@ -1,68 +1,23 @@
-type NetworkEvent {
-    id: ID!
-    log: Log!
-    testExecution: TestExecution!
-}
-
-type Log {
-  version: String!
-  creator: Creator!
-  pages: [Page!]!
-  entries: [Entry!]!
-}
-
-type Creator {
-  name: String!
-  version: String!
-  comment: String
-}
-
-type Page {
+interface NetworkEvent {
+  id: ID!
+  testExecutionId: String!
   startedDateTime: String!
-  id: String!
-  title: String!
-  pageTimings: PageTimings!
-}
-
-type PageTimings {
-  onContentLoad: Float
-  onLoad: Float
-}
-
-type Entry {
-  startedDateTime: String!
-  time: Float!
-  request: Request!
-  response: Response!
-  timings: Timings!
-  _priority: String
-  serverIPAddress: String
-  _requestTime: Float
-  _requestId: String
-  _initialPriority: String
+  time: NetworkEventTime!
   _initiator: String
-  _chunks: [Chunk!]!
 }
 
-type Request {
-  method: String!
-  url: String!
-  httpVersion: String!
-  headers: [Header!]!
-  queryString: [QueryString!]!
-  cookies: [Cookie!]!
-  headersSize: Int!
-  bodySize: Int!
-  _comment: String
+type NetworkEventTime implements Event & IntervalEvent {
+  at: DateTime!
+  until: DateTime!
 }
 
-type Header {
-  name: String!
-  value: String!
+type NetworkEventTiming implements Event & IntervalEvent {
+  at: DateTime!
+  until: DateTime!
 }
 
-type QueryString {
-  name: String!
+type KeyValuePair {
+  key: String!
   value: String!
 }
 
@@ -74,44 +29,4 @@ type Cookie {
   expires: String
   httpOnly: Boolean
   secure: Boolean
-  _comment: String
-}
-
-type Response {
-  status: Int!
-  statusText: String!
-  httpVersion: String!
-  headers: [Header!]!
-  cookies: [Cookie!]!
-  content: Content!
-  redirectURL: String
-  headersSize: Int!
-  bodySize: Int!
-  _comment: String
-  _transferSize: Int
-}
-
-type Content {
-  size: Int!
-  mimeType: String!
-  text: String
-  encoding: String
-  compression: Int
-  _comment: String
-}
-
-type Timings {
-  blocked: Float
-  dns: Float
-  connect: Float
-  send: Float
-  wait: Float
-  receive: Float
-  ssl: Float
-  _queued: Float
-}
-
-type Chunk {
-  ts: Float
-  bytes: Int
 }
