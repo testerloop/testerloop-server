@@ -16,19 +16,23 @@ export class TestExecution {
         return null;
     }
 
-    getEvents(id: string, args: { first?: number | null, after?: string | null, type: TestExecutionEventType }) {
+    getEvents(id: string, args: { first?: number | null, after?: string | null, type?: readonly TestExecutionEventType[] | null }) {
         if (id !== '1234')
             throw new Error('Not implemented');
 
-        let data: TestExecutionEvent[];
-        switch (args.type) {
-            case TestExecutionEventType.Console:
-                data = Object.values(consoleLogData).map(
-                    (d) => ({ __typename: d.__typename, id: d.id }))
-                break;
-            default:
-                throw new Error(`Type ${args.type} not implemented`)
-        }
+        let data: TestExecutionEvent[] = [
+            ...Object.values(consoleLogData),
+        ]
+            .filter(({ __typename }) =>
+                args.type?.some((type) => {
+                    switch (type) {
+                        case TestExecutionEventType.Console:
+                            return __typename === 'ConsoleLogEvent';
+                        default:
+                            throw new Error(`Type ${type} not implemented`);
+                    }
+                }) ?? true,
+            );
 
         // TODO: Paginate in a database? Paginate utils?
         let start = 0;

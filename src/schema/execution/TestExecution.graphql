@@ -5,7 +5,7 @@ type TestExecution implements Node & Event & IntervalEvent {
     events(
         first: Int
         after: Cursor
-        type: TestExecutionEventType!
+        type: [TestExecutionEventType!]
     ): TestExecutionEventConnection!
 }
 
