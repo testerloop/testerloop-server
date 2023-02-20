@@ -7,8 +7,8 @@ const resolvers: TestExecutionResolvers = {
         const testExecution = assertNonNull(await dataSources.testExecution.getById(id));
         return testExecution.at;
     },
-    events({ id }, { after, first, type, logLevel }, { dataSources }) {
-        return dataSources.testExecution.getEvents(id, { after, first, type, logLevel });
+    events({ id }, { after, first, filter }, { dataSources }) {
+        return dataSources.testExecution.getEvents(id, { after, first, filter });
     },
     id({ id }) {
         return encodeId('TestExecution', id);

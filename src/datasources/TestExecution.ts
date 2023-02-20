@@ -1,4 +1,4 @@
-import { ConsoleLogLevel, TestExecutionEventType } from '../resolvers/types/generated.js';
+import { ConsoleLogLevel, TestExecutionEventFilterInput, TestExecutionEventType } from '../resolvers/types/generated.js';
 import { TestExecutionEvent } from '../resolvers/types/mappers';
 
 import { data as consoleLogData } from './ConsoleEvent.js';
@@ -17,20 +17,26 @@ export class TestExecution {
     }
 
     getEvents(id: string, args: {
-        first?: number | null, after?: string | null, type?: readonly TestExecutionEventType[] | null,
-        logLevel?: readonly ConsoleLogLevel[] | null
+        first?: number | null, after?: string | null, filter?: TestExecutionEventFilterInput | null;
     }) {
         if (id !== '1234')
             throw new Error('Not implemented');
 
+        const filters = args?.filter;
+        const consoleFilters = filters?.consoleFilter;
+
         let data: TestExecutionEvent[] = [
             ...Object.values(consoleLogData),
         ]
-            .filter(({ __typename, logLevel }) =>
-                args.type?.some((type) => {
+            .filter(({ __typename, logLevel, message }) =>
+                filters?.type?.some((type) => {
                     switch (type) {
                         case TestExecutionEventType.Console:
-                            if (args?.logLevel && !args.logLevel?.includes(logLevel)) {
+                            if (consoleFilters?.logLevel && !consoleFilters.logLevel?.includes(logLevel)) {
+                                return false;
+                            }
+                            if (consoleFilters?.logSearch &&
+                                !message?.toLowerCase().includes(consoleFilters.logSearch.toLowerCase())) {
                                 return false;
                             }
                             return __typename === 'ConsoleLogEvent';
