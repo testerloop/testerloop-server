@@ -1,4 +1,4 @@
-import { TestExecutionEventType } from '../resolvers/types/generated.js';
+import { ConsoleLogLevel, TestExecutionEventType } from '../resolvers/types/generated.js';
 import { TestExecutionEvent } from '../resolvers/types/mappers';
 
 import { data as consoleLogData } from './ConsoleEvent.js';
@@ -16,22 +16,29 @@ export class TestExecution {
         return null;
     }
 
-    getEvents(id: string, args: { first?: number | null, after?: string | null, type?: readonly TestExecutionEventType[] | null }) {
+    getEvents(id: string, args: {
+        first?: number | null, after?: string | null, type?: readonly TestExecutionEventType[] | null,
+        logLevel?: readonly ConsoleLogLevel[] | null
+    }) {
         if (id !== '1234')
             throw new Error('Not implemented');
 
         let data: TestExecutionEvent[] = [
             ...Object.values(consoleLogData),
         ]
-            .filter(({ __typename }) =>
+            .filter(({ __typename, logLevel }) =>
                 args.type?.some((type) => {
                     switch (type) {
                         case TestExecutionEventType.Console:
+                            if (args?.logLevel && !args.logLevel?.includes(logLevel)) {
+                                return false;
+                            }
                             return __typename === 'ConsoleLogEvent';
                         default:
                             throw new Error(`Type ${type} not implemented`);
                     }
-                }) ?? true,
+                }) ?? true
+                ,
             );
 
         // TODO: Paginate in a database? Paginate utils?

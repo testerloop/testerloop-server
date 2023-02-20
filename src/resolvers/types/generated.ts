@@ -118,6 +118,7 @@ export type TestExecution = Event & IntervalEvent & Node & {
 export type TestExecutionEventsArgs = {
   after?: InputMaybe<Scalars['Cursor']>;
   first?: InputMaybe<Scalars['Int']>;
+  logLevel?: InputMaybe<ReadonlyArray<ConsoleLogLevel>>;
   type?: InputMaybe<ReadonlyArray<TestExecutionEventType>>;
 };
 

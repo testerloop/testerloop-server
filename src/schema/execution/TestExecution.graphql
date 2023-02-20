@@ -6,6 +6,7 @@ type TestExecution implements Node & Event & IntervalEvent {
         first: Int
         after: Cursor
         type: [TestExecutionEventType!]
+        logLevel: [ConsoleLogLevel!]
     ): TestExecutionEventConnection!
 }
 
