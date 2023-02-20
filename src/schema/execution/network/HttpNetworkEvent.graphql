@@ -3,15 +3,15 @@ type HttpNetworkEvent implements NetworkEvent {
   testExecutionId: String!
   startedDateTime: String!
   time: NetworkEventTime!
-  _initiator: String
+  initiator: String
   timings: HttpNetworkTimings!
   request: HttpNetworkRequest!
   response: HttpNetworkResponse!
 }
 
 type HttpHeaders {
-    size: Int!
-    values: [KeyValuePair!]!
+  size: Int!
+  values: [KeyValuePair!]!
 }
 
 type HttpNetworkRequestUrl {
@@ -36,7 +36,7 @@ type HttpNetworkResponse {
   body: HttpResponseBody!
   cookies: [Cookie!]!
   headers: [HttpHeaders]!
-  _transferSize: Int!
+  transferSize: Int!
 }
 
 type HttpNetworkTimings {
@@ -46,5 +46,5 @@ type HttpNetworkTimings {
   wait: NetworkEventTiming!
   receive: NetworkEventTiming!
   ssl: NetworkEventTiming!
-  _queued: NetworkEventTiming!
+  queued: NetworkEventTiming!
 }

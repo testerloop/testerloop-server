@@ -3,7 +3,7 @@ interface NetworkEvent {
   testExecutionId: String!
   startedDateTime: String!
   time: NetworkEventTime!
-  _initiator: String
+  initiator: String
 }
 
 type NetworkEventTime implements Event & IntervalEvent {
@@ -27,6 +27,6 @@ type Cookie {
   path: String
   domain: String
   expires: String
-  httpOnly: Boolean
-  secure: Boolean
+  httpOnly: Boolean!
+  secure: Boolean!
 }
