@@ -37,6 +37,11 @@ export type ConsoleEvent = {
   readonly testExecution: TestExecution;
 };
 
+export type ConsoleEventFilterInput = {
+  readonly logLevel?: InputMaybe<ReadonlyArray<ConsoleLogLevel>>;
+  readonly logSearch?: InputMaybe<Scalars['String']>;
+};
+
 export type ConsoleLogEvent = ConsoleEvent & Event & InstantaneousEvent & TestExecutionEvent & {
   readonly __typename?: 'ConsoleLogEvent';
   readonly at: Scalars['DateTime'];
@@ -237,8 +242,8 @@ export type TestExecution = Event & IntervalEvent & Node & {
 
 export type TestExecutionEventsArgs = {
   after?: InputMaybe<Scalars['Cursor']>;
+  filter?: InputMaybe<TestExecutionEventFilterInput>;
   first?: InputMaybe<Scalars['Int']>;
-  type: TestExecutionEventType;
 };
 
 export type TestExecutionEvent = {
@@ -282,6 +287,11 @@ export type Timings = {
   readonly ssl: Maybe<Scalars['Float']>;
   readonly wait: Maybe<Scalars['Float']>;
 };
+export type TestExecutionEventFilterInput = {
+  readonly consoleFilter?: InputMaybe<ConsoleEventFilterInput>;
+  readonly type?: InputMaybe<ReadonlyArray<TestExecutionEventType>>;
+};
+
 export enum TestExecutionEventType {
   Console = 'CONSOLE',
   Network = 'NETWORK'
@@ -355,6 +365,7 @@ export type ResolversTypes = {
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
   Chunk: ResolverTypeWrapper<Chunk>;
   ConsoleEvent: ResolversTypes['ConsoleLogEvent'];
+  ConsoleEventFilterInput: ConsoleEventFilterInput;
   ConsoleLogEvent: ResolverTypeWrapper<ConsoleLogEventModel>;
   ConsoleLogLevel: ConsoleLogLevel;
   Content: ResolverTypeWrapper<Content>;
@@ -386,6 +397,7 @@ export type ResolversTypes = {
   TestExecutionEventConnection: ResolverTypeWrapper<TestExecutionEventConnectionModel>;
   TestExecutionEventEdge: ResolverTypeWrapper<TestExecutionEventEdgeModel>;
   Timings: ResolverTypeWrapper<Timings>;
+  TestExecutionEventFilterInput: TestExecutionEventFilterInput;
   TestExecutionEventType: TestExecutionEventType;
 };
 
@@ -394,6 +406,7 @@ export type ResolversParentTypes = {
   Boolean: Scalars['Boolean'];
   Chunk: Chunk;
   ConsoleEvent: ResolversParentTypes['ConsoleLogEvent'];
+  ConsoleEventFilterInput: ConsoleEventFilterInput;
   ConsoleLogEvent: ConsoleLogEventModel;
   Content: Content;
   Cookie: Cookie;
@@ -430,6 +443,7 @@ export type ChunkResolvers<ContextType = Context, ParentType extends ResolversPa
   bytes: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   ts: Resolver<Maybe<ResolversTypes['Float']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+  TestExecutionEventFilterInput: TestExecutionEventFilterInput;
 };
 
 export type ConsoleEventResolvers<ContextType = Context, ParentType extends ResolversParentTypes['ConsoleEvent'] = ResolversParentTypes['ConsoleEvent']> = {
@@ -598,7 +612,7 @@ export type ResponseResolvers<ContextType = Context, ParentType extends Resolver
 
 export type TestExecutionResolvers<ContextType = Context, ParentType extends ResolversParentTypes['TestExecution'] = ResolversParentTypes['TestExecution']> = {
   at: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
-  events: Resolver<ResolversTypes['TestExecutionEventConnection'], ParentType, ContextType, RequireFields<TestExecutionEventsArgs, 'type'>>;
+  events: Resolver<ResolversTypes['TestExecutionEventConnection'], ParentType, ContextType, Partial<TestExecutionEventsArgs>>;
   id: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   until: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
