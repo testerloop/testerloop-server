@@ -5,8 +5,18 @@ type TestExecution implements Node & Event & IntervalEvent {
     events(
         first: Int
         after: Cursor
-        type: [TestExecutionEventType!]
+        filter: TestExecutionEventFilterInput
     ): TestExecutionEventConnection!
+}
+
+input TestExecutionEventFilterInput {
+  type: [TestExecutionEventType!]
+  consoleFilter: ConsoleEventFilterInput
+}
+
+input ConsoleEventFilterInput {
+  logLevel: [ConsoleLogLevel!]
+  logSearch: String
 }
 
 extend type Query {

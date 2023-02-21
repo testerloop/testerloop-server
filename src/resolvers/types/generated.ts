@@ -31,6 +31,11 @@ export type ConsoleEvent = {
   readonly testExecution: TestExecution;
 };
 
+export type ConsoleEventFilterInput = {
+  readonly logLevel?: InputMaybe<ReadonlyArray<ConsoleLogLevel>>;
+  readonly logSearch?: InputMaybe<Scalars['String']>;
+};
+
 export type ConsoleLogEvent = ConsoleEvent & Event & InstantaneousEvent & TestExecutionEvent & {
   readonly __typename?: 'ConsoleLogEvent';
   readonly at: Scalars['DateTime'];
@@ -117,8 +122,8 @@ export type TestExecution = Event & IntervalEvent & Node & {
 
 export type TestExecutionEventsArgs = {
   after?: InputMaybe<Scalars['Cursor']>;
+  filter?: InputMaybe<TestExecutionEventFilterInput>;
   first?: InputMaybe<Scalars['Int']>;
-  type?: InputMaybe<ReadonlyArray<TestExecutionEventType>>;
 };
 
 export type TestExecutionEvent = {
@@ -149,6 +154,11 @@ export type TestExecutionEventEdge = {
   readonly __typename?: 'TestExecutionEventEdge';
   readonly cursor: Scalars['Cursor'];
   readonly node: TestExecutionEvent;
+};
+
+export type TestExecutionEventFilterInput = {
+  readonly consoleFilter?: InputMaybe<ConsoleEventFilterInput>;
+  readonly type?: InputMaybe<ReadonlyArray<TestExecutionEventType>>;
 };
 
 export enum TestExecutionEventType {
@@ -223,6 +233,7 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 export type ResolversTypes = {
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
   ConsoleEvent: ResolversTypes['ConsoleLogEvent'];
+  ConsoleEventFilterInput: ConsoleEventFilterInput;
   ConsoleLogEvent: ResolverTypeWrapper<ConsoleLogEventModel>;
   ConsoleLogLevel: ConsoleLogLevel;
   Cursor: ResolverTypeWrapper<Scalars['Cursor']>;
@@ -240,6 +251,7 @@ export type ResolversTypes = {
   TestExecutionEvent: ResolversTypes['ConsoleLogEvent'];
   TestExecutionEventConnection: ResolverTypeWrapper<TestExecutionEventConnectionModel>;
   TestExecutionEventEdge: ResolverTypeWrapper<TestExecutionEventEdgeModel>;
+  TestExecutionEventFilterInput: TestExecutionEventFilterInput;
   TestExecutionEventType: TestExecutionEventType;
 };
 
@@ -247,6 +259,7 @@ export type ResolversTypes = {
 export type ResolversParentTypes = {
   Boolean: Scalars['Boolean'];
   ConsoleEvent: ResolversParentTypes['ConsoleLogEvent'];
+  ConsoleEventFilterInput: ConsoleEventFilterInput;
   ConsoleLogEvent: ConsoleLogEventModel;
   Cursor: Scalars['Cursor'];
   DateTime: Scalars['DateTime'];
@@ -263,6 +276,7 @@ export type ResolversParentTypes = {
   TestExecutionEvent: ResolversParentTypes['ConsoleLogEvent'];
   TestExecutionEventConnection: TestExecutionEventConnectionModel;
   TestExecutionEventEdge: TestExecutionEventEdgeModel;
+  TestExecutionEventFilterInput: TestExecutionEventFilterInput;
 };
 
 export type ConsoleEventResolvers<ContextType = Context, ParentType extends ResolversParentTypes['ConsoleEvent'] = ResolversParentTypes['ConsoleEvent']> = {
