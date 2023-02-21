@@ -1,12 +1,14 @@
-type HttpNetworkEvent implements NetworkEvent {
+type HttpNetworkEvent implements Event & NetworkEvent & TestExecutionEvent {
   id: ID!
-  testExecutionId: String!
+  at: DateTime!
   startedDateTime: String!
   time: NetworkEventTime!
-  initiator: String
+  resourceType: String
+  testExecution: TestExecution!
   timings: HttpNetworkTimings!
   request: HttpNetworkRequest!
   response: HttpNetworkResponse!
+  initiator: HttpNetworkEventInitiator!
 }
 
 type HttpHeaders {
@@ -22,10 +24,10 @@ type HttpNetworkRequestUrl {
 type HttpNetworkRequest {
   method: String!
   url: HttpNetworkRequestUrl!
-  queryString: [KeyValuePair]!
-  body: HttpBody
-  cookies: [String]!
-  headers: [Header]!
+  queryString: [KeyValuePair!]!
+  body: HttpRequestBody
+  cookies: [Cookie]!
+  headers: HttpHeaders!
   httpVersion: String!
 }
 
@@ -35,7 +37,7 @@ type HttpNetworkResponse {
   statusText: String!
   body: HttpResponseBody!
   cookies: [Cookie!]!
-  headers: [HttpHeaders]!
+  headers: HttpHeaders!
   transferSize: Int!
 }
 
@@ -47,4 +49,9 @@ type HttpNetworkTimings {
   receive: NetworkEventTiming!
   ssl: NetworkEventTiming!
   queued: NetworkEventTiming!
+}
+
+type HttpNetworkEventInitiator {
+  origin: String
+  lineNo: Int
 }

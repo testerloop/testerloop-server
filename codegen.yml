@@ -12,6 +12,7 @@ generates:
       rootValueType: unknown
       immutableTypes: true
       makeResolverTypeCallable: true
+      nonOptionalTypename: true
       optionalInfoArgument: true
       onlyResolveTypeForInterfaces: true
       strictScalars: true
@@ -20,7 +21,7 @@ generates:
         DateTime: Date
       mappers:
         ConsoleLogEvent: ./mappers#ConsoleLogEventModel
-        NetworkEvent: ./mappers#NetworkEventModel
+        HttpNetworkEvent: ./mappers#HttpNetworkEventModel
         TestExecution: ./mappers#TestExecutionModel
         TestExecutionEventConnection: ./mappers#TestExecutionEventConnectionModel
         TestExecutionEventEdge: ./mappers#TestExecutionEventEdgeModel

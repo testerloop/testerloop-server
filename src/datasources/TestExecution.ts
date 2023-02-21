@@ -2,6 +2,7 @@ import { ConsoleLogLevel, TestExecutionEventFilterInput, TestExecutionEventType 
 import { TestExecutionEvent } from '../resolvers/types/mappers';
 
 import { data as consoleLogData } from './ConsoleEvent.js';
+import { data as httpNetworkEvent } from './NetworkEvent.js';
 
 export class TestExecution {
     getById(id: string) {
@@ -27,25 +28,39 @@ export class TestExecution {
 
         let data: TestExecutionEvent[] = [
             ...Object.values(consoleLogData),
-        ]
-            .filter(({ __typename, logLevel, message }) =>
+            ...Object.values(httpNetworkEvent).sort(
+                (a, b) => a.time.at.getTime() - b.time.at.getTime()
+            ),
+        ].filter(
+            ({ __typename, ...rest }) =>
                 filters?.type?.some((type) => {
                     switch (type) {
                         case TestExecutionEventType.Console:
-                            if (consoleFilters?.logLevel && !consoleFilters.logLevel?.includes(logLevel)) {
+                            const { logLevel, message }: any = rest;
+                            if (
+                                consoleFilters?.logLevel &&
+                                !consoleFilters.logLevel?.includes(logLevel)
+                            ) {
                                 return false;
                             }
-                            if (consoleFilters?.logSearch &&
-                                !message?.toLowerCase().includes(consoleFilters.logSearch.toLowerCase())) {
+                            if (
+                                consoleFilters?.logSearch &&
+                                !message
+                                    ?.toLowerCase()
+                                    .includes(
+                                        consoleFilters.logSearch.toLowerCase()
+                                    )
+                            ) {
                                 return false;
                             }
                             return __typename === 'ConsoleLogEvent';
+                        case TestExecutionEventType.Network:
+                            return __typename === 'HttpNetworkEvent';
                         default:
                             throw new Error(`Type ${type} not implemented`);
                     }
                 }) ?? true
-                ,
-            );
+        );
 
         // TODO: Paginate in a database? Paginate utils?
         let start = 0;

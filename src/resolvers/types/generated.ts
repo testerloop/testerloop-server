@@ -1,5 +1,5 @@
 import { GraphQLResolveInfo, GraphQLScalarType, GraphQLScalarTypeConfig } from 'graphql';
-import { ConsoleLogEventModel, NetworkEventModel, TestExecutionModel, TestExecutionEventConnectionModel, TestExecutionEventEdgeModel } from './mappers';
+import { ConsoleLogEventModel, HttpNetworkEventModel, TestExecutionModel, TestExecutionEventConnectionModel, TestExecutionEventEdgeModel } from './mappers';
 import { Context } from '../../context';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
@@ -26,12 +26,6 @@ export type Scalars = {
   DateTime: Date;
 };
 
-export type Chunk = {
-  readonly __typename?: 'Chunk';
-  readonly bytes: Maybe<Scalars['Int']>;
-  readonly ts: Maybe<Scalars['Float']>;
-};
-
 export type ConsoleEvent = {
   readonly at: Scalars['DateTime'];
   readonly testExecution: TestExecution;
@@ -43,7 +37,7 @@ export type ConsoleEventFilterInput = {
 };
 
 export type ConsoleLogEvent = ConsoleEvent & Event & InstantaneousEvent & TestExecutionEvent & {
-  readonly __typename?: 'ConsoleLogEvent';
+  readonly __typename: 'ConsoleLogEvent';
   readonly at: Scalars['DateTime'];
   readonly logLevel: ConsoleLogLevel;
   readonly message: Scalars['String'];
@@ -63,59 +57,115 @@ export enum ConsoleLogLevel {
   Warn = 'WARN'
 }
 
-export type Content = {
-  readonly __typename?: 'Content';
-  readonly _comment: Maybe<Scalars['String']>;
-  readonly compression: Maybe<Scalars['Int']>;
-  readonly encoding: Maybe<Scalars['String']>;
-  readonly mimeType: Scalars['String'];
-  readonly size: Scalars['Int'];
-  readonly text: Maybe<Scalars['String']>;
-};
-
 export type Cookie = {
-  readonly __typename?: 'Cookie';
-  readonly _comment: Maybe<Scalars['String']>;
+  readonly __typename: 'Cookie';
   readonly domain: Maybe<Scalars['String']>;
   readonly expires: Maybe<Scalars['String']>;
-  readonly httpOnly: Maybe<Scalars['Boolean']>;
+  readonly httpOnly: Scalars['Boolean'];
   readonly name: Scalars['String'];
   readonly path: Maybe<Scalars['String']>;
-  readonly secure: Maybe<Scalars['Boolean']>;
+  readonly secure: Scalars['Boolean'];
   readonly value: Scalars['String'];
-};
-
-export type Creator = {
-  readonly __typename?: 'Creator';
-  readonly comment: Maybe<Scalars['String']>;
-  readonly name: Scalars['String'];
-  readonly version: Scalars['String'];
-};
-
-export type Entry = {
-  readonly __typename?: 'Entry';
-  readonly _chunks: ReadonlyArray<Chunk>;
-  readonly _initialPriority: Maybe<Scalars['String']>;
-  readonly _initiator: Maybe<Scalars['String']>;
-  readonly _priority: Maybe<Scalars['String']>;
-  readonly _requestId: Maybe<Scalars['String']>;
-  readonly _requestTime: Maybe<Scalars['Float']>;
-  readonly request: Request;
-  readonly response: Response;
-  readonly serverIPAddress: Maybe<Scalars['String']>;
-  readonly startedDateTime: Scalars['String'];
-  readonly time: Scalars['Float'];
-  readonly timings: Timings;
 };
 
 export type Event = {
   readonly at: Scalars['DateTime'];
 };
 
-export type Header = {
-  readonly __typename?: 'Header';
-  readonly name: Scalars['String'];
-  readonly value: Scalars['String'];
+export type HttpBody = {
+  readonly data: Scalars['String'];
+  readonly encoding: Maybe<Scalars['String']>;
+  readonly mimeType: Scalars['String'];
+  readonly size: Scalars['Int'];
+};
+
+export type HttpHeaders = {
+  readonly __typename: 'HttpHeaders';
+  readonly size: Scalars['Int'];
+  readonly values: ReadonlyArray<KeyValuePair>;
+};
+
+export type HttpNetworkEvent = Event & NetworkEvent & TestExecutionEvent & {
+  readonly __typename: 'HttpNetworkEvent';
+  readonly at: Scalars['DateTime'];
+  readonly id: Scalars['ID'];
+  readonly initiator: HttpNetworkEventInitiator;
+  readonly request: HttpNetworkRequest;
+  readonly resourceType: Maybe<Scalars['String']>;
+  readonly response: HttpNetworkResponse;
+  readonly startedDateTime: Scalars['String'];
+  readonly testExecution: TestExecution;
+  readonly time: NetworkEventTime;
+  readonly timings: HttpNetworkTimings;
+};
+
+export type HttpNetworkEventInitiator = {
+  readonly __typename: 'HttpNetworkEventInitiator';
+  readonly lineNo: Maybe<Scalars['Int']>;
+  readonly origin: Maybe<Scalars['String']>;
+};
+
+export type HttpNetworkRequest = {
+  readonly __typename: 'HttpNetworkRequest';
+  readonly body: Maybe<HttpRequestBody>;
+  readonly cookies: ReadonlyArray<Maybe<Cookie>>;
+  readonly headers: HttpHeaders;
+  readonly httpVersion: Scalars['String'];
+  readonly method: Scalars['String'];
+  readonly queryString: ReadonlyArray<KeyValuePair>;
+  readonly url: HttpNetworkRequestUrl;
+};
+
+export type HttpNetworkRequestUrl = {
+  readonly __typename: 'HttpNetworkRequestUrl';
+  readonly nonKeyValueQueryString: Maybe<Scalars['String']>;
+  readonly url: Scalars['String'];
+};
+
+export type HttpNetworkResponse = {
+  readonly __typename: 'HttpNetworkResponse';
+  readonly body: HttpResponseBody;
+  readonly cookies: ReadonlyArray<Cookie>;
+  readonly headers: HttpHeaders;
+  readonly redirectURL: Scalars['String'];
+  readonly status: Scalars['Int'];
+  readonly statusText: Scalars['String'];
+  readonly transferSize: Scalars['Int'];
+};
+
+export type HttpNetworkTimings = {
+  readonly __typename: 'HttpNetworkTimings';
+  readonly blocked: NetworkEventTiming;
+  readonly connect: NetworkEventTiming;
+  readonly queued: NetworkEventTiming;
+  readonly receive: NetworkEventTiming;
+  readonly send: NetworkEventTiming;
+  readonly ssl: NetworkEventTiming;
+  readonly wait: NetworkEventTiming;
+};
+
+export type HttpRequestBody = HttpBody & {
+  readonly __typename: 'HttpRequestBody';
+  readonly data: Scalars['String'];
+  readonly encoding: Maybe<Scalars['String']>;
+  readonly mimeType: Scalars['String'];
+  readonly size: Scalars['Int'];
+};
+
+export type HttpResponseBody = HttpBody & {
+  readonly __typename: 'HttpResponseBody';
+  readonly chunks: ReadonlyArray<HttpResponseBodyChunk>;
+  readonly data: Scalars['String'];
+  readonly encoding: Maybe<Scalars['String']>;
+  readonly mimeType: Scalars['String'];
+  readonly size: Scalars['Int'];
+};
+
+export type HttpResponseBodyChunk = Event & InstantaneousEvent & {
+  readonly __typename: 'HttpResponseBodyChunk';
+  readonly at: Scalars['DateTime'];
+  readonly data: Scalars['String'];
+  readonly size: Scalars['Int'];
 };
 
 export type InstantaneousEvent = {
@@ -127,19 +177,28 @@ export type IntervalEvent = {
   readonly until: Scalars['DateTime'];
 };
 
-export type Log = {
-  readonly __typename?: 'Log';
-  readonly creator: Creator;
-  readonly entries: ReadonlyArray<Entry>;
-  readonly pages: ReadonlyArray<Page>;
-  readonly version: Scalars['String'];
+export type KeyValuePair = {
+  readonly __typename: 'KeyValuePair';
+  readonly key: Scalars['String'];
+  readonly value: Scalars['String'];
 };
 
 export type NetworkEvent = {
-  readonly __typename?: 'NetworkEvent';
   readonly id: Scalars['ID'];
-  readonly log: Log;
-  readonly testExecution: TestExecution;
+  readonly startedDateTime: Scalars['String'];
+  readonly time: NetworkEventTime;
+};
+
+export type NetworkEventTime = Event & IntervalEvent & {
+  readonly __typename: 'NetworkEventTime';
+  readonly at: Scalars['DateTime'];
+  readonly until: Scalars['DateTime'];
+};
+
+export type NetworkEventTiming = Event & IntervalEvent & {
+  readonly __typename: 'NetworkEventTiming';
+  readonly at: Scalars['DateTime'];
+  readonly until: Scalars['DateTime'];
 };
 
 /**
@@ -151,14 +210,6 @@ export type Node = {
   readonly id: Scalars['ID'];
 };
 
-export type Page = {
-  readonly __typename?: 'Page';
-  readonly id: Scalars['String'];
-  readonly pageTimings: PageTimings;
-  readonly startedDateTime: Scalars['String'];
-  readonly title: Scalars['String'];
-};
-
 /**
  * The PageInfo type as specified in The Relay Connection Spec.
  *
@@ -167,21 +218,15 @@ export type Page = {
  * - https://relay.dev/graphql/connections.htm#sec-undefined.PageInfo
  */
 export type PageInfo = {
-  readonly __typename?: 'PageInfo';
+  readonly __typename: 'PageInfo';
   readonly endCursor: Maybe<Scalars['Cursor']>;
   readonly hasNextPage: Scalars['Boolean'];
   readonly hasPreviousPage: Scalars['Boolean'];
   readonly startCursor: Maybe<Scalars['Cursor']>;
 };
 
-export type PageTimings = {
-  readonly __typename?: 'PageTimings';
-  readonly onContentLoad: Maybe<Scalars['Float']>;
-  readonly onLoad: Maybe<Scalars['Float']>;
-};
-
 export type Query = {
-  readonly __typename?: 'Query';
+  readonly __typename: 'Query';
   readonly node: Maybe<Node>;
   readonly test: Scalars['Boolean'];
   readonly testExecution: Maybe<TestExecution>;
@@ -197,42 +242,8 @@ export type QueryTestExecutionArgs = {
   id: Scalars['ID'];
 };
 
-export type QueryString = {
-  readonly __typename?: 'QueryString';
-  readonly name: Scalars['String'];
-  readonly value: Scalars['String'];
-};
-
-export type Request = {
-  readonly __typename?: 'Request';
-  readonly _comment: Maybe<Scalars['String']>;
-  readonly bodySize: Scalars['Int'];
-  readonly cookies: ReadonlyArray<Cookie>;
-  readonly headers: ReadonlyArray<Header>;
-  readonly headersSize: Scalars['Int'];
-  readonly httpVersion: Scalars['String'];
-  readonly method: Scalars['String'];
-  readonly queryString: ReadonlyArray<QueryString>;
-  readonly url: Scalars['String'];
-};
-
-export type Response = {
-  readonly __typename?: 'Response';
-  readonly _comment: Maybe<Scalars['String']>;
-  readonly _transferSize: Maybe<Scalars['Int']>;
-  readonly bodySize: Scalars['Int'];
-  readonly content: Content;
-  readonly cookies: ReadonlyArray<Cookie>;
-  readonly headers: ReadonlyArray<Header>;
-  readonly headersSize: Scalars['Int'];
-  readonly httpVersion: Scalars['String'];
-  readonly redirectURL: Maybe<Scalars['String']>;
-  readonly status: Scalars['Int'];
-  readonly statusText: Scalars['String'];
-};
-
 export type TestExecution = Event & IntervalEvent & Node & {
-  readonly __typename?: 'TestExecution';
+  readonly __typename: 'TestExecution';
   readonly at: Scalars['DateTime'];
   readonly events: TestExecutionEventConnection;
   readonly id: Scalars['ID'];
@@ -258,7 +269,7 @@ export type TestExecutionEvent = {
  * - https://relay.dev/graphql/connections.htm#sec-Connection-Types
  */
 export type TestExecutionEventConnection = {
-  readonly __typename?: 'TestExecutionEventConnection';
+  readonly __typename: 'TestExecutionEventConnection';
   readonly edges: ReadonlyArray<TestExecutionEventEdge>;
   readonly pageInfo: PageInfo;
   readonly totalCount: Scalars['Int'];
@@ -271,22 +282,11 @@ export type TestExecutionEventConnection = {
  * - https://relay.dev/graphql/connections.htm#sec-Edge-Types
  */
 export type TestExecutionEventEdge = {
-  readonly __typename?: 'TestExecutionEventEdge';
+  readonly __typename: 'TestExecutionEventEdge';
   readonly cursor: Scalars['Cursor'];
   readonly node: TestExecutionEvent;
 };
 
-export type Timings = {
-  readonly __typename?: 'Timings';
-  readonly _queued: Maybe<Scalars['Float']>;
-  readonly blocked: Maybe<Scalars['Float']>;
-  readonly connect: Maybe<Scalars['Float']>;
-  readonly dns: Maybe<Scalars['Float']>;
-  readonly receive: Maybe<Scalars['Float']>;
-  readonly send: Maybe<Scalars['Float']>;
-  readonly ssl: Maybe<Scalars['Float']>;
-  readonly wait: Maybe<Scalars['Float']>;
-};
 export type TestExecutionEventFilterInput = {
   readonly consoleFilter?: InputMaybe<ConsoleEventFilterInput>;
   readonly type?: InputMaybe<ReadonlyArray<TestExecutionEventType>>;
@@ -363,40 +363,41 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = {
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
-  Chunk: ResolverTypeWrapper<Chunk>;
   ConsoleEvent: ResolversTypes['ConsoleLogEvent'];
   ConsoleEventFilterInput: ConsoleEventFilterInput;
   ConsoleLogEvent: ResolverTypeWrapper<ConsoleLogEventModel>;
   ConsoleLogLevel: ConsoleLogLevel;
-  Content: ResolverTypeWrapper<Content>;
   Cookie: ResolverTypeWrapper<Cookie>;
-  Creator: ResolverTypeWrapper<Creator>;
   Cursor: ResolverTypeWrapper<Scalars['Cursor']>;
   DateTime: ResolverTypeWrapper<Scalars['DateTime']>;
-  Entry: ResolverTypeWrapper<Entry>;
-  Event: ResolversTypes['ConsoleLogEvent'] | ResolversTypes['TestExecution'];
-  Float: ResolverTypeWrapper<Scalars['Float']>;
-  Header: ResolverTypeWrapper<Header>;
+  Event: ResolversTypes['ConsoleLogEvent'] | ResolversTypes['HttpNetworkEvent'] | ResolversTypes['HttpResponseBodyChunk'] | ResolversTypes['NetworkEventTime'] | ResolversTypes['NetworkEventTiming'] | ResolversTypes['TestExecution'];
+  HttpBody: ResolversTypes['HttpRequestBody'] | ResolversTypes['HttpResponseBody'];
+  HttpHeaders: ResolverTypeWrapper<HttpHeaders>;
+  HttpNetworkEvent: ResolverTypeWrapper<HttpNetworkEventModel>;
+  HttpNetworkEventInitiator: ResolverTypeWrapper<HttpNetworkEventInitiator>;
+  HttpNetworkRequest: ResolverTypeWrapper<HttpNetworkRequest>;
+  HttpNetworkRequestUrl: ResolverTypeWrapper<HttpNetworkRequestUrl>;
+  HttpNetworkResponse: ResolverTypeWrapper<HttpNetworkResponse>;
+  HttpNetworkTimings: ResolverTypeWrapper<HttpNetworkTimings>;
+  HttpRequestBody: ResolverTypeWrapper<HttpRequestBody>;
+  HttpResponseBody: ResolverTypeWrapper<HttpResponseBody>;
+  HttpResponseBodyChunk: ResolverTypeWrapper<HttpResponseBodyChunk>;
   ID: ResolverTypeWrapper<Scalars['ID']>;
-  InstantaneousEvent: ResolversTypes['ConsoleLogEvent'];
+  InstantaneousEvent: ResolversTypes['ConsoleLogEvent'] | ResolversTypes['HttpResponseBodyChunk'];
   Int: ResolverTypeWrapper<Scalars['Int']>;
-  IntervalEvent: ResolversTypes['TestExecution'];
-  Log: ResolverTypeWrapper<Log>;
-  NetworkEvent: ResolverTypeWrapper<NetworkEventModel>;
+  IntervalEvent: ResolversTypes['NetworkEventTime'] | ResolversTypes['NetworkEventTiming'] | ResolversTypes['TestExecution'];
+  KeyValuePair: ResolverTypeWrapper<KeyValuePair>;
+  NetworkEvent: ResolversTypes['HttpNetworkEvent'];
+  NetworkEventTime: ResolverTypeWrapper<NetworkEventTime>;
+  NetworkEventTiming: ResolverTypeWrapper<NetworkEventTiming>;
   Node: ResolversTypes['TestExecution'];
-  Page: ResolverTypeWrapper<Page>;
   PageInfo: ResolverTypeWrapper<PageInfo>;
-  PageTimings: ResolverTypeWrapper<PageTimings>;
   Query: ResolverTypeWrapper<unknown>;
-  QueryString: ResolverTypeWrapper<QueryString>;
-  Request: ResolverTypeWrapper<Request>;
-  Response: ResolverTypeWrapper<Response>;
   String: ResolverTypeWrapper<Scalars['String']>;
   TestExecution: ResolverTypeWrapper<TestExecutionModel>;
-  TestExecutionEvent: ResolversTypes['ConsoleLogEvent'];
+  TestExecutionEvent: ResolversTypes['ConsoleLogEvent'] | ResolversTypes['HttpNetworkEvent'];
   TestExecutionEventConnection: ResolverTypeWrapper<TestExecutionEventConnectionModel>;
   TestExecutionEventEdge: ResolverTypeWrapper<TestExecutionEventEdgeModel>;
-  Timings: ResolverTypeWrapper<Timings>;
   TestExecutionEventFilterInput: TestExecutionEventFilterInput;
   TestExecutionEventType: TestExecutionEventType;
 };
@@ -404,45 +405,40 @@ export type ResolversTypes = {
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = {
   Boolean: Scalars['Boolean'];
-  Chunk: Chunk;
   ConsoleEvent: ResolversParentTypes['ConsoleLogEvent'];
   ConsoleEventFilterInput: ConsoleEventFilterInput;
   ConsoleLogEvent: ConsoleLogEventModel;
-  Content: Content;
   Cookie: Cookie;
-  Creator: Creator;
   Cursor: Scalars['Cursor'];
   DateTime: Scalars['DateTime'];
-  Entry: Entry;
-  Event: ResolversParentTypes['ConsoleLogEvent'] | ResolversParentTypes['TestExecution'];
-  Float: Scalars['Float'];
-  Header: Header;
+  Event: ResolversParentTypes['ConsoleLogEvent'] | ResolversParentTypes['HttpNetworkEvent'] | ResolversParentTypes['HttpResponseBodyChunk'] | ResolversParentTypes['NetworkEventTime'] | ResolversParentTypes['NetworkEventTiming'] | ResolversParentTypes['TestExecution'];
+  HttpBody: ResolversParentTypes['HttpRequestBody'] | ResolversParentTypes['HttpResponseBody'];
+  HttpHeaders: HttpHeaders;
+  HttpNetworkEvent: HttpNetworkEventModel;
+  HttpNetworkEventInitiator: HttpNetworkEventInitiator;
+  HttpNetworkRequest: HttpNetworkRequest;
+  HttpNetworkRequestUrl: HttpNetworkRequestUrl;
+  HttpNetworkResponse: HttpNetworkResponse;
+  HttpNetworkTimings: HttpNetworkTimings;
+  HttpRequestBody: HttpRequestBody;
+  HttpResponseBody: HttpResponseBody;
+  HttpResponseBodyChunk: HttpResponseBodyChunk;
   ID: Scalars['ID'];
-  InstantaneousEvent: ResolversParentTypes['ConsoleLogEvent'];
+  InstantaneousEvent: ResolversParentTypes['ConsoleLogEvent'] | ResolversParentTypes['HttpResponseBodyChunk'];
   Int: Scalars['Int'];
-  IntervalEvent: ResolversParentTypes['TestExecution'];
-  Log: Log;
-  NetworkEvent: NetworkEventModel;
+  IntervalEvent: ResolversParentTypes['NetworkEventTime'] | ResolversParentTypes['NetworkEventTiming'] | ResolversParentTypes['TestExecution'];
+  KeyValuePair: KeyValuePair;
+  NetworkEvent: ResolversParentTypes['HttpNetworkEvent'];
+  NetworkEventTime: NetworkEventTime;
+  NetworkEventTiming: NetworkEventTiming;
   Node: ResolversParentTypes['TestExecution'];
-  Page: Page;
   PageInfo: PageInfo;
-  PageTimings: PageTimings;
   Query: unknown;
-  QueryString: QueryString;
-  Request: Request;
-  Response: Response;
   String: Scalars['String'];
   TestExecution: TestExecutionModel;
-  TestExecutionEvent: ResolversParentTypes['ConsoleLogEvent'];
+  TestExecutionEvent: ResolversParentTypes['ConsoleLogEvent'] | ResolversParentTypes['HttpNetworkEvent'];
   TestExecutionEventConnection: TestExecutionEventConnectionModel;
   TestExecutionEventEdge: TestExecutionEventEdgeModel;
-  Timings: Timings;
-};
-
-export type ChunkResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Chunk'] = ResolversParentTypes['Chunk']> = {
-  bytes: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
-  ts: Resolver<Maybe<ResolversTypes['Float']>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
   TestExecutionEventFilterInput: TestExecutionEventFilterInput;
 };
 
@@ -458,32 +454,14 @@ export type ConsoleLogEventResolvers<ContextType = Context, ParentType extends R
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type ContentResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Content'] = ResolversParentTypes['Content']> = {
-  _comment: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  compression: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
-  encoding: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  mimeType: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  size: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  text: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
 export type CookieResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Cookie'] = ResolversParentTypes['Cookie']> = {
-  _comment: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   domain: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   expires: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  httpOnly: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
+  httpOnly: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   name: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   path: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  secure: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
+  secure: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   value: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
-export type CreatorResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Creator'] = ResolversParentTypes['Creator']> = {
-  comment: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  name: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  version: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -495,65 +473,135 @@ export interface DateTimeScalarConfig extends GraphQLScalarTypeConfig<ResolversT
   name: 'DateTime';
 }
 
-export type EntryResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Entry'] = ResolversParentTypes['Entry']> = {
-  _chunks: Resolver<ReadonlyArray<ResolversTypes['Chunk']>, ParentType, ContextType>;
-  _initialPriority: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  _initiator: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  _priority: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  _requestId: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  _requestTime: Resolver<Maybe<ResolversTypes['Float']>, ParentType, ContextType>;
-  request: Resolver<ResolversTypes['Request'], ParentType, ContextType>;
-  response: Resolver<ResolversTypes['Response'], ParentType, ContextType>;
-  serverIPAddress: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  startedDateTime: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  time: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
-  timings: Resolver<ResolversTypes['Timings'], ParentType, ContextType>;
+export type EventResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Event'] = ResolversParentTypes['Event']> = {
+  __resolveType: TypeResolveFn<'ConsoleLogEvent' | 'HttpNetworkEvent' | 'HttpResponseBodyChunk' | 'NetworkEventTime' | 'NetworkEventTiming' | 'TestExecution', ParentType, ContextType>;
+};
+
+export type HttpBodyResolvers<ContextType = Context, ParentType extends ResolversParentTypes['HttpBody'] = ResolversParentTypes['HttpBody']> = {
+  __resolveType: TypeResolveFn<'HttpRequestBody' | 'HttpResponseBody', ParentType, ContextType>;
+};
+
+export type HttpHeadersResolvers<ContextType = Context, ParentType extends ResolversParentTypes['HttpHeaders'] = ResolversParentTypes['HttpHeaders']> = {
+  size: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  values: Resolver<ReadonlyArray<ResolversTypes['KeyValuePair']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type EventResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Event'] = ResolversParentTypes['Event']> = {
-  __resolveType: TypeResolveFn<'ConsoleLogEvent' | 'TestExecution', ParentType, ContextType>;
+export type HttpNetworkEventResolvers<ContextType = Context, ParentType extends ResolversParentTypes['HttpNetworkEvent'] = ResolversParentTypes['HttpNetworkEvent']> = {
+  at: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
+  id: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  initiator: Resolver<ResolversTypes['HttpNetworkEventInitiator'], ParentType, ContextType>;
+  request: Resolver<ResolversTypes['HttpNetworkRequest'], ParentType, ContextType>;
+  resourceType: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  response: Resolver<ResolversTypes['HttpNetworkResponse'], ParentType, ContextType>;
+  startedDateTime: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  testExecution: Resolver<ResolversTypes['TestExecution'], ParentType, ContextType>;
+  time: Resolver<ResolversTypes['NetworkEventTime'], ParentType, ContextType>;
+  timings: Resolver<ResolversTypes['HttpNetworkTimings'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type HeaderResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Header'] = ResolversParentTypes['Header']> = {
-  name: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  value: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+export type HttpNetworkEventInitiatorResolvers<ContextType = Context, ParentType extends ResolversParentTypes['HttpNetworkEventInitiator'] = ResolversParentTypes['HttpNetworkEventInitiator']> = {
+  lineNo: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+  origin: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type HttpNetworkRequestResolvers<ContextType = Context, ParentType extends ResolversParentTypes['HttpNetworkRequest'] = ResolversParentTypes['HttpNetworkRequest']> = {
+  body: Resolver<Maybe<ResolversTypes['HttpRequestBody']>, ParentType, ContextType>;
+  cookies: Resolver<ReadonlyArray<Maybe<ResolversTypes['Cookie']>>, ParentType, ContextType>;
+  headers: Resolver<ResolversTypes['HttpHeaders'], ParentType, ContextType>;
+  httpVersion: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  method: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  queryString: Resolver<ReadonlyArray<ResolversTypes['KeyValuePair']>, ParentType, ContextType>;
+  url: Resolver<ResolversTypes['HttpNetworkRequestUrl'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type HttpNetworkRequestUrlResolvers<ContextType = Context, ParentType extends ResolversParentTypes['HttpNetworkRequestUrl'] = ResolversParentTypes['HttpNetworkRequestUrl']> = {
+  nonKeyValueQueryString: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  url: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type HttpNetworkResponseResolvers<ContextType = Context, ParentType extends ResolversParentTypes['HttpNetworkResponse'] = ResolversParentTypes['HttpNetworkResponse']> = {
+  body: Resolver<ResolversTypes['HttpResponseBody'], ParentType, ContextType>;
+  cookies: Resolver<ReadonlyArray<ResolversTypes['Cookie']>, ParentType, ContextType>;
+  headers: Resolver<ResolversTypes['HttpHeaders'], ParentType, ContextType>;
+  redirectURL: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  status: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  statusText: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  transferSize: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type HttpNetworkTimingsResolvers<ContextType = Context, ParentType extends ResolversParentTypes['HttpNetworkTimings'] = ResolversParentTypes['HttpNetworkTimings']> = {
+  blocked: Resolver<ResolversTypes['NetworkEventTiming'], ParentType, ContextType>;
+  connect: Resolver<ResolversTypes['NetworkEventTiming'], ParentType, ContextType>;
+  queued: Resolver<ResolversTypes['NetworkEventTiming'], ParentType, ContextType>;
+  receive: Resolver<ResolversTypes['NetworkEventTiming'], ParentType, ContextType>;
+  send: Resolver<ResolversTypes['NetworkEventTiming'], ParentType, ContextType>;
+  ssl: Resolver<ResolversTypes['NetworkEventTiming'], ParentType, ContextType>;
+  wait: Resolver<ResolversTypes['NetworkEventTiming'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type HttpRequestBodyResolvers<ContextType = Context, ParentType extends ResolversParentTypes['HttpRequestBody'] = ResolversParentTypes['HttpRequestBody']> = {
+  data: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  encoding: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  mimeType: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  size: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type HttpResponseBodyResolvers<ContextType = Context, ParentType extends ResolversParentTypes['HttpResponseBody'] = ResolversParentTypes['HttpResponseBody']> = {
+  chunks: Resolver<ReadonlyArray<ResolversTypes['HttpResponseBodyChunk']>, ParentType, ContextType>;
+  data: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  encoding: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  mimeType: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  size: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type HttpResponseBodyChunkResolvers<ContextType = Context, ParentType extends ResolversParentTypes['HttpResponseBodyChunk'] = ResolversParentTypes['HttpResponseBodyChunk']> = {
+  at: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
+  data: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  size: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type InstantaneousEventResolvers<ContextType = Context, ParentType extends ResolversParentTypes['InstantaneousEvent'] = ResolversParentTypes['InstantaneousEvent']> = {
-  __resolveType: TypeResolveFn<'ConsoleLogEvent', ParentType, ContextType>;
+  __resolveType: TypeResolveFn<'ConsoleLogEvent' | 'HttpResponseBodyChunk', ParentType, ContextType>;
 };
 
 export type IntervalEventResolvers<ContextType = Context, ParentType extends ResolversParentTypes['IntervalEvent'] = ResolversParentTypes['IntervalEvent']> = {
-  __resolveType: TypeResolveFn<'TestExecution', ParentType, ContextType>;
+  __resolveType: TypeResolveFn<'NetworkEventTime' | 'NetworkEventTiming' | 'TestExecution', ParentType, ContextType>;
 };
 
-export type LogResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Log'] = ResolversParentTypes['Log']> = {
-  creator: Resolver<ResolversTypes['Creator'], ParentType, ContextType>;
-  entries: Resolver<ReadonlyArray<ResolversTypes['Entry']>, ParentType, ContextType>;
-  pages: Resolver<ReadonlyArray<ResolversTypes['Page']>, ParentType, ContextType>;
-  version: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+export type KeyValuePairResolvers<ContextType = Context, ParentType extends ResolversParentTypes['KeyValuePair'] = ResolversParentTypes['KeyValuePair']> = {
+  key: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  value: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type NetworkEventResolvers<ContextType = Context, ParentType extends ResolversParentTypes['NetworkEvent'] = ResolversParentTypes['NetworkEvent']> = {
-  id: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-  log: Resolver<ResolversTypes['Log'], ParentType, ContextType>;
-  testExecution: Resolver<ResolversTypes['TestExecution'], ParentType, ContextType>;
+  __resolveType: TypeResolveFn<'HttpNetworkEvent', ParentType, ContextType>;
+};
+
+export type NetworkEventTimeResolvers<ContextType = Context, ParentType extends ResolversParentTypes['NetworkEventTime'] = ResolversParentTypes['NetworkEventTime']> = {
+  at: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
+  until: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type NetworkEventTimingResolvers<ContextType = Context, ParentType extends ResolversParentTypes['NetworkEventTiming'] = ResolversParentTypes['NetworkEventTiming']> = {
+  at: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
+  until: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type NodeResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Node'] = ResolversParentTypes['Node']> = {
   __resolveType: TypeResolveFn<'TestExecution', ParentType, ContextType>;
-};
-
-export type PageResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Page'] = ResolversParentTypes['Page']> = {
-  id: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  pageTimings: Resolver<ResolversTypes['PageTimings'], ParentType, ContextType>;
-  startedDateTime: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  title: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type PageInfoResolvers<ContextType = Context, ParentType extends ResolversParentTypes['PageInfo'] = ResolversParentTypes['PageInfo']> = {
@@ -564,50 +612,10 @@ export type PageInfoResolvers<ContextType = Context, ParentType extends Resolver
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type PageTimingsResolvers<ContextType = Context, ParentType extends ResolversParentTypes['PageTimings'] = ResolversParentTypes['PageTimings']> = {
-  onContentLoad: Resolver<Maybe<ResolversTypes['Float']>, ParentType, ContextType>;
-  onLoad: Resolver<Maybe<ResolversTypes['Float']>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
 export type QueryResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
   node: Resolver<Maybe<ResolversTypes['Node']>, ParentType, ContextType, RequireFields<QueryNodeArgs, 'id'>>;
   test: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   testExecution: Resolver<Maybe<ResolversTypes['TestExecution']>, ParentType, ContextType, RequireFields<QueryTestExecutionArgs, 'id'>>;
-};
-
-export type QueryStringResolvers<ContextType = Context, ParentType extends ResolversParentTypes['QueryString'] = ResolversParentTypes['QueryString']> = {
-  name: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  value: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
-export type RequestResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Request'] = ResolversParentTypes['Request']> = {
-  _comment: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  bodySize: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  cookies: Resolver<ReadonlyArray<ResolversTypes['Cookie']>, ParentType, ContextType>;
-  headers: Resolver<ReadonlyArray<ResolversTypes['Header']>, ParentType, ContextType>;
-  headersSize: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  httpVersion: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  method: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  queryString: Resolver<ReadonlyArray<ResolversTypes['QueryString']>, ParentType, ContextType>;
-  url: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
-export type ResponseResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Response'] = ResolversParentTypes['Response']> = {
-  _comment: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  _transferSize: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
-  bodySize: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  content: Resolver<ResolversTypes['Content'], ParentType, ContextType>;
-  cookies: Resolver<ReadonlyArray<ResolversTypes['Cookie']>, ParentType, ContextType>;
-  headers: Resolver<ReadonlyArray<ResolversTypes['Header']>, ParentType, ContextType>;
-  headersSize: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  httpVersion: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  redirectURL: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  status: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  statusText: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type TestExecutionResolvers<ContextType = Context, ParentType extends ResolversParentTypes['TestExecution'] = ResolversParentTypes['TestExecution']> = {
@@ -619,7 +627,7 @@ export type TestExecutionResolvers<ContextType = Context, ParentType extends Res
 };
 
 export type TestExecutionEventResolvers<ContextType = Context, ParentType extends ResolversParentTypes['TestExecutionEvent'] = ResolversParentTypes['TestExecutionEvent']> = {
-  __resolveType: TypeResolveFn<'ConsoleLogEvent', ParentType, ContextType>;
+  __resolveType: TypeResolveFn<'ConsoleLogEvent' | 'HttpNetworkEvent', ParentType, ContextType>;
 };
 
 export type TestExecutionEventConnectionResolvers<ContextType = Context, ParentType extends ResolversParentTypes['TestExecutionEventConnection'] = ResolversParentTypes['TestExecutionEventConnection']> = {
@@ -635,46 +643,36 @@ export type TestExecutionEventEdgeResolvers<ContextType = Context, ParentType ex
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type TimingsResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Timings'] = ResolversParentTypes['Timings']> = {
-  _queued: Resolver<Maybe<ResolversTypes['Float']>, ParentType, ContextType>;
-  blocked: Resolver<Maybe<ResolversTypes['Float']>, ParentType, ContextType>;
-  connect: Resolver<Maybe<ResolversTypes['Float']>, ParentType, ContextType>;
-  dns: Resolver<Maybe<ResolversTypes['Float']>, ParentType, ContextType>;
-  receive: Resolver<Maybe<ResolversTypes['Float']>, ParentType, ContextType>;
-  send: Resolver<Maybe<ResolversTypes['Float']>, ParentType, ContextType>;
-  ssl: Resolver<Maybe<ResolversTypes['Float']>, ParentType, ContextType>;
-  wait: Resolver<Maybe<ResolversTypes['Float']>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
 export type Resolvers<ContextType = Context> = {
-  Chunk: ChunkResolvers<ContextType>;
   ConsoleEvent: ConsoleEventResolvers<ContextType>;
   ConsoleLogEvent: ConsoleLogEventResolvers<ContextType>;
-  Content: ContentResolvers<ContextType>;
   Cookie: CookieResolvers<ContextType>;
-  Creator: CreatorResolvers<ContextType>;
   Cursor: GraphQLScalarType;
   DateTime: GraphQLScalarType;
-  Entry: EntryResolvers<ContextType>;
   Event: EventResolvers<ContextType>;
-  Header: HeaderResolvers<ContextType>;
+  HttpBody: HttpBodyResolvers<ContextType>;
+  HttpHeaders: HttpHeadersResolvers<ContextType>;
+  HttpNetworkEvent: HttpNetworkEventResolvers<ContextType>;
+  HttpNetworkEventInitiator: HttpNetworkEventInitiatorResolvers<ContextType>;
+  HttpNetworkRequest: HttpNetworkRequestResolvers<ContextType>;
+  HttpNetworkRequestUrl: HttpNetworkRequestUrlResolvers<ContextType>;
+  HttpNetworkResponse: HttpNetworkResponseResolvers<ContextType>;
+  HttpNetworkTimings: HttpNetworkTimingsResolvers<ContextType>;
+  HttpRequestBody: HttpRequestBodyResolvers<ContextType>;
+  HttpResponseBody: HttpResponseBodyResolvers<ContextType>;
+  HttpResponseBodyChunk: HttpResponseBodyChunkResolvers<ContextType>;
   InstantaneousEvent: InstantaneousEventResolvers<ContextType>;
   IntervalEvent: IntervalEventResolvers<ContextType>;
-  Log: LogResolvers<ContextType>;
+  KeyValuePair: KeyValuePairResolvers<ContextType>;
   NetworkEvent: NetworkEventResolvers<ContextType>;
+  NetworkEventTime: NetworkEventTimeResolvers<ContextType>;
+  NetworkEventTiming: NetworkEventTimingResolvers<ContextType>;
   Node: NodeResolvers<ContextType>;
-  Page: PageResolvers<ContextType>;
   PageInfo: PageInfoResolvers<ContextType>;
-  PageTimings: PageTimingsResolvers<ContextType>;
   Query: QueryResolvers<ContextType>;
-  QueryString: QueryStringResolvers<ContextType>;
-  Request: RequestResolvers<ContextType>;
-  Response: ResponseResolvers<ContextType>;
   TestExecution: TestExecutionResolvers<ContextType>;
   TestExecutionEvent: TestExecutionEventResolvers<ContextType>;
   TestExecutionEventConnection: TestExecutionEventConnectionResolvers<ContextType>;
   TestExecutionEventEdge: TestExecutionEventEdgeResolvers<ContextType>;
-  Timings: TimingsResolvers<ContextType>;
 };
 

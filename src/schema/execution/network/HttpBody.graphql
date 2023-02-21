@@ -1,4 +1,11 @@
-type HttpBody {
+interface HttpBody {
+  size: Int!
+  mimeType: String!
+  data: String!
+  encoding: String
+}
+
+type HttpRequestBody implements HttpBody {
   size: Int!
   mimeType: String!
   data: String!

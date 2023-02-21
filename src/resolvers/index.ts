@@ -7,6 +7,7 @@ import Query from './Query.js';
 import PageInfo from './PageInfo.js';
 import TestExecution from './TestExecution.js';
 import TestExecutionEventConnection from './TestExecutionEventConnection.js';
+import HttpNetworkEvent from './HttpNetworkEvent.js';
 
 const interfaceResolvers = {
     __resolveType<T extends String>(parent: { __typename: T }): T {
@@ -14,7 +15,22 @@ const interfaceResolvers = {
     }
 }
 
-const resolvers: Resolvers = {
+const resolvers: Omit<
+    Resolvers,
+    | 'Cookie'
+    | 'HttpHeaders'
+    | 'HttpNetworkEventInitiator'
+    | 'HttpNetworkRequest'
+    | 'HttpNetworkRequestUrl'
+    | 'HttpNetworkResponse'
+    | 'HttpNetworkTimings'
+    | 'HttpRequestBody'
+    | 'HttpResponseBody'
+    | 'HttpResponseBodyChunk'
+    | 'KeyValuePair'
+    | 'NetworkEventTime'
+    | 'NetworkEventTiming'
+> = {
     ConsoleEvent: interfaceResolvers,
     ConsoleLogEvent,
     Cursor,
@@ -29,6 +45,9 @@ const resolvers: Resolvers = {
     TestExecutionEventEdge: edgeResolvers,
     PageInfo,
     Query,
-}
+    NetworkEvent: interfaceResolvers,
+    HttpBody: interfaceResolvers,
+    HttpNetworkEvent
+};
 
 export default resolvers;

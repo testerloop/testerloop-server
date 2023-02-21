@@ -1,9 +1,7 @@
 interface NetworkEvent {
   id: ID!
-  testExecutionId: String!
   startedDateTime: String!
   time: NetworkEventTime!
-  initiator: String
 }
 
 type NetworkEventTime implements Event & IntervalEvent {
