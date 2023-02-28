@@ -1,0 +1,18 @@
+import { CommandEventConnectionResolvers } from './types/generated.js';
+
+const resolvers: CommandEventConnectionResolvers = {
+    edges: ({ edges }) => edges,
+    totalCount: ({ totalCount }) => totalCount,
+    pageInfo({ edges, hasNextPage, hasPreviousPage }) {
+        const startCursor = edges[0]?.cursor ?? null;
+        const endCursor = edges[edges.length - 1]?.cursor ?? null;
+        return {
+            hasNextPage,
+            hasPreviousPage,
+            startCursor,
+            endCursor,
+        };
+    },
+}
+
+export default resolvers;

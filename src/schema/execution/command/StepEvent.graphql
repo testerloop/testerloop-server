@@ -1,0 +1,16 @@
+enum GherkinStepKeyword {
+    GIVEN
+    WHEN
+    THEN
+    AND
+    BUT
+}
+
+type StepEvent implements Event & IntervalEvent & TestExecutionEvent {
+    at: DateTime!
+    until: DateTime!
+    commandChains: CommandChainConnection!
+    description: String!
+    keyword: GherkinStepKeyword!
+    testExecution: TestExecution!
+}

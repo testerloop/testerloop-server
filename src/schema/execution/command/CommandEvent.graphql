@@ -1,0 +1,15 @@
+interface CommandEvent implements Event & TestExecutionEvent {
+    at: DateTime!
+    testExecution: TestExecution!
+}
+
+type CommandEventConnection {
+    totalCount: Int!
+    edges: [CommandEventEdge!]!
+    pageInfo: PageInfo!
+}
+
+type CommandEventEdge {
+    cursor: Cursor!
+    node: CommandEvent!
+}

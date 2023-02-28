@@ -26,20 +26,26 @@ export class TestExecution {
         const consoleFilters = filters?.consoleFilter;
 
         let data: TestExecutionEvent[] = [
+            {
+                __typename: 'StepEvent' as const,
+                id: '1',
+            },
             ...Object.values(consoleLogData),
         ]
-            .filter(({ __typename, logLevel, message }) =>
+            .filter((event) =>
                 filters?.type?.some((type) => {
                     switch (type) {
                         case TestExecutionEventType.Console:
-                            if (consoleFilters?.logLevel && !consoleFilters.logLevel?.includes(logLevel)) {
+                            if (event.__typename !== 'ConsoleLogEvent')
+                                return false;
+                            if (consoleFilters?.logLevel && !consoleFilters.logLevel?.includes(event.logLevel)) {
                                 return false;
                             }
                             if (consoleFilters?.logSearch &&
-                                !message?.toLowerCase().includes(consoleFilters.logSearch.toLowerCase())) {
+                                !event.message?.toLowerCase().includes(consoleFilters.logSearch.toLowerCase())) {
                                 return false;
                             }
-                            return __typename === 'ConsoleLogEvent';
+                            return true;
                         default:
                             throw new Error(`Type ${type} not implemented`);
                     }

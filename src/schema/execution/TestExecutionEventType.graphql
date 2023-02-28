@@ -1,4 +1,5 @@
 enum TestExecutionEventType {
+    COMMAND
     CONSOLE
     NETWORK
 }

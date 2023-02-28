@@ -19,10 +19,18 @@ generates:
         Cursor: string
         DateTime: Date
       mappers:
+        CommandChain: ./mappers#CommandChainModel
+        CommandChainConnection: ./mappers#CommandChainConnectionModel
+        CommandChainEdge: ./mappers#CommandChainEdgeModel
+        CommandEvent: ./mappers#CommandEventModel
+        CommandEventConnection: ./mappers#CommandEventConnectionModel
+        CommandEventEdge: ./mappers#CommandEventEdgeModel
         ConsoleLogEvent: ./mappers#ConsoleLogEventModel
+        GenericCommandEvent: ./mappers#GenericCommandEventModel
         TestExecution: ./mappers#TestExecutionModel
         TestExecutionEventConnection: ./mappers#TestExecutionEventConnectionModel
         TestExecutionEventEdge: ./mappers#TestExecutionEventEdgeModel
+        StepEvent: ./mappers#StepEventModel
     plugins:
       - typescript
       - typescript-resolvers

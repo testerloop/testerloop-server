@@ -1,0 +1,5 @@
+type GenericCommandEvent implements Event & IntervalEvent & TestExecutionEvent & CommandEvent {
+    at: DateTime!
+    until: DateTime!
+    testExecution: TestExecution!
+}
