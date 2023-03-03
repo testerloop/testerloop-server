@@ -1,4 +1,4 @@
-import { ConsoleLogLevel, TestExecutionEventFilterInput, TestExecutionEventType } from '../resolvers/types/generated.js';
+import { TestExecutionEventFilterInput, TestExecutionEventType } from '../resolvers/types/generated.js';
 import { TestExecutionEvent } from '../resolvers/types/mappers';
 
 import { data as consoleLogData } from './ConsoleEvent.js';
@@ -28,10 +28,10 @@ export class TestExecution {
 
         let data: TestExecutionEvent[] = [
             ...Object.values(consoleLogData),
-            ...Object.values(httpNetworkEvent).sort(
-                (a, b) => a.time.at.getTime() - b.time.at.getTime()
-            ),
-        ].filter(
+            ...Object.values(httpNetworkEvent)
+        ].sort(
+            (a, b) => a.time.at.getTime() - b.time.at.getTime()
+        ).filter(
             ({ __typename, ...rest }) =>
                 filters?.type?.some((type) => {
                     switch (type) {

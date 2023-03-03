@@ -1,5 +1,11 @@
 // @ts-ignore
-import networkData from '../rawData/network-events.har.json' assert { type: 'json' };
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const networkData = JSON.parse(fs.readFileSync(
+    path.join(__dirname, '../rawData/network-events.har.json'), 'utf8'));
 
 const convertNameValuesToKeyValuePairs = (
     valuesPairs: { name: string; value: string }[]
@@ -64,7 +70,7 @@ const convertToNetworkEventTiming = (
 
 export const data = Object.fromEntries(
     networkData.log.entries
-        .map((datum, idx) => {
+        .map((datum: any, idx: any) => {
             const {
                 startedDateTime,
                 time,
@@ -160,11 +166,11 @@ export const data = Object.fromEntries(
             return convertedDatum;
         })
         .filter(
-            (datum) =>
+            (datum: any) =>
                 !datum.request.url.url.includes('/__/') &&
                 !datum.request.url.url.includes('/__cypress/')
         )
-        .map((datum) => [datum.id, datum])
+        .map((datum: any) => [datum.id, datum])
 );
 
 export class NetworkEvent {
