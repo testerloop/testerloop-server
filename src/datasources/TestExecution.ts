@@ -30,7 +30,7 @@ export class TestExecution {
             ...Object.values(consoleLogData),
             ...Object.values(httpNetworkEvent)
         ].sort(
-            (a, b) => a.time.at.getTime() - b.time.at.getTime()
+            (a, b) => (a.at ?? a.time.at).getTime() - (b.at ?? b.time.at).getTime()
         ).filter(
             ({ __typename, ...rest }) =>
                 filters?.type?.some((type) => {
