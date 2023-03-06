@@ -19,7 +19,7 @@
   },
   "scripts": {
     "build": "tsc --project tsconfig.json",
-    "dev": "concurrently -k \"nodemon --experimental-json-modules src/dev.ts\" \"graphql-codegen --watch\"",
+    "dev": "concurrently -k \"nodemon src/dev.ts\" \"graphql-codegen --watch\"",
     "generate": "graphql-codegen"
   },
   "type": "module"
