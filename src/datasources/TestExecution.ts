@@ -1,5 +1,4 @@
 import { TestExecutionEventFilterInput, TestExecutionEventType } from '../resolvers/types/generated.js';
-import { TestExecutionEvent } from '../resolvers/types/mappers';
 
 import { data as consoleLogData } from './ConsoleEvent.js';
 import { data as httpNetworkEvent } from './NetworkEvent.js';
@@ -26,41 +25,48 @@ export class TestExecution {
         const filters = args?.filter;
         const consoleFilters = filters?.consoleFilter;
 
-        let data: TestExecutionEvent[] = [
+        let data = ([
             ...Object.values(consoleLogData),
-            ...Object.values(httpNetworkEvent)
-        ].sort(
-            (a, b) => (a.at ?? a.time.at).getTime() - (b.at ?? b.time.at).getTime()
-        ).filter(
-            ({ __typename, ...rest }) =>
-                filters?.type?.some((type) => {
-                    switch (type) {
-                        case TestExecutionEventType.Console:
-                            const { logLevel, message }: any = rest;
-                            if (
-                                consoleFilters?.logLevel &&
-                                !consoleFilters.logLevel?.includes(logLevel)
-                            ) {
-                                return false;
-                            }
-                            if (
-                                consoleFilters?.logSearch &&
-                                !message
-                                    ?.toLowerCase()
-                                    .includes(
-                                        consoleFilters.logSearch.toLowerCase()
-                                    )
-                            ) {
-                                return false;
-                            }
-                            return __typename === 'ConsoleLogEvent';
-                        case TestExecutionEventType.Network:
-                            return __typename === 'HttpNetworkEvent';
-                        default:
-                            throw new Error(`Type ${type} not implemented`);
+            ...Object.values(httpNetworkEvent),
+        ]).sort((a, b) => {
+            const timeA = a.__typename === 'ConsoleLogEvent' ? a.at : a.time.at;
+            const timeB = b.__typename === 'ConsoleLogEvent' ? b.at : b.time.at;
+            return timeA.getTime() - timeB.getTime();
+        }).filter((evt) => {
+            return filters?.type?.some((type) => {
+                switch (type) {
+                    case TestExecutionEventType.Console: {
+                        if(evt.__typename !== 'ConsoleLogEvent') return false;
+                        const { logLevel, message } = evt;
+
+                        if (
+                            consoleFilters?.logLevel &&
+                            !consoleFilters.logLevel?.includes(logLevel)
+                        ) {
+                            return false;
+                        }
+                        if (
+                            consoleFilters?.logSearch &&
+                            !message
+                                ?.toLowerCase()
+                                .includes(
+                                    consoleFilters.logSearch.toLowerCase()
+                                )
+                        ) {
+                            return false;
+                        }
+
+                        return true;
                     }
-                }) ?? true
-        );
+                    case TestExecutionEventType.Network: {
+                        return evt.__typename === 'HttpNetworkEvent';
+                    }
+                    default: {
+                        throw new Error(`Type ${type} not implemented`);
+                    }
+                }
+            }) ?? true
+        });
 
         // TODO: Paginate in a database? Paginate utils?
         let start = 0;
