@@ -1,7 +1,7 @@
-import { ConsoleLogLevel, TestExecutionEventFilterInput, TestExecutionEventType } from '../resolvers/types/generated.js';
-import { TestExecutionEvent } from '../resolvers/types/mappers';
+import { TestExecutionEventFilterInput, TestExecutionEventType } from '../resolvers/types/generated.js';
 
 import { data as consoleLogData } from './ConsoleEvent.js';
+import { data as httpNetworkEvent } from './NetworkEvent.js';
 
 export class TestExecution {
     getById(id: string) {
@@ -25,27 +25,46 @@ export class TestExecution {
         const filters = args?.filter;
         const consoleFilters = filters?.consoleFilter;
 
-        let data: TestExecutionEvent[] = [
+        let data = ([
             ...Object.values(consoleLogData),
-        ]
-            .filter(({ __typename, logLevel, message }) =>
-                filters?.type?.some((type) => {
-                    switch (type) {
-                        case TestExecutionEventType.Console:
-                            if (consoleFilters?.logLevel && !consoleFilters.logLevel?.includes(logLevel)) {
-                                return false;
-                            }
-                            if (consoleFilters?.logSearch &&
-                                !message?.toLowerCase().includes(consoleFilters.logSearch.toLowerCase())) {
-                                return false;
-                            }
-                            return __typename === 'ConsoleLogEvent';
-                        default:
-                            throw new Error(`Type ${type} not implemented`);
+            ...Object.values(httpNetworkEvent),
+        ]).sort((a, b) => {
+            return a.at.getTime() - b.at.getTime();
+        }).filter((evt) => {
+            return filters?.type?.some((type) => {
+                switch (type) {
+                    case TestExecutionEventType.Console: {
+                        if(evt.__typename !== 'ConsoleLogEvent') return false;
+                        const { logLevel, message } = evt;
+
+                        if (
+                            consoleFilters?.logLevel &&
+                            !consoleFilters.logLevel?.includes(logLevel)
+                        ) {
+                            return false;
+                        }
+                        if (
+                            consoleFilters?.logSearch &&
+                            !message
+                                ?.toLowerCase()
+                                .includes(
+                                    consoleFilters.logSearch.toLowerCase()
+                                )
+                        ) {
+                            return false;
+                        }
+
+                        return true;
                     }
-                }) ?? true
-                ,
-            );
+                    case TestExecutionEventType.Network: {
+                        return evt.__typename === 'HttpNetworkEvent';
+                    }
+                    default: {
+                        throw new Error(`Type ${type} not implemented`);
+                    }
+                }
+            }) ?? true
+        });
 
         // TODO: Paginate in a database? Paginate utils?
         let start = 0;

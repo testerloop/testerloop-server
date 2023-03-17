@@ -7,6 +7,7 @@ const resolvers: TestExecutionEventConnectionResolvers = {
         const startCursor = edges[0]?.cursor ?? null;
         const endCursor = edges[edges.length - 1]?.cursor ?? null;
         return {
+            __typename: 'PageInfo',
             hasNextPage,
             hasPreviousPage,
             startCursor,
