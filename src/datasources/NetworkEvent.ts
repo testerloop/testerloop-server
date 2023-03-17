@@ -81,17 +81,12 @@ export const data = Object.fromEntries(
                 id: idx.toString(),
                 __typename: 'HttpNetworkEvent' as const,
                 resourceType,
-                startedDateTime: startedDateTime,
                 at: new Date(Date.parse(startedDateTime)),
-                time: {
-                    __typename: 'NetworkEventTime' as const,
-                    at: new Date(Date.parse(startedDateTime)),
-                    until: new Date(startedTimestamp + time),
-                },
+                until: new Date(startedTimestamp + time),
                 initiator: {
                     __typename: 'HttpNetworkEventInitiator' as const,
                     origin: _initiator || null,
-                    lineNo: _initiator_line || null
+                    lineNumber: _initiator_line || null
                 },
                 request: {
                     __typename: 'HttpNetworkRequest' as const,

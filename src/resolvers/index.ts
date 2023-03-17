@@ -19,7 +19,6 @@ import HttpRequestBody from './HttpRequestBody.js';
 import HttpResponseBody from './HttpResponseBody.js';
 import HttpResponseBodyChunk from './HttpResponseBodyChunk.js';
 import KeyValuePair from './KeyValuePair.js';
-import NetworkEventTime from './NetworkEventTime.js';
 import NetworkEventTiming from './NetworkEventTiming.js';
 
 const interfaceResolvers = {
@@ -57,7 +56,6 @@ const resolvers: Resolvers = {
     HttpResponseBody,
     HttpResponseBodyChunk,
     KeyValuePair,
-    NetworkEventTime,
     NetworkEventTiming,
 };
 

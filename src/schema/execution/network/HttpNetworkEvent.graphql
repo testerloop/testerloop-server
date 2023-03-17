@@ -1,8 +1,7 @@
-type HttpNetworkEvent implements Event & NetworkEvent & TestExecutionEvent {
+type HttpNetworkEvent implements Event & IntervalEvent & NetworkEvent & TestExecutionEvent {
   id: ID!
   at: DateTime!
-  startedDateTime: String!
-  time: NetworkEventTime!
+  until: DateTime!
   resourceType: String
   testExecution: TestExecution!
   timings: HttpNetworkTimings!
@@ -53,5 +52,5 @@ type HttpNetworkTimings {
 
 type HttpNetworkEventInitiator {
   origin: String
-  lineNo: Int
+  lineNumber: Int
 }

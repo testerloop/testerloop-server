@@ -85,7 +85,7 @@ export type HttpHeaders = {
   readonly values: ReadonlyArray<KeyValuePair>;
 };
 
-export type HttpNetworkEvent = Event & NetworkEvent & TestExecutionEvent & {
+export type HttpNetworkEvent = Event & IntervalEvent & NetworkEvent & TestExecutionEvent & {
   readonly __typename: 'HttpNetworkEvent';
   readonly at: Scalars['DateTime'];
   readonly id: Scalars['ID'];
@@ -93,15 +93,14 @@ export type HttpNetworkEvent = Event & NetworkEvent & TestExecutionEvent & {
   readonly request: HttpNetworkRequest;
   readonly resourceType: Maybe<Scalars['String']>;
   readonly response: HttpNetworkResponse;
-  readonly startedDateTime: Scalars['String'];
   readonly testExecution: TestExecution;
-  readonly time: NetworkEventTime;
   readonly timings: HttpNetworkTimings;
+  readonly until: Scalars['DateTime'];
 };
 
 export type HttpNetworkEventInitiator = {
   readonly __typename: 'HttpNetworkEventInitiator';
-  readonly lineNo: Maybe<Scalars['Int']>;
+  readonly lineNumber: Maybe<Scalars['Int']>;
   readonly origin: Maybe<Scalars['String']>;
 };
 
@@ -184,14 +183,8 @@ export type KeyValuePair = {
 };
 
 export type NetworkEvent = {
-  readonly id: Scalars['ID'];
-  readonly startedDateTime: Scalars['String'];
-  readonly time: NetworkEventTime;
-};
-
-export type NetworkEventTime = Event & IntervalEvent & {
-  readonly __typename: 'NetworkEventTime';
   readonly at: Scalars['DateTime'];
+  readonly id: Scalars['ID'];
   readonly until: Scalars['DateTime'];
 };
 
@@ -370,7 +363,7 @@ export type ResolversTypes = {
   Cookie: ResolverTypeWrapper<Cookie>;
   Cursor: ResolverTypeWrapper<Scalars['Cursor']>;
   DateTime: ResolverTypeWrapper<Scalars['DateTime']>;
-  Event: ResolversTypes['ConsoleLogEvent'] | ResolversTypes['HttpNetworkEvent'] | ResolversTypes['HttpResponseBodyChunk'] | ResolversTypes['NetworkEventTime'] | ResolversTypes['NetworkEventTiming'] | ResolversTypes['TestExecution'];
+  Event: ResolversTypes['ConsoleLogEvent'] | ResolversTypes['HttpNetworkEvent'] | ResolversTypes['HttpResponseBodyChunk'] | ResolversTypes['NetworkEventTiming'] | ResolversTypes['TestExecution'];
   HttpBody: ResolversTypes['HttpRequestBody'] | ResolversTypes['HttpResponseBody'];
   HttpHeaders: ResolverTypeWrapper<HttpHeaders>;
   HttpNetworkEvent: ResolverTypeWrapper<HttpNetworkEventModel>;
@@ -385,10 +378,9 @@ export type ResolversTypes = {
   ID: ResolverTypeWrapper<Scalars['ID']>;
   InstantaneousEvent: ResolversTypes['ConsoleLogEvent'] | ResolversTypes['HttpResponseBodyChunk'];
   Int: ResolverTypeWrapper<Scalars['Int']>;
-  IntervalEvent: ResolversTypes['NetworkEventTime'] | ResolversTypes['NetworkEventTiming'] | ResolversTypes['TestExecution'];
+  IntervalEvent: ResolversTypes['HttpNetworkEvent'] | ResolversTypes['NetworkEventTiming'] | ResolversTypes['TestExecution'];
   KeyValuePair: ResolverTypeWrapper<KeyValuePair>;
   NetworkEvent: ResolversTypes['HttpNetworkEvent'];
-  NetworkEventTime: ResolverTypeWrapper<NetworkEventTime>;
   NetworkEventTiming: ResolverTypeWrapper<NetworkEventTiming>;
   Node: ResolversTypes['TestExecution'];
   PageInfo: ResolverTypeWrapper<PageInfo>;
@@ -411,7 +403,7 @@ export type ResolversParentTypes = {
   Cookie: Cookie;
   Cursor: Scalars['Cursor'];
   DateTime: Scalars['DateTime'];
-  Event: ResolversParentTypes['ConsoleLogEvent'] | ResolversParentTypes['HttpNetworkEvent'] | ResolversParentTypes['HttpResponseBodyChunk'] | ResolversParentTypes['NetworkEventTime'] | ResolversParentTypes['NetworkEventTiming'] | ResolversParentTypes['TestExecution'];
+  Event: ResolversParentTypes['ConsoleLogEvent'] | ResolversParentTypes['HttpNetworkEvent'] | ResolversParentTypes['HttpResponseBodyChunk'] | ResolversParentTypes['NetworkEventTiming'] | ResolversParentTypes['TestExecution'];
   HttpBody: ResolversParentTypes['HttpRequestBody'] | ResolversParentTypes['HttpResponseBody'];
   HttpHeaders: HttpHeaders;
   HttpNetworkEvent: HttpNetworkEventModel;
@@ -426,10 +418,9 @@ export type ResolversParentTypes = {
   ID: Scalars['ID'];
   InstantaneousEvent: ResolversParentTypes['ConsoleLogEvent'] | ResolversParentTypes['HttpResponseBodyChunk'];
   Int: Scalars['Int'];
-  IntervalEvent: ResolversParentTypes['NetworkEventTime'] | ResolversParentTypes['NetworkEventTiming'] | ResolversParentTypes['TestExecution'];
+  IntervalEvent: ResolversParentTypes['HttpNetworkEvent'] | ResolversParentTypes['NetworkEventTiming'] | ResolversParentTypes['TestExecution'];
   KeyValuePair: KeyValuePair;
   NetworkEvent: ResolversParentTypes['HttpNetworkEvent'];
-  NetworkEventTime: NetworkEventTime;
   NetworkEventTiming: NetworkEventTiming;
   Node: ResolversParentTypes['TestExecution'];
   PageInfo: PageInfo;
@@ -474,7 +465,7 @@ export interface DateTimeScalarConfig extends GraphQLScalarTypeConfig<ResolversT
 }
 
 export type EventResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Event'] = ResolversParentTypes['Event']> = {
-  __resolveType: TypeResolveFn<'ConsoleLogEvent' | 'HttpNetworkEvent' | 'HttpResponseBodyChunk' | 'NetworkEventTime' | 'NetworkEventTiming' | 'TestExecution', ParentType, ContextType>;
+  __resolveType: TypeResolveFn<'ConsoleLogEvent' | 'HttpNetworkEvent' | 'HttpResponseBodyChunk' | 'NetworkEventTiming' | 'TestExecution', ParentType, ContextType>;
 };
 
 export type HttpBodyResolvers<ContextType = Context, ParentType extends ResolversParentTypes['HttpBody'] = ResolversParentTypes['HttpBody']> = {
@@ -494,15 +485,14 @@ export type HttpNetworkEventResolvers<ContextType = Context, ParentType extends 
   request: Resolver<ResolversTypes['HttpNetworkRequest'], ParentType, ContextType>;
   resourceType: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   response: Resolver<ResolversTypes['HttpNetworkResponse'], ParentType, ContextType>;
-  startedDateTime: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   testExecution: Resolver<ResolversTypes['TestExecution'], ParentType, ContextType>;
-  time: Resolver<ResolversTypes['NetworkEventTime'], ParentType, ContextType>;
   timings: Resolver<ResolversTypes['HttpNetworkTimings'], ParentType, ContextType>;
+  until: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type HttpNetworkEventInitiatorResolvers<ContextType = Context, ParentType extends ResolversParentTypes['HttpNetworkEventInitiator'] = ResolversParentTypes['HttpNetworkEventInitiator']> = {
-  lineNo: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+  lineNumber: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   origin: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
@@ -575,7 +565,7 @@ export type InstantaneousEventResolvers<ContextType = Context, ParentType extend
 };
 
 export type IntervalEventResolvers<ContextType = Context, ParentType extends ResolversParentTypes['IntervalEvent'] = ResolversParentTypes['IntervalEvent']> = {
-  __resolveType: TypeResolveFn<'NetworkEventTime' | 'NetworkEventTiming' | 'TestExecution', ParentType, ContextType>;
+  __resolveType: TypeResolveFn<'HttpNetworkEvent' | 'NetworkEventTiming' | 'TestExecution', ParentType, ContextType>;
 };
 
 export type KeyValuePairResolvers<ContextType = Context, ParentType extends ResolversParentTypes['KeyValuePair'] = ResolversParentTypes['KeyValuePair']> = {
@@ -586,12 +576,6 @@ export type KeyValuePairResolvers<ContextType = Context, ParentType extends Reso
 
 export type NetworkEventResolvers<ContextType = Context, ParentType extends ResolversParentTypes['NetworkEvent'] = ResolversParentTypes['NetworkEvent']> = {
   __resolveType: TypeResolveFn<'HttpNetworkEvent', ParentType, ContextType>;
-};
-
-export type NetworkEventTimeResolvers<ContextType = Context, ParentType extends ResolversParentTypes['NetworkEventTime'] = ResolversParentTypes['NetworkEventTime']> = {
-  at: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
-  until: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type NetworkEventTimingResolvers<ContextType = Context, ParentType extends ResolversParentTypes['NetworkEventTiming'] = ResolversParentTypes['NetworkEventTiming']> = {
@@ -665,7 +649,6 @@ export type Resolvers<ContextType = Context> = {
   IntervalEvent: IntervalEventResolvers<ContextType>;
   KeyValuePair: KeyValuePairResolvers<ContextType>;
   NetworkEvent: NetworkEventResolvers<ContextType>;
-  NetworkEventTime: NetworkEventTimeResolvers<ContextType>;
   NetworkEventTiming: NetworkEventTimingResolvers<ContextType>;
   Node: NodeResolvers<ContextType>;
   PageInfo: PageInfoResolvers<ContextType>;

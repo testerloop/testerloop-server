@@ -1,10 +1,5 @@
-interface NetworkEvent {
+interface NetworkEvent implements Event & IntervalEvent {
   id: ID!
-  startedDateTime: String!
-  time: NetworkEventTime!
-}
-
-type NetworkEventTime implements Event & IntervalEvent {
   at: DateTime!
   until: DateTime!
 }

@@ -29,9 +29,7 @@ export class TestExecution {
             ...Object.values(consoleLogData),
             ...Object.values(httpNetworkEvent),
         ]).sort((a, b) => {
-            const timeA = a.__typename === 'ConsoleLogEvent' ? a.at : a.time.at;
-            const timeB = b.__typename === 'ConsoleLogEvent' ? b.at : b.time.at;
-            return timeA.getTime() - timeB.getTime();
+            return a.at.getTime() - b.at.getTime();
         }).filter((evt) => {
             return filters?.type?.some((type) => {
                 switch (type) {

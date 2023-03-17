@@ -10,6 +10,10 @@ const resolvers: HttpNetworkEventResolvers = {
         const event = assertNonNull(await dataSources.networkEvent.getById(id));
         return event.at;
     },
+    async until({ id }, _args, { dataSources }) {
+        const event = assertNonNull(await dataSources.networkEvent.getById(id));
+        return event.until;
+    },
     async initiator({ id }, _args, { dataSources }) {
         const event = assertNonNull(await dataSources.networkEvent.getById(id));
         return event.initiator;
@@ -25,14 +29,6 @@ const resolvers: HttpNetworkEventResolvers = {
     async response({ id }, _args, { dataSources }) {
         const event = assertNonNull(await dataSources.networkEvent.getById(id));
         return event.response;
-    },
-    async startedDateTime({ id }, _args, { dataSources }) {
-        const event = assertNonNull(await dataSources.networkEvent.getById(id));
-        return event.startedDateTime;
-    },
-    async time({ id }, _args, { dataSources }) {
-        const event = assertNonNull(await dataSources.networkEvent.getById(id));
-        return event.time;
     },
     async timings({ id }, _args, { dataSources }) {
         const event = assertNonNull(await dataSources.networkEvent.getById(id));
