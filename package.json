@@ -17,6 +17,9 @@
     "graphql-date-scalars": "^0.2.0",
     "zod": "^3.20.2"
   },
+  "overrides": {
+    "graphql": "^17.0.0-alpha.2"
+  },
   "scripts": {
     "build": "tsc --project tsconfig.json",
     "dev": "concurrently -k \"nodemon src/dev.ts\" \"graphql-codegen --watch\"",
