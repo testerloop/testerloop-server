@@ -433,6 +433,21 @@ export type ResolversParentTypes = {
   TestExecutionEventFilterInput: TestExecutionEventFilterInput;
 };
 
+export type DeferDirectiveArgs = {
+  if: Scalars['Boolean'];
+  label?: Maybe<Scalars['String']>;
+};
+
+export type DeferDirectiveResolver<Result, Parent, ContextType = Context, Args = DeferDirectiveArgs> = DirectiveResolverFn<Result, Parent, ContextType, Args>;
+
+export type StreamDirectiveArgs = {
+  if: Scalars['Boolean'];
+  initialCount?: Maybe<Scalars['Int']>;
+  label?: Maybe<Scalars['String']>;
+};
+
+export type StreamDirectiveResolver<Result, Parent, ContextType = Context, Args = StreamDirectiveArgs> = DirectiveResolverFn<Result, Parent, ContextType, Args>;
+
 export type ConsoleEventResolvers<ContextType = Context, ParentType extends ResolversParentTypes['ConsoleEvent'] = ResolversParentTypes['ConsoleEvent']> = {
   __resolveType: TypeResolveFn<'ConsoleLogEvent', ParentType, ContextType>;
 };
@@ -659,3 +674,7 @@ export type Resolvers<ContextType = Context> = {
   TestExecutionEventEdge: TestExecutionEventEdgeResolvers<ContextType>;
 };
 
+export type DirectiveResolvers<ContextType = Context> = {
+  defer: DeferDirectiveResolver<any, any, ContextType>;
+  stream: StreamDirectiveResolver<any, any, ContextType>;
+};
