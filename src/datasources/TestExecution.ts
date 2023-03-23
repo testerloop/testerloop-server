@@ -1,8 +1,7 @@
-import { ConsoleLogLevel, TestExecutionEventFilterInput, TestExecutionEventType } from '../resolvers/types/generated.js';
+import { TestExecutionEventFilterInput, TestExecutionEventType } from '../resolvers/types/generated.js';
 import { TestExecutionEvent } from '../resolvers/types/mappers';
-import S3Service from '../S3Service.js';
 
-import { data as consoleLogData } from './ConsoleEvent.js';
+import { getLogs } from './ConsoleEvent.js';
 
 export class TestExecution {
     getById(id: string) {
@@ -26,12 +25,10 @@ export class TestExecution {
         const filters = args?.filter;
         const consoleFilters = filters?.consoleFilter;
 
-        const s3Data = await S3Service.getObject('otf-lambda-results', '3fb0bcc7-1d96-463f-85bc-bcd0f29a5311/14a311b7-ca1f-4356-945d-9e8ce0683359/console/console-logs.txt')
-
-        console.log(s3Data);
+        const logs = await getLogs();
 
         let data: TestExecutionEvent[] = [
-            ...Object.values(consoleLogData),
+            ...logs,
         ]
             .filter(({ __typename, logLevel, message }) =>
                 filters?.type?.some((type) => {

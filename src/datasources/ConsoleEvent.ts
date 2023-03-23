@@ -1,4 +1,6 @@
 import { ConsoleLogLevel } from '../resolvers/types/generated.js';
+import S3Service from '../S3Service.js';
+import mapLogs from '../util/mapLogs.js';
 
 export const data: {
     [id: string]: {
@@ -172,8 +174,20 @@ export const data: {
     },
 }
 
+export const getLogs = async () => {
+    const bucketName = 'otf-lambda-results';
+    const runId = 'd7a674e5-9726-4c62-924b-0bb846e9f213';
+    const requestId = '00343af4-acf3-473b-9975-0c2bd26e47o1';
+
+    const logs = await S3Service.getObject(bucketName, `${runId}/${requestId}/console/console-logs.txt`)
+    
+    const mappedLogs = mapLogs(logs);
+
+    return mappedLogs;
+}
 export class ConsoleEvent {
-    getById(id: string) {
-        return data[id] ?? null;
+    async getById(id: string) {
+        const logs = await getLogs();
+        return logs.find((log) => log.id === id) ?? null;
     }
 }
