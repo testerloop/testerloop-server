@@ -1,0 +1,1 @@
+This folder is just for putting some raw data until we got proper backend infrastructure.

@@ -1,0 +1,25 @@
+interface NetworkEvent implements Event & IntervalEvent {
+  id: ID!
+  at: DateTime!
+  until: DateTime!
+}
+
+type NetworkEventTiming implements Event & IntervalEvent {
+  at: DateTime!
+  until: DateTime!
+}
+
+type KeyValuePair {
+  key: String!
+  value: String!
+}
+
+type Cookie {
+  name: String!
+  value: String!
+  path: String
+  domain: String
+  expires: String
+  httpOnly: Boolean!
+  secure: Boolean!
+}
