@@ -1,13 +1,8 @@
 import { TestExecutionEventFilterInput, TestExecutionEventType } from '../resolvers/types/generated.js';
-<<<<<<< HEAD
-import { TestExecutionEvent } from '../resolvers/types/mappers';
 
 import { getLogs } from './ConsoleEvent.js';
-=======
 
-import { data as consoleLogData } from './ConsoleEvent.js';
 import { data as httpNetworkEvent } from './NetworkEvent.js';
->>>>>>> e870d0c22e049971e7e9132e5f36770d1d9ac63a
 
 export class TestExecution {
     getById(id: string) {
