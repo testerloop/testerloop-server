@@ -12,9 +12,14 @@ const resolvers: QueryResolvers = {
         if (!testExecution) {
             return null;
         }
+        const [runId, _] = id.split('/');
         return {
             __typename: 'TestExecution',
             id: testExecution.id,
+            testRun: {
+                __typename: 'TestRun',
+                id: runId
+            }
         };
     },
     async node(root, { id }, context, info) {

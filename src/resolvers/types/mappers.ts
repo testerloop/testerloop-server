@@ -12,9 +12,14 @@ export type TestExecutionEvent =
     | ConsoleLogEventModel
     | HttpNetworkEventModel;
 
+export interface TestRunModel {
+    __typename: 'TestRun',
+    id: string,
+}
 export interface TestExecutionModel {
     __typename: 'TestExecution',
     id: string,
+    testRun: TestRunModel,
 }
 
 export interface TestExecutionEventEdgeModel {
