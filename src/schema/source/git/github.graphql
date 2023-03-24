@@ -1,9 +1,12 @@
 type GitHubOrganization {
     name: String!
+    url: URL!
 }
 
 type GitHubUser {
     username: String!
+    avatar: URL!
+    url: URL!
 }
 
 union GitHubRepositoryOwner =
@@ -14,11 +17,13 @@ type GitHubRepository implements SourceCodeManagementRepository & GitRepository 
     _unused: Boolean! # Remove when this type gets more fields
     owner: GitHubRepositoryOwner!
     name: String!
+    url: URL!
 }
 
 type GitHubBranch implements GitBranch {
     repository: GitRepository!
     name: String!
+    url: URL!
 }
 
 type GitHubActor implements GitActor {
@@ -30,7 +35,8 @@ type GitHubActor implements GitActor {
 type GitHubRevision implements SourceCodeManagementRevision & GitRevision {
     repository: GitRepository!
     branch: GitHubBranch
-    commitId: String!
+    commitId(type: GitCommitIdType! = LONG): String!
     committer: GitHubActor!
     author: GitHubActor!
+    url: URL!
 }

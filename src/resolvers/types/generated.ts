@@ -25,6 +25,19 @@ export type Scalars = {
   Cursor: string;
   /** Represents a DateTime in ISO8601 format. */
   DateTime: Date;
+  /** Represents a valid URL. */
+  URL: string;
+};
+
+export type BrowserVersion = ChromiumVersion;
+
+/** See https://www.chromium.org/developers/version-numbers/ */
+export type ChromiumVersion = {
+  readonly __typename: 'ChromiumVersion';
+  readonly build: Scalars['Int'];
+  readonly major: Scalars['Int'];
+  readonly minor: Scalars['Int'];
+  readonly patch: Scalars['Int'];
 };
 
 export type ConsoleEvent = {
@@ -83,6 +96,11 @@ export type GitBranch = {
   readonly repository: GitRepository;
 };
 
+export enum GitCommitIdType {
+  Long = 'LONG',
+  Short = 'SHORT'
+}
+
 export type GitHubActor = GitActor & {
   readonly __typename: 'GitHubActor';
   readonly email: Scalars['String'];
@@ -94,11 +112,13 @@ export type GitHubBranch = GitBranch & {
   readonly __typename: 'GitHubBranch';
   readonly name: Scalars['String'];
   readonly repository: GitRepository;
+  readonly url: Scalars['URL'];
 };
 
 export type GitHubOrganization = {
   readonly __typename: 'GitHubOrganization';
   readonly name: Scalars['String'];
+  readonly url: Scalars['URL'];
 };
 
 export type GitHubRepository = GitRepository & SourceCodeManagementRepository & {
@@ -106,6 +126,7 @@ export type GitHubRepository = GitRepository & SourceCodeManagementRepository & 
   readonly _unused: Scalars['Boolean'];
   readonly name: Scalars['String'];
   readonly owner: GitHubRepositoryOwner;
+  readonly url: Scalars['URL'];
 };
 
 export type GitHubRepositoryOwner = GitHubOrganization | GitHubUser;
@@ -117,10 +138,18 @@ export type GitHubRevision = GitRevision & SourceCodeManagementRevision & {
   readonly commitId: Scalars['String'];
   readonly committer: GitHubActor;
   readonly repository: GitRepository;
+  readonly url: Scalars['URL'];
+};
+
+
+export type GitHubRevisionCommitIdArgs = {
+  type: GitCommitIdType;
 };
 
 export type GitHubUser = {
   readonly __typename: 'GitHubUser';
+  readonly avatar: Scalars['URL'];
+  readonly url: Scalars['URL'];
   readonly username: Scalars['String'];
 };
 
@@ -134,6 +163,11 @@ export type GitRevision = {
   readonly commitId: Scalars['String'];
   readonly committer: GitActor;
   readonly repository: GitRepository;
+};
+
+
+export type GitRevisionCommitIdArgs = {
+  type: GitCommitIdType;
 };
 
 export type HttpBody = {
@@ -310,6 +344,7 @@ export type SourceCodeManagementRevision = {
 export type TestExecution = Event & IntervalEvent & Node & {
   readonly __typename: 'TestExecution';
   readonly at: Scalars['DateTime'];
+  readonly environment: TestExecutionEnvironment;
   readonly events: TestExecutionEventConnection;
   readonly id: Scalars['ID'];
   readonly testRun: TestRun;
@@ -321,6 +356,11 @@ export type TestExecutionEventsArgs = {
   after?: InputMaybe<Scalars['Cursor']>;
   filter?: InputMaybe<TestExecutionEventFilterInput>;
   first?: InputMaybe<Scalars['Int']>;
+};
+
+export type TestExecutionEnvironment = {
+  readonly __typename: 'TestExecutionEnvironment';
+  readonly browser: BrowserVersion;
 };
 
 export type TestExecutionEvent = {
@@ -367,7 +407,8 @@ export type TestRun = Event & IntervalEvent & Node & {
   readonly __typename: 'TestRun';
   readonly at: Scalars['DateTime'];
   readonly id: Scalars['ID'];
-  readonly testCodeRevision: SourceCodeManagementRevision;
+  /** This field may be null if the data was not provided for collection. */
+  readonly testCodeRevision: Maybe<SourceCodeManagementRevision>;
   readonly until: Scalars['DateTime'];
 };
 
@@ -437,6 +478,8 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = {
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
+  BrowserVersion: ResolversTypes['ChromiumVersion'];
+  ChromiumVersion: ResolverTypeWrapper<ChromiumVersion>;
   ConsoleEvent: ResolversTypes['ConsoleLogEvent'];
   ConsoleEventFilterInput: ConsoleEventFilterInput;
   ConsoleLogEvent: ResolverTypeWrapper<ConsoleLogEventModel>;
@@ -447,6 +490,7 @@ export type ResolversTypes = {
   Event: ResolversTypes['ConsoleLogEvent'] | ResolversTypes['HttpNetworkEvent'] | ResolversTypes['HttpResponseBodyChunk'] | ResolversTypes['NetworkEventTiming'] | ResolversTypes['TestExecution'] | ResolversTypes['TestRun'];
   GitActor: ResolversTypes['GitHubActor'];
   GitBranch: ResolversTypes['GitHubBranch'];
+  GitCommitIdType: GitCommitIdType;
   GitHubActor: ResolverTypeWrapper<GitHubActor>;
   GitHubBranch: ResolverTypeWrapper<GitHubBranch>;
   GitHubOrganization: ResolverTypeWrapper<GitHubOrganization>;
@@ -481,17 +525,21 @@ export type ResolversTypes = {
   SourceCodeManagementRevision: ResolversTypes['GitHubRevision'];
   String: ResolverTypeWrapper<Scalars['String']>;
   TestExecution: ResolverTypeWrapper<TestExecutionModel>;
+  TestExecutionEnvironment: ResolverTypeWrapper<Omit<TestExecutionEnvironment, 'browser'> & { browser: ResolversTypes['BrowserVersion'] }>;
   TestExecutionEvent: ResolversTypes['ConsoleLogEvent'] | ResolversTypes['HttpNetworkEvent'];
   TestExecutionEventConnection: ResolverTypeWrapper<TestExecutionEventConnectionModel>;
   TestExecutionEventEdge: ResolverTypeWrapper<TestExecutionEventEdgeModel>;
   TestExecutionEventFilterInput: TestExecutionEventFilterInput;
   TestExecutionEventType: TestExecutionEventType;
   TestRun: ResolverTypeWrapper<TestRun>;
+  URL: ResolverTypeWrapper<Scalars['URL']>;
 };
 
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = {
   Boolean: Scalars['Boolean'];
+  BrowserVersion: ResolversParentTypes['ChromiumVersion'];
+  ChromiumVersion: ChromiumVersion;
   ConsoleEvent: ResolversParentTypes['ConsoleLogEvent'];
   ConsoleEventFilterInput: ConsoleEventFilterInput;
   ConsoleLogEvent: ConsoleLogEventModel;
@@ -535,11 +583,13 @@ export type ResolversParentTypes = {
   SourceCodeManagementRevision: ResolversParentTypes['GitHubRevision'];
   String: Scalars['String'];
   TestExecution: TestExecutionModel;
+  TestExecutionEnvironment: Omit<TestExecutionEnvironment, 'browser'> & { browser: ResolversParentTypes['BrowserVersion'] };
   TestExecutionEvent: ResolversParentTypes['ConsoleLogEvent'] | ResolversParentTypes['HttpNetworkEvent'];
   TestExecutionEventConnection: TestExecutionEventConnectionModel;
   TestExecutionEventEdge: TestExecutionEventEdgeModel;
   TestExecutionEventFilterInput: TestExecutionEventFilterInput;
   TestRun: TestRun;
+  URL: Scalars['URL'];
 };
 
 export type DeferDirectiveArgs = {
@@ -556,6 +606,18 @@ export type StreamDirectiveArgs = {
 };
 
 export type StreamDirectiveResolver<Result, Parent, ContextType = Context, Args = StreamDirectiveArgs> = DirectiveResolverFn<Result, Parent, ContextType, Args>;
+
+export type BrowserVersionResolvers<ContextType = Context, ParentType extends ResolversParentTypes['BrowserVersion'] = ResolversParentTypes['BrowserVersion']> = {
+  __resolveType: TypeResolveFn<'ChromiumVersion', ParentType, ContextType>;
+};
+
+export type ChromiumVersionResolvers<ContextType = Context, ParentType extends ResolversParentTypes['ChromiumVersion'] = ResolversParentTypes['ChromiumVersion']> = {
+  build: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  major: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  minor: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  patch: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
 
 export type ConsoleEventResolvers<ContextType = Context, ParentType extends ResolversParentTypes['ConsoleEvent'] = ResolversParentTypes['ConsoleEvent']> = {
   __resolveType: TypeResolveFn<'ConsoleLogEvent', ParentType, ContextType>;
@@ -610,11 +672,13 @@ export type GitHubActorResolvers<ContextType = Context, ParentType extends Resol
 export type GitHubBranchResolvers<ContextType = Context, ParentType extends ResolversParentTypes['GitHubBranch'] = ResolversParentTypes['GitHubBranch']> = {
   name: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   repository: Resolver<ResolversTypes['GitRepository'], ParentType, ContextType>;
+  url: Resolver<ResolversTypes['URL'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type GitHubOrganizationResolvers<ContextType = Context, ParentType extends ResolversParentTypes['GitHubOrganization'] = ResolversParentTypes['GitHubOrganization']> = {
   name: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  url: Resolver<ResolversTypes['URL'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -622,6 +686,7 @@ export type GitHubRepositoryResolvers<ContextType = Context, ParentType extends 
   _unused: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   name: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   owner: Resolver<ResolversTypes['GitHubRepositoryOwner'], ParentType, ContextType>;
+  url: Resolver<ResolversTypes['URL'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -632,13 +697,16 @@ export type GitHubRepositoryOwnerResolvers<ContextType = Context, ParentType ext
 export type GitHubRevisionResolvers<ContextType = Context, ParentType extends ResolversParentTypes['GitHubRevision'] = ResolversParentTypes['GitHubRevision']> = {
   author: Resolver<ResolversTypes['GitHubActor'], ParentType, ContextType>;
   branch: Resolver<Maybe<ResolversTypes['GitHubBranch']>, ParentType, ContextType>;
-  commitId: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  commitId: Resolver<ResolversTypes['String'], ParentType, ContextType, RequireFields<GitHubRevisionCommitIdArgs, 'type'>>;
   committer: Resolver<ResolversTypes['GitHubActor'], ParentType, ContextType>;
   repository: Resolver<ResolversTypes['GitRepository'], ParentType, ContextType>;
+  url: Resolver<ResolversTypes['URL'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type GitHubUserResolvers<ContextType = Context, ParentType extends ResolversParentTypes['GitHubUser'] = ResolversParentTypes['GitHubUser']> = {
+  avatar: Resolver<ResolversTypes['URL'], ParentType, ContextType>;
+  url: Resolver<ResolversTypes['URL'], ParentType, ContextType>;
   username: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
@@ -795,10 +863,16 @@ export type SourceCodeManagementRevisionResolvers<ContextType = Context, ParentT
 
 export type TestExecutionResolvers<ContextType = Context, ParentType extends ResolversParentTypes['TestExecution'] = ResolversParentTypes['TestExecution']> = {
   at: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
+  environment: Resolver<ResolversTypes['TestExecutionEnvironment'], ParentType, ContextType>;
   events: Resolver<ResolversTypes['TestExecutionEventConnection'], ParentType, ContextType, Partial<TestExecutionEventsArgs>>;
   id: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   testRun: Resolver<ResolversTypes['TestRun'], ParentType, ContextType>;
   until: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type TestExecutionEnvironmentResolvers<ContextType = Context, ParentType extends ResolversParentTypes['TestExecutionEnvironment'] = ResolversParentTypes['TestExecutionEnvironment']> = {
+  browser: Resolver<ResolversTypes['BrowserVersion'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -822,12 +896,18 @@ export type TestExecutionEventEdgeResolvers<ContextType = Context, ParentType ex
 export type TestRunResolvers<ContextType = Context, ParentType extends ResolversParentTypes['TestRun'] = ResolversParentTypes['TestRun']> = {
   at: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   id: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-  testCodeRevision: Resolver<ResolversTypes['SourceCodeManagementRevision'], ParentType, ContextType>;
+  testCodeRevision: Resolver<Maybe<ResolversTypes['SourceCodeManagementRevision']>, ParentType, ContextType>;
   until: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export interface UrlScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['URL'], any> {
+  name: 'URL';
+}
+
 export type Resolvers<ContextType = Context> = {
+  BrowserVersion: BrowserVersionResolvers<ContextType>;
+  ChromiumVersion: ChromiumVersionResolvers<ContextType>;
   ConsoleEvent: ConsoleEventResolvers<ContextType>;
   ConsoleLogEvent: ConsoleLogEventResolvers<ContextType>;
   Cookie: CookieResolvers<ContextType>;
@@ -867,10 +947,12 @@ export type Resolvers<ContextType = Context> = {
   SourceCodeManagementRepository: SourceCodeManagementRepositoryResolvers<ContextType>;
   SourceCodeManagementRevision: SourceCodeManagementRevisionResolvers<ContextType>;
   TestExecution: TestExecutionResolvers<ContextType>;
+  TestExecutionEnvironment: TestExecutionEnvironmentResolvers<ContextType>;
   TestExecutionEvent: TestExecutionEventResolvers<ContextType>;
   TestExecutionEventConnection: TestExecutionEventConnectionResolvers<ContextType>;
   TestExecutionEventEdge: TestExecutionEventEdgeResolvers<ContextType>;
   TestRun: TestRunResolvers<ContextType>;
+  URL: GraphQLScalarType;
 };
 
 export type DirectiveResolvers<ContextType = Context> = {

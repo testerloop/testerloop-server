@@ -12,10 +12,15 @@ interface GitActor {
     email: String!
 }
 
+enum GitCommitIdType {
+    LONG
+    SHORT
+}
+
 interface GitRevision implements SourceCodeManagementRevision {
     repository: GitRepository!
     branch: GitBranch
-    commitId: String!
+    commitId(type: GitCommitIdType! = LONG): String!
     committer: GitActor!
     author: GitActor!
 }
