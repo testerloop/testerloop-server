@@ -4,11 +4,14 @@ import { getLogs } from './ConsoleEvent.js';
 
 import { data as httpNetworkEvent } from './NetworkEvent.js';
 
+const runId = 'd7a674e5-9726-4c62-924b-0bb846e9f213';
+const requestId = '00343af4-acf3-473b-9975-0c2bd26e47o1';
+const testExecutionId = `${runId}/${requestId}`;
 export class TestExecution {
     getById(id: string) {
-        if (id === '00343af4-acf3-473b-9975-0c2bd26e47o1') {
+        if (id === testExecutionId) {
             return {
-                id: '00343af4-acf3-473b-9975-0c2bd26e47o1',
+                id: testExecutionId,
                 at: new Date('2023-02-07T15:22:40.909Z'),
                 until: new Date('2023-02-07T15:22:54.348Z'),
             };
@@ -19,15 +22,14 @@ export class TestExecution {
 
     async getEvents(id: string, args: {
         first?: number | null, after?: string | null, filter?: TestExecutionEventFilterInput | null;
-    }) {
-        const requestId = '00343af4-acf3-473b-9975-0c2bd26e47o1';
-        if (id !== requestId)
+    }) {;
+        if (id !== testExecutionId)
             throw new Error('Not implemented');
 
         const filters = args?.filter;
         const consoleFilters = filters?.consoleFilter;
 
-        const logs = await getLogs(requestId);
+        const logs = await getLogs(id);
 
         let data = ([
             ...Object.values(logs),

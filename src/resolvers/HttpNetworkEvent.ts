@@ -36,9 +36,14 @@ const resolvers: HttpNetworkEventResolvers = {
     },
     async testExecution({ id }, _args, { dataSources }) {
         const event = assertNonNull(await dataSources.consoleEvent.getById(id));
+        const [runId, _] = id.split('/');
         return {
             __typename: 'TestExecution',
             id: event.testExecutionId,
+            testRun: {
+                __typename: 'TestRun',
+                id: runId
+            }
         };
     },
 }

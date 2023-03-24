@@ -4,7 +4,7 @@ const TIMESTAMP_START_IDX = 1;
 const TIMESTAMP_LENGTH = 13;
 const LEVEL_START_IDX = TIMESTAMP_LENGTH + 2 + ' console.'.length;
 
-const mapLogs = (logs: string[], runId: string, requestId: string) => {
+const mapLogs = (logs: string[], testExecutionId: string) => {
     const mappedLogs: Record<string, {
         __typename: 'ConsoleLogEvent',
         id: string,
@@ -36,7 +36,7 @@ const mapLogs = (logs: string[], runId: string, requestId: string) => {
                 mappedLevel = ConsoleLogLevel.Info;
                 break;
         }
-        const id = `${runId}:${requestId}:${i / 3 + 1}`;
+        const id = `${testExecutionId}/${i / 3 + 1}`;
     
         mappedLogs[id] = { 
             __typename: 'ConsoleLogEvent' as 'ConsoleLogEvent',
@@ -45,7 +45,7 @@ const mapLogs = (logs: string[], runId: string, requestId: string) => {
             at: new Date(parseInt(timeStamp)),
             message,
             stacktrace,
-            testExecutionId: requestId
+            testExecutionId
         }
     }
 

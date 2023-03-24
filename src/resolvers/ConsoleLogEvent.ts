@@ -15,10 +15,16 @@ const resolvers: ConsoleLogEventResolvers = {
         return event.message;
     },
     async testExecution({ id }, _args, { dataSources }) {
+        console.log('this ocnsole id', id);
         const event = assertNonNull(await dataSources.consoleEvent.getById(id));
+        const [runId, _] = id.split('/');
         return {
             __typename: 'TestExecution',
             id: event.testExecutionId,
+            testRun: {
+                __typename: 'TestRun',
+                id: runId
+            }
         };
     },
 }
