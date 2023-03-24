@@ -6,9 +6,9 @@ import { data as httpNetworkEvent } from './NetworkEvent.js';
 
 export class TestExecution {
     getById(id: string) {
-        if (id === '1234') {
+        if (id === '00343af4-acf3-473b-9975-0c2bd26e47o1') {
             return {
-                id: '1234',
+                id: '00343af4-acf3-473b-9975-0c2bd26e47o1',
                 at: new Date('2023-02-07T15:22:40.909Z'),
                 until: new Date('2023-02-07T15:22:54.348Z'),
             };
@@ -20,16 +20,17 @@ export class TestExecution {
     async getEvents(id: string, args: {
         first?: number | null, after?: string | null, filter?: TestExecutionEventFilterInput | null;
     }) {
-        if (id !== '1234')
+        const requestId = '00343af4-acf3-473b-9975-0c2bd26e47o1';
+        if (id !== requestId)
             throw new Error('Not implemented');
 
         const filters = args?.filter;
         const consoleFilters = filters?.consoleFilter;
 
-        const logs = await getLogs();
+        const logs = await getLogs(requestId);
 
         let data = ([
-            ...logs,
+            ...Object.values(logs),
             ...Object.values(httpNetworkEvent),
         ]).sort((a, b) => {
             return a.at.getTime() - b.at.getTime();

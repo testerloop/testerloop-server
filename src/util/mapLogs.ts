@@ -1,11 +1,19 @@
-import { ConsoleLogLevel } from "../resolvers/types/generated.js";
+import { ConsoleEvent, ConsoleLogLevel } from "../resolvers/types/generated.js";
 
 const TIMESTAMP_START_IDX = 1;
 const TIMESTAMP_LENGTH = 13;
 const LEVEL_START_IDX = TIMESTAMP_LENGTH + 2 + ' console.'.length;
 
-const mapLogs = (logs: string[]) => {
-    const mappedLogs = [];
+const mapLogs = (logs: string[], runId: string, requestId: string) => {
+    const mappedLogs: Record<string, {
+        __typename: 'ConsoleLogEvent',
+        id: string,
+        at: Date,
+        message: string,
+        logLevel: ConsoleLogLevel,
+        testExecutionId: string,
+        stacktrace: Record<string,any>[]
+    }> = {};
 
     for (let i = 0; i < logs.length - 1; i += 3) {
         const timeStamp = logs[i].substring(TIMESTAMP_START_IDX, TIMESTAMP_LENGTH + 1);
@@ -27,17 +35,18 @@ const mapLogs = (logs: string[]) => {
             case 'info':
                 mappedLevel = ConsoleLogLevel.Info;
                 break;
-        }   
+        }
+        const id = `${runId}:${requestId}:${i / 3 + 1}`;
     
-        mappedLogs.push({ 
+        mappedLogs[id] = { 
             __typename: 'ConsoleLogEvent' as 'ConsoleLogEvent',
-            id: `${i / 3 + 1}`,
+            id,
             logLevel: mappedLevel as ConsoleLogLevel,
             at: new Date(parseInt(timeStamp)),
             message,
             stacktrace,
-            testExecutionId: '1234'
-        })
+            testExecutionId: requestId
+        }
     }
 
     return mappedLogs;

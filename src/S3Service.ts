@@ -16,15 +16,11 @@ class S3Service {
   }
 
   async getObject(bucketName: string, key: string) {
-    try {
       const params = { Bucket: bucketName, Key: key };
       const response = await this.s3.send(new GetObjectCommand(params));
       const dataString = await response?.Body?.transformToString();
       const data = dataString ? JSON.parse(dataString) : undefined;
       return data;
-    } catch (error) {
-      console.log(error);
-    }
   }
 }
 
