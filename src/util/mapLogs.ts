@@ -36,7 +36,7 @@ const mapLogs = (logs: string[], testExecutionId: string) => {
                 mappedLevel = ConsoleLogLevel.Info;
                 break;
         }
-        const id = `${testExecutionId}/${i / 3 + 1}`;
+        const id = `${testExecutionId}/console/${i / 3 + 1}`;
     
         mappedLogs[id] = { 
             __typename: 'ConsoleLogEvent' as 'ConsoleLogEvent',
