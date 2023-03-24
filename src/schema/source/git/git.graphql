@@ -1,0 +1,21 @@
+interface GitRepository implements SourceCodeManagementRepository {
+    _unused: Boolean! # Remove when this type gets more fields
+}
+
+interface GitBranch {
+    repository: GitRepository!
+    name: String!
+}
+
+interface GitActor {
+    name: String!
+    email: String!
+}
+
+interface GitRevision implements SourceCodeManagementRevision {
+    repository: GitRepository!
+    branch: GitBranch
+    commitId: String!
+    committer: GitActor!
+    author: GitActor!
+}

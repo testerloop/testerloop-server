@@ -1,0 +1,36 @@
+type GitHubOrganization {
+    name: String!
+}
+
+type GitHubUser {
+    username: String!
+}
+
+union GitHubRepositoryOwner =
+  | GitHubOrganization
+  | GitHubUser
+
+type GitHubRepository implements SourceCodeManagementRepository & GitRepository {
+    _unused: Boolean! # Remove when this type gets more fields
+    owner: GitHubRepositoryOwner!
+    name: String!
+}
+
+type GitHubBranch implements GitBranch {
+    repository: GitRepository!
+    name: String!
+}
+
+type GitHubActor implements GitActor {
+    name: String!
+    email: String!
+    user: GitHubUser
+}
+
+type GitHubRevision implements SourceCodeManagementRevision & GitRevision {
+    repository: GitRepository!
+    branch: GitHubBranch
+    commitId: String!
+    committer: GitHubActor!
+    author: GitHubActor!
+}

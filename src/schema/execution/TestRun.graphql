@@ -1,0 +1,10 @@
+type TestRun implements Node & Event & IntervalEvent {
+    id: ID!
+    at: DateTime!
+    until: DateTime!
+    """
+        This field may be null if the data was not provided for collection.
+    """
+    testCodeRevision: SourceCodeManagementRevision
+    # TODO: Implement a field for all TestExecutions.
+}
