@@ -27,8 +27,8 @@ input NetworkEventProgressWithTime {
 
 input NetworkEventFilterInput {
   urlSearch: String
-  progress: NetworkEventProgressWithTime
-  resourceType: HttpNetworkEventResourceType
+  progress: [NetworkEventProgressWithTime!]
+  resourceType: [HttpNetworkEventResourceType!]
 }
 
 extend type Query {

@@ -1,4 +1,4 @@
-import { NetworkEventProgress, TestExecutionEventFilterInput, TestExecutionEventType } from '../resolvers/types/generated.js';
+import { HttpNetworkEventResourceType, NetworkEventProgress, TestExecutionEventFilterInput, TestExecutionEventType } from '../resolvers/types/generated.js';
 
 import { getLogs } from './ConsoleEvent.js';
 
@@ -78,26 +78,27 @@ export class TestExecution {
                         if (
                             networkFilters?.progress
                         ) {
-                            const currentTime = networkFilters?.progress.currentTime;
-                            let progress;
-                            if(until <= currentTime){
-                                progress = NetworkEventProgress.Completed;
-                            } else if(at <= currentTime && currentTime < until){
-                                progress = NetworkEventProgress.InProgress
-                            } else if(currentTime < at){
-                                progress = NetworkEventProgress.NotStarted;
-                            }
-
-                            if(progress !== networkFilters?.progress.type){
-                                return false;
-                            }
-                           
-                            return true;
+                            return networkFilters?.progress.some(({currentTime, type}) => {
+                                let progress;
+                                if(until <= currentTime){
+                                    progress = NetworkEventProgress.Completed;
+                                } else if(at <= currentTime && currentTime < until){
+                                    progress = NetworkEventProgress.InProgress
+                                } else if(currentTime < at){
+                                    progress = NetworkEventProgress.NotStarted;
+                                }
+    
+                                if(progress !== type){
+                                    return false;
+                                }
+                               
+                                return true;
+                            })
                         }
 
                         if(
                             networkFilters?.resourceType && 
-                            networkFilters?.resourceType.toLowerCase() !== resourceType
+                            !networkFilters?.resourceType.includes(resourceType.toUpperCase() as HttpNetworkEventResourceType)
                         ) {
                             return false;
                         }

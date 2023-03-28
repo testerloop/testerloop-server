@@ -199,8 +199,8 @@ export type NetworkEvent = {
 };
 
 export type NetworkEventFilterInput = {
-  readonly progress?: InputMaybe<NetworkEventProgressWithTime>;
-  readonly resourceType?: InputMaybe<HttpNetworkEventResourceType>;
+  readonly progress?: InputMaybe<ReadonlyArray<NetworkEventProgressWithTime>>;
+  readonly resourceType?: InputMaybe<ReadonlyArray<HttpNetworkEventResourceType>>;
   readonly urlSearch?: InputMaybe<Scalars['String']>;
 };
 
