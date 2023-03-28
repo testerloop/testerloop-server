@@ -104,6 +104,16 @@ export type HttpNetworkEventInitiator = {
   readonly origin: Maybe<Scalars['String']>;
 };
 
+export enum HttpNetworkEventResourceType {
+  Document = 'DOCUMENT',
+  Font = 'FONT',
+  Image = 'IMAGE',
+  Other = 'OTHER',
+  Script = 'SCRIPT',
+  Stylesheet = 'STYLESHEET',
+  Xhr = 'XHR'
+}
+
 export type HttpNetworkRequest = {
   readonly __typename: 'HttpNetworkRequest';
   readonly body: Maybe<HttpRequestBody>;
@@ -186,6 +196,23 @@ export type NetworkEvent = {
   readonly at: Scalars['DateTime'];
   readonly id: Scalars['ID'];
   readonly until: Scalars['DateTime'];
+};
+
+export type NetworkEventFilterInput = {
+  readonly progress?: InputMaybe<NetworkEventProgressWithTime>;
+  readonly resourceType?: InputMaybe<HttpNetworkEventResourceType>;
+  readonly urlSearch?: InputMaybe<Scalars['String']>;
+};
+
+export enum NetworkEventProgress {
+  Completed = 'COMPLETED',
+  InProgress = 'IN_PROGRESS',
+  NotStarted = 'NOT_STARTED'
+}
+
+export type NetworkEventProgressWithTime = {
+  readonly currentTime: Scalars['DateTime'];
+  readonly type: NetworkEventProgress;
 };
 
 export type NetworkEventTiming = Event & IntervalEvent & {
@@ -282,6 +309,7 @@ export type TestExecutionEventEdge = {
 
 export type TestExecutionEventFilterInput = {
   readonly consoleFilter?: InputMaybe<ConsoleEventFilterInput>;
+  readonly networkFilter?: InputMaybe<NetworkEventFilterInput>;
   readonly type?: InputMaybe<ReadonlyArray<TestExecutionEventType>>;
 };
 
@@ -368,6 +396,7 @@ export type ResolversTypes = {
   HttpHeaders: ResolverTypeWrapper<HttpHeaders>;
   HttpNetworkEvent: ResolverTypeWrapper<HttpNetworkEventModel>;
   HttpNetworkEventInitiator: ResolverTypeWrapper<HttpNetworkEventInitiator>;
+  HttpNetworkEventResourceType: HttpNetworkEventResourceType;
   HttpNetworkRequest: ResolverTypeWrapper<HttpNetworkRequest>;
   HttpNetworkRequestUrl: ResolverTypeWrapper<HttpNetworkRequestUrl>;
   HttpNetworkResponse: ResolverTypeWrapper<HttpNetworkResponse>;
@@ -381,6 +410,9 @@ export type ResolversTypes = {
   IntervalEvent: ResolversTypes['HttpNetworkEvent'] | ResolversTypes['NetworkEventTiming'] | ResolversTypes['TestExecution'];
   KeyValuePair: ResolverTypeWrapper<KeyValuePair>;
   NetworkEvent: ResolversTypes['HttpNetworkEvent'];
+  NetworkEventFilterInput: NetworkEventFilterInput;
+  NetworkEventProgress: NetworkEventProgress;
+  NetworkEventProgressWithTime: NetworkEventProgressWithTime;
   NetworkEventTiming: ResolverTypeWrapper<NetworkEventTiming>;
   Node: ResolversTypes['TestExecution'];
   PageInfo: ResolverTypeWrapper<PageInfo>;
@@ -421,6 +453,8 @@ export type ResolversParentTypes = {
   IntervalEvent: ResolversParentTypes['HttpNetworkEvent'] | ResolversParentTypes['NetworkEventTiming'] | ResolversParentTypes['TestExecution'];
   KeyValuePair: KeyValuePair;
   NetworkEvent: ResolversParentTypes['HttpNetworkEvent'];
+  NetworkEventFilterInput: NetworkEventFilterInput;
+  NetworkEventProgressWithTime: NetworkEventProgressWithTime;
   NetworkEventTiming: NetworkEventTiming;
   Node: ResolversParentTypes['TestExecution'];
   PageInfo: PageInfo;

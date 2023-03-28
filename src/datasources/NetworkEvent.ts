@@ -163,6 +163,7 @@ export const data = Object.fromEntries(
 
 export class NetworkEvent {
     getById(id: string) {
+        console.log('data', data[id])
         return data[id] ?? null;
     }
 }

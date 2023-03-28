@@ -28,6 +28,7 @@ export class TestExecution {
 
         const filters = args?.filter;
         const consoleFilters = filters?.consoleFilter;
+        const networkFilters = filters?.networkFilter;
 
         const logs = await getLogs(id);
 
@@ -63,6 +64,45 @@ export class TestExecution {
                         return true;
                     }
                     case TestExecutionEventType.Network: {
+                        if(evt.__typename !== 'HttpNetworkEvent') return false;
+
+                        const { request, at, until, resourceType } = evt;
+
+                        if (
+                            networkFilters?.urlSearch &&
+                            !request.url.url.includes(networkFilters?.urlSearch)
+                        ) {
+                            return false;
+                        }
+
+                        if (
+                            networkFilters?.progress
+                        ) {
+                            const currentTime = networkFilters?.progress.currentTime;
+                            let progress;
+                            if(until <= currentTime){
+                                progress = 'COMPLETED';
+                            } else if(at <= currentTime && currentTime < until){
+                                progress = 'IN_PROGRESS'
+                            } else if(currentTime < at){
+                                progress = 'NOT_STARTED';
+                            }
+
+                            if(progress !== networkFilters?.progress.type){
+                                return false;
+                            }
+                           
+                            return true;
+                        }
+
+                        if(
+                            networkFilters?.resourceType && 
+                            networkFilters?.resourceType.toLowerCase() !== resourceType
+                        ) {
+                            return false;
+                        }
+
+
                         return evt.__typename === 'HttpNetworkEvent';
                     }
                     default: {

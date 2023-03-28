@@ -1,17 +1,18 @@
 type TestExecution implements Node & Event & IntervalEvent {
-    id: ID!
-    at: DateTime!
-    until: DateTime!
-    events(
-        first: Int
-        after: Cursor
-        filter: TestExecutionEventFilterInput
-    ): TestExecutionEventConnection!
+  id: ID!
+  at: DateTime!
+  until: DateTime!
+  events(
+    first: Int
+    after: Cursor
+    filter: TestExecutionEventFilterInput
+  ): TestExecutionEventConnection!
 }
 
 input TestExecutionEventFilterInput {
   type: [TestExecutionEventType!]
   consoleFilter: ConsoleEventFilterInput
+  networkFilter: NetworkEventFilterInput
 }
 
 input ConsoleEventFilterInput {
@@ -19,6 +20,17 @@ input ConsoleEventFilterInput {
   logSearch: String
 }
 
+input NetworkEventProgressWithTime {
+  type: NetworkEventProgress!
+  currentTime: DateTime!
+}
+
+input NetworkEventFilterInput {
+  urlSearch: String
+  progress: NetworkEventProgressWithTime
+  resourceType: HttpNetworkEventResourceType
+}
+
 extend type Query {
-    testExecution(id: ID!): TestExecution
+  testExecution(id: ID!): TestExecution
 }
