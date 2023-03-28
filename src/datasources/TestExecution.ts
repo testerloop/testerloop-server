@@ -1,4 +1,4 @@
-import { TestExecutionEventFilterInput, TestExecutionEventType } from '../resolvers/types/generated.js';
+import { NetworkEventProgress, TestExecutionEventFilterInput, TestExecutionEventType } from '../resolvers/types/generated.js';
 
 import { getLogs } from './ConsoleEvent.js';
 
@@ -81,11 +81,11 @@ export class TestExecution {
                             const currentTime = networkFilters?.progress.currentTime;
                             let progress;
                             if(until <= currentTime){
-                                progress = 'COMPLETED';
+                                progress = NetworkEventProgress.Completed;
                             } else if(at <= currentTime && currentTime < until){
-                                progress = 'IN_PROGRESS'
+                                progress = NetworkEventProgress.InProgress
                             } else if(currentTime < at){
-                                progress = 'NOT_STARTED';
+                                progress = NetworkEventProgress.NotStarted;
                             }
 
                             if(progress !== networkFilters?.progress.type){
