@@ -213,12 +213,6 @@ export type NetworkEventFilterInput = {
   readonly urlSearch?: InputMaybe<Scalars['String']>;
 };
 
-export enum NetworkEventProgress {
-  Completed = 'COMPLETED',
-  InProgress = 'IN_PROGRESS',
-  NotStarted = 'NOT_STARTED'
-}
-
 export type NetworkEventTiming = Event & IntervalEvent & {
   readonly __typename: 'NetworkEventTiming';
   readonly at: Scalars['DateTime'];
@@ -420,7 +414,6 @@ export type ResolversTypes = {
   KeyValuePair: ResolverTypeWrapper<KeyValuePair>;
   NetworkEvent: ResolversTypes['HttpNetworkEvent'];
   NetworkEventFilterInput: NetworkEventFilterInput;
-  NetworkEventProgress: NetworkEventProgress;
   NetworkEventTiming: ResolverTypeWrapper<NetworkEventTiming>;
   Node: ResolversTypes['TestExecution'];
   Order: Order;

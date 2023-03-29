@@ -1,4 +1,4 @@
-import { HttpNetworkEventResourceType, NetworkEventProgress, TestExecutionEventFilterInput, TestExecutionEventType } from '../resolvers/types/generated.js';
+import { HttpNetworkEventResourceType, TestExecutionEventFilterInput, TestExecutionEventType } from '../resolvers/types/generated.js';
 
 import { getLogs } from './ConsoleEvent.js';
 
