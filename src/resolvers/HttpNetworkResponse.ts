@@ -4,15 +4,7 @@ import {  HttpHeaderOrderBy, HttpNetworkResponseResolvers } from './types/genera
 const resolvers: HttpNetworkResponseResolvers = {
     body: ({ body }) => body,
     cookies: ({ cookies }) => cookies,
-    headers: ({ headers }, { order }) => {
-        if(order.by === HttpHeaderOrderBy.Wire){
-            return headers;
-        }
-        const values = [...headers.values];
-        sortArray(values, 'key', order.direction)
-
-        return {...headers, values}
-    },
+    headers: ({ headers }) => headers,
     redirectURL: ({ redirectURL }) => redirectURL,
     status: ({ status }) => status,
     statusText: ({ statusText }) => statusText,

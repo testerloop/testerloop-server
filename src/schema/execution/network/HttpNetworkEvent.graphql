@@ -12,7 +12,9 @@ type HttpNetworkEvent implements Event & IntervalEvent & NetworkEvent & TestExec
 
 type HttpHeaders {
   size: Int!
-  values: [KeyValuePair!]!
+  values(
+    order: HttpHeaderOrderInput! = { by: WIRE, order: ASCENDING }
+  ): [KeyValuePair!]!
 }
 
 type HttpNetworkRequestUrl {
@@ -26,9 +28,7 @@ type HttpNetworkRequest {
   queryString: [KeyValuePair!]!
   body: HttpRequestBody
   cookies: [Cookie]!
-  headers(
-    order: HttpHeaderOrderInput! = { by: WIRE, order: ASCENDING }
-  ): HttpHeaders!
+  headers: HttpHeaders!
   httpVersion: String!
 }
 
@@ -38,9 +38,7 @@ type HttpNetworkResponse {
   statusText: String!
   body: HttpResponseBody!
   cookies: [Cookie!]!
-  headers(
-    order: HttpHeaderOrderInput! = { by: WIRE, order: ASCENDING }
-  ): HttpHeaders!
+  headers: HttpHeaders!
   transferSize: Int!
 }
 

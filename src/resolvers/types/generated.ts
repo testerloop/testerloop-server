@@ -97,6 +97,11 @@ export type HttpHeaders = {
   readonly values: ReadonlyArray<KeyValuePair>;
 };
 
+
+export type HttpHeadersValuesArgs = {
+  order: HttpHeaderOrderInput;
+};
+
 export type HttpNetworkEvent = Event & IntervalEvent & NetworkEvent & TestExecutionEvent & {
   readonly __typename: 'HttpNetworkEvent';
   readonly at: Scalars['DateTime'];
@@ -137,11 +142,6 @@ export type HttpNetworkRequest = {
   readonly url: HttpNetworkRequestUrl;
 };
 
-
-export type HttpNetworkRequestHeadersArgs = {
-  order: HttpHeaderOrderInput;
-};
-
 export type HttpNetworkRequestUrl = {
   readonly __typename: 'HttpNetworkRequestUrl';
   readonly nonKeyValueQueryString: Maybe<Scalars['String']>;
@@ -157,11 +157,6 @@ export type HttpNetworkResponse = {
   readonly status: Scalars['Int'];
   readonly statusText: Scalars['String'];
   readonly transferSize: Scalars['Int'];
-};
-
-
-export type HttpNetworkResponseHeadersArgs = {
-  order: HttpHeaderOrderInput;
 };
 
 export type HttpNetworkTimings = {
@@ -547,7 +542,7 @@ export type HttpBodyResolvers<ContextType = Context, ParentType extends Resolver
 
 export type HttpHeadersResolvers<ContextType = Context, ParentType extends ResolversParentTypes['HttpHeaders'] = ResolversParentTypes['HttpHeaders']> = {
   size: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  values: Resolver<ReadonlyArray<ResolversTypes['KeyValuePair']>, ParentType, ContextType>;
+  values: Resolver<ReadonlyArray<ResolversTypes['KeyValuePair']>, ParentType, ContextType, RequireFields<HttpHeadersValuesArgs, 'order'>>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -573,7 +568,7 @@ export type HttpNetworkEventInitiatorResolvers<ContextType = Context, ParentType
 export type HttpNetworkRequestResolvers<ContextType = Context, ParentType extends ResolversParentTypes['HttpNetworkRequest'] = ResolversParentTypes['HttpNetworkRequest']> = {
   body: Resolver<Maybe<ResolversTypes['HttpRequestBody']>, ParentType, ContextType>;
   cookies: Resolver<ReadonlyArray<Maybe<ResolversTypes['Cookie']>>, ParentType, ContextType>;
-  headers: Resolver<ResolversTypes['HttpHeaders'], ParentType, ContextType, RequireFields<HttpNetworkRequestHeadersArgs, 'order'>>;
+  headers: Resolver<ResolversTypes['HttpHeaders'], ParentType, ContextType>;
   httpVersion: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   method: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   queryString: Resolver<ReadonlyArray<ResolversTypes['KeyValuePair']>, ParentType, ContextType>;
@@ -590,7 +585,7 @@ export type HttpNetworkRequestUrlResolvers<ContextType = Context, ParentType ext
 export type HttpNetworkResponseResolvers<ContextType = Context, ParentType extends ResolversParentTypes['HttpNetworkResponse'] = ResolversParentTypes['HttpNetworkResponse']> = {
   body: Resolver<ResolversTypes['HttpResponseBody'], ParentType, ContextType>;
   cookies: Resolver<ReadonlyArray<ResolversTypes['Cookie']>, ParentType, ContextType>;
-  headers: Resolver<ResolversTypes['HttpHeaders'], ParentType, ContextType, RequireFields<HttpNetworkResponseHeadersArgs, 'order'>>;
+  headers: Resolver<ResolversTypes['HttpHeaders'], ParentType, ContextType>;
   redirectURL: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   status: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   statusText: Resolver<ResolversTypes['String'], ParentType, ContextType>;
