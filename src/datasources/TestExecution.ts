@@ -87,11 +87,11 @@ export class TestExecution {
                         ) {
                             const { gte, lte } = networkFilters?.status;
 
-                            if(gte && !(response.status >= gte)) {
+                            if(gte != null && !(response.status >= gte)) {
                                 return false;
                             }
 
-                            if(lte && !(response.status <= lte)){
+                            if(lte != null && !(response.status <= lte)){
                                 return false;
                             }
 
