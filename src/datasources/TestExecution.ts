@@ -1,4 +1,4 @@
-import { TestExecutionEventFilterInput, TestExecutionEventType } from '../resolvers/types/generated.js';
+import { HttpNetworkEventResourceType, TestExecutionEventFilterInput, TestExecutionEventType } from '../resolvers/types/generated.js';
 
 import { getLogs } from './ConsoleEvent.js';
 
@@ -28,6 +28,7 @@ export class TestExecution {
 
         const filters = args?.filter;
         const consoleFilters = filters?.consoleFilter;
+        const networkFilters = filters?.networkFilter;
 
         const logs = await getLogs(id);
 
@@ -63,6 +64,41 @@ export class TestExecution {
                         return true;
                     }
                     case TestExecutionEventType.Network: {
+                        if(evt.__typename !== 'HttpNetworkEvent') return false;
+
+                        const { request, resourceType, response } = evt;
+
+                        if (
+                            networkFilters?.urlSearch &&
+                            !request.url.url.includes(networkFilters?.urlSearch)
+                        ) {
+                            return false;
+                        }
+
+                        if(
+                            networkFilters?.resourceType && 
+                            !networkFilters?.resourceType.includes(resourceType.toUpperCase() as HttpNetworkEventResourceType)
+                        ) {
+                            return false;
+                        }
+
+                        if(
+                            networkFilters?.status
+                        ) {
+                            const { gte, lte } = networkFilters?.status;
+
+                            if(gte != null && !(response.status >= gte)) {
+                                return false;
+                            }
+
+                            if(lte != null && !(response.status <= lte)){
+                                return false;
+                            }
+
+                            return true;
+                        }
+
+
                         return evt.__typename === 'HttpNetworkEvent';
                     }
                     default: {

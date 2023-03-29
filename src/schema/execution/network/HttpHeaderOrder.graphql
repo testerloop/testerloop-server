@@ -1,0 +1,15 @@
+enum HttpHeaderOrderBy {
+  """
+  The headers will be ordered as they were transmitted over the wire
+  """
+  WIRE
+  """
+  The headers will be ordered alphabetically in a case-insensitive way
+  """
+  ALPHABETICAL
+}
+
+input HttpHeaderOrderInput {
+  by: HttpHeaderOrderBy!
+  direction: OrderDirection!
+}

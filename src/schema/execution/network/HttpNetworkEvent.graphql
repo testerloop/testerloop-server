@@ -12,7 +12,9 @@ type HttpNetworkEvent implements Event & IntervalEvent & NetworkEvent & TestExec
 
 type HttpHeaders {
   size: Int!
-  values: [KeyValuePair!]!
+  values(
+    order: HttpHeaderOrderInput! = { by: WIRE, order: ASCENDING }
+  ): [KeyValuePair!]!
 }
 
 type HttpNetworkRequestUrl {
