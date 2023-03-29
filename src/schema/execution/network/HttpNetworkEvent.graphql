@@ -26,7 +26,7 @@ type HttpNetworkRequest {
   queryString: [KeyValuePair!]!
   body: HttpRequestBody
   cookies: [Cookie]!
-  headers: HttpHeaders!
+  headers(order: Order): HttpHeaders!
   httpVersion: String!
 }
 
@@ -36,7 +36,7 @@ type HttpNetworkResponse {
   statusText: String!
   body: HttpResponseBody!
   cookies: [Cookie!]!
-  headers: HttpHeaders!
+  headers(order: Order): HttpHeaders!
   transferSize: Int!
 }
 
