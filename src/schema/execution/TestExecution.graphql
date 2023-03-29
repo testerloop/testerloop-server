@@ -20,14 +20,8 @@ input ConsoleEventFilterInput {
   logSearch: String
 }
 
-input NetworkEventProgressWithTime {
-  type: NetworkEventProgress!
-  currentTime: DateTime!
-}
-
 input NetworkEventFilterInput {
   urlSearch: String
-  progress: [NetworkEventProgressWithTime!]
   resourceType: [HttpNetworkEventResourceType!]
 }
 
