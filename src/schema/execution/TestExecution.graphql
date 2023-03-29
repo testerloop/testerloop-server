@@ -20,7 +20,7 @@ input ConsoleEventFilterInput {
   logSearch: String
 }
 
-input NetworkEventResponseStatusInput {
+input NetworkEventResponseStatusFilterInput {
   gte: Int
   lte: Int
 }
@@ -28,7 +28,7 @@ input NetworkEventResponseStatusInput {
 input NetworkEventFilterInput {
   urlSearch: String
   resourceType: [HttpNetworkEventResourceType!]
-  status: NetworkEventResponseStatusInput
+  status: NetworkEventResponseStatusFilterInput
 }
 
 extend type Query {

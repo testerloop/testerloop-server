@@ -26,7 +26,9 @@ type HttpNetworkRequest {
   queryString: [KeyValuePair!]!
   body: HttpRequestBody
   cookies: [Cookie]!
-  headers(order: Order): HttpHeaders!
+  headers(
+    order: HttpHeaderOrderInput! = { by: WIRE, order: ASCENDING }
+  ): HttpHeaders!
   httpVersion: String!
 }
 
@@ -36,7 +38,9 @@ type HttpNetworkResponse {
   statusText: String!
   body: HttpResponseBody!
   cookies: [Cookie!]!
-  headers(order: Order): HttpHeaders!
+  headers(
+    order: HttpHeaderOrderInput! = { by: WIRE, order: ASCENDING }
+  ): HttpHeaders!
   transferSize: Int!
 }
 

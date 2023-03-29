@@ -1,15 +1,15 @@
 import sortArray from '../util/sortArray.js';
-import {  HttpNetworkResponseResolvers } from './types/generated.js';
+import {  HttpHeaderOrderBy, HttpNetworkResponseResolvers } from './types/generated.js';
 
 const resolvers: HttpNetworkResponseResolvers = {
     body: ({ body }) => body,
     cookies: ({ cookies }) => cookies,
     headers: ({ headers }, { order }) => {
-        if(!order){
+        if(order.by === HttpHeaderOrderBy.Wire){
             return headers;
         }
         const values = [...headers.values];
-        sortArray(values, 'key', order)
+        sortArray(values, 'key', order.direction)
 
         return {...headers, values}
     },

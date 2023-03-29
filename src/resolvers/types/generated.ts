@@ -79,6 +79,18 @@ export type HttpBody = {
   readonly size: Scalars['Int'];
 };
 
+export enum HttpHeaderOrderBy {
+  /** The headers will be ordered alphabetically in a case-insensitive way */
+  Alphabetical = 'ALPHABETICAL',
+  /** The headers will be ordered as they were transmitted over the wire */
+  Wire = 'WIRE'
+}
+
+export type HttpHeaderOrderInput = {
+  readonly by: HttpHeaderOrderBy;
+  readonly direction: OrderDirection;
+};
+
 export type HttpHeaders = {
   readonly __typename: 'HttpHeaders';
   readonly size: Scalars['Int'];
@@ -127,7 +139,7 @@ export type HttpNetworkRequest = {
 
 
 export type HttpNetworkRequestHeadersArgs = {
-  order?: InputMaybe<Order>;
+  order: HttpHeaderOrderInput;
 };
 
 export type HttpNetworkRequestUrl = {
@@ -149,7 +161,7 @@ export type HttpNetworkResponse = {
 
 
 export type HttpNetworkResponseHeadersArgs = {
-  order?: InputMaybe<Order>;
+  order: HttpHeaderOrderInput;
 };
 
 export type HttpNetworkTimings = {
@@ -210,11 +222,11 @@ export type NetworkEvent = {
 
 export type NetworkEventFilterInput = {
   readonly resourceType?: InputMaybe<ReadonlyArray<HttpNetworkEventResourceType>>;
-  readonly status?: InputMaybe<NetworkEventResponseStatusInput>;
+  readonly status?: InputMaybe<NetworkEventResponseStatusFilterInput>;
   readonly urlSearch?: InputMaybe<Scalars['String']>;
 };
 
-export type NetworkEventResponseStatusInput = {
+export type NetworkEventResponseStatusFilterInput = {
   readonly gte?: InputMaybe<Scalars['Int']>;
   readonly lte?: InputMaybe<Scalars['Int']>;
 };
@@ -234,9 +246,9 @@ export type Node = {
   readonly id: Scalars['ID'];
 };
 
-export enum Order {
-  Asc = 'ASC',
-  Desc = 'DESC'
+export enum OrderDirection {
+  Ascending = 'ASCENDING',
+  Descending = 'DESCENDING'
 }
 
 /**
@@ -402,6 +414,8 @@ export type ResolversTypes = {
   DateTime: ResolverTypeWrapper<Scalars['DateTime']>;
   Event: ResolversTypes['ConsoleLogEvent'] | ResolversTypes['HttpNetworkEvent'] | ResolversTypes['HttpResponseBodyChunk'] | ResolversTypes['NetworkEventTiming'] | ResolversTypes['TestExecution'];
   HttpBody: ResolversTypes['HttpRequestBody'] | ResolversTypes['HttpResponseBody'];
+  HttpHeaderOrderBy: HttpHeaderOrderBy;
+  HttpHeaderOrderInput: HttpHeaderOrderInput;
   HttpHeaders: ResolverTypeWrapper<HttpHeaders>;
   HttpNetworkEvent: ResolverTypeWrapper<HttpNetworkEventModel>;
   HttpNetworkEventInitiator: ResolverTypeWrapper<HttpNetworkEventInitiator>;
@@ -420,10 +434,10 @@ export type ResolversTypes = {
   KeyValuePair: ResolverTypeWrapper<KeyValuePair>;
   NetworkEvent: ResolversTypes['HttpNetworkEvent'];
   NetworkEventFilterInput: NetworkEventFilterInput;
-  NetworkEventResponseStatusInput: NetworkEventResponseStatusInput;
+  NetworkEventResponseStatusFilterInput: NetworkEventResponseStatusFilterInput;
   NetworkEventTiming: ResolverTypeWrapper<NetworkEventTiming>;
   Node: ResolversTypes['TestExecution'];
-  Order: Order;
+  OrderDirection: OrderDirection;
   PageInfo: ResolverTypeWrapper<PageInfo>;
   Query: ResolverTypeWrapper<unknown>;
   String: ResolverTypeWrapper<Scalars['String']>;
@@ -446,6 +460,7 @@ export type ResolversParentTypes = {
   DateTime: Scalars['DateTime'];
   Event: ResolversParentTypes['ConsoleLogEvent'] | ResolversParentTypes['HttpNetworkEvent'] | ResolversParentTypes['HttpResponseBodyChunk'] | ResolversParentTypes['NetworkEventTiming'] | ResolversParentTypes['TestExecution'];
   HttpBody: ResolversParentTypes['HttpRequestBody'] | ResolversParentTypes['HttpResponseBody'];
+  HttpHeaderOrderInput: HttpHeaderOrderInput;
   HttpHeaders: HttpHeaders;
   HttpNetworkEvent: HttpNetworkEventModel;
   HttpNetworkEventInitiator: HttpNetworkEventInitiator;
@@ -463,7 +478,7 @@ export type ResolversParentTypes = {
   KeyValuePair: KeyValuePair;
   NetworkEvent: ResolversParentTypes['HttpNetworkEvent'];
   NetworkEventFilterInput: NetworkEventFilterInput;
-  NetworkEventResponseStatusInput: NetworkEventResponseStatusInput;
+  NetworkEventResponseStatusFilterInput: NetworkEventResponseStatusFilterInput;
   NetworkEventTiming: NetworkEventTiming;
   Node: ResolversParentTypes['TestExecution'];
   PageInfo: PageInfo;
@@ -558,7 +573,7 @@ export type HttpNetworkEventInitiatorResolvers<ContextType = Context, ParentType
 export type HttpNetworkRequestResolvers<ContextType = Context, ParentType extends ResolversParentTypes['HttpNetworkRequest'] = ResolversParentTypes['HttpNetworkRequest']> = {
   body: Resolver<Maybe<ResolversTypes['HttpRequestBody']>, ParentType, ContextType>;
   cookies: Resolver<ReadonlyArray<Maybe<ResolversTypes['Cookie']>>, ParentType, ContextType>;
-  headers: Resolver<ResolversTypes['HttpHeaders'], ParentType, ContextType, Partial<HttpNetworkRequestHeadersArgs>>;
+  headers: Resolver<ResolversTypes['HttpHeaders'], ParentType, ContextType, RequireFields<HttpNetworkRequestHeadersArgs, 'order'>>;
   httpVersion: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   method: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   queryString: Resolver<ReadonlyArray<ResolversTypes['KeyValuePair']>, ParentType, ContextType>;
@@ -575,7 +590,7 @@ export type HttpNetworkRequestUrlResolvers<ContextType = Context, ParentType ext
 export type HttpNetworkResponseResolvers<ContextType = Context, ParentType extends ResolversParentTypes['HttpNetworkResponse'] = ResolversParentTypes['HttpNetworkResponse']> = {
   body: Resolver<ResolversTypes['HttpResponseBody'], ParentType, ContextType>;
   cookies: Resolver<ReadonlyArray<ResolversTypes['Cookie']>, ParentType, ContextType>;
-  headers: Resolver<ResolversTypes['HttpHeaders'], ParentType, ContextType, Partial<HttpNetworkResponseHeadersArgs>>;
+  headers: Resolver<ResolversTypes['HttpHeaders'], ParentType, ContextType, RequireFields<HttpNetworkResponseHeadersArgs, 'order'>>;
   redirectURL: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   status: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   statusText: Resolver<ResolversTypes['String'], ParentType, ContextType>;
