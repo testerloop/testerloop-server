@@ -210,7 +210,13 @@ export type NetworkEvent = {
 
 export type NetworkEventFilterInput = {
   readonly resourceType?: InputMaybe<ReadonlyArray<HttpNetworkEventResourceType>>;
+  readonly status?: InputMaybe<NetworkEventResponseStatusInput>;
   readonly urlSearch?: InputMaybe<Scalars['String']>;
+};
+
+export type NetworkEventResponseStatusInput = {
+  readonly gte?: InputMaybe<Scalars['Int']>;
+  readonly lte?: InputMaybe<Scalars['Int']>;
 };
 
 export type NetworkEventTiming = Event & IntervalEvent & {
@@ -414,6 +420,7 @@ export type ResolversTypes = {
   KeyValuePair: ResolverTypeWrapper<KeyValuePair>;
   NetworkEvent: ResolversTypes['HttpNetworkEvent'];
   NetworkEventFilterInput: NetworkEventFilterInput;
+  NetworkEventResponseStatusInput: NetworkEventResponseStatusInput;
   NetworkEventTiming: ResolverTypeWrapper<NetworkEventTiming>;
   Node: ResolversTypes['TestExecution'];
   Order: Order;
@@ -456,6 +463,7 @@ export type ResolversParentTypes = {
   KeyValuePair: KeyValuePair;
   NetworkEvent: ResolversParentTypes['HttpNetworkEvent'];
   NetworkEventFilterInput: NetworkEventFilterInput;
+  NetworkEventResponseStatusInput: NetworkEventResponseStatusInput;
   NetworkEventTiming: NetworkEventTiming;
   Node: ResolversParentTypes['TestExecution'];
   PageInfo: PageInfo;

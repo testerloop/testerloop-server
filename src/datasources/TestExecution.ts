@@ -66,7 +66,7 @@ export class TestExecution {
                     case TestExecutionEventType.Network: {
                         if(evt.__typename !== 'HttpNetworkEvent') return false;
 
-                        const { request, resourceType } = evt;
+                        const { request, resourceType, response } = evt;
 
                         if (
                             networkFilters?.urlSearch &&
@@ -80,6 +80,22 @@ export class TestExecution {
                             !networkFilters?.resourceType.includes(resourceType.toUpperCase() as HttpNetworkEventResourceType)
                         ) {
                             return false;
+                        }
+
+                        if(
+                            networkFilters?.status
+                        ) {
+                            const { gte, lte } = networkFilters?.status;
+
+                            if(gte && !(response.status >= gte)) {
+                                return false;
+                            }
+
+                            if(lte && !(response.status <= lte)){
+                                return false;
+                            }
+
+                            return true;
                         }
 
 

@@ -10,7 +10,7 @@ const resolvers: HttpNetworkResponseResolvers = {
         }
         const values = [...headers.values];
         sortArray(values, 'key', order)
-        
+
         return {...headers, values}
     },
     redirectURL: ({ redirectURL }) => redirectURL,
