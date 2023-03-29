@@ -1,6 +1,6 @@
 import { OrderDirection } from "../resolvers/types/generated.js";
 
-const sortArray = (values: Record<string,any>[], key: string, order: OrderDirection) => values.sort((a, b) => {
+const sortArray = <K extends string, T extends Record<K, string>>(values: T[], key: K, order: OrderDirection) => values.sort((a, b) => {
     const orderVal = order === OrderDirection.Ascending ? 1 : -1;
     const aValue = a[key].toLowerCase();
     const bValue = b[key].toLowerCase();
