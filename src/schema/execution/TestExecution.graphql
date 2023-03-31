@@ -12,12 +12,17 @@ type TestExecution implements Node & Event & IntervalEvent {
 input TestExecutionEventFilterInput {
   type: [TestExecutionEventType!]
   consoleFilter: ConsoleEventFilterInput
+  commandFilter: CommandEventFilterInput
   networkFilter: NetworkEventFilterInput
 }
 
 input ConsoleEventFilterInput {
   logLevel: [ConsoleLogLevel!]
   logSearch: String
+}
+
+input CommandEventFilterInput {
+  status: [CommandEventStatus!]
 }
 
 input NetworkEventResponseStatusFilterInput {

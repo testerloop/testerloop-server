@@ -1,0 +1,6 @@
+type ScenarioDefinition {
+    description: String!
+
+    # Needs SourceCode stuff from Summary Panel Schema.
+    # source: SourceCodeManagementRevisionFileLine!
+}
