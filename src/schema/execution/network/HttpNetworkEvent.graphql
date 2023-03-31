@@ -56,3 +56,7 @@ type HttpNetworkEventInitiator {
   origin: String
   lineNumber: Int
 }
+
+extend type Query {
+  httpNetworkEvent(id: ID!): HttpNetworkEvent
+}
