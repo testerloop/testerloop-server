@@ -70,7 +70,7 @@ export class TestExecution {
 
                         if (
                             networkFilters?.urlSearch &&
-                            !request.url.url.includes(networkFilters?.urlSearch)
+                            !(request.url.url.toLowerCase()).includes(networkFilters?.urlSearch.toLowerCase())
                         ) {
                             return false;
                         }
