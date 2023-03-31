@@ -4,5 +4,5 @@ type TestExecutionScreenshot  implements Event & InstantaneousEvent & TestExecut
     """
         Returns a signed URL for fetching this screenshot from S3.
     """
-    url: URL!
+    url: SignedURL!
 }
