@@ -2,7 +2,7 @@ import { HttpNetworkEventResourceType, TestExecutionEventFilterInput, TestExecut
 
 import { getLogs } from './ConsoleEvent.js';
 
-import { data as httpNetworkEvent } from './NetworkEvent.js';
+import { getNetworkEvents } from './NetworkEvent.js';
 
 const runId = 'd7a674e5-9726-4c62-924b-0bb846e9f213';
 const requestId = '00343af4-acf3-473b-9975-0c2bd26e47o1';
@@ -30,7 +30,10 @@ export class TestExecution {
         const consoleFilters = filters?.consoleFilter;
         const networkFilters = filters?.networkFilter;
 
-        const logs = await getLogs(id);
+        const [logs, httpNetworkEvent] = await Promise.all([
+            getLogs(id),
+            getNetworkEvents(id),
+          ]);
 
         let data = ([
             ...Object.values(logs),

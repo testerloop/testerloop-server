@@ -1,5 +1,5 @@
 import S3Service from '../S3Service.js';
-import mapLogs from '../util/mapLogs.js';
+import mapLogs from '../maps/mapLogs.js';
 
 
 export const getLogs = async (testExecutionId: string) => {
