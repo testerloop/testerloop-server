@@ -11,7 +11,13 @@ class S3Service {
       max: 1000,
       fetch: async (cacheKey: string) => {
         const [bucketName, key] = cacheKey.split('/');
-        return this.getObject(bucketName, key);
+    
+        const params = { Bucket: bucketName, Key: key };
+        const response = await this.s3.send(new GetObjectCommand(params));
+        const dataString = await response?.Body?.transformToString();
+        const data = dataString ? JSON.parse(dataString) : undefined;
+
+        return data;
       }
     });
     
@@ -28,20 +34,6 @@ class S3Service {
   async getData(bucketName: string, key: string) {
     const cacheKey = `${bucketName}/${key}`;
     return this.cache.get(cacheKey);
-  }
-
-
-  async getObject(bucketName: string, key: string) {
-      const cacheKey = `${bucketName}/${key}`;
-
-      const params = { Bucket: bucketName, Key: key };
-      const response = await this.s3.send(new GetObjectCommand(params));
-      const dataString = await response?.Body?.transformToString();
-      const data = dataString ? JSON.parse(dataString) : undefined;
-
-      this.cache.set(cacheKey, data);
-
-      return data;
   }
 }
 
