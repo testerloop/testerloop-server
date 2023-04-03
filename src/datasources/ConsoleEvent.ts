@@ -6,7 +6,7 @@ export const getLogs = async (testExecutionId: string) => {
     const bucketName = 'otf-lambda-results';
     const [runId, requestId] = testExecutionId.split('/');
 
-    const logs = await S3Service.getObject(bucketName, `${runId}/${requestId}/console/console-logs.txt`)
+    const logs = await S3Service.getData(bucketName, `${runId}/${requestId}/console/console-logs.txt`)
     
     const mappedLogs = mapLogs(logs, testExecutionId);
 
