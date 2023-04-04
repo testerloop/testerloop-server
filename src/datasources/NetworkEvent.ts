@@ -5,7 +5,8 @@ export const getNetworkEvents = async (testExecutionId: string) => {
     const bucketName = 'otf-lambda-results';
     const [runId, requestId] = testExecutionId.split('/');
 
-    const events = await S3Service.getData(bucketName, `${runId}/${requestId}/har/network-events.har`)
+    const events = await S3Service.getObject(bucketName, `${runId}/${requestId}/har/network-events.har`);
+    
     const mappedEvents = mapNetworkEvents(events, testExecutionId);
 
     return mappedEvents;

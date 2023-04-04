@@ -9,16 +9,6 @@ class S3Service {
   constructor() {
     this.cache = new LRUCache<string, any>({
       max: 1000,
-      fetch: async (cacheKey: string) => {
-        const [bucketName, key] = cacheKey.split('/');
-    
-        const params = { Bucket: bucketName, Key: key };
-        const response = await this.s3.send(new GetObjectCommand(params));
-        const dataString = await response?.Body?.transformToString();
-        const data = dataString ? JSON.parse(dataString) : undefined;
-
-        return data;
-      }
     });
     
     this.s3 = new S3Client({
@@ -31,9 +21,21 @@ class S3Service {
     });
   }
 
-  async getData(bucketName: string, key: string) {
-    const cacheKey = `${bucketName}/${key}`;
-    return this.cache.get(cacheKey);
+  async getObject(bucketName: string, key: string) {
+      const cacheKey = `${bucketName}/${key}`;
+      const cachedData = this.cache.get(cacheKey);
+      if(cachedData){
+        return cachedData;
+      }
+  
+      const params = { Bucket: bucketName, Key: key };
+      const response = await this.s3.send(new GetObjectCommand(params));
+      const dataString = await response?.Body?.transformToString();
+      const data = dataString ? JSON.parse(dataString) : undefined;
+
+      this.cache.set(cacheKey, data)
+
+      return data;
   }
 }
 
