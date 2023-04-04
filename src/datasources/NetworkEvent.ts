@@ -6,7 +6,6 @@ export const getNetworkEvents = async (testExecutionId: string) => {
     const [runId, requestId] = testExecutionId.split('/');
 
     const events = await S3Service.getObject(bucketName, `${runId}/${requestId}/har/network-events.har`);
-    
     const mappedEvents = mapNetworkEvents(events, testExecutionId);
 
     return mappedEvents;

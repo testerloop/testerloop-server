@@ -7,7 +7,6 @@ export const getLogs = async (testExecutionId: string) => {
     const [runId, requestId] = testExecutionId.split('/');
 
     const logs = await S3Service.getObject(bucketName, `${runId}/${requestId}/console/console-logs.txt`);
-    
     const mappedLogs = mapLogs(logs, testExecutionId);
 
     return mappedLogs;

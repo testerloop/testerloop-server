@@ -27,7 +27,7 @@ class S3Service {
       if(cachedData){
         return cachedData;
       }
-  
+
       const params = { Bucket: bucketName, Key: key };
       const response = await this.s3.send(new GetObjectCommand(params));
       const dataString = await response?.Body?.transformToString();

@@ -155,11 +155,8 @@ const transformEntry = (entry: HttpNetworkEventType, testExecutionId: string, id
         Date.parse(startedDateTime)
     ).getTime();
 
-    const id = `${testExecutionId}/network/${idx + 1}`;
-
     return {
             __typename: 'HttpNetworkEvent' as const,
-            id,
             resourceType,
             at: new Date(Date.parse(startedDateTime)),
             until: new Date(startedTimestamp + time),
@@ -236,7 +233,8 @@ const mapNetworkEvents =  (networkData: unknown, testExecutionId: string) =>
         .map((entry, idx) => transformEntry(entry, testExecutionId, idx))
         .filter(curr => !curr.request.url.url.includes('/__/') && 
                         !curr.request.url.url.includes('/__cypress/'))
-        .map((curr, idx) => [`${testExecutionId}/network/${idx + 1}`, curr]))
+        .map((curr, idx) => [`${testExecutionId}/network/${idx + 1}`, 
+            {id: `${testExecutionId}/network/${idx + 1}`, ...curr}]))
    
     
 
