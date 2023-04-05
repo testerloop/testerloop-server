@@ -3,6 +3,17 @@ import { QueryResolvers } from './types/generated.js';
 
 const resolvers: QueryResolvers = {
     test: () => true,
+    async httpNetworkEvent(root, { id }, { dataSources }) {
+        const decodedId = decodeIdForType('NetworkEvent', id);
+        if(!decodedId){
+            return null;
+        }
+        const event = await dataSources.networkEvent.getById(decodedId);
+        if (!event) {
+            return null;
+        }
+        return event;
+    },
     async testExecution(root, { id }, { dataSources }) {
         const decodedId = decodeIdForType('TestExecution', id);
         if (!decodedId) {
@@ -12,9 +23,14 @@ const resolvers: QueryResolvers = {
         if (!testExecution) {
             return null;
         }
+        const [runId, _] = id.split('/');
         return {
             __typename: 'TestExecution',
             id: testExecution.id,
+            testRun: {
+                __typename: 'TestRun',
+                id: runId
+            }
         };
     },
     async node(root, { id }, context, info) {

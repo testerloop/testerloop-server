@@ -1,4 +1,5 @@
-import { HttpNetworkRequestResolvers } from './types/generated.js';
+import sortArray from '../util/sortArray.js';
+import { HttpHeaderOrderBy, HttpNetworkRequestResolvers } from './types/generated.js';
 
 const resolvers: HttpNetworkRequestResolvers = {
     body: ({ body }) => body,

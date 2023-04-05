@@ -177,10 +177,27 @@ export type HttpBody = {
   readonly size: Scalars['Int'];
 };
 
+export enum HttpHeaderOrderBy {
+  /** The headers will be ordered alphabetically in a case-insensitive way */
+  Alphabetical = 'ALPHABETICAL',
+  /** The headers will be ordered as they were transmitted over the wire */
+  Wire = 'WIRE'
+}
+
+export type HttpHeaderOrderInput = {
+  readonly by: HttpHeaderOrderBy;
+  readonly direction: OrderDirection;
+};
+
 export type HttpHeaders = {
   readonly __typename: 'HttpHeaders';
   readonly size: Scalars['Int'];
   readonly values: ReadonlyArray<KeyValuePair>;
+};
+
+
+export type HttpHeadersValuesArgs = {
+  order: HttpHeaderOrderInput;
 };
 
 export type HttpNetworkEvent = Event & IntervalEvent & NetworkEvent & TestExecutionEvent & {
@@ -201,6 +218,16 @@ export type HttpNetworkEventInitiator = {
   readonly lineNumber: Maybe<Scalars['Int']>;
   readonly origin: Maybe<Scalars['String']>;
 };
+
+export enum HttpNetworkEventResourceType {
+  Document = 'DOCUMENT',
+  Font = 'FONT',
+  Image = 'IMAGE',
+  Other = 'OTHER',
+  Script = 'SCRIPT',
+  Stylesheet = 'STYLESHEET',
+  Xhr = 'XHR'
+}
 
 export type HttpNetworkRequest = {
   readonly __typename: 'HttpNetworkRequest';
@@ -286,6 +313,17 @@ export type NetworkEvent = {
   readonly until: Scalars['DateTime'];
 };
 
+export type NetworkEventFilterInput = {
+  readonly resourceType?: InputMaybe<ReadonlyArray<HttpNetworkEventResourceType>>;
+  readonly status?: InputMaybe<NetworkEventResponseStatusFilterInput>;
+  readonly urlSearch?: InputMaybe<Scalars['String']>;
+};
+
+export type NetworkEventResponseStatusFilterInput = {
+  readonly gte?: InputMaybe<Scalars['Int']>;
+  readonly lte?: InputMaybe<Scalars['Int']>;
+};
+
 export type NetworkEventTiming = Event & IntervalEvent & {
   readonly __typename: 'NetworkEventTiming';
   readonly at: Scalars['DateTime'];
@@ -300,6 +338,11 @@ export type NetworkEventTiming = Event & IntervalEvent & {
 export type Node = {
   readonly id: Scalars['ID'];
 };
+
+export enum OrderDirection {
+  Ascending = 'ASCENDING',
+  Descending = 'DESCENDING'
+}
 
 /**
  * The PageInfo type as specified in The Relay Connection Spec.
@@ -318,9 +361,15 @@ export type PageInfo = {
 
 export type Query = {
   readonly __typename: 'Query';
+  readonly httpNetworkEvent: Maybe<HttpNetworkEvent>;
   readonly node: Maybe<Node>;
   readonly test: Scalars['Boolean'];
   readonly testExecution: Maybe<TestExecution>;
+};
+
+
+export type QueryHttpNetworkEventArgs = {
+  id: Scalars['ID'];
 };
 
 
@@ -395,6 +444,7 @@ export type TestExecutionEventEdge = {
 
 export type TestExecutionEventFilterInput = {
   readonly consoleFilter?: InputMaybe<ConsoleEventFilterInput>;
+  readonly networkFilter?: InputMaybe<NetworkEventFilterInput>;
   readonly type?: InputMaybe<ReadonlyArray<TestExecutionEventType>>;
 };
 
@@ -501,9 +551,12 @@ export type ResolversTypes = {
   GitRepository: ResolversTypes['GitHubRepository'];
   GitRevision: ResolversTypes['GitHubRevision'];
   HttpBody: ResolversTypes['HttpRequestBody'] | ResolversTypes['HttpResponseBody'];
+  HttpHeaderOrderBy: HttpHeaderOrderBy;
+  HttpHeaderOrderInput: HttpHeaderOrderInput;
   HttpHeaders: ResolverTypeWrapper<HttpHeaders>;
   HttpNetworkEvent: ResolverTypeWrapper<HttpNetworkEventModel>;
   HttpNetworkEventInitiator: ResolverTypeWrapper<HttpNetworkEventInitiator>;
+  HttpNetworkEventResourceType: HttpNetworkEventResourceType;
   HttpNetworkRequest: ResolverTypeWrapper<HttpNetworkRequest>;
   HttpNetworkRequestUrl: ResolverTypeWrapper<HttpNetworkRequestUrl>;
   HttpNetworkResponse: ResolverTypeWrapper<HttpNetworkResponse>;
@@ -517,8 +570,11 @@ export type ResolversTypes = {
   IntervalEvent: ResolversTypes['HttpNetworkEvent'] | ResolversTypes['NetworkEventTiming'] | ResolversTypes['TestExecution'] | ResolversTypes['TestRun'];
   KeyValuePair: ResolverTypeWrapper<KeyValuePair>;
   NetworkEvent: ResolversTypes['HttpNetworkEvent'];
+  NetworkEventFilterInput: NetworkEventFilterInput;
+  NetworkEventResponseStatusFilterInput: NetworkEventResponseStatusFilterInput;
   NetworkEventTiming: ResolverTypeWrapper<NetworkEventTiming>;
   Node: ResolversTypes['TestExecution'] | ResolversTypes['TestRun'];
+  OrderDirection: OrderDirection;
   PageInfo: ResolverTypeWrapper<PageInfo>;
   Query: ResolverTypeWrapper<unknown>;
   SourceCodeManagementRepository: ResolversTypes['GitHubRepository'];
@@ -559,6 +615,7 @@ export type ResolversParentTypes = {
   GitRepository: ResolversParentTypes['GitHubRepository'];
   GitRevision: ResolversParentTypes['GitHubRevision'];
   HttpBody: ResolversParentTypes['HttpRequestBody'] | ResolversParentTypes['HttpResponseBody'];
+  HttpHeaderOrderInput: HttpHeaderOrderInput;
   HttpHeaders: HttpHeaders;
   HttpNetworkEvent: HttpNetworkEventModel;
   HttpNetworkEventInitiator: HttpNetworkEventInitiator;
@@ -575,6 +632,8 @@ export type ResolversParentTypes = {
   IntervalEvent: ResolversParentTypes['HttpNetworkEvent'] | ResolversParentTypes['NetworkEventTiming'] | ResolversParentTypes['TestExecution'] | ResolversParentTypes['TestRun'];
   KeyValuePair: KeyValuePair;
   NetworkEvent: ResolversParentTypes['HttpNetworkEvent'];
+  NetworkEventFilterInput: NetworkEventFilterInput;
+  NetworkEventResponseStatusFilterInput: NetworkEventResponseStatusFilterInput;
   NetworkEventTiming: NetworkEventTiming;
   Node: ResolversParentTypes['TestExecution'] | ResolversParentTypes['TestRun'];
   PageInfo: PageInfo;
@@ -725,7 +784,7 @@ export type HttpBodyResolvers<ContextType = Context, ParentType extends Resolver
 
 export type HttpHeadersResolvers<ContextType = Context, ParentType extends ResolversParentTypes['HttpHeaders'] = ResolversParentTypes['HttpHeaders']> = {
   size: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  values: Resolver<ReadonlyArray<ResolversTypes['KeyValuePair']>, ParentType, ContextType>;
+  values: Resolver<ReadonlyArray<ResolversTypes['KeyValuePair']>, ParentType, ContextType, RequireFields<HttpHeadersValuesArgs, 'order'>>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -848,6 +907,7 @@ export type PageInfoResolvers<ContextType = Context, ParentType extends Resolver
 };
 
 export type QueryResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
+  httpNetworkEvent: Resolver<Maybe<ResolversTypes['HttpNetworkEvent']>, ParentType, ContextType, RequireFields<QueryHttpNetworkEventArgs, 'id'>>;
   node: Resolver<Maybe<ResolversTypes['Node']>, ParentType, ContextType, RequireFields<QueryNodeArgs, 'id'>>;
   test: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   testExecution: Resolver<Maybe<ResolversTypes['TestExecution']>, ParentType, ContextType, RequireFields<QueryTestExecutionArgs, 'id'>>;

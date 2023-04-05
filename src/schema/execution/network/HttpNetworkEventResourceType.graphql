@@ -1,0 +1,9 @@
+enum HttpNetworkEventResourceType {
+  DOCUMENT
+  XHR
+  SCRIPT
+  STYLESHEET
+  IMAGE
+  FONT
+  OTHER
+}
