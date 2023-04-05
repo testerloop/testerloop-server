@@ -1,3 +1,4 @@
+import { Context } from '../context.js';
 import config from '../config.js';
 import { HttpNetworkEventResourceType, TestExecutionEventFilterInput, TestExecutionEventType } from '../resolvers/types/generated.js';
 import S3Service from '../S3Service.js';
@@ -6,6 +7,12 @@ import { getLogs } from './ConsoleEvent.js';
 
 import { data as httpNetworkEvent } from './NetworkEvent.js';
 export class TestExecution {
+    context: Context;
+
+    constructor(context: Context) {
+        this.context = context;
+    }
+
     async getById(id: string) {
         const bucketName = config.AWS_BUCKET_NAME;
         const [runId, requestId] = id.split('/');
@@ -75,7 +82,7 @@ export class TestExecution {
                         }
 
                         if(
-                            networkFilters?.resourceType && 
+                            networkFilters?.resourceType &&
                             !networkFilters?.resourceType.includes(resourceType.toUpperCase() as HttpNetworkEventResourceType)
                         ) {
                             return false;

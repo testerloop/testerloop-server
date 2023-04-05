@@ -1,3 +1,4 @@
+import { Context } from '../context.js';
 import config from '../config.js';
 import S3Service from '../S3Service.js';
 import mapLogs from '../util/mapLogs.js';
@@ -8,12 +9,18 @@ export const getLogs = async (testExecutionId: string) => {
     const [runId, requestId] = testExecutionId.split('/');
 
     const logs = await S3Service.getObject(bucketName, `${runId}/${requestId}/console/console-logs.txt`)
-    
+
     const mappedLogs = mapLogs(logs, testExecutionId);
 
     return mappedLogs;
 }
 export class ConsoleEvent {
+    context: Context;
+
+    constructor(context: Context) {
+        this.context = context;
+    }
+
     async getById(id: string) {
         const [runId, requestId, _] = id.split('/');
         const logs = await getLogs(`${runId}/${requestId}`);

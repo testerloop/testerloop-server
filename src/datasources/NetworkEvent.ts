@@ -1,3 +1,4 @@
+import { Context } from '../context.js';
 import networkData from '../rawData/network-events.har.js';
 
 const convertNameValuesToKeyValuePairs = (
@@ -162,6 +163,12 @@ export const data = Object.fromEntries(
 );
 
 export class NetworkEvent {
+    context: Context;
+
+    constructor(context: Context) {
+        this.context = context;
+    }
+
     getById(id: string) {
         return data[id] ?? null;
     }
