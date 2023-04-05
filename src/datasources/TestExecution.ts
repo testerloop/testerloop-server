@@ -1,19 +1,21 @@
+import config from '../config.js';
 import { HttpNetworkEventResourceType, TestExecutionEventFilterInput, TestExecutionEventType } from '../resolvers/types/generated.js';
+import S3Service from '../S3Service.js';
 
 import { getLogs } from './ConsoleEvent.js';
 
 import { getNetworkEvents } from './NetworkEvent.js';
-
-const runId = 'd7a674e5-9726-4c62-924b-0bb846e9f213';
-const requestId = '00343af4-acf3-473b-9975-0c2bd26e47o1';
-const testExecutionId = `${runId}/${requestId}`;
 export class TestExecution {
-    getById(id: string) {
-        if (id === testExecutionId) {
+    async getById(id: string) {
+        const bucketName = config.AWS_BUCKET_NAME;
+        const [runId, requestId] = id.split('/');
+        const results = await S3Service.getObject(bucketName, `${runId}/${requestId}/cypress/results.json`);
+
+        if (results) {
             return {
-                id: testExecutionId,
-                at: new Date('2023-02-07T15:22:40.909Z'),
-                until: new Date('2023-02-07T15:22:54.348Z'),
+                id,
+                at: new Date(results.startedTestsAt),
+                until: new Date(results.endedTestsAt),
             };
         }
 
@@ -23,9 +25,6 @@ export class TestExecution {
     async getEvents(id: string, args: {
         first?: number | null, after?: string | null, filter?: TestExecutionEventFilterInput | null;
     }) {;
-        if (id !== testExecutionId)
-            throw new Error('Not implemented');
-
         const filters = args?.filter;
         const consoleFilters = filters?.consoleFilter;
         const networkFilters = filters?.networkFilter;

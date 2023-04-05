@@ -1,8 +1,9 @@
+import config from '../config.js';
 import mapNetworkEvents from '../maps/mapNetworkEvents.js';
 import S3Service from '../S3Service.js';
 
 export const getNetworkEvents = async (testExecutionId: string) => {
-    const bucketName = 'otf-lambda-results';
+    const bucketName = config.AWS_BUCKET_NAME;
     const [runId, requestId] = testExecutionId.split('/');
 
     const events = await S3Service.getObject(bucketName, `${runId}/${requestId}/har/network-events.har`);
