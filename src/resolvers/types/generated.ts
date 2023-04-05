@@ -111,7 +111,7 @@ export type GitHubActor = GitActor & {
 export type GitHubBranch = GitBranch & {
   readonly __typename: 'GitHubBranch';
   readonly name: Scalars['String'];
-  readonly repository: GitRepository;
+  readonly repository: GitHubRepository;
   readonly url: Scalars['URL'];
 };
 
@@ -137,7 +137,7 @@ export type GitHubRevision = GitRevision & SourceCodeManagementRevision & {
   readonly branch: Maybe<GitHubBranch>;
   readonly commitId: Scalars['String'];
   readonly committer: GitHubActor;
-  readonly repository: GitRepository;
+  readonly repository: GitHubRepository;
   readonly url: Scalars['URL'];
 };
 
@@ -149,6 +149,7 @@ export type GitHubRevisionCommitIdArgs = {
 export type GitHubUser = {
   readonly __typename: 'GitHubUser';
   readonly avatar: Scalars['URL'];
+  readonly name: Scalars['String'];
   readonly url: Scalars['URL'];
   readonly username: Scalars['String'];
 };
@@ -453,13 +454,11 @@ export enum TestExecutionEventType {
   Network = 'NETWORK'
 }
 
-export type TestRun = Event & IntervalEvent & Node & {
+export type TestRun = Node & {
   readonly __typename: 'TestRun';
-  readonly at: Scalars['DateTime'];
   readonly id: Scalars['ID'];
   /** This field may be null if the data was not provided for collection. */
   readonly testCodeRevision: Maybe<SourceCodeManagementRevision>;
-  readonly until: Scalars['DateTime'];
 };
 
 
@@ -537,7 +536,7 @@ export type ResolversTypes = {
   Cookie: ResolverTypeWrapper<Cookie>;
   Cursor: ResolverTypeWrapper<Scalars['Cursor']>;
   DateTime: ResolverTypeWrapper<Scalars['DateTime']>;
-  Event: ResolversTypes['ConsoleLogEvent'] | ResolversTypes['HttpNetworkEvent'] | ResolversTypes['HttpResponseBodyChunk'] | ResolversTypes['NetworkEventTiming'] | ResolversTypes['TestExecution'] | ResolversTypes['TestRun'];
+  Event: ResolversTypes['ConsoleLogEvent'] | ResolversTypes['HttpNetworkEvent'] | ResolversTypes['HttpResponseBodyChunk'] | ResolversTypes['NetworkEventTiming'] | ResolversTypes['TestExecution'];
   GitActor: ResolversTypes['GitHubActor'];
   GitBranch: ResolversTypes['GitHubBranch'];
   GitCommitIdType: GitCommitIdType;
@@ -567,7 +566,7 @@ export type ResolversTypes = {
   ID: ResolverTypeWrapper<Scalars['ID']>;
   InstantaneousEvent: ResolversTypes['ConsoleLogEvent'] | ResolversTypes['HttpResponseBodyChunk'];
   Int: ResolverTypeWrapper<Scalars['Int']>;
-  IntervalEvent: ResolversTypes['HttpNetworkEvent'] | ResolversTypes['NetworkEventTiming'] | ResolversTypes['TestExecution'] | ResolversTypes['TestRun'];
+  IntervalEvent: ResolversTypes['HttpNetworkEvent'] | ResolversTypes['NetworkEventTiming'] | ResolversTypes['TestExecution'];
   KeyValuePair: ResolverTypeWrapper<KeyValuePair>;
   NetworkEvent: ResolversTypes['HttpNetworkEvent'];
   NetworkEventFilterInput: NetworkEventFilterInput;
@@ -602,7 +601,7 @@ export type ResolversParentTypes = {
   Cookie: Cookie;
   Cursor: Scalars['Cursor'];
   DateTime: Scalars['DateTime'];
-  Event: ResolversParentTypes['ConsoleLogEvent'] | ResolversParentTypes['HttpNetworkEvent'] | ResolversParentTypes['HttpResponseBodyChunk'] | ResolversParentTypes['NetworkEventTiming'] | ResolversParentTypes['TestExecution'] | ResolversParentTypes['TestRun'];
+  Event: ResolversParentTypes['ConsoleLogEvent'] | ResolversParentTypes['HttpNetworkEvent'] | ResolversParentTypes['HttpResponseBodyChunk'] | ResolversParentTypes['NetworkEventTiming'] | ResolversParentTypes['TestExecution'];
   GitActor: ResolversParentTypes['GitHubActor'];
   GitBranch: ResolversParentTypes['GitHubBranch'];
   GitHubActor: GitHubActor;
@@ -629,7 +628,7 @@ export type ResolversParentTypes = {
   ID: Scalars['ID'];
   InstantaneousEvent: ResolversParentTypes['ConsoleLogEvent'] | ResolversParentTypes['HttpResponseBodyChunk'];
   Int: Scalars['Int'];
-  IntervalEvent: ResolversParentTypes['HttpNetworkEvent'] | ResolversParentTypes['NetworkEventTiming'] | ResolversParentTypes['TestExecution'] | ResolversParentTypes['TestRun'];
+  IntervalEvent: ResolversParentTypes['HttpNetworkEvent'] | ResolversParentTypes['NetworkEventTiming'] | ResolversParentTypes['TestExecution'];
   KeyValuePair: KeyValuePair;
   NetworkEvent: ResolversParentTypes['HttpNetworkEvent'];
   NetworkEventFilterInput: NetworkEventFilterInput;
@@ -710,7 +709,7 @@ export interface DateTimeScalarConfig extends GraphQLScalarTypeConfig<ResolversT
 }
 
 export type EventResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Event'] = ResolversParentTypes['Event']> = {
-  __resolveType: TypeResolveFn<'ConsoleLogEvent' | 'HttpNetworkEvent' | 'HttpResponseBodyChunk' | 'NetworkEventTiming' | 'TestExecution' | 'TestRun', ParentType, ContextType>;
+  __resolveType: TypeResolveFn<'ConsoleLogEvent' | 'HttpNetworkEvent' | 'HttpResponseBodyChunk' | 'NetworkEventTiming' | 'TestExecution', ParentType, ContextType>;
 };
 
 export type GitActorResolvers<ContextType = Context, ParentType extends ResolversParentTypes['GitActor'] = ResolversParentTypes['GitActor']> = {
@@ -730,7 +729,7 @@ export type GitHubActorResolvers<ContextType = Context, ParentType extends Resol
 
 export type GitHubBranchResolvers<ContextType = Context, ParentType extends ResolversParentTypes['GitHubBranch'] = ResolversParentTypes['GitHubBranch']> = {
   name: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  repository: Resolver<ResolversTypes['GitRepository'], ParentType, ContextType>;
+  repository: Resolver<ResolversTypes['GitHubRepository'], ParentType, ContextType>;
   url: Resolver<ResolversTypes['URL'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
@@ -758,13 +757,14 @@ export type GitHubRevisionResolvers<ContextType = Context, ParentType extends Re
   branch: Resolver<Maybe<ResolversTypes['GitHubBranch']>, ParentType, ContextType>;
   commitId: Resolver<ResolversTypes['String'], ParentType, ContextType, RequireFields<GitHubRevisionCommitIdArgs, 'type'>>;
   committer: Resolver<ResolversTypes['GitHubActor'], ParentType, ContextType>;
-  repository: Resolver<ResolversTypes['GitRepository'], ParentType, ContextType>;
+  repository: Resolver<ResolversTypes['GitHubRepository'], ParentType, ContextType>;
   url: Resolver<ResolversTypes['URL'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type GitHubUserResolvers<ContextType = Context, ParentType extends ResolversParentTypes['GitHubUser'] = ResolversParentTypes['GitHubUser']> = {
   avatar: Resolver<ResolversTypes['URL'], ParentType, ContextType>;
+  name: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   url: Resolver<ResolversTypes['URL'], ParentType, ContextType>;
   username: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
@@ -875,7 +875,7 @@ export type InstantaneousEventResolvers<ContextType = Context, ParentType extend
 };
 
 export type IntervalEventResolvers<ContextType = Context, ParentType extends ResolversParentTypes['IntervalEvent'] = ResolversParentTypes['IntervalEvent']> = {
-  __resolveType: TypeResolveFn<'HttpNetworkEvent' | 'NetworkEventTiming' | 'TestExecution' | 'TestRun', ParentType, ContextType>;
+  __resolveType: TypeResolveFn<'HttpNetworkEvent' | 'NetworkEventTiming' | 'TestExecution', ParentType, ContextType>;
 };
 
 export type KeyValuePairResolvers<ContextType = Context, ParentType extends ResolversParentTypes['KeyValuePair'] = ResolversParentTypes['KeyValuePair']> = {
@@ -954,10 +954,8 @@ export type TestExecutionEventEdgeResolvers<ContextType = Context, ParentType ex
 };
 
 export type TestRunResolvers<ContextType = Context, ParentType extends ResolversParentTypes['TestRun'] = ResolversParentTypes['TestRun']> = {
-  at: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   id: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   testCodeRevision: Resolver<Maybe<ResolversTypes['SourceCodeManagementRevision']>, ParentType, ContextType>;
-  until: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
