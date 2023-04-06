@@ -1,3 +1,4 @@
+import { Context } from '../context.js';
 import config from '../config.js';
 import mapNetworkEvents from '../maps/mapNetworkEvents.js';
 import S3Service from '../S3Service.js';
@@ -13,6 +14,12 @@ export const getNetworkEvents = async (testExecutionId: string) => {
 }
 
 export class NetworkEvent {
+    context: Context;
+
+    constructor(context: Context) {
+        this.context = context;
+    }
+
     async getById(id: string) {
         const [runId, requestId, _] = id.split('/');
         const events = await getNetworkEvents(`${runId}/${requestId}`);
