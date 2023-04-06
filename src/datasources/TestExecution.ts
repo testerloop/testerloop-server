@@ -3,9 +3,6 @@ import config from '../config.js';
 import { HttpNetworkEventResourceType, TestExecutionEventFilterInput, TestExecutionEventType } from '../resolvers/types/generated.js';
 import S3Service from '../S3Service.js';
 
-import { getLogs } from './ConsoleEvent.js';
-
-import { getNetworkEvents } from './NetworkEvent.js';
 export class TestExecution {
     context: Context;
 
@@ -37,8 +34,8 @@ export class TestExecution {
         const networkFilters = filters?.networkFilter;
 
         const [logs, httpNetworkEvent] = await Promise.all([
-            getLogs(id),
-            getNetworkEvents(id),
+            this.context.dataSources.consoleEvent.getLogsByTestExecutionId(id),
+            this.context.dataSources.networkEvent.getNetworkEventsByTestExecutionId(id),
           ]);
 
         let data = ([
