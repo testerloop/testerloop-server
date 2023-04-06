@@ -118,6 +118,7 @@ export type GitHubBranch = GitBranch & {
 export type GitHubOrganization = {
   readonly __typename: 'GitHubOrganization';
   readonly name: Scalars['String'];
+  readonly slug: Maybe<Scalars['String']>;
   readonly url: Scalars['URL'];
 };
 
@@ -129,7 +130,11 @@ export type GitHubRepository = GitRepository & SourceCodeManagementRepository & 
   readonly url: Scalars['URL'];
 };
 
-export type GitHubRepositoryOwner = GitHubOrganization | GitHubUser;
+export type GitHubRepositoryOwner = {
+  readonly __typename: 'GitHubRepositoryOwner';
+  readonly name: Scalars['String'];
+  readonly url: Scalars['URL'];
+};
 
 export type GitHubRevision = GitRevision & SourceCodeManagementRevision & {
   readonly __typename: 'GitHubRevision';
@@ -543,8 +548,8 @@ export type ResolversTypes = {
   GitHubActor: ResolverTypeWrapper<GitHubActor>;
   GitHubBranch: ResolverTypeWrapper<GitHubBranch>;
   GitHubOrganization: ResolverTypeWrapper<GitHubOrganization>;
-  GitHubRepository: ResolverTypeWrapper<Omit<GitHubRepository, 'owner'> & { owner: ResolversTypes['GitHubRepositoryOwner'] }>;
-  GitHubRepositoryOwner: ResolversTypes['GitHubOrganization'] | ResolversTypes['GitHubUser'];
+  GitHubRepository: ResolverTypeWrapper<GitHubRepository>;
+  GitHubRepositoryOwner: ResolverTypeWrapper<GitHubRepositoryOwner>;
   GitHubRevision: ResolverTypeWrapper<GitHubRevision>;
   GitHubUser: ResolverTypeWrapper<GitHubUser>;
   GitRepository: ResolversTypes['GitHubRepository'];
@@ -607,8 +612,8 @@ export type ResolversParentTypes = {
   GitHubActor: GitHubActor;
   GitHubBranch: GitHubBranch;
   GitHubOrganization: GitHubOrganization;
-  GitHubRepository: Omit<GitHubRepository, 'owner'> & { owner: ResolversParentTypes['GitHubRepositoryOwner'] };
-  GitHubRepositoryOwner: ResolversParentTypes['GitHubOrganization'] | ResolversParentTypes['GitHubUser'];
+  GitHubRepository: GitHubRepository;
+  GitHubRepositoryOwner: GitHubRepositoryOwner;
   GitHubRevision: GitHubRevision;
   GitHubUser: GitHubUser;
   GitRepository: ResolversParentTypes['GitHubRepository'];
@@ -736,6 +741,7 @@ export type GitHubBranchResolvers<ContextType = Context, ParentType extends Reso
 
 export type GitHubOrganizationResolvers<ContextType = Context, ParentType extends ResolversParentTypes['GitHubOrganization'] = ResolversParentTypes['GitHubOrganization']> = {
   name: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  slug: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   url: Resolver<ResolversTypes['URL'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
@@ -749,7 +755,9 @@ export type GitHubRepositoryResolvers<ContextType = Context, ParentType extends 
 };
 
 export type GitHubRepositoryOwnerResolvers<ContextType = Context, ParentType extends ResolversParentTypes['GitHubRepositoryOwner'] = ResolversParentTypes['GitHubRepositoryOwner']> = {
-  __resolveType: TypeResolveFn<'GitHubOrganization' | 'GitHubUser', ParentType, ContextType>;
+  name: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  url: Resolver<ResolversTypes['URL'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type GitHubRevisionResolvers<ContextType = Context, ParentType extends ResolversParentTypes['GitHubRevision'] = ResolversParentTypes['GitHubRevision']> = {

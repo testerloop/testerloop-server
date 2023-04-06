@@ -1,7 +1,7 @@
 interface SourceCodeManagementRepository {
-    _unused: Boolean! # Remove when this type gets more fields
+  _unused: Boolean! # Remove when this type gets more fields
 }
 
 interface SourceCodeManagementRevision {
-    repository: SourceCodeManagementRepository!
+  repository: SourceCodeManagementRepository!
 }

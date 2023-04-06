@@ -30,6 +30,7 @@ import GitHubUser from './GitHubUser.js';
 import TestExecutionEnvironment from './TestExecutionEnvironment.js';
 import ChromiumVersion from './ChromiumVersion.js';
 import URL from './scalars/URL.js';
+import GitHubRepositoryOwner from './GitHubRepositoryOwner.js';
 
 const interfaceResolvers = {
     __resolveType<T extends String>(parent: { __typename: T }): T {
@@ -80,7 +81,7 @@ const resolvers: Resolvers = {
     GitHubOrganization,
     GitHubRevision,
     GitHubUser,
-    GitHubRepositoryOwner: interfaceResolvers,
+    GitHubRepositoryOwner,
     TestExecutionEnvironment,
     BrowserVersion: interfaceResolvers,
     ChromiumVersion,

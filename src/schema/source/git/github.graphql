@@ -1,5 +1,6 @@
 type GitHubOrganization {
   name: String!
+  slug: String
   url: URL!
 }
 
@@ -10,7 +11,10 @@ type GitHubUser {
   url: URL!
 }
 
-union GitHubRepositoryOwner = GitHubOrganization | GitHubUser
+type GitHubRepositoryOwner {
+  name: String!
+  url: URL!
+}
 
 type GitHubRepository implements SourceCodeManagementRepository & GitRepository {
   _unused: Boolean! # Remove when this type gets more fields

@@ -1,26 +1,26 @@
 interface GitRepository implements SourceCodeManagementRepository {
-    _unused: Boolean! # Remove when this type gets more fields
+  _unused: Boolean! # Remove when this type gets more fields
 }
 
 interface GitBranch {
-    repository: GitRepository!
-    name: String!
+  repository: GitRepository!
+  name: String!
 }
 
 interface GitActor {
-    name: String!
-    email: String!
+  name: String!
+  email: String!
 }
 
 enum GitCommitIdType {
-    LONG
-    SHORT
+  LONG
+  SHORT
 }
 
 interface GitRevision implements SourceCodeManagementRevision {
-    repository: GitRepository!
-    branch: GitBranch
-    commitId(type: GitCommitIdType! = LONG): String!
-    committer: GitActor!
-    author: GitActor!
+  repository: GitRepository!
+  branch: GitBranch
+  commitId(type: GitCommitIdType! = LONG): String!
+  committer: GitActor!
+  author: GitActor!
 }
