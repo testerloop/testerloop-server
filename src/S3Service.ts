@@ -10,7 +10,6 @@ class S3Service {
     this.cache = new LRUCache<string, { contents: unknown }>({
       max: 1000,
       fetchMethod: async (cacheKey) => {
-        console.log(`Fetching uncached key ${cacheKey}`)
         const separatorIndex = cacheKey.indexOf('/');
         if (separatorIndex === -1) {
           throw new Error('Invalid S3 fetch');
