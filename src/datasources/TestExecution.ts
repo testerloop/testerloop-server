@@ -9,7 +9,7 @@ export class TestExecution {
     async getById(id: string) {
         const bucketName = config.AWS_BUCKET_NAME;
         const [runId, requestId] = id.split('/');
-        const results = await S3Service.getObject(bucketName, `${runId}/${requestId}/cypress/results.json`);
+        const results = await S3Service.getObject(bucketName, `${runId}/${requestId}/cypress/results.json`) as {startedTestsAt: string, endedTestsAt: string};
 
         if (results) {
             return {
