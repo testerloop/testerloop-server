@@ -1,24 +1,29 @@
+import DataLoader from 'dataloader';
 import config from '../config.js';
 import { Context } from '../context.js';
 import { GitHubRepositoryOwner, GitHubUser } from '../resolvers/types/generated.js';
 import S3Service from '../S3Service.js';
+import * as z from 'zod';
 
-type User = {
-    avatarUrl: string
-    name: string
-    email: string
-}
+const UserSchema = z.object({
+    avatarUrl: z.optional(z.string()),
+    name: z.string(),
+    email: z.string()
+});
 
-type Cicd = {
-    GITHUB_SERVER_URL: string
-    GITHUB_REPOSITORY_OWNER: string
-    GITHUB_REPOSITORY: string
-    gitBranch: string
-    author: User
-    committer: User
-    gitUrl: string
-    hash: string
-}
+const CicdSchema = z.object({
+    GITHUB_SERVER_URL: z.string(),
+    GITHUB_REPOSITORY_OWNER: z.string(),
+    GITHUB_REPOSITORY: z.string(),
+    gitBranch: z.string(),
+    author: UserSchema,
+    committer: UserSchema,
+    gitUrl: z.string(),
+    hash: z.string(),
+});
+
+
+type Cicd = z.infer<typeof CicdSchema>;
 
 export const getCicdFile = async (runId: string) => {
     const bucketName = config.AWS_BUCKET_NAME;
@@ -31,9 +36,21 @@ export class TestCodeRevision {
     constructor(context: Context) {
         this.context = context;
     }
+
+    cicdDataByRunIdDataLoader = new DataLoader<string, Cicd>(
+        (ids) => Promise.all(ids.map(async (runId) => {
+            const bucketName = config.AWS_BUCKET_NAME;
+            const cicdRaw = await S3Service.getObject(bucketName, `${runId}/logs/cicd.json`)
+            const cicd = CicdSchema.parse(cicdRaw);
+            return cicd;
+        }))
+    )
+    async getCicdDataByRunId(runId: string) {
+        return this.cicdDataByRunIdDataLoader.load(runId);
+    }
     
     async getById(id: string) {
-        const cicd = await getCicdFile(id) as Cicd;
+        const cicd = await this.getCicdDataByRunId(id);
 
         const owner = {
             __typename: 'GitHubRepositoryOwner' as const,

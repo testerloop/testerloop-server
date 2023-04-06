@@ -7,7 +7,7 @@ type GitHubOrganization {
 type GitHubUser {
   name: String!
   username: String!
-  avatar: URL!
+  avatar: URL
   url: URL!
 }
 

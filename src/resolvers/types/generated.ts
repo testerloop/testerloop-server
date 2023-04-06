@@ -153,7 +153,7 @@ export type GitHubRevisionCommitIdArgs = {
 
 export type GitHubUser = {
   readonly __typename: 'GitHubUser';
-  readonly avatar: Scalars['URL'];
+  readonly avatar: Maybe<Scalars['URL']>;
   readonly name: Scalars['String'];
   readonly url: Scalars['URL'];
   readonly username: Scalars['String'];
@@ -771,7 +771,7 @@ export type GitHubRevisionResolvers<ContextType = Context, ParentType extends Re
 };
 
 export type GitHubUserResolvers<ContextType = Context, ParentType extends ResolversParentTypes['GitHubUser'] = ResolversParentTypes['GitHubUser']> = {
-  avatar: Resolver<ResolversTypes['URL'], ParentType, ContextType>;
+  avatar: Resolver<Maybe<ResolversTypes['URL']>, ParentType, ContextType>;
   name: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   url: Resolver<ResolversTypes['URL'], ParentType, ContextType>;
   username: Resolver<ResolversTypes['String'], ParentType, ContextType>;

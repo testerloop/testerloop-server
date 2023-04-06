@@ -19,7 +19,7 @@ generates:
       scalars:
         Cursor: string
         DateTime: Date
-        URL: string # TODO use URL type?
+        URL: string
       mappers:
         ConsoleLogEvent: ./mappers#ConsoleLogEventModel
         HttpNetworkEvent: ./mappers#HttpNetworkEventModel
