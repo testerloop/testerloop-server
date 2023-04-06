@@ -1,4 +1,5 @@
 import config from '../config.js';
+import { Context } from '../context.js';
 import { GitHubRepositoryOwner, GitHubUser } from '../resolvers/types/generated.js';
 import S3Service from '../S3Service.js';
 
@@ -25,6 +26,12 @@ export const getCicdFile = async (runId: string) => {
     return cicd;
 }
 export class TestCodeRevision {
+    context: Context;
+
+    constructor(context: Context) {
+        this.context = context;
+    }
+    
     async getById(id: string) {
         const cicd = await getCicdFile(id) as Cicd;
 

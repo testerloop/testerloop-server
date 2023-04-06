@@ -1,4 +1,5 @@
 import config from '../config.js';
+import { Context } from '../context.js';
 import S3Service from '../S3Service.js';
 
 export const getResultsFile = async (runId: string) => {
@@ -7,6 +8,12 @@ export const getResultsFile = async (runId: string) => {
     return results;
 }
 export class TestResults {
+    context: Context;
+
+    constructor(context: Context) {
+        this.context = context;
+    }
+    
     async getById(id: string ) {
         return getResultsFile(id);
     };
