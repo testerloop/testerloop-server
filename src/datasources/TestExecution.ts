@@ -4,12 +4,12 @@ import S3Service from '../S3Service.js';
 
 import { getLogs } from './ConsoleEvent.js';
 
-import { data as httpNetworkEvent } from './NetworkEvent.js';
+import { getNetworkEvents } from './NetworkEvent.js';
 export class TestExecution {
     async getById(id: string) {
         const bucketName = config.AWS_BUCKET_NAME;
         const [runId, requestId] = id.split('/');
-        const results = await S3Service.getObject(bucketName, `${runId}/${requestId}/cypress/results.json`);
+        const results = await S3Service.getObject(bucketName, `${runId}/${requestId}/cypress/results.json`) as {startedTestsAt: string, endedTestsAt: string};
 
         if (results) {
             return {
@@ -29,7 +29,10 @@ export class TestExecution {
         const consoleFilters = filters?.consoleFilter;
         const networkFilters = filters?.networkFilter;
 
-        const logs = await getLogs(id);
+        const [logs, httpNetworkEvent] = await Promise.all([
+            getLogs(id),
+            getNetworkEvents(id),
+          ]);
 
         let data = ([
             ...Object.values(logs),
