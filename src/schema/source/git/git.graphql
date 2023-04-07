@@ -3,7 +3,6 @@ interface GitRepository implements SourceCodeManagementRepository {
 }
 
 interface GitBranch {
-  repository: GitRepository!
   name: String!
 }
 

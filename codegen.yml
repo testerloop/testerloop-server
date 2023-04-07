@@ -26,6 +26,8 @@ generates:
         TestExecution: ./mappers#TestExecutionModel
         TestExecutionEventConnection: ./mappers#TestExecutionEventConnectionModel
         TestExecutionEventEdge: ./mappers#TestExecutionEventEdgeModel
+        TestRun: ./mappers#TestRunModel
+        GitHubRevision: ./mappers#GitHubRevisionModel
     plugins:
       - typescript
       - typescript-resolvers

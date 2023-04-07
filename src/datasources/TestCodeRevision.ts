@@ -1,7 +1,6 @@
 import DataLoader from 'dataloader';
 import config from '../config.js';
 import { Context } from '../context.js';
-import { GitHubRepositoryOwner, GitHubUser } from '../resolvers/types/generated.js';
 import S3Service from '../S3Service.js';
 import * as z from 'zod';
 
@@ -20,6 +19,7 @@ const CicdSchema = z.object({
     committer: UserSchema,
     gitUrl: z.string(),
     hash: z.string(),
+    shortHash: z.string()
 });
 
 
@@ -56,7 +56,7 @@ export class TestCodeRevision {
             __typename: 'GitHubRepositoryOwner' as const,
             name: cicd.GITHUB_REPOSITORY_OWNER,
             url: [cicd.GITHUB_SERVER_URL, cicd.GITHUB_REPOSITORY_OWNER].join('/'),
-        } as GitHubRepositoryOwner
+        }
 
         const repository = {
             __typename: 'GitHubRepository' as const ,
@@ -75,18 +75,19 @@ export class TestCodeRevision {
                 name: cicd.gitBranch,
                 url: [cicd.gitUrl, 'tree', cicd.gitBranch].join('/')
             },
-            // commitId: commitIdType === GitCommitIdType?.Long ? cicd.hash : cicd.shortHash,
-            commitId: cicd.hash,
+            hash: cicd.hash,
+            shortHash: cicd.shortHash,
             committer: {
                 __typename: 'GitHubActor' as const,
                 name: cicd.committer.name,
                 email: cicd.committer.email,
                 user: {
                     __typename: 'GitHubUser' as const,
-                    avatar: cicd.committer.avatarUrl,
+                    avatar: cicd.committer?.avatarUrl || null,
                     username: cicd.committer.name,
+                    name: cicd.committer.name,
                     url: [cicd.GITHUB_SERVER_URL, cicd.committer.name].join('/')
-                } as GitHubUser
+                }
             },
             author: {
                 __typename: 'GitHubActor' as const,
@@ -94,11 +95,11 @@ export class TestCodeRevision {
                 email: cicd.author.email,
                 user: {
                     __typename: 'GitHubUser' as const,
-                    avatar: cicd.author.avatarUrl,
+                    avatar: cicd.author.avatarUrl || null,
                     username: cicd.author.name,
                     name: cicd.author.name,
                     url: [cicd.GITHUB_SERVER_URL, cicd.author.name].join('/')
-                } as GitHubUser
+                }
             },
             url: [cicd.gitUrl, 'commit', cicd.hash].join('/')
         };

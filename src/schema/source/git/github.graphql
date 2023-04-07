@@ -24,7 +24,6 @@ type GitHubRepository implements SourceCodeManagementRepository & GitRepository 
 }
 
 type GitHubBranch implements GitBranch {
-  repository: GitHubRepository!
   name: String!
   url: URL!
 }

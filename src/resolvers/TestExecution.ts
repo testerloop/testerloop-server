@@ -17,13 +17,11 @@ const resolvers: TestExecutionResolvers = {
         const testExecution = assertNonNull(await dataSources.testExecution.getById(id));
         return testExecution.until;
     },
-    async testRun({ id }, _args, { dataSources }) {
+    async testRun({ id }, _args) {
         const [runId, _] = id.split('/');
-        const testCodeRevision = await dataSources.testCodeRevision.getById(runId)
         return {
             __typename: 'TestRun',
             id: runId,
-            testCodeRevision
         };
     },
     async environment({ id }, _args, { dataSources }) {

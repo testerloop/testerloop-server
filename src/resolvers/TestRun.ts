@@ -5,10 +5,8 @@ const resolvers: TestRunResolvers = {
     id({ id }) {
         return encodeId('TestRun', id);
     },
-    async testCodeRevision ({ id }, _args, { dataSources }) {
-        const testCodeRevision = await dataSources.testCodeRevision.getById(id);
-
-        return testCodeRevision
+    async testCodeRevision ({ id }, _args, {dataSources}) {
+        return dataSources.testCodeRevision.getById(id);
       },
 }
 

@@ -1,5 +1,5 @@
 import { GraphQLResolveInfo, GraphQLScalarType, GraphQLScalarTypeConfig } from 'graphql';
-import { ConsoleLogEventModel, HttpNetworkEventModel, TestExecutionModel, TestExecutionEventConnectionModel, TestExecutionEventEdgeModel } from './mappers';
+import { ConsoleLogEventModel, HttpNetworkEventModel, TestExecutionModel, TestExecutionEventConnectionModel, TestExecutionEventEdgeModel, TestRunModel, GitHubRevisionModel } from './mappers';
 import { Context } from '../../context';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
@@ -93,7 +93,6 @@ export type GitActor = {
 
 export type GitBranch = {
   readonly name: Scalars['String'];
-  readonly repository: GitRepository;
 };
 
 export enum GitCommitIdType {
@@ -111,7 +110,6 @@ export type GitHubActor = GitActor & {
 export type GitHubBranch = GitBranch & {
   readonly __typename: 'GitHubBranch';
   readonly name: Scalars['String'];
-  readonly repository: GitHubRepository;
   readonly url: Scalars['URL'];
 };
 
@@ -550,7 +548,7 @@ export type ResolversTypes = {
   GitHubOrganization: ResolverTypeWrapper<GitHubOrganization>;
   GitHubRepository: ResolverTypeWrapper<GitHubRepository>;
   GitHubRepositoryOwner: ResolverTypeWrapper<GitHubRepositoryOwner>;
-  GitHubRevision: ResolverTypeWrapper<GitHubRevision>;
+  GitHubRevision: ResolverTypeWrapper<GitHubRevisionModel>;
   GitHubUser: ResolverTypeWrapper<GitHubUser>;
   GitRepository: ResolversTypes['GitHubRepository'];
   GitRevision: ResolversTypes['GitHubRevision'];
@@ -591,7 +589,7 @@ export type ResolversTypes = {
   TestExecutionEventEdge: ResolverTypeWrapper<TestExecutionEventEdgeModel>;
   TestExecutionEventFilterInput: TestExecutionEventFilterInput;
   TestExecutionEventType: TestExecutionEventType;
-  TestRun: ResolverTypeWrapper<TestRun>;
+  TestRun: ResolverTypeWrapper<TestRunModel>;
   URL: ResolverTypeWrapper<Scalars['URL']>;
 };
 
@@ -614,7 +612,7 @@ export type ResolversParentTypes = {
   GitHubOrganization: GitHubOrganization;
   GitHubRepository: GitHubRepository;
   GitHubRepositoryOwner: GitHubRepositoryOwner;
-  GitHubRevision: GitHubRevision;
+  GitHubRevision: GitHubRevisionModel;
   GitHubUser: GitHubUser;
   GitRepository: ResolversParentTypes['GitHubRepository'];
   GitRevision: ResolversParentTypes['GitHubRevision'];
@@ -651,7 +649,7 @@ export type ResolversParentTypes = {
   TestExecutionEventConnection: TestExecutionEventConnectionModel;
   TestExecutionEventEdge: TestExecutionEventEdgeModel;
   TestExecutionEventFilterInput: TestExecutionEventFilterInput;
-  TestRun: TestRun;
+  TestRun: TestRunModel;
   URL: Scalars['URL'];
 };
 
@@ -734,7 +732,6 @@ export type GitHubActorResolvers<ContextType = Context, ParentType extends Resol
 
 export type GitHubBranchResolvers<ContextType = Context, ParentType extends ResolversParentTypes['GitHubBranch'] = ResolversParentTypes['GitHubBranch']> = {
   name: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  repository: Resolver<ResolversTypes['GitHubRepository'], ParentType, ContextType>;
   url: Resolver<ResolversTypes['URL'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
