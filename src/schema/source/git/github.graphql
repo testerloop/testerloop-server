@@ -1,0 +1,44 @@
+type GitHubOrganization {
+  name: String!
+  slug: String
+  url: URL!
+}
+
+type GitHubUser {
+  name: String!
+  username: String!
+  avatar: URL
+  url: URL!
+}
+
+type GitHubRepositoryOwner {
+  name: String!
+  url: URL!
+}
+
+type GitHubRepository implements SourceCodeManagementRepository & GitRepository {
+  _unused: Boolean! # Remove when this type gets more fields
+  owner: GitHubRepositoryOwner!
+  name: String!
+  url: URL!
+}
+
+type GitHubBranch implements GitBranch {
+  name: String!
+  url: URL!
+}
+
+type GitHubActor implements GitActor {
+  name: String!
+  email: String!
+  user: GitHubUser
+}
+
+type GitHubRevision implements SourceCodeManagementRevision & GitRevision {
+  repository: GitHubRepository!
+  branch: GitHubBranch
+  commitId(type: GitCommitIdType! = LONG): String!
+  committer: GitHubActor!
+  author: GitHubActor!
+  url: URL!
+}

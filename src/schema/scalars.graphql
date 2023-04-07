@@ -11,3 +11,8 @@ scalar DateTime
     - https://relay.dev/graphql/connections.htm#sec-Cursor
 """
 scalar Cursor
+
+"""
+    Represents a valid URL.
+"""
+scalar URL

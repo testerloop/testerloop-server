@@ -19,12 +19,15 @@ generates:
       scalars:
         Cursor: string
         DateTime: Date
+        URL: string
       mappers:
         ConsoleLogEvent: ./mappers#ConsoleLogEventModel
         HttpNetworkEvent: ./mappers#HttpNetworkEventModel
         TestExecution: ./mappers#TestExecutionModel
         TestExecutionEventConnection: ./mappers#TestExecutionEventConnectionModel
         TestExecutionEventEdge: ./mappers#TestExecutionEventEdgeModel
+        TestRun: ./mappers#TestRunModel
+        GitHubRevision: ./mappers#GitHubRevisionModel
     plugins:
       - typescript
       - typescript-resolvers

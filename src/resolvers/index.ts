@@ -20,6 +20,17 @@ import HttpResponseBody from './HttpResponseBody.js';
 import HttpResponseBodyChunk from './HttpResponseBodyChunk.js';
 import KeyValuePair from './KeyValuePair.js';
 import NetworkEventTiming from './NetworkEventTiming.js';
+import TestRun from './TestRun.js';
+import GitHubBranch from './GitHubBranch.js';
+import GitHubActor from './GitHubActor.js';
+import GitHubRepository from './GitHubRepository.js';
+import GitHubOrganization from './GitHubOrganization.js';
+import GitHubRevision from './GitHubRevision.js';
+import GitHubUser from './GitHubUser.js'; 
+import TestExecutionEnvironment from './TestExecutionEnvironment.js';
+import ChromiumVersion from './ChromiumVersion.js';
+import URL from './scalars/URL.js';
+import GitHubRepositoryOwner from './GitHubRepositoryOwner.js';
 
 const interfaceResolvers = {
     __resolveType<T extends String>(parent: { __typename: T }): T {
@@ -57,6 +68,24 @@ const resolvers: Resolvers = {
     HttpResponseBodyChunk,
     KeyValuePair,
     NetworkEventTiming,
+    TestRun,
+    GitHubBranch,
+    GitBranch: interfaceResolvers,
+    GitActor: interfaceResolvers,
+    GitRepository: interfaceResolvers,
+    GitRevision: interfaceResolvers,
+    SourceCodeManagementRepository: interfaceResolvers,
+    SourceCodeManagementRevision: interfaceResolvers,
+    GitHubActor,
+    GitHubRepository,
+    GitHubOrganization,
+    GitHubRevision,
+    GitHubUser,
+    GitHubRepositoryOwner,
+    TestExecutionEnvironment,
+    BrowserVersion: interfaceResolvers,
+    ChromiumVersion,
+    URL
 };
 
 export default resolvers;
