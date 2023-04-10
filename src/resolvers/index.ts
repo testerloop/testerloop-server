@@ -31,6 +31,16 @@ import TestExecutionEnvironment from './TestExecutionEnvironment.js';
 import ChromiumVersion from './ChromiumVersion.js';
 import URL from './scalars/URL.js';
 import GitHubRepositoryOwner from './GitHubRepositoryOwner.js';
+import StepEventConnection from './StepEventConnection.js';
+import ScenarioEvent from './ScenarioEvent.js';
+import CommandEventConnection from './CommandEventConnection.js';
+import CommandChain from './CommandChain.js';
+import CommandChainConnection from './CommandChainConnection.js';
+import CommandEvent from './CommandEvent.js';
+import CommandEventError from './CommandEventError.js';
+import StepDefinition from './StepDefinition.js';
+import ScenarioDefinition from './ScenarioDefinition.js';
+import StepEvent from './StepEvent.js';
 
 const interfaceResolvers = {
     __resolveType<T extends String>(parent: { __typename: T }): T {
@@ -76,6 +86,19 @@ const resolvers: Resolvers = {
     GitRevision: interfaceResolvers,
     SourceCodeManagementRepository: interfaceResolvers,
     SourceCodeManagementRevision: interfaceResolvers,
+    StepEventConnection,
+    StepEventEdge: edgeResolvers,
+    StepEvent,
+    ScenarioEvent,
+    CommandEvent,
+    CommandEventConnection,
+    CommandEventError,
+    CommandEventEdge: edgeResolvers,
+    CommandChainEdge: edgeResolvers,
+    CommandChain,
+    CommandChainConnection,
+    StepDefinition,
+    ScenarioDefinition,
     GitHubActor,
     GitHubRepository,
     GitHubOrganization,

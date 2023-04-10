@@ -8,9 +8,68 @@ export interface HttpNetworkEventModel {
     id: string,
 }
 
+export interface StepEventModel {
+    __typename: 'StepEvent',
+    id: string,
+}
+
+export interface ScenarioEventModel {
+    __typename: 'ScenarioEvent',
+    id: string,
+}
+
+export interface CommandEventModel {
+    __typename: 'CommandEvent',
+    id: string,
+}
+
+export interface CommandChainModel {
+    __typename: 'CommandChain',
+    id: string,
+}
+
+export interface CommandEventEdgeModel {
+    cursor: string,
+    node: CommandEventModel,
+}
+
+export interface CommandEventConnectionModel {
+    edges: CommandEventEdgeModel[],
+    totalCount: number,
+    hasPreviousPage: boolean,
+    hasNextPage: boolean,
+}
+
+export interface StepEventEdgeModel {
+    cursor: string,
+    node: StepEventModel,
+}
+
+export interface StepEventConnectionModel {
+    edges: StepEventEdgeModel[],
+    totalCount: number,
+    hasPreviousPage: boolean,
+    hasNextPage: boolean,
+}
+
+
+export interface CommandChainEdgeModel {
+    cursor: string,
+    node: CommandChainModel,
+}
+
+export interface CommandChainConnectionModel {
+    edges: CommandChainEdgeModel[],
+    totalCount: number,
+    hasPreviousPage: boolean,
+    hasNextPage: boolean,
+}
+
 export type TestExecutionEvent =
     | ConsoleLogEventModel
-    | HttpNetworkEventModel;
+    | HttpNetworkEventModel 
+    | ScenarioEventModel
+    | StepEventModel;
     
 export interface TestRunModel {
     __typename: 'TestRun',
