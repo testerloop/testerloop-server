@@ -1,0 +1,15 @@
+enum GherkinStepKeyword {
+    GIVEN
+    WHEN
+    THEN
+    AND
+    BUT
+}
+
+type StepDefinition {
+    description: String!
+    keyword: GherkinStepKeyword!
+
+    # Needs SourceCode stuff from Summary Panel Schema.
+    # source: SourceCodeManagementRevisionFileLine!
+}

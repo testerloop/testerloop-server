@@ -1,0 +1,5 @@
+type CommandEventError {
+    type: String!
+    message: String!
+    stackTrace: String!
+}
