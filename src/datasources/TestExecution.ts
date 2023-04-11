@@ -33,14 +33,16 @@ export class TestExecution {
         const consoleFilters = filters?.consoleFilter;
         const networkFilters = filters?.networkFilter;
 
-        const [logs, httpNetworkEvent] = await Promise.all([
+        const [logs, httpNetworkEvent, steps] = await Promise.all([
             this.context.dataSources.consoleEvent.getLogsByTestExecutionId(id),
             this.context.dataSources.networkEvent.getNetworkEventsByTestExecutionId(id),
+            this.context.dataSources.stepEvent.getStepsByTestExecutionId(id)
           ]);
 
         let data = ([
             ...Object.values(logs),
             ...Object.values(httpNetworkEvent),
+            ...Object.values(steps)
         ]).sort((a, b) => {
             return a.at.getTime() - b.at.getTime();
         }).filter((evt) => {
@@ -107,6 +109,22 @@ export class TestExecution {
 
                         return evt.__typename === 'HttpNetworkEvent';
                     }
+                    case TestExecutionEventType.Step: {
+                        if(evt.__typename !== 'StepEvent') return false;
+
+                        return true;
+                    }
+                    // case TestExecutionEventType.Command: {
+                    //     if(evt.__typename !== 'CommandEvent') return false;
+
+                    //     const { groupStart } = evt;
+
+                    //     if(groupStart){
+                    //         return false;
+                    //     }
+
+                    //     return true;
+                    // }
                     default: {
                         throw new Error(`Type ${type} not implemented`);
                     }

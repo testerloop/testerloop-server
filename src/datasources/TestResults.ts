@@ -4,10 +4,24 @@ import { Context } from '../context.js';
 import S3Service from '../S3Service.js';
 import * as z from 'zod';
 
+const TestSchema = z.object({
+    title: z.array(z.string())
+})
+
+const RunSchema = z.object({
+    tests: z.array(TestSchema)
+})
+
 const ResultsSchema = z.object({
-  browserVersion: z.string(),
+    status: z.string(),
+    startedTestsAt: z.string(),
+    endedTestsAt: z.string(),
+    browserVersion: z.string(),
+    runs: z.array(RunSchema)
 });
+
 type Results = z.infer<typeof ResultsSchema>;
+
 export class TestResults {
     context: Context;
 
@@ -27,7 +41,8 @@ export class TestResults {
         return this.resultsByRunIdDataLoader.load(runId);
     }
     
-    async getById(id: string ) {
-        return this.getResultsByRunId(id);
+    async getById(id: string) {
+        const [runId, _] = id.split('/');
+        return this.getResultsByRunId(runId);
     };
 }

@@ -6,10 +6,12 @@ const resolvers: StepEventResolvers = {
         return encodeId('StepEvent', id);
     },
     async at({ id }, _args, { dataSources }) {
-        return new Date()
+        const event = await dataSources.stepEvent.getById(id);
+        return event.at;
     },
     async until({ id }, _args, { dataSources }) {
-        return new Date()
+        const event = await dataSources.stepEvent.getById(id);
+        return event.until;
     },
     async commandChains({ id }, _args, { dataSources }) {
         return {
@@ -21,6 +23,22 @@ const resolvers: StepEventResolvers = {
         }
     },
     async definition({ id }, _args, { dataSources }) {
+        const event = await dataSources.stepEvent.getById(id)
+        // let mappedKeyword;
+        // switch(level){
+        //     case 'error':
+        //         mappedLevel = ConsoleLogLevel.Error;
+        //         break;
+        //     case 'warning':
+        //         mappedLevel = ConsoleLogLevel.Warn;
+        //         break;
+        //     case 'log':
+        //         mappedLevel = ConsoleLogLevel.Log;
+        //         break;
+        //     case 'info':
+        //         mappedLevel = ConsoleLogLevel.Info;
+        //         break;
+        // }
         return {
             __typename: 'StepDefinition',
             description: 'desc',
