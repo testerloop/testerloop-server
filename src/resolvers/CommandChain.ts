@@ -9,6 +9,7 @@ const resolvers: CommandChainResolvers = {
         return new Date()
     },
     async commands({ id }, _args, { dataSources }) {
+        // return dataSources.commandEvent.getById(id);
         return {
             __typename: 'CommandEventConnection',
             totalCount: 1,

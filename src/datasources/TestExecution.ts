@@ -2,6 +2,7 @@ import { Context } from '../context.js';
 import config from '../config.js';
 import { HttpNetworkEventResourceType, TestExecutionEventFilterInput, TestExecutionEventType } from '../resolvers/types/generated.js';
 import S3Service from '../S3Service.js';
+import getPaginatedData from '../util/getPaginatedData.js';
 
 export class TestExecution {
     context: Context;
@@ -132,33 +133,6 @@ export class TestExecution {
             }) ?? true
         });
 
-        // TODO: Paginate in a database? Paginate utils?
-        let start = 0;
-        if (args.after) {
-            start = data.findIndex(({ id }) => id === args.after);
-            if (start === -1) {
-                throw new Error('Invalid Cursor');
-            }
-            start += 1;
-        }
-
-        let end = data.length;
-        if (args.first != null) {
-            if (args.first < 0)
-                throw new Error('Invalid first');
-            end = Math.min(end, start + args.first)
-        }
-
-        return {
-            edges: data
-                .slice(start, end)
-                .map((dataPoint) => ({
-                    cursor: dataPoint.id,
-                    node: dataPoint,
-                })),
-            totalCount: data.length,
-            hasPreviousPage: start > 0,
-            hasNextPage: end < data.length,
-        };
+        return getPaginatedData(data, { first: args.first, after: args.after });
     }
 }

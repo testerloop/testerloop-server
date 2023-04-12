@@ -13,6 +13,8 @@ const resolvers: CommandEventResolvers = {
         return new Date()
     },
     async name({ id }, _args, { dataSources }) {
+        // const event = await dataSources.stepEvent.getById(id);
+        console.log('id in command event', id)
         return 'command name'
     },
     async description({ id }, _args, { dataSources }) {

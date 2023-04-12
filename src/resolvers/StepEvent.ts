@@ -1,3 +1,4 @@
+import getPaginatedData from '../util/getPaginatedData.js';
 import { encodeId } from '../util/id.js';
 import { GherkinStepKeyword, StepEventResolvers } from './types/generated.js';
 
@@ -14,13 +15,8 @@ const resolvers: StepEventResolvers = {
         return event.until;
     },
     async commandChains({ id }, _args, { dataSources }) {
-        return {
-            __type: 'CommandChainConnection',
-            totalCount: 1,
-            hasNextPage: false,
-            hasPreviousPage: false,
-            edges: [{node: {__typename: 'CommandChain', id: '1'}, cursor: '1'}]
-        }
+        const event = await dataSources.stepEvent.getById(id);
+        return getPaginatedData(event.commands);
     },
     async definition({ id }, _args, { dataSources }) {
         const event = await dataSources.stepEvent.getById(id)
