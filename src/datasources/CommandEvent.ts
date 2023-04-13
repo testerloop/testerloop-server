@@ -15,7 +15,7 @@ export class CommandEvent {
         (ids) => Promise.all(ids.map(async (testExecutionId) => {
             const bucketName = config.AWS_BUCKET_NAME;
             const steps = await S3Service.getObject(bucketName, `${testExecutionId}/cypress/out.json`) as string[];
-            const mappedCommands = mapCommands(steps);
+            const mappedCommands = mapCommands(steps, testExecutionId);
             return mappedCommands;
         }))
     )

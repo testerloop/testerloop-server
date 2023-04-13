@@ -3,32 +3,32 @@ import { encodeId } from '../util/id.js';
 import { CommandEventResolvers, CommandEventStatus } from './types/generated.js';
 
 const resolvers: CommandEventResolvers = {
-    async id({ id }, _args) {
+    async id({ id }) {
         return encodeId('CommandEvent', id);
     },
-    async at({ id }, _args, { dataSources }) {
-        return new Date()
+    at: ({ at }) => at,
+    until: ({ until }) => until,
+    name: ({ name }) => name,
+    description: ({ message }) => message,
+    status({ state }) {
+        switch(state){
+            case 'failed':
+                return CommandEventStatus.Failed
+            case 'passed':
+                return CommandEventStatus.Success
+            default:
+                throw new Error(`State ${state} is not a valid state`)
+        }
     },
-    async until({ id }, _args, { dataSources }) {
-        return new Date()
-    },
-    async name({ id }, _args, { dataSources }) {
-        // const event = await dataSources.stepEvent.getById(id);
-        console.log('id in command event', id)
-        return 'command name'
-    },
-    async description({ id }, _args, { dataSources }) {
-        return 'command description'
-    },
-    async status({ id }, _args, { dataSources }) {
-        return CommandEventStatus.Failed
-    },
-    async error({ id }, _args, { dataSources }) {
+    async error({ err }) {
+        if(!err){
+            return null;
+        }
         return {
             __typename: 'CommandEventError',
-            type: 'type',
-            message: 'msg',
-            stackTrace: 'stacktrace'
+            type: err.name,
+            message: err.message,
+            stackTrace: err.stack
         }
     },
     async testExecution({ id }, _args) {

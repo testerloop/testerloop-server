@@ -3,7 +3,7 @@ type Args = {
     first: number | null | undefined;
 }
 
-const getPaginatedData = (data: any[], args?: Args) => {
+const getPaginatedData = <T extends { id: string }>(data: T[], args?: Args) => {
     let start = 0;
     if (args?.after) {
         start = data.findIndex(({ id }) => id === args.after);

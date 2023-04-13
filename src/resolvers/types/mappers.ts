@@ -1,3 +1,6 @@
+import { StepType } from "../../maps/mapStepData";
+import { CommandEvent } from "./generated";
+
 export interface ConsoleLogEventModel {
     __typename: 'ConsoleLogEvent',
     id: string,
@@ -10,7 +13,7 @@ export interface HttpNetworkEventModel {
 
 export interface StepEventModel {
     __typename: 'StepEvent',
-    id: string,
+    _id: string,
 }
 
 export interface ScenarioEventModel {
@@ -19,14 +22,19 @@ export interface ScenarioEventModel {
     steps: StepEventModel
 }
 
-export interface CommandEventModel {
+export interface CommandEventModel extends StepType{
     __typename: 'CommandEvent',
     id: string,
+    at: Date,
+    until: Date
 }
 
 export interface CommandChainModel {
     __typename: 'CommandChain',
     id: string,
+    at: Date,
+    until: Date
+    commands: CommandEventModel[]
 }
 
 export interface CommandEventEdgeModel {

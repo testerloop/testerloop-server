@@ -1,4 +1,4 @@
-import { assertNonNull } from '../util/assertNonNull.js';
+import getPaginatedData from '../util/getPaginatedData.js';
 import { ScenarioEventResolvers } from './types/generated.js';
 
 const resolvers: ScenarioEventResolvers = {
@@ -11,13 +11,8 @@ const resolvers: ScenarioEventResolvers = {
         return new Date(result.endedTestsAt)
     },
     async steps({ id }, _args, { dataSources }) {
-        return {
-            __typename: 'StepEventConnection',
-            totalCount: 1,
-            hasNextPage: false,
-            hasPreviousPage: false,
-            edges: [{node: {__typename: 'StepEvent', id: '1'}, cursor: '1'}]
-        }
+        const steps = await dataSources.stepEvent.getStepsByTestExecutionId(id);
+        return getPaginatedData(Object.values(steps))
     },
     async definition({ id }, _args, { dataSources }) {
         const result = await dataSources.testResults.getById(id);

@@ -22,6 +22,13 @@ const ResultsSchema = z.object({
 
 type Results = z.infer<typeof ResultsSchema>;
 
+export const getResults = async (testExecutionId: string) => {
+    const bucketName = config.AWS_BUCKET_NAME;
+    const rawResults = await S3Service.getObject(bucketName, `${testExecutionId}/cypress/results.json`)
+    const results = ResultsSchema.parse(rawResults);
+    return results;
+}
+
 export class TestResults {
     context: Context;
 
@@ -30,19 +37,15 @@ export class TestResults {
     }
 
     resultsByRunIdDataLoader = new DataLoader<string, Results>(
-        (ids) => Promise.all(ids.map(async (runId) => {
-            const bucketName = config.AWS_BUCKET_NAME;
-            const rawResults = await S3Service.getObject(bucketName, `${runId}/logs/results.json`)
-            const results = ResultsSchema.parse(rawResults);
-            return results;
+        (ids) => Promise.all(ids.map(async (testExecutionId) => {
+            return getResults(testExecutionId)
         }))
     )
-    async getResultsByRunId(runId: string) {
-        return this.resultsByRunIdDataLoader.load(runId);
+    async getResultsByRunId(testExecutionId: string) {
+        return this.resultsByRunIdDataLoader.load(testExecutionId);
     }
     
     async getById(id: string) {
-        const [runId, _] = id.split('/');
-        return this.getResultsByRunId(runId);
+        return this.getResultsByRunId(id);
     };
 }

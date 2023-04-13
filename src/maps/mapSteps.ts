@@ -1,62 +1,68 @@
-import { GherkinStepKeyword } from '../resolvers/types/generated.js';
 import mapStepData, { StepType } from './mapStepData.js';
 
-const mapSteps = (steps: unknown, testExecutionId: string) => {
+const mapSteps = (steps: unknown, testExecutionId: string, endedTestsAt: Date) => {
     const filteredData = mapStepData(steps);
 
-    const filteredSteps: StepType[] = filteredData.filter(({ options }) => options.groupStart);
-    const commands = filteredData.filter(
-        ({ options }) => !options.groupStart
-    );
+    const mappedSteps: (StepType & 
+        {   
+            __typename: 'StepEvent', 
+            _id: string,
+            at: Date, 
+            until: Date,
+            commandChains: 
+                { 
+                    __typename: 'CommandChain',
+                    id: string, 
+                    at: Date,
+                    until: Date,
+                    commands: (StepType & {__typename: 'CommandEvent', at: Date, until: Date})[] 
+                }[]
+        }
+        )[] = [];
 
-    const hierarchy = filteredSteps.map((step) => ({
-        step,
-        commands: [] as StepType[],
-    }));
+    for (const [i, item] of filteredData.entries()) {
+        const until = i < filteredData.length - 1 ? new Date(filteredData[i+1].wallClockStartedAt) : endedTestsAt;
+        const at = new Date(item.wallClockStartedAt);
 
-    const stepIdxById: Record<string,number> = filteredSteps.reduce(
-        (acc, step, idx) => ({
-            ...acc,
-            [step.options.id]: idx,
-        }),
-        {}
-    );
-
-    commands.forEach((command) => {
-        const stepId = command.options.group;
-
-        if (!stepId) {
-            throw new Error(
-                `The following command does not have a linked step: ${command}`
-            );
+        if (item.groupStart) {
+            mappedSteps.push({
+                __typename: 'StepEvent',
+                _id: `${testExecutionId}/step/${i + 1}`,
+                ...item, 
+                at,
+                until,
+                commandChains: [],
+            });
+            continue;
         }
 
-        const stepIdx = stepIdxById[stepId];
-        hierarchy[stepIdx].commands.push(command);
-    });  
-        
-    const mappedSteps = hierarchy.reduce((acc, curr, i) => {
-        const id = `${testExecutionId}/step/${i + 1}`;
-
-        return {
-            ...acc,
-            [id]: {
-                ...curr.step.options,
-                id,
-                __typename: 'StepEvent' as const,
-                definition: {
-                    __typename: 'StepDefinition' as const,
-                    description: 'descr',
-                    keyword: GherkinStepKeyword.Given,
-                },
-                at: new Date(curr.step.options.wallClockStartedAt),
-                until: new Date(), //update
-                commands: curr.commands.map(({ options }) => options)
-            }
+        const step = mappedSteps[mappedSteps.length - 1];
+        const command = {
+            __typename: 'CommandEvent' as const,
+            at,
+            until,
+            ...item
+        };
+        if (item.type === 'parent') {
+            step.commandChains.push({
+                __typename: 'CommandChain',
+                at,
+                until,
+                id: `${testExecutionId}/commandChain/${i + 1}`,
+                commands: [command],
+            })
+            continue;
         }
-    }, {} as Record<string, any>)
 
-    return mappedSteps;
+        step.commandChains[step.commandChains.length - 1].commands.push(command);
+    }
+
+    return Object.fromEntries(
+        mappedSteps.map((obj) => [
+            obj._id,
+            obj
+        ])
+      );
 }
 
 export default mapSteps;

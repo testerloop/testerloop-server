@@ -1,18 +1,17 @@
-import mapStepData, { CommandType } from "./mapStepData.js";
+import mapStepData from "./mapStepData.js";
 
-const mapCommands = (steps: unknown) => {
+const mapCommands = (steps: unknown, testExecutionId: string) => {
     const filteredData = mapStepData(steps);
 
-    const commands = filteredData.filter(
-        ({ options }) => !options.groupStart
-    ).reduce((acc, curr) => {
-        return {
-            ...acc,
-            [curr.options.id]: curr.options
-        }
-    }, {} as Record<string,CommandType>)
-
-    return commands;
+    return Object.fromEntries(
+        filteredData.map((obj,i ) => {
+            const id = `${testExecutionId}/command/${i + 1}`;
+            return [
+                id,
+                {_id: id, ...obj}
+            ]
+        })
+      );
 }
 
 export default mapCommands;
