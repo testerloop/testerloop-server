@@ -40,10 +40,14 @@ export class TestExecution {
             this.context.dataSources.stepEvent.getStepsByTestExecutionId(id)
           ]);
 
+        const commands = Object.values(steps).flatMap(
+            ({ commandChains }) => commandChains.flatMap(({ commands }) => commands))
+
         let data = ([
             ...Object.values(logs),
             ...Object.values(httpNetworkEvent),
-            ...Object.values(steps)
+            ...Object.values(steps),
+            ...commands
         ]).sort((a, b) => {
             return a.at.getTime() - b.at.getTime();
         }).filter((evt) => {
@@ -115,17 +119,11 @@ export class TestExecution {
 
                         return true;
                     }
-                    // case TestExecutionEventType.Command: {
-                    //     if(evt.__typename !== 'CommandEvent') return false;
+                    case TestExecutionEventType.Command: {
+                        if(evt.__typename !== 'CommandEvent') return false;
 
-                    //     const { groupStart } = evt;
-
-                    //     if(groupStart){
-                    //         return false;
-                    //     }
-
-                    //     return true;
-                    // }
+                        return true;
+                    }
                     default: {
                         throw new Error(`Type ${type} not implemented`);
                     }

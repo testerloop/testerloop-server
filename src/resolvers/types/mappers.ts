@@ -78,7 +78,8 @@ export type TestExecutionEvent =
     | ConsoleLogEventModel
     | HttpNetworkEventModel 
     | ScenarioEventModel
-    | StepEventModel;
+    | StepEventModel
+    | CommandEventModel;
     
 export interface TestRunModel {
     __typename: 'TestRun',
