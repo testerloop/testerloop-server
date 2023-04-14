@@ -11,7 +11,7 @@ const mapSteps = (steps: unknown, testExecutionId: string, endedTestsAt: Date) =
             until: Date,
             commandChains: 
                 { 
-                    __typename: 'CommandChain',
+                    __typename: 'CommandChainEvent',
                     id: string, 
                     at: Date,
                     until: Date,
@@ -24,7 +24,13 @@ const mapSteps = (steps: unknown, testExecutionId: string, endedTestsAt: Date) =
         const until = i < filteredData.length - 1 ? new Date(filteredData[i+1].wallClockStartedAt) : endedTestsAt;
         const at = new Date(item.wallClockStartedAt);
 
+        
         if (item.groupStart) {
+            if(mappedSteps.length){
+                const lastStep = mappedSteps[mappedSteps.length - 1]
+                lastStep.until = at
+            }
+
             mappedSteps.push({
                 __typename: 'StepEvent',
                 _id: `${testExecutionId}/step/${i + 1}`,
@@ -44,8 +50,12 @@ const mapSteps = (steps: unknown, testExecutionId: string, endedTestsAt: Date) =
             ...item
         };
         if (item.type === 'parent') {
+            if(step.commandChains.length){
+                const lastCommandChain = step.commandChains[step.commandChains.length - 1]
+                lastCommandChain.until = at
+            }
             step.commandChains.push({
-                __typename: 'CommandChain',
+                __typename: 'CommandChainEvent',
                 at,
                 until,
                 id: `${testExecutionId}/commandChain/${i + 1}`,
@@ -56,6 +66,8 @@ const mapSteps = (steps: unknown, testExecutionId: string, endedTestsAt: Date) =
 
         step.commandChains[step.commandChains.length - 1].commands.push(command);
     }
+
+    mappedSteps[mappedSteps.length - 1].until = endedTestsAt
 
     return Object.fromEntries(
         mappedSteps.map((obj) => [

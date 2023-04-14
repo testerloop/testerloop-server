@@ -29,8 +29,8 @@ export interface CommandEventModel extends StepType{
     until: Date
 }
 
-export interface CommandChainModel {
-    __typename: 'CommandChain',
+export interface CommandChainEventModel {
+    __typename: 'CommandChainEvent',
     id: string,
     at: Date,
     until: Date
@@ -62,13 +62,13 @@ export interface StepEventConnectionModel {
 }
 
 
-export interface CommandChainEdgeModel {
+export interface CommandChainEventEdgeModel {
     cursor: string,
-    node: CommandChainModel,
+    node: CommandChainEventModel,
 }
 
-export interface CommandChainConnectionModel {
-    edges: CommandChainEdgeModel[],
+export interface CommandChainEventConnectionModel {
+    edges: CommandChainEventEdgeModel[],
     totalCount: number,
     hasPreviousPage: boolean,
     hasNextPage: boolean,

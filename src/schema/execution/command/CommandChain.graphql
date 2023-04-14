@@ -1,17 +1,17 @@
-type CommandChain implements Event & IntervalEvent & TestExecutionEvent {
-    at: DateTime!
-    until: DateTime!
-    commands: CommandEventConnection!
-    testExecution: TestExecution!
+type CommandChainEvent implements Event & IntervalEvent & TestExecutionEvent {
+  at: DateTime!
+  until: DateTime!
+  commands: CommandEventConnection!
+  testExecution: TestExecution!
 }
 
-type CommandChainConnection {
-    totalCount: Int!
-    edges: [CommandChainEdge!]!
-    pageInfo: PageInfo!
+type CommandChainEventConnection {
+  totalCount: Int!
+  edges: [CommandChainEventEdge!]!
+  pageInfo: PageInfo!
 }
 
-type CommandChainEdge {
-    cursor: Cursor!
-    node: CommandChain!
+type CommandChainEventEdge {
+  cursor: Cursor!
+  node: CommandChainEvent!
 }

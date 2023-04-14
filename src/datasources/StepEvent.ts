@@ -3,7 +3,6 @@ import { Context } from '../context.js';
 import config from '../config.js';
 import S3Service from '../S3Service.js';
 import mapSteps from '../maps/mapSteps.js';
-import { getResults } from './TestResults.js';
 
 export class StepEvent {
     context: Context;
@@ -14,7 +13,7 @@ export class StepEvent {
 
     stepByTestExecutionIdDataLoader = new DataLoader<string, ReturnType<typeof mapSteps>>(
         (ids) => Promise.all(ids.map(async (testExecutionId) => {
-            const results = await getResults(testExecutionId);
+            const results = await this.context.dataSources.testResults.getResultsByTestExecutionId(testExecutionId);
 
             const bucketName = config.AWS_BUCKET_NAME;
             const steps = await S3Service.getObject(bucketName, `${testExecutionId}/cypress/out.json`) as string[];

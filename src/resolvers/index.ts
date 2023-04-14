@@ -34,8 +34,8 @@ import GitHubRepositoryOwner from './GitHubRepositoryOwner.js';
 import StepEventConnection from './StepEventConnection.js';
 import ScenarioEvent from './ScenarioEvent.js';
 import CommandEventConnection from './CommandEventConnection.js';
-import CommandChain from './CommandChain.js';
-import CommandChainConnection from './CommandChainConnection.js';
+import CommandChainEvent from './CommandChainEvent.js';
+import CommandChainEventConnection from './CommandChainEventConnection.js';
 import CommandEvent from './CommandEvent.js';
 import CommandEventError from './CommandEventError.js';
 import StepDefinition from './StepDefinition.js';
@@ -94,9 +94,9 @@ const resolvers: Resolvers = {
     CommandEventConnection,
     CommandEventError,
     CommandEventEdge: edgeResolvers,
-    CommandChainEdge: edgeResolvers,
-    CommandChain,
-    CommandChainConnection,
+    CommandChainEventEdge: edgeResolvers,
+    CommandChainEvent,
+    CommandChainEventConnection,
     StepDefinition,
     ScenarioDefinition,
     GitHubActor,

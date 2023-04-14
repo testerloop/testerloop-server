@@ -34,20 +34,18 @@ export class TestExecution {
         const consoleFilters = filters?.consoleFilter;
         const networkFilters = filters?.networkFilter;
 
-        const [logs, httpNetworkEvent, steps] = await Promise.all([
+        const [logs, httpNetworkEvent, steps, commands] = await Promise.all([
             this.context.dataSources.consoleEvent.getLogsByTestExecutionId(id),
             this.context.dataSources.networkEvent.getNetworkEventsByTestExecutionId(id),
-            this.context.dataSources.stepEvent.getStepsByTestExecutionId(id)
+            this.context.dataSources.stepEvent.getStepsByTestExecutionId(id),
+            this.context.dataSources.commandEvent.getCommandsByTestExecutionId(id)
           ]);
-
-        const commands = Object.values(steps).flatMap(
-            ({ commandChains }) => commandChains.flatMap(({ commands }) => commands))
 
         let data = ([
             ...Object.values(logs),
             ...Object.values(httpNetworkEvent),
             ...Object.values(steps),
-            ...commands
+            ...Object.values(commands)
         ]).sort((a, b) => {
             return a.at.getTime() - b.at.getTime();
         }).filter((evt) => {

@@ -32,9 +32,9 @@ generates:
         TestExecutionEventEdge: ./mappers#TestExecutionEventEdgeModel
         TestRun: ./mappers#TestRunModel
         GitHubRevision: ./mappers#GitHubRevisionModel
-        CommandChain: ./mappers#CommandChainModel
-        CommandChainEdge: ./mappers#CommandChainEdgeModel
-        CommandChainConnection: ./mappers#CommandChainConnectionModel
+        CommandChainEvent: ./mappers#CommandChainModel
+        CommandChainEventEdge: ./mappers#CommandChainEdgeModel
+        CommandChainEventConnection: ./mappers#CommandChainConnectionModel
         CommandEvent: ./mappers#CommandEventModel
         CommandEventEdge: ./mappers#CommandEventEdgeModel
         CommandEventConnection: ./mappers#CommandEventConnectionModel

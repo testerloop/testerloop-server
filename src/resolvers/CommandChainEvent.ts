@@ -1,7 +1,7 @@
 import getPaginatedData from '../util/getPaginatedData.js';
-import { CommandChainResolvers } from './types/generated.js';
+import { CommandChainEventResolvers } from './types/generated.js';
 
-const resolvers: CommandChainResolvers = {
+const resolvers: CommandChainEventResolvers = {
     at: ({ at }) => at,
     until: ({ until }) => until,
     commands: ({ commands }) => getPaginatedData(commands),

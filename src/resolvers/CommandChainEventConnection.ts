@@ -1,6 +1,6 @@
-import { CommandChainConnectionResolvers } from './types/generated.js';
+import { CommandChainEventConnectionResolvers } from './types/generated.js';
 
-const resolvers: CommandChainConnectionResolvers = {
+const resolvers: CommandChainEventConnectionResolvers = {
     edges: ({ edges }) => edges,
     totalCount: ({ totalCount }) => totalCount,
     pageInfo({ edges, hasNextPage, hasPreviousPage }) {

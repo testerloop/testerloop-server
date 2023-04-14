@@ -5,6 +5,7 @@ import { TestExecution } from './TestExecution.js';
 import { TestResults } from './TestResults.js';
 import { TestCodeRevision } from './TestCodeRevision.js';
 import { StepEvent } from './StepEvent.js';
+import { CommandEvent } from './CommandEvent.js';
 
 export const createDataSources = (context: Context) => ({
     consoleEvent: new ConsoleEvent(context),
@@ -13,6 +14,7 @@ export const createDataSources = (context: Context) => ({
     testResults: new TestResults(context),
     testCodeRevision: new TestCodeRevision(context),
     stepEvent: new StepEvent(context),
+    commandEvent: new CommandEvent(context)
 });
 
 export type DataSources = ReturnType<typeof createDataSources>;
