@@ -1,11 +1,5 @@
 type TestExecutionSnapshot implements Event & InstantaneousEvent & TestExecutionEvent {
-    at: DateTime!
-    testExecution: TestExecution!
-    dom: String!
-}
-
-# After Steps schema is implemented, we should update the CommandEvent:
-extend type CommandEvent {
-    previousSnapshot: TestExecutionSnapshot!
-    nextSnapshot: TestExecutionSnapshot!
+  at: DateTime!
+  testExecution: TestExecution!
+  dom: String!
 }

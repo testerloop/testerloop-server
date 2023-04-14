@@ -14,10 +14,11 @@ export class StepEvent {
     stepByTestExecutionIdDataLoader = new DataLoader<string, ReturnType<typeof mapSteps>>(
         (ids) => Promise.all(ids.map(async (testExecutionId) => {
             const results = await this.context.dataSources.testResults.getResultsByTestExecutionId(testExecutionId);
+            const snapshots = await this.context.dataSources.snapshot.getSnapshotsByTestExecutionId(testExecutionId);
 
             const bucketName = config.AWS_BUCKET_NAME;
             const steps = await S3Service.getObject(bucketName, `${testExecutionId}/cypress/out.json`) as string[];
-            const mappedSteps = mapSteps(steps, testExecutionId, new Date(results.endedTestsAt));
+            const mappedSteps = mapSteps(steps, testExecutionId, new Date(results.endedTestsAt), Object.values(snapshots));
 
             return mappedSteps;
         }))

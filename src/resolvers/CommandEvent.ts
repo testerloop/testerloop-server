@@ -1,4 +1,3 @@
-import { assertNonNull } from '../util/assertNonNull.js';
 import { encodeId } from '../util/id.js';
 import { CommandEventResolvers, CommandEventStatus } from './types/generated.js';
 
@@ -10,6 +9,8 @@ const resolvers: CommandEventResolvers = {
     until: ({ until }) => until,
     name: ({ name }) => name,
     description: ({ message }) => message,
+    previousSnapshot: ({ previousSnapshot }) => previousSnapshot,
+    nextSnapshot: ({ nextSnapshot }) => nextSnapshot,
     status({ state }) {
         switch(state){
             case 'failed':

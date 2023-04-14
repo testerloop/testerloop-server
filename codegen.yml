@@ -32,12 +32,13 @@ generates:
         TestExecutionEventEdge: ./mappers#TestExecutionEventEdgeModel
         TestRun: ./mappers#TestRunModel
         GitHubRevision: ./mappers#GitHubRevisionModel
-        CommandChainEvent: ./mappers#CommandChainModel
-        CommandChainEventEdge: ./mappers#CommandChainEdgeModel
-        CommandChainEventConnection: ./mappers#CommandChainConnectionModel
+        CommandChainEvent: ./mappers#CommandChainEventModel
+        CommandChainEventEdge: ./mappers#CommandChainEventEdgeModel
+        CommandChainEventConnection: ./mappers#CommandChainEventConnectionModel
         CommandEvent: ./mappers#CommandEventModel
         CommandEventEdge: ./mappers#CommandEventEdgeModel
         CommandEventConnection: ./mappers#CommandEventConnectionModel
+        TestExecutionSnapshot: ./mappers#TestExecutionSnapshotModel
     plugins:
       - typescript
       - typescript-resolvers
