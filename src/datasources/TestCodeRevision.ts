@@ -25,11 +25,6 @@ const CicdSchema = z.object({
 
 type Cicd = z.infer<typeof CicdSchema>;
 
-export const getCicdFile = async (runId: string) => {
-    const bucketName = config.AWS_BUCKET_NAME;
-    const cicd = await S3Service.getObject(bucketName, `${runId}/logs/cicd.json`)
-    return cicd;
-}
 export class TestCodeRevision {
     context: Context;
 

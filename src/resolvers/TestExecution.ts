@@ -25,8 +25,7 @@ const resolvers: TestExecutionResolvers = {
         };
     },
     async environment({ id }, _args, { dataSources }) {
-        const [runId, _] = id.split('/');
-        const results = await dataSources.testResults.getById(runId)
+        const results = await dataSources.testResults.getById(id)
         const [major, minor, build, patch] = results.browserVersion.split('.')
             .map((str: string) => parseInt(str));
         return {

@@ -23,11 +23,21 @@ generates:
       mappers:
         ConsoleLogEvent: ./mappers#ConsoleLogEventModel
         HttpNetworkEvent: ./mappers#HttpNetworkEventModel
+        StepEvent: ./mappers#StepEventModel
+        StepEventEdge: ./mappers#StepEventEdgeModel
+        StepEventConnection: ./mappers#StepEventConnectionModel
+        ScenarioEvent: ./mappers#ScenarioEventModel
         TestExecution: ./mappers#TestExecutionModel
         TestExecutionEventConnection: ./mappers#TestExecutionEventConnectionModel
         TestExecutionEventEdge: ./mappers#TestExecutionEventEdgeModel
         TestRun: ./mappers#TestRunModel
         GitHubRevision: ./mappers#GitHubRevisionModel
+        CommandChainEvent: ./mappers#CommandChainEventModel
+        CommandChainEventEdge: ./mappers#CommandChainEventEdgeModel
+        CommandChainEventConnection: ./mappers#CommandChainEventConnectionModel
+        CommandEvent: ./mappers#CommandEventModel
+        CommandEventEdge: ./mappers#CommandEventEdgeModel
+        CommandEventConnection: ./mappers#CommandEventConnectionModel
     plugins:
       - typescript
       - typescript-resolvers

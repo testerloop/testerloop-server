@@ -2,6 +2,7 @@ import { Context } from '../context.js';
 import config from '../config.js';
 import { HttpNetworkEventResourceType, TestExecutionEventFilterInput, TestExecutionEventType } from '../resolvers/types/generated.js';
 import S3Service from '../S3Service.js';
+import getPaginatedData from '../util/getPaginatedData.js';
 
 export class TestExecution {
     context: Context;
@@ -33,14 +34,20 @@ export class TestExecution {
         const consoleFilters = filters?.consoleFilter;
         const networkFilters = filters?.networkFilter;
 
-        const [logs, httpNetworkEvent] = await Promise.all([
+        const [logs, httpNetworkEvent, steps, commands, scenario] = await Promise.all([
             this.context.dataSources.consoleEvent.getLogsByTestExecutionId(id),
             this.context.dataSources.networkEvent.getNetworkEventsByTestExecutionId(id),
+            this.context.dataSources.stepEvent.getStepsByTestExecutionId(id),
+            this.context.dataSources.commandEvent.getCommandsByTestExecutionId(id),
+            this.context.dataSources.scenarioEvent.getScenarioEventByTestExecutionId(id)
           ]);
 
         let data = ([
             ...Object.values(logs),
             ...Object.values(httpNetworkEvent),
+            ...Object.values(steps),
+            ...Object.values(commands),
+            ...Object.values(scenario)
         ]).sort((a, b) => {
             return a.at.getTime() - b.at.getTime();
         }).filter((evt) => {
@@ -107,6 +114,21 @@ export class TestExecution {
 
                         return evt.__typename === 'HttpNetworkEvent';
                     }
+                    case TestExecutionEventType.Step: {
+                        if(evt.__typename !== 'StepEvent') return false;
+
+                        return true;
+                    }
+                    case TestExecutionEventType.Command: {
+                        if(evt.__typename !== 'CommandEvent') return false;
+
+                        return true;
+                    }
+                    case TestExecutionEventType.TestPart: {
+                        if(evt.__typename !== 'ScenarioEvent') return false;
+
+                        return true;
+                    }
                     default: {
                         throw new Error(`Type ${type} not implemented`);
                     }
@@ -114,33 +136,6 @@ export class TestExecution {
             }) ?? true
         });
 
-        // TODO: Paginate in a database? Paginate utils?
-        let start = 0;
-        if (args.after) {
-            start = data.findIndex(({ id }) => id === args.after);
-            if (start === -1) {
-                throw new Error('Invalid Cursor');
-            }
-            start += 1;
-        }
-
-        let end = data.length;
-        if (args.first != null) {
-            if (args.first < 0)
-                throw new Error('Invalid first');
-            end = Math.min(end, start + args.first)
-        }
-
-        return {
-            edges: data
-                .slice(start, end)
-                .map((dataPoint) => ({
-                    cursor: dataPoint.id,
-                    node: dataPoint,
-                })),
-            totalCount: data.length,
-            hasPreviousPage: start > 0,
-            hasNextPage: end < data.length,
-        };
+        return getPaginatedData(data, { first: args.first, after: args.after });
     }
 }

@@ -1,5 +1,5 @@
 import { GraphQLResolveInfo, GraphQLScalarType, GraphQLScalarTypeConfig } from 'graphql';
-import { ConsoleLogEventModel, HttpNetworkEventModel, TestExecutionModel, TestExecutionEventConnectionModel, TestExecutionEventEdgeModel, TestRunModel, GitHubRevisionModel } from './mappers';
+import { ConsoleLogEventModel, HttpNetworkEventModel, StepEventModel, StepEventEdgeModel, StepEventConnectionModel, ScenarioEventModel, TestExecutionModel, TestExecutionEventConnectionModel, TestExecutionEventEdgeModel, TestRunModel, GitHubRevisionModel, CommandChainEventModel, CommandChainEventEdgeModel, CommandChainEventConnectionModel, CommandEventModel, CommandEventEdgeModel, CommandEventConnectionModel } from './mappers';
 import { Context } from '../../context';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
@@ -39,6 +39,68 @@ export type ChromiumVersion = {
   readonly minor: Scalars['Int'];
   readonly patch: Scalars['Int'];
 };
+
+export type CommandChainEvent = Event & IntervalEvent & TestExecutionEvent & {
+  readonly __typename: 'CommandChainEvent';
+  readonly at: Scalars['DateTime'];
+  readonly commands: CommandEventConnection;
+  readonly testExecution: TestExecution;
+  readonly until: Scalars['DateTime'];
+};
+
+export type CommandChainEventConnection = {
+  readonly __typename: 'CommandChainEventConnection';
+  readonly edges: ReadonlyArray<CommandChainEventEdge>;
+  readonly pageInfo: PageInfo;
+  readonly totalCount: Scalars['Int'];
+};
+
+export type CommandChainEventEdge = {
+  readonly __typename: 'CommandChainEventEdge';
+  readonly cursor: Scalars['Cursor'];
+  readonly node: CommandChainEvent;
+};
+
+export type CommandEvent = Event & IntervalEvent & Node & TestExecutionEvent & {
+  readonly __typename: 'CommandEvent';
+  readonly at: Scalars['DateTime'];
+  readonly description: Scalars['String'];
+  readonly error: Maybe<CommandEventError>;
+  readonly id: Scalars['ID'];
+  readonly name: Scalars['String'];
+  readonly status: CommandEventStatus;
+  readonly testExecution: TestExecution;
+  readonly until: Scalars['DateTime'];
+};
+
+export type CommandEventConnection = {
+  readonly __typename: 'CommandEventConnection';
+  readonly edges: ReadonlyArray<CommandEventEdge>;
+  readonly pageInfo: PageInfo;
+  readonly totalCount: Scalars['Int'];
+};
+
+export type CommandEventEdge = {
+  readonly __typename: 'CommandEventEdge';
+  readonly cursor: Scalars['Cursor'];
+  readonly node: CommandEvent;
+};
+
+export type CommandEventError = {
+  readonly __typename: 'CommandEventError';
+  readonly message: Scalars['String'];
+  readonly stackTrace: Scalars['String'];
+  readonly type: Scalars['String'];
+};
+
+export type CommandEventFilterInput = {
+  readonly status?: InputMaybe<ReadonlyArray<CommandEventStatus>>;
+};
+
+export enum CommandEventStatus {
+  Failed = 'FAILED',
+  Success = 'SUCCESS'
+}
 
 export type ConsoleEvent = {
   readonly at: Scalars['DateTime'];
@@ -85,6 +147,14 @@ export type Cookie = {
 export type Event = {
   readonly at: Scalars['DateTime'];
 };
+
+export enum GherkinStepKeyword {
+  And = 'AND',
+  But = 'BUT',
+  Given = 'GIVEN',
+  Then = 'THEN',
+  When = 'WHEN'
+}
 
 export type GitActor = {
   readonly email: Scalars['String'];
@@ -386,12 +456,55 @@ export type QueryTestExecutionArgs = {
   id: Scalars['ID'];
 };
 
+export type ScenarioDefinition = {
+  readonly __typename: 'ScenarioDefinition';
+  readonly description: Scalars['String'];
+};
+
+export type ScenarioEvent = Event & IntervalEvent & TestExecutionEvent & {
+  readonly __typename: 'ScenarioEvent';
+  readonly at: Scalars['DateTime'];
+  readonly definition: ScenarioDefinition;
+  readonly steps: StepEventConnection;
+  readonly testExecution: TestExecution;
+  readonly until: Scalars['DateTime'];
+};
+
 export type SourceCodeManagementRepository = {
   readonly _unused: Scalars['Boolean'];
 };
 
 export type SourceCodeManagementRevision = {
   readonly repository: SourceCodeManagementRepository;
+};
+
+export type StepDefinition = {
+  readonly __typename: 'StepDefinition';
+  readonly description: Scalars['String'];
+  readonly keyword: GherkinStepKeyword;
+};
+
+export type StepEvent = Event & IntervalEvent & Node & TestExecutionEvent & {
+  readonly __typename: 'StepEvent';
+  readonly at: Scalars['DateTime'];
+  readonly commandChains: CommandChainEventConnection;
+  readonly definition: StepDefinition;
+  readonly id: Scalars['ID'];
+  readonly testExecution: TestExecution;
+  readonly until: Scalars['DateTime'];
+};
+
+export type StepEventConnection = {
+  readonly __typename: 'StepEventConnection';
+  readonly edges: ReadonlyArray<StepEventEdge>;
+  readonly pageInfo: PageInfo;
+  readonly totalCount: Scalars['Int'];
+};
+
+export type StepEventEdge = {
+  readonly __typename: 'StepEventEdge';
+  readonly cursor: Scalars['Cursor'];
+  readonly node: StepEvent;
 };
 
 export type TestExecution = Event & IntervalEvent & Node & {
@@ -447,14 +560,26 @@ export type TestExecutionEventEdge = {
 };
 
 export type TestExecutionEventFilterInput = {
+  readonly commandFilter?: InputMaybe<CommandEventFilterInput>;
   readonly consoleFilter?: InputMaybe<ConsoleEventFilterInput>;
   readonly networkFilter?: InputMaybe<NetworkEventFilterInput>;
   readonly type?: InputMaybe<ReadonlyArray<TestExecutionEventType>>;
 };
 
 export enum TestExecutionEventType {
+  /** Returns all commands executed in the `TestExecution` flattened outside of the test layout. */
+  Command = 'COMMAND',
   Console = 'CONSOLE',
-  Network = 'NETWORK'
+  Network = 'NETWORK',
+  /** Returns all of the steps of the `TestExecution`, flattened outside of their containing `BackgroundEvent` or `ScenarioEvent`. */
+  Step = 'STEP',
+  /**
+   * Returns the top-level parts of the `TestExecution`
+   *
+   * For BDD this will be `BackgroundEvent` & `ScenarioEvent`.
+   * For other tests, this can include `Before All`/`Before Each`/`Test`/`After Each`/`After All` parts
+   */
+  TestPart = 'TEST_PART'
 }
 
 export type TestRun = Node & {
@@ -532,6 +657,15 @@ export type ResolversTypes = {
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
   BrowserVersion: ResolversTypes['ChromiumVersion'];
   ChromiumVersion: ResolverTypeWrapper<ChromiumVersion>;
+  CommandChainEvent: ResolverTypeWrapper<CommandChainEventModel>;
+  CommandChainEventConnection: ResolverTypeWrapper<CommandChainEventConnectionModel>;
+  CommandChainEventEdge: ResolverTypeWrapper<CommandChainEventEdgeModel>;
+  CommandEvent: ResolverTypeWrapper<CommandEventModel>;
+  CommandEventConnection: ResolverTypeWrapper<CommandEventConnectionModel>;
+  CommandEventEdge: ResolverTypeWrapper<CommandEventEdgeModel>;
+  CommandEventError: ResolverTypeWrapper<CommandEventError>;
+  CommandEventFilterInput: CommandEventFilterInput;
+  CommandEventStatus: CommandEventStatus;
   ConsoleEvent: ResolversTypes['ConsoleLogEvent'];
   ConsoleEventFilterInput: ConsoleEventFilterInput;
   ConsoleLogEvent: ResolverTypeWrapper<ConsoleLogEventModel>;
@@ -539,7 +673,8 @@ export type ResolversTypes = {
   Cookie: ResolverTypeWrapper<Cookie>;
   Cursor: ResolverTypeWrapper<Scalars['Cursor']>;
   DateTime: ResolverTypeWrapper<Scalars['DateTime']>;
-  Event: ResolversTypes['ConsoleLogEvent'] | ResolversTypes['HttpNetworkEvent'] | ResolversTypes['HttpResponseBodyChunk'] | ResolversTypes['NetworkEventTiming'] | ResolversTypes['TestExecution'];
+  Event: ResolversTypes['CommandChainEvent'] | ResolversTypes['CommandEvent'] | ResolversTypes['ConsoleLogEvent'] | ResolversTypes['HttpNetworkEvent'] | ResolversTypes['HttpResponseBodyChunk'] | ResolversTypes['NetworkEventTiming'] | ResolversTypes['ScenarioEvent'] | ResolversTypes['StepEvent'] | ResolversTypes['TestExecution'];
+  GherkinStepKeyword: GherkinStepKeyword;
   GitActor: ResolversTypes['GitHubActor'];
   GitBranch: ResolversTypes['GitHubBranch'];
   GitCommitIdType: GitCommitIdType;
@@ -569,22 +704,28 @@ export type ResolversTypes = {
   ID: ResolverTypeWrapper<Scalars['ID']>;
   InstantaneousEvent: ResolversTypes['ConsoleLogEvent'] | ResolversTypes['HttpResponseBodyChunk'];
   Int: ResolverTypeWrapper<Scalars['Int']>;
-  IntervalEvent: ResolversTypes['HttpNetworkEvent'] | ResolversTypes['NetworkEventTiming'] | ResolversTypes['TestExecution'];
+  IntervalEvent: ResolversTypes['CommandChainEvent'] | ResolversTypes['CommandEvent'] | ResolversTypes['HttpNetworkEvent'] | ResolversTypes['NetworkEventTiming'] | ResolversTypes['ScenarioEvent'] | ResolversTypes['StepEvent'] | ResolversTypes['TestExecution'];
   KeyValuePair: ResolverTypeWrapper<KeyValuePair>;
   NetworkEvent: ResolversTypes['HttpNetworkEvent'];
   NetworkEventFilterInput: NetworkEventFilterInput;
   NetworkEventResponseStatusFilterInput: NetworkEventResponseStatusFilterInput;
   NetworkEventTiming: ResolverTypeWrapper<NetworkEventTiming>;
-  Node: ResolversTypes['TestExecution'] | ResolversTypes['TestRun'];
+  Node: ResolversTypes['CommandEvent'] | ResolversTypes['StepEvent'] | ResolversTypes['TestExecution'] | ResolversTypes['TestRun'];
   OrderDirection: OrderDirection;
   PageInfo: ResolverTypeWrapper<PageInfo>;
   Query: ResolverTypeWrapper<unknown>;
+  ScenarioDefinition: ResolverTypeWrapper<ScenarioDefinition>;
+  ScenarioEvent: ResolverTypeWrapper<ScenarioEventModel>;
   SourceCodeManagementRepository: ResolversTypes['GitHubRepository'];
   SourceCodeManagementRevision: ResolversTypes['GitHubRevision'];
+  StepDefinition: ResolverTypeWrapper<StepDefinition>;
+  StepEvent: ResolverTypeWrapper<StepEventModel>;
+  StepEventConnection: ResolverTypeWrapper<StepEventConnectionModel>;
+  StepEventEdge: ResolverTypeWrapper<StepEventEdgeModel>;
   String: ResolverTypeWrapper<Scalars['String']>;
   TestExecution: ResolverTypeWrapper<TestExecutionModel>;
   TestExecutionEnvironment: ResolverTypeWrapper<Omit<TestExecutionEnvironment, 'browser'> & { browser: ResolversTypes['BrowserVersion'] }>;
-  TestExecutionEvent: ResolversTypes['ConsoleLogEvent'] | ResolversTypes['HttpNetworkEvent'];
+  TestExecutionEvent: ResolversTypes['CommandChainEvent'] | ResolversTypes['CommandEvent'] | ResolversTypes['ConsoleLogEvent'] | ResolversTypes['HttpNetworkEvent'] | ResolversTypes['ScenarioEvent'] | ResolversTypes['StepEvent'];
   TestExecutionEventConnection: ResolverTypeWrapper<TestExecutionEventConnectionModel>;
   TestExecutionEventEdge: ResolverTypeWrapper<TestExecutionEventEdgeModel>;
   TestExecutionEventFilterInput: TestExecutionEventFilterInput;
@@ -598,13 +739,21 @@ export type ResolversParentTypes = {
   Boolean: Scalars['Boolean'];
   BrowserVersion: ResolversParentTypes['ChromiumVersion'];
   ChromiumVersion: ChromiumVersion;
+  CommandChainEvent: CommandChainEventModel;
+  CommandChainEventConnection: CommandChainEventConnectionModel;
+  CommandChainEventEdge: CommandChainEventEdgeModel;
+  CommandEvent: CommandEventModel;
+  CommandEventConnection: CommandEventConnectionModel;
+  CommandEventEdge: CommandEventEdgeModel;
+  CommandEventError: CommandEventError;
+  CommandEventFilterInput: CommandEventFilterInput;
   ConsoleEvent: ResolversParentTypes['ConsoleLogEvent'];
   ConsoleEventFilterInput: ConsoleEventFilterInput;
   ConsoleLogEvent: ConsoleLogEventModel;
   Cookie: Cookie;
   Cursor: Scalars['Cursor'];
   DateTime: Scalars['DateTime'];
-  Event: ResolversParentTypes['ConsoleLogEvent'] | ResolversParentTypes['HttpNetworkEvent'] | ResolversParentTypes['HttpResponseBodyChunk'] | ResolversParentTypes['NetworkEventTiming'] | ResolversParentTypes['TestExecution'];
+  Event: ResolversParentTypes['CommandChainEvent'] | ResolversParentTypes['CommandEvent'] | ResolversParentTypes['ConsoleLogEvent'] | ResolversParentTypes['HttpNetworkEvent'] | ResolversParentTypes['HttpResponseBodyChunk'] | ResolversParentTypes['NetworkEventTiming'] | ResolversParentTypes['ScenarioEvent'] | ResolversParentTypes['StepEvent'] | ResolversParentTypes['TestExecution'];
   GitActor: ResolversParentTypes['GitHubActor'];
   GitBranch: ResolversParentTypes['GitHubBranch'];
   GitHubActor: GitHubActor;
@@ -631,21 +780,27 @@ export type ResolversParentTypes = {
   ID: Scalars['ID'];
   InstantaneousEvent: ResolversParentTypes['ConsoleLogEvent'] | ResolversParentTypes['HttpResponseBodyChunk'];
   Int: Scalars['Int'];
-  IntervalEvent: ResolversParentTypes['HttpNetworkEvent'] | ResolversParentTypes['NetworkEventTiming'] | ResolversParentTypes['TestExecution'];
+  IntervalEvent: ResolversParentTypes['CommandChainEvent'] | ResolversParentTypes['CommandEvent'] | ResolversParentTypes['HttpNetworkEvent'] | ResolversParentTypes['NetworkEventTiming'] | ResolversParentTypes['ScenarioEvent'] | ResolversParentTypes['StepEvent'] | ResolversParentTypes['TestExecution'];
   KeyValuePair: KeyValuePair;
   NetworkEvent: ResolversParentTypes['HttpNetworkEvent'];
   NetworkEventFilterInput: NetworkEventFilterInput;
   NetworkEventResponseStatusFilterInput: NetworkEventResponseStatusFilterInput;
   NetworkEventTiming: NetworkEventTiming;
-  Node: ResolversParentTypes['TestExecution'] | ResolversParentTypes['TestRun'];
+  Node: ResolversParentTypes['CommandEvent'] | ResolversParentTypes['StepEvent'] | ResolversParentTypes['TestExecution'] | ResolversParentTypes['TestRun'];
   PageInfo: PageInfo;
   Query: unknown;
+  ScenarioDefinition: ScenarioDefinition;
+  ScenarioEvent: ScenarioEventModel;
   SourceCodeManagementRepository: ResolversParentTypes['GitHubRepository'];
   SourceCodeManagementRevision: ResolversParentTypes['GitHubRevision'];
+  StepDefinition: StepDefinition;
+  StepEvent: StepEventModel;
+  StepEventConnection: StepEventConnectionModel;
+  StepEventEdge: StepEventEdgeModel;
   String: Scalars['String'];
   TestExecution: TestExecutionModel;
   TestExecutionEnvironment: Omit<TestExecutionEnvironment, 'browser'> & { browser: ResolversParentTypes['BrowserVersion'] };
-  TestExecutionEvent: ResolversParentTypes['ConsoleLogEvent'] | ResolversParentTypes['HttpNetworkEvent'];
+  TestExecutionEvent: ResolversParentTypes['CommandChainEvent'] | ResolversParentTypes['CommandEvent'] | ResolversParentTypes['ConsoleLogEvent'] | ResolversParentTypes['HttpNetworkEvent'] | ResolversParentTypes['ScenarioEvent'] | ResolversParentTypes['StepEvent'];
   TestExecutionEventConnection: TestExecutionEventConnectionModel;
   TestExecutionEventEdge: TestExecutionEventEdgeModel;
   TestExecutionEventFilterInput: TestExecutionEventFilterInput;
@@ -677,6 +832,59 @@ export type ChromiumVersionResolvers<ContextType = Context, ParentType extends R
   major: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   minor: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   patch: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type CommandChainEventResolvers<ContextType = Context, ParentType extends ResolversParentTypes['CommandChainEvent'] = ResolversParentTypes['CommandChainEvent']> = {
+  at: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
+  commands: Resolver<ResolversTypes['CommandEventConnection'], ParentType, ContextType>;
+  testExecution: Resolver<ResolversTypes['TestExecution'], ParentType, ContextType>;
+  until: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type CommandChainEventConnectionResolvers<ContextType = Context, ParentType extends ResolversParentTypes['CommandChainEventConnection'] = ResolversParentTypes['CommandChainEventConnection']> = {
+  edges: Resolver<ReadonlyArray<ResolversTypes['CommandChainEventEdge']>, ParentType, ContextType>;
+  pageInfo: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>;
+  totalCount: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type CommandChainEventEdgeResolvers<ContextType = Context, ParentType extends ResolversParentTypes['CommandChainEventEdge'] = ResolversParentTypes['CommandChainEventEdge']> = {
+  cursor: Resolver<ResolversTypes['Cursor'], ParentType, ContextType>;
+  node: Resolver<ResolversTypes['CommandChainEvent'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type CommandEventResolvers<ContextType = Context, ParentType extends ResolversParentTypes['CommandEvent'] = ResolversParentTypes['CommandEvent']> = {
+  at: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
+  description: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  error: Resolver<Maybe<ResolversTypes['CommandEventError']>, ParentType, ContextType>;
+  id: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  name: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  status: Resolver<ResolversTypes['CommandEventStatus'], ParentType, ContextType>;
+  testExecution: Resolver<ResolversTypes['TestExecution'], ParentType, ContextType>;
+  until: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type CommandEventConnectionResolvers<ContextType = Context, ParentType extends ResolversParentTypes['CommandEventConnection'] = ResolversParentTypes['CommandEventConnection']> = {
+  edges: Resolver<ReadonlyArray<ResolversTypes['CommandEventEdge']>, ParentType, ContextType>;
+  pageInfo: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>;
+  totalCount: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type CommandEventEdgeResolvers<ContextType = Context, ParentType extends ResolversParentTypes['CommandEventEdge'] = ResolversParentTypes['CommandEventEdge']> = {
+  cursor: Resolver<ResolversTypes['Cursor'], ParentType, ContextType>;
+  node: Resolver<ResolversTypes['CommandEvent'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type CommandEventErrorResolvers<ContextType = Context, ParentType extends ResolversParentTypes['CommandEventError'] = ResolversParentTypes['CommandEventError']> = {
+  message: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  stackTrace: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  type: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -712,7 +920,7 @@ export interface DateTimeScalarConfig extends GraphQLScalarTypeConfig<ResolversT
 }
 
 export type EventResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Event'] = ResolversParentTypes['Event']> = {
-  __resolveType: TypeResolveFn<'ConsoleLogEvent' | 'HttpNetworkEvent' | 'HttpResponseBodyChunk' | 'NetworkEventTiming' | 'TestExecution', ParentType, ContextType>;
+  __resolveType: TypeResolveFn<'CommandChainEvent' | 'CommandEvent' | 'ConsoleLogEvent' | 'HttpNetworkEvent' | 'HttpResponseBodyChunk' | 'NetworkEventTiming' | 'ScenarioEvent' | 'StepEvent' | 'TestExecution', ParentType, ContextType>;
 };
 
 export type GitActorResolvers<ContextType = Context, ParentType extends ResolversParentTypes['GitActor'] = ResolversParentTypes['GitActor']> = {
@@ -880,7 +1088,7 @@ export type InstantaneousEventResolvers<ContextType = Context, ParentType extend
 };
 
 export type IntervalEventResolvers<ContextType = Context, ParentType extends ResolversParentTypes['IntervalEvent'] = ResolversParentTypes['IntervalEvent']> = {
-  __resolveType: TypeResolveFn<'HttpNetworkEvent' | 'NetworkEventTiming' | 'TestExecution', ParentType, ContextType>;
+  __resolveType: TypeResolveFn<'CommandChainEvent' | 'CommandEvent' | 'HttpNetworkEvent' | 'NetworkEventTiming' | 'ScenarioEvent' | 'StepEvent' | 'TestExecution', ParentType, ContextType>;
 };
 
 export type KeyValuePairResolvers<ContextType = Context, ParentType extends ResolversParentTypes['KeyValuePair'] = ResolversParentTypes['KeyValuePair']> = {
@@ -900,7 +1108,7 @@ export type NetworkEventTimingResolvers<ContextType = Context, ParentType extend
 };
 
 export type NodeResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Node'] = ResolversParentTypes['Node']> = {
-  __resolveType: TypeResolveFn<'TestExecution' | 'TestRun', ParentType, ContextType>;
+  __resolveType: TypeResolveFn<'CommandEvent' | 'StepEvent' | 'TestExecution' | 'TestRun', ParentType, ContextType>;
 };
 
 export type PageInfoResolvers<ContextType = Context, ParentType extends ResolversParentTypes['PageInfo'] = ResolversParentTypes['PageInfo']> = {
@@ -918,12 +1126,55 @@ export type QueryResolvers<ContextType = Context, ParentType extends ResolversPa
   testExecution: Resolver<Maybe<ResolversTypes['TestExecution']>, ParentType, ContextType, RequireFields<QueryTestExecutionArgs, 'id'>>;
 };
 
+export type ScenarioDefinitionResolvers<ContextType = Context, ParentType extends ResolversParentTypes['ScenarioDefinition'] = ResolversParentTypes['ScenarioDefinition']> = {
+  description: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type ScenarioEventResolvers<ContextType = Context, ParentType extends ResolversParentTypes['ScenarioEvent'] = ResolversParentTypes['ScenarioEvent']> = {
+  at: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
+  definition: Resolver<ResolversTypes['ScenarioDefinition'], ParentType, ContextType>;
+  steps: Resolver<ResolversTypes['StepEventConnection'], ParentType, ContextType>;
+  testExecution: Resolver<ResolversTypes['TestExecution'], ParentType, ContextType>;
+  until: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type SourceCodeManagementRepositoryResolvers<ContextType = Context, ParentType extends ResolversParentTypes['SourceCodeManagementRepository'] = ResolversParentTypes['SourceCodeManagementRepository']> = {
   __resolveType: TypeResolveFn<'GitHubRepository', ParentType, ContextType>;
 };
 
 export type SourceCodeManagementRevisionResolvers<ContextType = Context, ParentType extends ResolversParentTypes['SourceCodeManagementRevision'] = ResolversParentTypes['SourceCodeManagementRevision']> = {
   __resolveType: TypeResolveFn<'GitHubRevision', ParentType, ContextType>;
+};
+
+export type StepDefinitionResolvers<ContextType = Context, ParentType extends ResolversParentTypes['StepDefinition'] = ResolversParentTypes['StepDefinition']> = {
+  description: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  keyword: Resolver<ResolversTypes['GherkinStepKeyword'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type StepEventResolvers<ContextType = Context, ParentType extends ResolversParentTypes['StepEvent'] = ResolversParentTypes['StepEvent']> = {
+  at: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
+  commandChains: Resolver<ResolversTypes['CommandChainEventConnection'], ParentType, ContextType>;
+  definition: Resolver<ResolversTypes['StepDefinition'], ParentType, ContextType>;
+  id: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  testExecution: Resolver<ResolversTypes['TestExecution'], ParentType, ContextType>;
+  until: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type StepEventConnectionResolvers<ContextType = Context, ParentType extends ResolversParentTypes['StepEventConnection'] = ResolversParentTypes['StepEventConnection']> = {
+  edges: Resolver<ReadonlyArray<ResolversTypes['StepEventEdge']>, ParentType, ContextType>;
+  pageInfo: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>;
+  totalCount: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type StepEventEdgeResolvers<ContextType = Context, ParentType extends ResolversParentTypes['StepEventEdge'] = ResolversParentTypes['StepEventEdge']> = {
+  cursor: Resolver<ResolversTypes['Cursor'], ParentType, ContextType>;
+  node: Resolver<ResolversTypes['StepEvent'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type TestExecutionResolvers<ContextType = Context, ParentType extends ResolversParentTypes['TestExecution'] = ResolversParentTypes['TestExecution']> = {
@@ -942,7 +1193,7 @@ export type TestExecutionEnvironmentResolvers<ContextType = Context, ParentType 
 };
 
 export type TestExecutionEventResolvers<ContextType = Context, ParentType extends ResolversParentTypes['TestExecutionEvent'] = ResolversParentTypes['TestExecutionEvent']> = {
-  __resolveType: TypeResolveFn<'ConsoleLogEvent' | 'HttpNetworkEvent', ParentType, ContextType>;
+  __resolveType: TypeResolveFn<'CommandChainEvent' | 'CommandEvent' | 'ConsoleLogEvent' | 'HttpNetworkEvent' | 'ScenarioEvent' | 'StepEvent', ParentType, ContextType>;
 };
 
 export type TestExecutionEventConnectionResolvers<ContextType = Context, ParentType extends ResolversParentTypes['TestExecutionEventConnection'] = ResolversParentTypes['TestExecutionEventConnection']> = {
@@ -971,6 +1222,13 @@ export interface UrlScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes[
 export type Resolvers<ContextType = Context> = {
   BrowserVersion: BrowserVersionResolvers<ContextType>;
   ChromiumVersion: ChromiumVersionResolvers<ContextType>;
+  CommandChainEvent: CommandChainEventResolvers<ContextType>;
+  CommandChainEventConnection: CommandChainEventConnectionResolvers<ContextType>;
+  CommandChainEventEdge: CommandChainEventEdgeResolvers<ContextType>;
+  CommandEvent: CommandEventResolvers<ContextType>;
+  CommandEventConnection: CommandEventConnectionResolvers<ContextType>;
+  CommandEventEdge: CommandEventEdgeResolvers<ContextType>;
+  CommandEventError: CommandEventErrorResolvers<ContextType>;
   ConsoleEvent: ConsoleEventResolvers<ContextType>;
   ConsoleLogEvent: ConsoleLogEventResolvers<ContextType>;
   Cookie: CookieResolvers<ContextType>;
@@ -1007,8 +1265,14 @@ export type Resolvers<ContextType = Context> = {
   Node: NodeResolvers<ContextType>;
   PageInfo: PageInfoResolvers<ContextType>;
   Query: QueryResolvers<ContextType>;
+  ScenarioDefinition: ScenarioDefinitionResolvers<ContextType>;
+  ScenarioEvent: ScenarioEventResolvers<ContextType>;
   SourceCodeManagementRepository: SourceCodeManagementRepositoryResolvers<ContextType>;
   SourceCodeManagementRevision: SourceCodeManagementRevisionResolvers<ContextType>;
+  StepDefinition: StepDefinitionResolvers<ContextType>;
+  StepEvent: StepEventResolvers<ContextType>;
+  StepEventConnection: StepEventConnectionResolvers<ContextType>;
+  StepEventEdge: StepEventEdgeResolvers<ContextType>;
   TestExecution: TestExecutionResolvers<ContextType>;
   TestExecutionEnvironment: TestExecutionEnvironmentResolvers<ContextType>;
   TestExecutionEvent: TestExecutionEventResolvers<ContextType>;

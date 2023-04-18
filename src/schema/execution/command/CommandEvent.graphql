@@ -1,0 +1,28 @@
+enum CommandEventStatus {
+  SUCCESS
+  FAILED
+}
+
+type CommandEvent implements Node & Event & IntervalEvent & TestExecutionEvent {
+  id: ID!
+  at: DateTime!
+  until: DateTime!
+  name: String!
+  description: String!
+  status: CommandEventStatus!
+  error: CommandEventError
+  # Needs SourceCode stuff from Summary Panel Schema.
+  # source: SourceCodeManagementRevisionFileLine!
+  testExecution: TestExecution!
+}
+
+type CommandEventConnection {
+  totalCount: Int!
+  edges: [CommandEventEdge!]!
+  pageInfo: PageInfo!
+}
+
+type CommandEventEdge {
+  cursor: Cursor!
+  node: CommandEvent!
+}
