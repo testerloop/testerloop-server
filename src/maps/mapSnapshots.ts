@@ -16,8 +16,8 @@ const mapSnapshots = (rawSnapshots: unknown, testExecutionId: string) => {
     const snapshots = SnapshotsSchema.parse(rawSnapshots);
 
     return Object.fromEntries(
-        snapshots.map((obj, i) => {
-            const id = `${testExecutionId}/snapshot/${i + 1}`;
+        snapshots.map((obj) => {
+            const id = `${testExecutionId}/snapshot/${obj.snapshotID}`;
             return [
                 id,
                 {...obj, _id: id}

@@ -9,8 +9,34 @@ const resolvers: CommandEventResolvers = {
     until: ({ until }) => until,
     name: ({ name }) => name,
     description: ({ message }) => message,
-    previousSnapshot: ({ previousSnapshot }) => previousSnapshot,
-    nextSnapshot: ({ nextSnapshot }) => nextSnapshot,
+    async previousSnapshot ({ id, at, snapshotID }, _args, { dataSources }) {
+        const [runId, requestId, _] = id.split('/');
+        const snapshots = await dataSources.snapshot.getSnapshotsByTestExecutionId(`${runId}/${requestId}`);
+        const snapshot = Object.values(snapshots).find((s) => s.snapshotID === snapshotID)
+        if(!snapshot){
+            throw new Error(`Snapshot with id ${snapshotID} was not found`)
+        }
+        return { 
+            __typename: 'TestExecutionSnapshot' as const,
+            id: snapshot._id,
+            at,
+            dom: snapshot.beforeBody
+        }
+    },
+    async nextSnapshot ({ id, until, snapshotID }, _args, { dataSources }) {
+        const [runId, requestId, _] = id.split('/');
+        const snapshots = await dataSources.snapshot.getSnapshotsByTestExecutionId(`${runId}/${requestId}`);
+        const snapshot = Object.values(snapshots).find((s) => s.snapshotID === snapshotID)
+        if(!snapshot){
+            throw new Error(`Snapshot with id ${snapshotID} was not found`)
+        }
+        return { 
+            __typename: 'TestExecutionSnapshot' as const,
+            id: snapshot._id,
+            at: until,
+            dom: snapshot.afterBody
+        }
+    },
     status({ state }) {
         switch(state){
             case 'failed':
@@ -33,10 +59,10 @@ const resolvers: CommandEventResolvers = {
         }
     },
     async testExecution({ id }, _args) {
-        const [runId, _] = id.split('/');
+        const [runId, requestId, _] = id.split('/');
         return {
             __typename: 'TestExecution',
-            id,
+            id: `${runId}/${requestId}`,
             testRun: {
                 __typename: 'TestRun',
                 id: runId

@@ -1,8 +1,7 @@
-import { TestExecutionSnapshotModel } from '../resolvers/types/mappers.js';
 import { SnapshotType } from './mapSnapshots.js';
 import mapStepData, { StepType } from './mapStepData.js';
 
-const mapSteps = (steps: unknown, testExecutionId: string, endedTestsAt: Date, snapshots: (SnapshotType & {_id: string})[]) => {
+const mapSteps = (steps: unknown, testExecutionId: string, endedTestsAt: Date) => {
     const filteredData = mapStepData(steps);
 
     const mappedSteps: (StepType & 
@@ -21,8 +20,6 @@ const mapSteps = (steps: unknown, testExecutionId: string, endedTestsAt: Date, s
                         {__typename: 'CommandEvent', 
                         at: Date, 
                         until: Date,
-                        previousSnapshot: TestExecutionSnapshotModel,
-                        nextSnapshot: TestExecutionSnapshotModel
                     })[] 
                 }[]
         }
@@ -51,27 +48,13 @@ const mapSteps = (steps: unknown, testExecutionId: string, endedTestsAt: Date, s
         }
 
         const step = mappedSteps[mappedSteps.length - 1];
-        const snapshot = snapshots.find((s) => s.snapshotID === item.snapshotID)
-        if(!snapshot){
-            throw new Error(`Snapshot with id ${item.snapshotID} was not found`)
-        }
+
         const command = {
             __typename: 'CommandEvent' as const,
             at,
             until,
             ...item,
-            previousSnapshot: {
-                __typename: 'TestExecutionSnapshot' as const,
-                id: snapshot._id,
-                at,
-                dom: snapshot.beforeBody
-            },
-            nextSnapshot: {
-                __typename: 'TestExecutionSnapshot' as const,
-                id: snapshot._id,
-                at: until,
-                dom: snapshot.afterBody
-            }
+            id: `${testExecutionId}/commandEvent/${item.id}`
         };
         if (item.type === 'parent') {
             if(step.commandChains.length){

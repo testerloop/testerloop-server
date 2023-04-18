@@ -33,8 +33,6 @@ export interface CommandEventModel extends StepType {
     id: string,
     at: Date,
     until: Date,
-    previousSnapshot: TestExecutionSnapshotModel;
-    nextSnapshot: TestExecutionSnapshotModel;
 }
 
 export interface CommandChainEventModel {
