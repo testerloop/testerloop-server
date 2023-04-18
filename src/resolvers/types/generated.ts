@@ -489,6 +489,7 @@ export type StepEvent = Event & IntervalEvent & Node & TestExecutionEvent & {
   readonly at: Scalars['DateTime'];
   readonly commandChains: CommandChainEventConnection;
   readonly definition: StepDefinition;
+  readonly hasFailed: Scalars['Boolean'];
   readonly id: Scalars['ID'];
   readonly testExecution: TestExecution;
   readonly until: Scalars['DateTime'];
@@ -1158,6 +1159,7 @@ export type StepEventResolvers<ContextType = Context, ParentType extends Resolve
   at: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   commandChains: Resolver<ResolversTypes['CommandChainEventConnection'], ParentType, ContextType>;
   definition: Resolver<ResolversTypes['StepDefinition'], ParentType, ContextType>;
+  hasFailed: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   id: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   testExecution: Resolver<ResolversTypes['TestExecution'], ParentType, ContextType>;
   until: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;

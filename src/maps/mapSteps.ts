@@ -9,6 +9,7 @@ const mapSteps = (steps: unknown, testExecutionId: string, endedTestsAt: Date) =
             _id: string,
             at: Date, 
             until: Date,
+            hasFailed: boolean,
             commandChains: 
                 { 
                     __typename: 'CommandChainEvent',
@@ -37,6 +38,7 @@ const mapSteps = (steps: unknown, testExecutionId: string, endedTestsAt: Date) =
                 ...item, 
                 at,
                 until,
+                hasFailed: false,
                 commandChains: [],
             });
             continue;
@@ -49,6 +51,9 @@ const mapSteps = (steps: unknown, testExecutionId: string, endedTestsAt: Date) =
             until,
             ...item
         };
+        if(command.state === 'failed'){
+            step.hasFailed = true;
+        }
         if (item.type === 'parent') {
             if(step.commandChains.length){
                 const lastCommandChain = step.commandChains[step.commandChains.length - 1]
