@@ -23,9 +23,9 @@ export interface ScenarioEventModel {
 
 export interface TestExecutionSnapshotModel {
     __typename: 'TestExecutionSnapshot',
-    id: string,
     at: Date,
-    dom: string
+    dom: string,
+    testExecutionId: string
 }
 
 export interface CommandEventModel extends StepType {

@@ -3,11 +3,11 @@ import { TestExecutionSnapshotResolvers } from './types/generated.js';
 const resolvers: TestExecutionSnapshotResolvers = {
     at: ({ at }) => at,
     dom: ({ dom }) => dom,
-    async testExecution({ id }) {
-        const [runId, _] = id.split('/');
+    async testExecution({ testExecutionId }) {
+        const [runId, _] = testExecutionId.split('/');
         return {
             __typename: 'TestExecution',
-            id,
+            id: testExecutionId,
             testRun: {
                 __typename: 'TestRun',
                 id: runId
