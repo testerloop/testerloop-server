@@ -38,7 +38,7 @@ const mapSteps = (steps: unknown, testExecutionId: string, endedTestsAt: Date) =
                 ...item, 
                 at,
                 until,
-                hasFailed: false,
+                hasFailed: item.state === 'failed',
                 commandChains: [],
             });
             continue;
