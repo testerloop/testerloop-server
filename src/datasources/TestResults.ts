@@ -29,7 +29,7 @@ export class TestResults {
         this.context = context;
     }
 
-    resultsByRunIdDataLoader = new DataLoader<string, Results>(
+    resultsByTestExecutionIdDataLoader = new DataLoader<string, Results>(
         (ids) => Promise.all(ids.map(async (testExecutionId) => {
             const bucketName = config.AWS_BUCKET_NAME;
             const rawResults = await S3Service.getObject(bucketName, `${testExecutionId}/cypress/results.json`)
@@ -38,7 +38,7 @@ export class TestResults {
         }))
     )
     async getResultsByTestExecutionId(testExecutionId: string) {
-        return this.resultsByRunIdDataLoader.load(testExecutionId);
+        return this.resultsByTestExecutionIdDataLoader.load(testExecutionId);
     }
     
     async getById(id: string) {

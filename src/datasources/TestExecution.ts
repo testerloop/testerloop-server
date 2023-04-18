@@ -34,18 +34,20 @@ export class TestExecution {
         const consoleFilters = filters?.consoleFilter;
         const networkFilters = filters?.networkFilter;
 
-        const [logs, httpNetworkEvent, steps, commands] = await Promise.all([
+        const [logs, httpNetworkEvent, steps, commands, scenario] = await Promise.all([
             this.context.dataSources.consoleEvent.getLogsByTestExecutionId(id),
             this.context.dataSources.networkEvent.getNetworkEventsByTestExecutionId(id),
             this.context.dataSources.stepEvent.getStepsByTestExecutionId(id),
-            this.context.dataSources.commandEvent.getCommandsByTestExecutionId(id)
+            this.context.dataSources.commandEvent.getCommandsByTestExecutionId(id),
+            this.context.dataSources.scenarioEvent.getScenarioEventByTestExecutionId(id)
           ]);
 
         let data = ([
             ...Object.values(logs),
             ...Object.values(httpNetworkEvent),
             ...Object.values(steps),
-            ...Object.values(commands)
+            ...Object.values(commands),
+            ...Object.values(scenario)
         ]).sort((a, b) => {
             return a.at.getTime() - b.at.getTime();
         }).filter((evt) => {
@@ -119,6 +121,11 @@ export class TestExecution {
                     }
                     case TestExecutionEventType.Command: {
                         if(evt.__typename !== 'CommandEvent') return false;
+
+                        return true;
+                    }
+                    case TestExecutionEventType.TestPart: {
+                        if(evt.__typename !== 'ScenarioEvent') return false;
 
                         return true;
                     }

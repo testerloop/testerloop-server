@@ -19,7 +19,6 @@ export interface StepEventModel {
 export interface ScenarioEventModel {
     __typename: 'ScenarioEvent',
     id: string,
-    steps: StepEventModel
 }
 
 export interface CommandEventModel extends StepType{
