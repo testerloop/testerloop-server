@@ -1,3 +1,4 @@
+import { SnapshotType } from './mapSnapshots.js';
 import mapStepData, { StepType } from './mapStepData.js';
 
 const mapSteps = (steps: unknown, testExecutionId: string, endedTestsAt: Date) => {
@@ -15,7 +16,11 @@ const mapSteps = (steps: unknown, testExecutionId: string, endedTestsAt: Date) =
                     id: string, 
                     at: Date,
                     until: Date,
-                    commands: (StepType & {__typename: 'CommandEvent', at: Date, until: Date})[] 
+                    commands: (StepType & 
+                        {__typename: 'CommandEvent', 
+                        at: Date, 
+                        until: Date,
+                    })[] 
                 }[]
         }
         )[] = [];
@@ -43,11 +48,13 @@ const mapSteps = (steps: unknown, testExecutionId: string, endedTestsAt: Date) =
         }
 
         const step = mappedSteps[mappedSteps.length - 1];
+
         const command = {
             __typename: 'CommandEvent' as const,
             at,
             until,
-            ...item
+            ...item,
+            id: `${testExecutionId}/commandEvent/${item.id}`
         };
         if (item.type === 'parent') {
             if(step.commandChains.length){

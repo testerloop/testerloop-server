@@ -1,4 +1,3 @@
-import { assertNonNull } from '../util/assertNonNull.js';
 import { encodeId } from '../util/id.js';
 import { CommandEventResolvers, CommandEventStatus } from './types/generated.js';
 
@@ -10,6 +9,26 @@ const resolvers: CommandEventResolvers = {
     until: ({ until }) => until,
     name: ({ name }) => name,
     description: ({ message }) => message,
+    async previousSnapshot ({ id, at, snapshotID }, _args, { dataSources }) {
+        const [runId, requestId, _] = id.split('/');
+        const snapshot = await dataSources.snapshot.getById(`${runId}/${requestId}/snapshot/${snapshotID}`);
+        return { 
+            __typename: 'TestExecutionSnapshot' as const,
+            testExecutionId: `${runId}/${requestId}`,
+            at,
+            dom: snapshot.beforeBody
+        }
+    },
+    async nextSnapshot ({ id, until, snapshotID }, _args, { dataSources }) {
+        const [runId, requestId, _] = id.split('/');
+        const snapshot = await dataSources.snapshot.getById(`${runId}/${requestId}/snapshot/${snapshotID}`);
+        return { 
+            __typename: 'TestExecutionSnapshot' as const,
+            testExecutionId: `${runId}/${requestId}`,
+            at: until,
+            dom: snapshot.afterBody
+        }
+    },
     status({ state }) {
         switch(state){
             case 'failed':
@@ -32,10 +51,10 @@ const resolvers: CommandEventResolvers = {
         }
     },
     async testExecution({ id }, _args) {
-        const [runId, _] = id.split('/');
+        const [runId, requestId, _] = id.split('/');
         return {
             __typename: 'TestExecution',
-            id,
+            id: `${runId}/${requestId}`,
             testRun: {
                 __typename: 'TestRun',
                 id: runId

@@ -16,7 +16,7 @@ export class StepEvent {
             const bucketName = config.AWS_BUCKET_NAME;
             const [steps, results] = await Promise.all([
                 S3Service.getObject(bucketName, `${testExecutionId}/cypress/out.json`),
-                this.context.dataSources.testResults.getResultsByTestExecutionId(testExecutionId)
+                this.context.dataSources.testResults.getResultsByTestExecutionId(testExecutionId),
             ])
             const mappedSteps = mapSteps(steps, testExecutionId, new Date(results.endedTestsAt));
 
