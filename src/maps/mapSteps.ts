@@ -39,7 +39,7 @@ const mapSteps = (steps: unknown, testExecutionId: string, endedTestsAt: Date) =
 
             mappedSteps.push({
                 __typename: 'StepEvent',
-                _id: `${testExecutionId}/step/${i + 1}`,
+                _id: `${testExecutionId}/step/${item.id}`,
                 ...item, 
                 at,
                 until,

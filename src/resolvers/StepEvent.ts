@@ -22,6 +22,26 @@ const resolvers: StepEventResolvers = {
         const event = await dataSources.stepEvent.getById(_id);
         return getPaginatedData(event.commandChains);
     },
+    async previousSnapshot ({ _id, at, snapshotID }, _args, { dataSources }) {
+        const [runId, requestId, _] = _id.split('/');
+        const snapshot = await dataSources.snapshot.getById(`${runId}/${requestId}/snapshot/${snapshotID}`);
+        return { 
+            __typename: 'TestExecutionSnapshot' as const,
+            testExecutionId: `${runId}/${requestId}`,
+            at,
+            dom: snapshot.beforeBody
+        }
+    },
+    async nextSnapshot ({ _id, until, snapshotID }, _args, { dataSources }) {
+        const [runId, requestId, _] = _id.split('/');
+        const snapshot = await dataSources.snapshot.getById(`${runId}/${requestId}/snapshot/${snapshotID}`);
+        return { 
+            __typename: 'TestExecutionSnapshot' as const,
+            testExecutionId: `${runId}/${requestId}`,
+            at: until,
+            dom: snapshot.afterBody
+        }
+    },
     async definition({ _id }, _args, { dataSources }) {
         const event = await dataSources.stepEvent.getById(_id)
         let mappedKeyword;
