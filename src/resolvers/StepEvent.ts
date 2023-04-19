@@ -14,9 +14,9 @@ const resolvers: StepEventResolvers = {
         const event = await dataSources.stepEvent.getById(_id);
         return event.until;
     },
-    async hasFailed({ _id }, _args, { dataSources }) {
+    async status({ _id }, _args, { dataSources }) {
         const event = await dataSources.stepEvent.getById(_id);
-        return event.hasFailed;
+        return event.status;
     },
     async commandChains({ _id }, _args, { dataSources }) {
         const event = await dataSources.stepEvent.getById(_id);
