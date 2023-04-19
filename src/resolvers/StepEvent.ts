@@ -14,6 +14,10 @@ const resolvers: StepEventResolvers = {
         const event = await dataSources.stepEvent.getById(_id);
         return event.until;
     },
+    async status({ _id }, _args, { dataSources }) {
+        const event = await dataSources.stepEvent.getById(_id);
+        return event.status;
+    },
     async commandChains({ _id }, _args, { dataSources }) {
         const event = await dataSources.stepEvent.getById(_id);
         return getPaginatedData(event.commandChains);

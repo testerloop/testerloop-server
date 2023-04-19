@@ -1,4 +1,4 @@
-import { SnapshotType } from './mapSnapshots.js';
+import { CommandEventStatus } from '../resolvers/types/generated.js';
 import mapStepData, { StepType } from './mapStepData.js';
 
 const mapSteps = (steps: unknown, testExecutionId: string, endedTestsAt: Date) => {
@@ -10,6 +10,7 @@ const mapSteps = (steps: unknown, testExecutionId: string, endedTestsAt: Date) =
             _id: string,
             at: Date, 
             until: Date,
+            status: CommandEventStatus,
             commandChains: 
                 { 
                     __typename: 'CommandChainEvent',
@@ -42,6 +43,7 @@ const mapSteps = (steps: unknown, testExecutionId: string, endedTestsAt: Date) =
                 ...item, 
                 at,
                 until,
+                status: item.state === 'failed'? CommandEventStatus.Failed : CommandEventStatus.Success,
                 commandChains: [],
             });
             continue;
@@ -56,6 +58,9 @@ const mapSteps = (steps: unknown, testExecutionId: string, endedTestsAt: Date) =
             ...item,
             id: `${testExecutionId}/commandEvent/${item.id}`
         };
+        if(command.state === 'failed'){
+            step.status = CommandEventStatus.Failed;
+        }
         if (item.type === 'parent') {
             if(step.commandChains.length){
                 const lastCommandChain = step.commandChains[step.commandChains.length - 1]

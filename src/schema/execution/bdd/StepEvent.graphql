@@ -4,6 +4,7 @@ type StepEvent implements Node & Event & IntervalEvent & TestExecutionEvent {
   until: DateTime!
   commandChains: CommandChainEventConnection!
   definition: StepDefinition!
+  status: CommandEventStatus!
   testExecution: TestExecution!
 }
 
