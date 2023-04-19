@@ -30,6 +30,13 @@ export interface TestExecutionSnapshotModel {
     testExecutionId: string
 }
 
+export interface TestExecutionScreenshotModel {
+    __typename: 'TestExecutionScreenshot',
+    at: Date,
+    url: string,
+    testExecutionId: string
+}
+
 export interface CommandEventModel extends StepType {
     __typename: 'CommandEvent',
     id: string,
@@ -87,7 +94,8 @@ export type TestExecutionEvent =
     | HttpNetworkEventModel 
     | ScenarioEventModel
     | StepEventModel
-    | CommandEventModel;
+    | CommandEventModel
+    | TestExecutionScreenshotModel;
     
 export interface TestRunModel {
     __typename: 'TestRun',
