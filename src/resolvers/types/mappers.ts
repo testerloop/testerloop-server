@@ -11,9 +11,11 @@ export interface HttpNetworkEventModel {
     id: string,
 }
 
-export interface StepEventModel {
+export interface StepEventModel extends StepType {
     __typename: 'StepEvent',
     _id: string,
+    at: Date,
+    until: Date,
 }
 
 export interface ScenarioEventModel {

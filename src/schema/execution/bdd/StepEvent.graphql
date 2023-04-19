@@ -5,6 +5,8 @@ type StepEvent implements Node & Event & IntervalEvent & TestExecutionEvent {
   commandChains: CommandChainEventConnection!
   definition: StepDefinition!
   status: CommandEventStatus!
+  previousSnapshot: TestExecutionSnapshot!
+  nextSnapshot: TestExecutionSnapshot!
   testExecution: TestExecution!
 }
 
