@@ -16,7 +16,10 @@ export class CommandEvent {
         return Object.fromEntries(
             commands.map((obj) => [
                 obj.id,
-                obj
+                {
+                    ...obj,
+                    id: `${id}/commandEvent/${obj.id}`,
+                }
             ])
             );
     }
