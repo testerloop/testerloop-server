@@ -1,9 +1,16 @@
 import { z } from 'zod';
 
+const CodeFrameSchema = z.object({
+    line: z.number(),
+    column: z.number(),
+    relativeFile: z.string()
+})
+
 const ErrorSchema = z.object({
     message: z.string(),
     name: z.string(),
-    stack: z.string() 
+    stack: z.string(),
+    codeFrame: CodeFrameSchema
 })
 
 const OptionsSchema = z.object({

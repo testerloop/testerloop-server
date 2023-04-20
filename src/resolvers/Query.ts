@@ -29,7 +29,8 @@ const resolvers: QueryResolvers = {
             id: testExecution.id,
             testRun: {
                 __typename: 'TestRun',
-                id: runId
+                id: runId,
+                testExecutionId: testExecution.id
             }
         };
     },

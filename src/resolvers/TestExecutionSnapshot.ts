@@ -10,7 +10,8 @@ const resolvers: TestExecutionSnapshotResolvers = {
             id: testExecutionId,
             testRun: {
                 __typename: 'TestRun',
-                id: runId
+                id: runId,
+                testExecutionId
             }
         };
     },

@@ -1,6 +1,6 @@
 import { Context } from '../context.js';
 import config from '../config.js';
-import { HttpNetworkEventResourceType, TestExecutionEventFilterInput, TestExecutionEventType } from '../resolvers/types/generated.js';
+import { CommandEventStatus, HttpNetworkEventResourceType, TestExecutionEventFilterInput, TestExecutionEventType } from '../resolvers/types/generated.js';
 import S3Service from '../S3Service.js';
 import getPaginatedData from '../util/getPaginatedData.js';
 
@@ -33,6 +33,7 @@ export class TestExecution {
         const filters = args?.filter;
         const consoleFilters = filters?.consoleFilter;
         const networkFilters = filters?.networkFilter;
+        const commandFilters = filters?.commandFilter;
 
         const [logs, httpNetworkEvent, steps, commands, scenario] = await Promise.all([
             this.context.dataSources.consoleEvent.getLogsByTestExecutionId(id),
@@ -121,6 +122,25 @@ export class TestExecution {
                     }
                     case TestExecutionEventType.Command: {
                         if(evt.__typename !== 'CommandEvent') return false;
+
+                        const { state } = evt;
+
+                        if(commandFilters?.status){
+                            let status;
+                            switch(state){
+                                case 'failed':
+                                    status = CommandEventStatus.Failed
+                                    break;
+                                case 'passed':
+                                    status = CommandEventStatus.Success
+                                    break;
+                                default:
+                                    throw new Error(`State ${state} is not a valid state`)
+                            }
+                            if(!commandFilters?.status.includes(status)){
+                                return false;
+                            }
+                        }
 
                         return true;
                     }

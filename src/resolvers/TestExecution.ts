@@ -22,6 +22,7 @@ const resolvers: TestExecutionResolvers = {
         return {
             __typename: 'TestRun',
             id: runId,
+            testExecutionId: id
         };
     },
     async environment({ id }, _args, { dataSources }) {

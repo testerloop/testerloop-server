@@ -39,25 +39,44 @@ const resolvers: CommandEventResolvers = {
                 throw new Error(`State ${state} is not a valid state`)
         }
     },
-    async error({ err }) {
+    async error({ id, err }, _args, { dataSources }) {
         if(!err){
             return null;
         }
+
+        const { codeFrame } = err;
+        const { relativeFile, line, column } = codeFrame;
+        
+        const [runId, _] = id.split('/');
+
+        const cicd = await dataSources.testCodeRevision.getCicdDataByRunId(runId);
+
         return {
             __typename: 'CommandEventError',
             type: err.name,
             message: err.message,
-            stackTrace: err.stack
+            stackTrace: err.stack,
+            url: [
+                cicd.GITHUB_SERVER_URL,
+                cicd.GITHUB_REPOSITORY,
+                'blob',
+                cicd.GITHUB_REF_NAME,
+                relativeFile,
+                `?#L${line}`,
+            ].join('/'),
+            urlText: [relativeFile, line, column].join(':')
         }
     },
     async testExecution({ id }, _args) {
         const [runId, requestId, _] = id.split('/');
+        const testExecutionId = `${runId}/${requestId}`;
         return {
             __typename: 'TestExecution',
-            id: `${runId}/${requestId}`,
+            id: testExecutionId,
             testRun: {
                 __typename: 'TestRun',
-                id: runId
+                id: runId,
+                testExecutionId
             }
         };
     },

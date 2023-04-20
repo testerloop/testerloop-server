@@ -14,6 +14,7 @@ const CicdSchema = z.object({
     GITHUB_SERVER_URL: z.string(),
     GITHUB_REPOSITORY_OWNER: z.string(),
     GITHUB_REPOSITORY: z.string(),
+    GITHUB_REF_NAME: z.string(),
     gitBranch: z.string(),
     author: UserSchema,
     committer: UserSchema,
