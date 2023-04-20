@@ -1,5 +1,8 @@
 import { encodeId } from '../util/id.js';
 import { TestExecutionScreenshotResolvers } from './types/generated.js';
+import path from 'path';
+import S3Service from '../S3Service.js';
+import config from '../config.js';
 
 const resolvers: TestExecutionScreenshotResolvers = {
     id({ id }) {
@@ -10,10 +13,14 @@ const resolvers: TestExecutionScreenshotResolvers = {
         return event.at;
     },
     async url({ id }, _args, { dataSources }) {
+        const bucketName = config.AWS_BUCKET_NAME;
+
         const event = await dataSources.screenshot.getById(id);
+        const url = await S3Service.getSignedUrl(bucketName, event.fileName);
+
         return {
             __typename: 'SignedURL',
-            ...event.signedUrl
+            ...url
         };
     },
     async testExecution({ testExecutionId }) {

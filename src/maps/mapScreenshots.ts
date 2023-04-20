@@ -1,25 +1,18 @@
 import path from 'path';
 
-type RawScreenshot = {
-    name: string;
-    signedUrl: {
-        url: string;
-        expiresAt: Date;
-    };
-}
 
-const mapScreenshots = (rawScreenshots: RawScreenshot[], testExecutionId: string) => {
+const mapScreenshots = (rawScreenshots: string[], testExecutionId: string) => {
     return Object.fromEntries(
-        rawScreenshots.map((ss) => {
-            const fileName = path.basename(ss.name, path.extname(ss.name));
-            const id = `${testExecutionId}/screenshot/${fileName}`;
+        rawScreenshots.map((fileName) => {
+            const name = path.basename(fileName, path.extname(fileName));
+            const id = `${testExecutionId}/screenshot/${name}`;
             return [
                 id,
                 {
                     __typename: 'TestExecutionScreenshot' as const,
-                    ...ss,
+                    fileName,
                     id,
-                    at: new Date(parseInt(fileName)),
+                    at: new Date(parseInt(name)),
                     testExecutionId
                 }
             ]

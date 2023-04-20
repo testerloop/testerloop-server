@@ -48,23 +48,23 @@ class S3Service {
       return result.contents;
   }
 
-  async getSignedUrlsFromFolder(bucketName: string, key: string, expiresIn = 3600) {
-    const command = new ListObjectsV2Command({ Bucket: bucketName, Prefix: key });
+  async listObjects(bucketName: string, prefix: string) {
+    const command = new ListObjectsV2Command({ Bucket: bucketName, Prefix: prefix });
     const response = await this.s3.send(command);
+    const objects = response.Contents?.map((object) =>
+      object.Key || ''
+    );
+    return objects || [];
+  }
 
-    
-    const promises = response.Contents?.map(async (object) => {
-      const params = { Bucket: bucketName, Key: object.Key };
-      const command = new GetObjectCommand(params);
+  async getSignedUrl(bucketName: string, key: string, expiresIn = 3600) {
+    const params = { Bucket: bucketName, Key: key };
 
-      const expiresAt = new Date(Math.floor(Date.now() / 1000) + expiresIn); 
-      const url = await getSignedUrl(this.s3, command, {expiresIn})
-      
-      return { name: object.Key?.replace(key, '') || '', signedUrl: { url, expiresAt } };
-    });
+    const command = new GetObjectCommand(params);
+    const expiresAt = new Date(Math.floor(Date.now() / 1000) + expiresIn);
+    const url = await getSignedUrl(this.s3, command, { expiresIn });
 
-    const files = await Promise.all(promises || []);
-    return files;
+    return { url, expiresAt };
   }
 }
 
