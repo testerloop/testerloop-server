@@ -594,9 +594,10 @@ export enum TestExecutionEventType {
   TestPart = 'TEST_PART'
 }
 
-export type TestExecutionScreenshot = Event & InstantaneousEvent & TestExecutionEvent & {
+export type TestExecutionScreenshot = Event & InstantaneousEvent & Node & TestExecutionEvent & {
   readonly __typename: 'TestExecutionScreenshot';
   readonly at: Scalars['DateTime'];
+  readonly id: Scalars['ID'];
   readonly testExecution: TestExecution;
   /** Returns a signed URL for fetching this screenshot from S3. */
   readonly url: SignedUrl;
@@ -737,7 +738,7 @@ export type ResolversTypes = {
   NetworkEventFilterInput: NetworkEventFilterInput;
   NetworkEventResponseStatusFilterInput: NetworkEventResponseStatusFilterInput;
   NetworkEventTiming: ResolverTypeWrapper<NetworkEventTiming>;
-  Node: ResolversTypes['CommandEvent'] | ResolversTypes['StepEvent'] | ResolversTypes['TestExecution'] | ResolversTypes['TestRun'];
+  Node: ResolversTypes['CommandEvent'] | ResolversTypes['StepEvent'] | ResolversTypes['TestExecution'] | ResolversTypes['TestExecutionScreenshot'] | ResolversTypes['TestRun'];
   OrderDirection: OrderDirection;
   PageInfo: ResolverTypeWrapper<PageInfo>;
   Query: ResolverTypeWrapper<unknown>;
@@ -816,7 +817,7 @@ export type ResolversParentTypes = {
   NetworkEventFilterInput: NetworkEventFilterInput;
   NetworkEventResponseStatusFilterInput: NetworkEventResponseStatusFilterInput;
   NetworkEventTiming: NetworkEventTiming;
-  Node: ResolversParentTypes['CommandEvent'] | ResolversParentTypes['StepEvent'] | ResolversParentTypes['TestExecution'] | ResolversParentTypes['TestRun'];
+  Node: ResolversParentTypes['CommandEvent'] | ResolversParentTypes['StepEvent'] | ResolversParentTypes['TestExecution'] | ResolversParentTypes['TestExecutionScreenshot'] | ResolversParentTypes['TestRun'];
   PageInfo: PageInfo;
   Query: unknown;
   ScenarioDefinition: ScenarioDefinition;
@@ -1143,7 +1144,7 @@ export type NetworkEventTimingResolvers<ContextType = Context, ParentType extend
 };
 
 export type NodeResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Node'] = ResolversParentTypes['Node']> = {
-  __resolveType: TypeResolveFn<'CommandEvent' | 'StepEvent' | 'TestExecution' | 'TestRun', ParentType, ContextType>;
+  __resolveType: TypeResolveFn<'CommandEvent' | 'StepEvent' | 'TestExecution' | 'TestExecutionScreenshot' | 'TestRun', ParentType, ContextType>;
 };
 
 export type PageInfoResolvers<ContextType = Context, ParentType extends ResolversParentTypes['PageInfo'] = ResolversParentTypes['PageInfo']> = {
@@ -1255,6 +1256,7 @@ export type TestExecutionEventEdgeResolvers<ContextType = Context, ParentType ex
 
 export type TestExecutionScreenshotResolvers<ContextType = Context, ParentType extends ResolversParentTypes['TestExecutionScreenshot'] = ResolversParentTypes['TestExecutionScreenshot']> = {
   at: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
+  id: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   testExecution: Resolver<ResolversTypes['TestExecution'], ParentType, ContextType>;
   url: Resolver<ResolversTypes['SignedURL'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;

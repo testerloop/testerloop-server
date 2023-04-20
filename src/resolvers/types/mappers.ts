@@ -32,8 +32,7 @@ export interface TestExecutionSnapshotModel {
 
 export interface TestExecutionScreenshotModel {
     __typename: 'TestExecutionScreenshot',
-    at: Date,
-    url: string,
+    id: string,
     testExecutionId: string
 }
 
