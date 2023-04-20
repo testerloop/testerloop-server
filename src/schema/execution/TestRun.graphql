@@ -3,7 +3,6 @@ type TestRun implements Node {
   """
   This field may be null if the data was not provided for collection.
   """
-  title: String!
   testCodeRevision: SourceCodeManagementRevision
   # TODO: Implement a field for all TestExecutions.
 }

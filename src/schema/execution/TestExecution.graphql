@@ -2,6 +2,7 @@ type TestExecution implements Node & Event & IntervalEvent {
   id: ID!
   at: DateTime!
   until: DateTime!
+  title: String!
   testRun: TestRun!
   environment: TestExecutionEnvironment!
   events(

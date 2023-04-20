@@ -521,6 +521,7 @@ export type TestExecution = Event & IntervalEvent & Node & {
   readonly events: TestExecutionEventConnection;
   readonly id: Scalars['ID'];
   readonly testRun: TestRun;
+  readonly title: Scalars['String'];
   readonly until: Scalars['DateTime'];
 };
 
@@ -599,9 +600,8 @@ export type TestExecutionSnapshot = Event & InstantaneousEvent & TestExecutionEv
 export type TestRun = Node & {
   readonly __typename: 'TestRun';
   readonly id: Scalars['ID'];
-  readonly testCodeRevision: Maybe<SourceCodeManagementRevision>;
   /** This field may be null if the data was not provided for collection. */
-  readonly title: Scalars['String'];
+  readonly testCodeRevision: Maybe<SourceCodeManagementRevision>;
 };
 
 
@@ -1207,6 +1207,7 @@ export type TestExecutionResolvers<ContextType = Context, ParentType extends Res
   events: Resolver<ResolversTypes['TestExecutionEventConnection'], ParentType, ContextType, Partial<TestExecutionEventsArgs>>;
   id: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   testRun: Resolver<ResolversTypes['TestRun'], ParentType, ContextType>;
+  title: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   until: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
@@ -1243,7 +1244,6 @@ export type TestExecutionSnapshotResolvers<ContextType = Context, ParentType ext
 export type TestRunResolvers<ContextType = Context, ParentType extends ResolversParentTypes['TestRun'] = ResolversParentTypes['TestRun']> = {
   id: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   testCodeRevision: Resolver<Maybe<ResolversTypes['SourceCodeManagementRevision']>, ParentType, ContextType>;
-  title: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
