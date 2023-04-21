@@ -57,6 +57,7 @@ const resolvers: CommandEventResolvers = {
             message: err.message,
             stackTrace: err.stack,
             location: {
+                __typename: 'GitHubRevisionFileLineColumn',
                 line: {
                     __typename: 'GitHubRevisionFileLine',
                     file: {
