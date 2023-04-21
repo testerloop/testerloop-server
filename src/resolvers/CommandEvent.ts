@@ -49,22 +49,39 @@ const resolvers: CommandEventResolvers = {
         
         const [runId, _] = id.split('/');
 
-        const cicd = await dataSources.testCodeRevision.getCicdDataByRunId(runId);
+        const cicd = await dataSources.testCodeRevision.getById(runId);
 
         return {
             __typename: 'CommandEventError',
             type: err.name,
             message: err.message,
             stackTrace: err.stack,
-            url: [
-                cicd.GITHUB_SERVER_URL,
-                cicd.GITHUB_REPOSITORY,
-                'blob',
-                cicd.GITHUB_REF_NAME,
-                relativeFile,
-                `?#L${line}`,
-            ].join('/'),
-            urlText: [relativeFile, line, column].join(':')
+            revisionFile: {
+                startLine: line,
+                endLine: line,
+                column,
+                file: {
+                    path: relativeFile,
+                    revision: {
+                        __typename: 'GitHubRevision',
+                        repository: cicd.repository,
+                        branch: cicd.branch,
+                        committer: cicd.committer,
+                        author: cicd.author,
+                        url: cicd.url,
+                        hash: cicd.hash,
+                        shortHash: cicd.shortHash,
+                    }
+                },
+                url: [
+                    cicd.serverUrl,
+                    cicd.repository.name,
+                    'blob',
+                    cicd.refName,
+                    relativeFile,
+                    `?#L${line}`,
+                ].join('/'),
+            }
         }
     },
     async testExecution({ id }, _args) {

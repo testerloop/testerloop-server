@@ -33,4 +33,5 @@ interface GitRevisionFileLines implements SourceCodeManagementRevisionFileLines 
   file: GitRevisionFile!
   startLine: Int!
   endLine: Int!
+  column: Int!
 }

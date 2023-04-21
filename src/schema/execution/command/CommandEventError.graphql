@@ -2,6 +2,5 @@ type CommandEventError {
   type: String!
   message: String!
   stackTrace: String!
-  url: String!
-  urlText: String!
+  revisionFile: GitHubRevisionFileLines!
 }

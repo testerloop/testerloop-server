@@ -97,7 +97,9 @@ export class TestCodeRevision {
                     url: [cicd.GITHUB_SERVER_URL, cicd.author.name].join('/')
                 }
             },
-            url: [cicd.gitUrl, 'commit', cicd.hash].join('/')
+            url: [cicd.gitUrl, 'commit', cicd.hash].join('/'),
+            serverUrl: cicd.GITHUB_SERVER_URL,
+            refName: cicd.GITHUB_REF_NAME
         };
     }
 }

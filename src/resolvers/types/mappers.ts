@@ -1,5 +1,4 @@
 import { StepType } from "../../maps/mapStepData";
-import { CommandEvent } from "./generated";
 
 export interface ConsoleLogEventModel {
     __typename: 'ConsoleLogEvent',

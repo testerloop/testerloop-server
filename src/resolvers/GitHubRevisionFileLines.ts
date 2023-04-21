@@ -5,6 +5,7 @@ const resolvers: GitHubRevisionFileLinesResolvers = {
     file: ({ file }) => file,
     startLine: ({ startLine }) => startLine,
     endLine: ({ endLine }) => endLine,
+    column: ({ column }) => column,
 };
 
 export default resolvers;

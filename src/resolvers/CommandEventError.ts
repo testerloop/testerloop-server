@@ -4,8 +4,7 @@ const resolvers: CommandEventErrorResolvers = {
     type: ({type}) => type,
     message: ({ message }) => message,
     stackTrace: ({ stackTrace }) => stackTrace,
-    url: ({ url }) => url,
-    urlText: ({ urlText }) => urlText
+    revisionFile: ({ revisionFile }) => revisionFile,
 }
 
 export default resolvers;

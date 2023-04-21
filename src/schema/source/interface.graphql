@@ -15,4 +15,5 @@ interface SourceCodeManagementRevisionFileLines {
   file: SourceCodeManagementRevisionFile!
   startLine: Int!
   endLine: Int!
+  column: Int!
 }

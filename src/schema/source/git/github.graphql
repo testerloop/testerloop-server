@@ -43,7 +43,7 @@ type GitHubRevision implements SourceCodeManagementRevision & GitRevision {
   url: URL!
 }
 
-interface GitHubRevisionFile implements SourceCodeManagementRevisionFile & GitRevisionFile {
+type GitHubRevisionFile implements SourceCodeManagementRevisionFile & GitRevisionFile {
   revision: GitHubRevision!
   path: String!
 }
@@ -52,5 +52,6 @@ type GitHubRevisionFileLines implements SourceCodeManagementRevisionFileLines & 
   file: GitHubRevisionFile!
   startLine: Int!
   endLine: Int!
+  column: Int!
   url: URL!
 }
