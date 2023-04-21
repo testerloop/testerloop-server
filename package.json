@@ -1,4 +1,5 @@
 {
+  "name": "otf-server",
   "devDependencies": {
     "@graphql-codegen/cli": "^2.16.4",
     "@graphql-codegen/typescript": "^2.8.7",
