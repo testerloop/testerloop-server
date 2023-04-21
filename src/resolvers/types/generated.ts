@@ -1,5 +1,5 @@
 import { GraphQLResolveInfo, GraphQLScalarType, GraphQLScalarTypeConfig } from 'graphql';
-import { ConsoleLogEventModel, HttpNetworkEventModel, StepEventModel, StepEventEdgeModel, StepEventConnectionModel, ScenarioEventModel, TestExecutionModel, TestExecutionEventConnectionModel, TestExecutionEventEdgeModel, TestRunModel, GitHubRevisionModel, CommandChainEventModel, CommandChainEventEdgeModel, CommandChainEventConnectionModel, CommandEventModel, CommandEventEdgeModel, CommandEventConnectionModel, TestExecutionSnapshotModel, TestExecutionScreenshotModel } from './mappers';
+import { ConsoleLogEventModel, HttpNetworkEventModel, StepEventModel, StepEventEdgeModel, StepEventConnectionModel, ScenarioEventModel, TestExecutionModel, TestExecutionEventConnectionModel, TestExecutionEventEdgeModel, TestRunModel, GitHubRevisionModel, CommandChainEventModel, CommandChainEventEdgeModel, CommandChainEventConnectionModel, CommandEventModel, CommandEventEdgeModel, CommandEventConnectionModel, TestExecutionSnapshotModel, TestExecutionScreenshotModel, GitHubRevisionFileModel, GitHubRevisionFileLineModel, GitHubRevisionFileLineColumnModel, SourceCodeManagementRevisionFileLineColumnModel } from './mappers';
 import { Context } from '../../context';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
@@ -744,7 +744,7 @@ export type ResolversTypes = {
   CommandEvent: ResolverTypeWrapper<CommandEventModel>;
   CommandEventConnection: ResolverTypeWrapper<CommandEventConnectionModel>;
   CommandEventEdge: ResolverTypeWrapper<CommandEventEdgeModel>;
-  CommandEventError: ResolverTypeWrapper<CommandEventError>;
+  CommandEventError: ResolverTypeWrapper<Omit<CommandEventError, 'location'> & { location: ResolversTypes['SourceCodeManagementRevisionFileLineColumn'] }>;
   CommandEventFilterInput: CommandEventFilterInput;
   CommandEventStatus: CommandEventStatus;
   ConsoleEvent: ResolversTypes['ConsoleLogEvent'];
@@ -765,9 +765,9 @@ export type ResolversTypes = {
   GitHubRepository: ResolverTypeWrapper<GitHubRepository>;
   GitHubRepositoryOwner: ResolverTypeWrapper<GitHubRepositoryOwner>;
   GitHubRevision: ResolverTypeWrapper<GitHubRevisionModel>;
-  GitHubRevisionFile: ResolverTypeWrapper<Omit<GitHubRevisionFile, 'revision'> & { revision: ResolversTypes['GitHubRevision'] }>;
-  GitHubRevisionFileLine: ResolverTypeWrapper<Omit<GitHubRevisionFileLine, 'file'> & { file: ResolversTypes['GitHubRevisionFile'] }>;
-  GitHubRevisionFileLineColumn: ResolverTypeWrapper<Omit<GitHubRevisionFileLineColumn, 'line'> & { line: ResolversTypes['GitHubRevisionFileLine'] }>;
+  GitHubRevisionFile: ResolverTypeWrapper<GitHubRevisionFileModel>;
+  GitHubRevisionFileLine: ResolverTypeWrapper<GitHubRevisionFileLineModel>;
+  GitHubRevisionFileLineColumn: ResolverTypeWrapper<GitHubRevisionFileLineColumnModel>;
   GitHubUser: ResolverTypeWrapper<GitHubUser>;
   GitRepository: ResolversTypes['GitHubRepository'];
   GitRevision: ResolversTypes['GitHubRevision'];
@@ -808,7 +808,7 @@ export type ResolversTypes = {
   SourceCodeManagementRevision: ResolversTypes['GitHubRevision'];
   SourceCodeManagementRevisionFile: ResolversTypes['GitHubRevisionFile'];
   SourceCodeManagementRevisionFileLine: ResolversTypes['GitHubRevisionFileLine'];
-  SourceCodeManagementRevisionFileLineColumn: ResolversTypes['GitHubRevisionFileLineColumn'];
+  SourceCodeManagementRevisionFileLineColumn: ResolverTypeWrapper<SourceCodeManagementRevisionFileLineColumnModel>;
   StepDefinition: ResolverTypeWrapper<StepDefinition>;
   StepEvent: ResolverTypeWrapper<StepEventModel>;
   StepEventConnection: ResolverTypeWrapper<StepEventConnectionModel>;
@@ -838,7 +838,7 @@ export type ResolversParentTypes = {
   CommandEvent: CommandEventModel;
   CommandEventConnection: CommandEventConnectionModel;
   CommandEventEdge: CommandEventEdgeModel;
-  CommandEventError: CommandEventError;
+  CommandEventError: Omit<CommandEventError, 'location'> & { location: ResolversParentTypes['SourceCodeManagementRevisionFileLineColumn'] };
   CommandEventFilterInput: CommandEventFilterInput;
   ConsoleEvent: ResolversParentTypes['ConsoleLogEvent'];
   ConsoleEventFilterInput: ConsoleEventFilterInput;
@@ -855,9 +855,9 @@ export type ResolversParentTypes = {
   GitHubRepository: GitHubRepository;
   GitHubRepositoryOwner: GitHubRepositoryOwner;
   GitHubRevision: GitHubRevisionModel;
-  GitHubRevisionFile: Omit<GitHubRevisionFile, 'revision'> & { revision: ResolversParentTypes['GitHubRevision'] };
-  GitHubRevisionFileLine: Omit<GitHubRevisionFileLine, 'file'> & { file: ResolversParentTypes['GitHubRevisionFile'] };
-  GitHubRevisionFileLineColumn: Omit<GitHubRevisionFileLineColumn, 'line'> & { line: ResolversParentTypes['GitHubRevisionFileLine'] };
+  GitHubRevisionFile: GitHubRevisionFileModel;
+  GitHubRevisionFileLine: GitHubRevisionFileLineModel;
+  GitHubRevisionFileLineColumn: GitHubRevisionFileLineColumnModel;
   GitHubUser: GitHubUser;
   GitRepository: ResolversParentTypes['GitHubRepository'];
   GitRevision: ResolversParentTypes['GitHubRevision'];
@@ -895,7 +895,7 @@ export type ResolversParentTypes = {
   SourceCodeManagementRevision: ResolversParentTypes['GitHubRevision'];
   SourceCodeManagementRevisionFile: ResolversParentTypes['GitHubRevisionFile'];
   SourceCodeManagementRevisionFileLine: ResolversParentTypes['GitHubRevisionFileLine'];
-  SourceCodeManagementRevisionFileLineColumn: ResolversParentTypes['GitHubRevisionFileLineColumn'];
+  SourceCodeManagementRevisionFileLineColumn: SourceCodeManagementRevisionFileLineColumnModel;
   StepDefinition: StepDefinition;
   StepEvent: StepEventModel;
   StepEventConnection: StepEventConnectionModel;

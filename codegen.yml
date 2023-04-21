@@ -40,6 +40,10 @@ generates:
         CommandEventConnection: ./mappers#CommandEventConnectionModel
         TestExecutionSnapshot: ./mappers#TestExecutionSnapshotModel
         TestExecutionScreenshot: ./mappers#TestExecutionScreenshotModel
+        GitHubRevisionFile: ./mappers#GitHubRevisionFileModel
+        GitHubRevisionFileLine: ./mappers#GitHubRevisionFileLineModel
+        GitHubRevisionFileLineColumn: ./mappers#GitHubRevisionFileLineColumnModel
+        SourceCodeManagementRevisionFileLineColumn: ./mappers#SourceCodeManagementRevisionFileLineColumnModel
     plugins:
       - typescript
       - typescript-resolvers
