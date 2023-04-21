@@ -39,6 +39,7 @@ generates:
         CommandEventEdge: ./mappers#CommandEventEdgeModel
         CommandEventConnection: ./mappers#CommandEventConnectionModel
         TestExecutionSnapshot: ./mappers#TestExecutionSnapshotModel
+        TestExecutionScreenshot: ./mappers#TestExecutionScreenshotModel
     plugins:
       - typescript
       - typescript-resolvers

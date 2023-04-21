@@ -35,12 +35,13 @@ export class TestExecution {
         const networkFilters = filters?.networkFilter;
         const commandFilters = filters?.commandFilter;
 
-        const [logs, httpNetworkEvent, steps, commands, scenario] = await Promise.all([
+        const [logs, httpNetworkEvent, steps, commands, scenario, screenshots] = await Promise.all([
             this.context.dataSources.consoleEvent.getLogsByTestExecutionId(id),
             this.context.dataSources.networkEvent.getNetworkEventsByTestExecutionId(id),
             this.context.dataSources.stepEvent.getStepsByTestExecutionId(id),
             this.context.dataSources.commandEvent.getCommandsByTestExecutionId(id),
-            this.context.dataSources.scenarioEvent.getScenarioEventByTestExecutionId(id)
+            this.context.dataSources.scenarioEvent.getScenarioEventByTestExecutionId(id),
+            this.context.dataSources.screenshot.getScreenshotsByTestExecutionId(id)
           ]);
 
         let data = ([
@@ -48,7 +49,8 @@ export class TestExecution {
             ...Object.values(httpNetworkEvent),
             ...Object.values(steps),
             ...Object.values(commands),
-            ...Object.values(scenario)
+            ...Object.values(scenario),
+            ...Object.values(screenshots)
         ]).sort((a, b) => {
             return a.at.getTime() - b.at.getTime();
         }).filter((evt) => {
@@ -146,6 +148,11 @@ export class TestExecution {
                     }
                     case TestExecutionEventType.TestPart: {
                         if(evt.__typename !== 'ScenarioEvent') return false;
+
+                        return true;
+                    }
+                    case TestExecutionEventType.Screenshot: {
+                        if(evt.__typename !== 'TestExecutionScreenshot') return false;
 
                         return true;
                     }
