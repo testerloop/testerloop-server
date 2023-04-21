@@ -14,6 +14,7 @@ const CicdSchema = z.object({
     GITHUB_SERVER_URL: z.string(),
     GITHUB_REPOSITORY_OWNER: z.string(),
     GITHUB_REPOSITORY: z.string(),
+    GITHUB_REF_NAME: z.string(),
     gitBranch: z.string(),
     author: UserSchema,
     committer: UserSchema,
@@ -96,7 +97,9 @@ export class TestCodeRevision {
                     url: [cicd.GITHUB_SERVER_URL, cicd.author.name].join('/')
                 }
             },
-            url: [cicd.gitUrl, 'commit', cicd.hash].join('/')
+            url: [cicd.gitUrl, 'commit', cicd.hash].join('/'),
+            serverUrl: cicd.GITHUB_SERVER_URL,
+            refName: cicd.GITHUB_REF_NAME
         };
     }
 }

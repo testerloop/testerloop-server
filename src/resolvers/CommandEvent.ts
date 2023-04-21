@@ -39,25 +39,64 @@ const resolvers: CommandEventResolvers = {
                 throw new Error(`State ${state} is not a valid state`)
         }
     },
-    async error({ err }) {
+    async error({ id, err }, _args, { dataSources }) {
         if(!err){
             return null;
         }
+
+        const { codeFrame } = err;
+        const { relativeFile, line, column } = codeFrame;
+        
+        const [runId, _] = id.split('/');
+
+        const cicd = await dataSources.testCodeRevision.getById(runId);
+
         return {
             __typename: 'CommandEventError',
             type: err.name,
             message: err.message,
-            stackTrace: err.stack
+            stackTrace: err.stack,
+            location: {
+                __typename: 'GitHubRevisionFileLineColumn',
+                line: {
+                    __typename: 'GitHubRevisionFileLine',
+                    file: {
+                        __typename: 'GitHubRevisionFile',
+                        path: relativeFile,
+                        revision: {
+                            __typename: 'GitHubRevision',
+                            repository: cicd.repository,
+                            branch: cicd.branch,
+                            committer: cicd.committer,
+                            author: cicd.author,
+                            url: cicd.url,
+                            hash: cicd.hash,
+                            shortHash: cicd.shortHash,
+                        }
+                    },
+                    url: [
+                        cicd.serverUrl,
+                        cicd.repository.name,
+                        'blob',
+                        cicd.refName,
+                        relativeFile,
+                        `?#L${line}`,
+                    ].join('/'),
+                    line
+                },
+                column,
+            }
         }
     },
     async testExecution({ id }, _args) {
         const [runId, requestId, _] = id.split('/');
+        const testExecutionId = `${runId}/${requestId}`;
         return {
             __typename: 'TestExecution',
-            id: `${runId}/${requestId}`,
+            id: testExecutionId,
             testRun: {
                 __typename: 'TestRun',
-                id: runId
+                id: runId,
             }
         };
     },

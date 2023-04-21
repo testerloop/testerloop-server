@@ -42,6 +42,9 @@ import StepDefinition from './StepDefinition.js';
 import ScenarioDefinition from './ScenarioDefinition.js';
 import StepEvent from './StepEvent.js';
 import TestExecutionSnapshot from './TestExecutionSnapshot.js';
+import GitHubRevisionFile from './GitHubRevisionFile.js';
+import GitHubRevisionFileLine from './GitHubRevisionFileLine.js';
+import GitHubRevisionFileLineColumn from './GitHubRevisionFileLineColumn.js';
 import TestExecutionScreenshot from './TestExecutionScreenshot.js';
 import SignedURL from './SignedURL.js';
 
@@ -87,6 +90,15 @@ const resolvers: Resolvers = {
     GitActor: interfaceResolvers,
     GitRepository: interfaceResolvers,
     GitRevision: interfaceResolvers,
+    GitRevisionFile: interfaceResolvers,
+    GitRevisionFileLineColumn: interfaceResolvers,
+    GitRevisionFileLine: interfaceResolvers,
+    GitHubRevisionFileLineColumn,
+    GitHubRevisionFileLine,
+    GitHubRevisionFile,
+    SourceCodeManagementRevisionFileLine: interfaceResolvers,
+    SourceCodeManagementRevisionFileLineColumn: interfaceResolvers,
+    SourceCodeManagementRevisionFile: interfaceResolvers,
     SourceCodeManagementRepository: interfaceResolvers,
     SourceCodeManagementRevision: interfaceResolvers,
     StepEventConnection,

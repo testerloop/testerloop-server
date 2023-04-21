@@ -5,3 +5,19 @@ interface SourceCodeManagementRepository {
 interface SourceCodeManagementRevision {
   repository: SourceCodeManagementRepository!
 }
+
+interface SourceCodeManagementRevisionFile {
+  revision: SourceCodeManagementRevision!
+  path: String!
+}
+
+interface SourceCodeManagementRevisionFileLine {
+  file: SourceCodeManagementRevisionFile!
+  line: Int!
+  url: URL!
+}
+
+interface SourceCodeManagementRevisionFileLineColumn {
+  line: SourceCodeManagementRevisionFileLine!
+  column: Int!
+}

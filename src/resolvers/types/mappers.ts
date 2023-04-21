@@ -1,5 +1,4 @@
 import { StepType } from "../../maps/mapStepData";
-import { CommandEvent } from "./generated";
 
 export interface ConsoleLogEventModel {
     __typename: 'ConsoleLogEvent',
@@ -165,3 +164,25 @@ export interface GitHubUser {
     name: string;
     url: string;
 }
+
+export interface GitHubRevisionFileModel {
+    __typename: "GitHubRevisionFile"
+    revision: GitHubRevisionModel;
+    path: string;
+}
+
+export interface GitHubRevisionFileLineModel {
+    __typename: "GitHubRevisionFileLine"
+    file: GitHubRevisionFileModel;
+    line: number;
+    url: string;
+}
+
+export interface GitHubRevisionFileLineColumnModel {
+    __typename: "GitHubRevisionFileLineColumn"
+    line: GitHubRevisionFileLineModel;
+    column: number;
+}
+
+export type SourceCodeManagementRevisionFileLineColumnModel =
+    | GitHubRevisionFileLineColumnModel

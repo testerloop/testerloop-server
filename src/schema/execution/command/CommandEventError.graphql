@@ -1,5 +1,6 @@
 type CommandEventError {
-    type: String!
-    message: String!
-    stackTrace: String!
+  type: String!
+  message: String!
+  stackTrace: String!
+  location: SourceCodeManagementRevisionFileLineColumn!
 }
