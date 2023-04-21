@@ -8,6 +8,7 @@ import { StepEvent } from './StepEvent.js';
 import { CommandEvent } from './CommandEvent.js';
 import { Snapshot } from './Snapshot.js';
 import { ScenarioEvent } from './ScenarioEvent.js';
+import { Screenshot } from './Screenshot.js';
 
 export const createDataSources = (context: Context) => ({
     consoleEvent: new ConsoleEvent(context),
@@ -18,7 +19,8 @@ export const createDataSources = (context: Context) => ({
     stepEvent: new StepEvent(context),
     commandEvent: new CommandEvent(context),
     snapshot: new Snapshot(context),
-    scenarioEvent: new ScenarioEvent(context)
+    scenarioEvent: new ScenarioEvent(context),
+    screenshot: new Screenshot(context)
 });
 
 export type DataSources = ReturnType<typeof createDataSources>;

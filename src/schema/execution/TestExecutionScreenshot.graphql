@@ -1,0 +1,9 @@
+type TestExecutionScreenshot implements Node & Event & InstantaneousEvent & TestExecutionEvent {
+  id: ID!
+  at: DateTime!
+  testExecution: TestExecution!
+  """
+  Returns a signed URL for fetching this screenshot from S3.
+  """
+  url: SignedURL!
+}

@@ -42,6 +42,8 @@ import StepDefinition from './StepDefinition.js';
 import ScenarioDefinition from './ScenarioDefinition.js';
 import StepEvent from './StepEvent.js';
 import TestExecutionSnapshot from './TestExecutionSnapshot.js';
+import TestExecutionScreenshot from './TestExecutionScreenshot.js';
+import SignedURL from './SignedURL.js';
 
 const interfaceResolvers = {
     __resolveType<T extends String>(parent: { __typename: T }): T {
@@ -111,6 +113,8 @@ const resolvers: Resolvers = {
     ChromiumVersion,
     URL,
     TestExecutionSnapshot,
+    TestExecutionScreenshot,
+    SignedURL
 };
 
 export default resolvers;

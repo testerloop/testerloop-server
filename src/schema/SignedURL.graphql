@@ -1,0 +1,4 @@
+type SignedURL {
+    expiresAt: DateTime!
+    url: URL!
+}

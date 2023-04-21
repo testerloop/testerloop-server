@@ -1,4 +1,7 @@
-import { S3Client, GetObjectCommand } from '@aws-sdk/client-s3';
+import { S3Client, GetObjectCommand, ListObjectsV2Command } from '@aws-sdk/client-s3';
+import {
+  getSignedUrl,
+} from "@aws-sdk/s3-request-presigner";
 import config from './config.js';
 import LRUCache from 'lru-cache';
 
@@ -43,6 +46,25 @@ class S3Service {
       if (!result)
         return null;
       return result.contents;
+  }
+
+  async listObjects(bucketName: string, prefix: string) {
+    const command = new ListObjectsV2Command({ Bucket: bucketName, Prefix: prefix });
+    const response = await this.s3.send(command);
+    const objects = response.Contents?.map((object) =>
+      object.Key || ''
+    );
+    return objects || [];
+  }
+
+  async getSignedUrl(bucketName: string, key: string, expiresIn = config.EXPIRES_IN) {
+    const params = { Bucket: bucketName, Key: key };
+
+    const command = new GetObjectCommand(params);
+    const expiresAt = new Date(Date.now() + expiresIn * 1000);
+    const url = await getSignedUrl(this.s3, command, { expiresIn });
+
+    return { url, expiresAt };
   }
 }
 
