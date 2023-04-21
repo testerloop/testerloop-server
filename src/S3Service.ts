@@ -57,11 +57,11 @@ class S3Service {
     return objects || [];
   }
 
-  async getSignedUrl(bucketName: string, key: string, expiresIn = 3600) {
+  async getSignedUrl(bucketName: string, key: string, expiresIn = config.EXPIRES_IN) {
     const params = { Bucket: bucketName, Key: key };
 
     const command = new GetObjectCommand(params);
-    const expiresAt = new Date(Math.floor(Date.now() / 1000) + expiresIn);
+    const expiresAt = new Date(Date.now() + expiresIn * 1000);
     const url = await getSignedUrl(this.s3, command, { expiresIn });
 
     return { url, expiresAt };
