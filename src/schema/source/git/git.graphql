@@ -23,3 +23,14 @@ interface GitRevision implements SourceCodeManagementRevision {
   committer: GitActor!
   author: GitActor!
 }
+
+interface GitRevisionFile implements SourceCodeManagementRevisionFile {
+  revision: GitRevision!
+  path: String!
+}
+
+interface GitRevisionFileLines implements SourceCodeManagementRevisionFileLines {
+  file: GitRevisionFile!
+  startLine: Int!
+  endLine: Int!
+}

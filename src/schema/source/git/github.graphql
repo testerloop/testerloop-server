@@ -42,3 +42,15 @@ type GitHubRevision implements SourceCodeManagementRevision & GitRevision {
   author: GitHubActor!
   url: URL!
 }
+
+interface GitHubRevisionFile implements SourceCodeManagementRevisionFile & GitRevisionFile {
+  revision: GitHubRevision!
+  path: String!
+}
+
+type GitHubRevisionFileLines implements SourceCodeManagementRevisionFileLines & GitRevisionFileLines {
+  file: GitHubRevisionFile!
+  startLine: Int!
+  endLine: Int!
+  url: URL!
+}

@@ -42,6 +42,7 @@ import StepDefinition from './StepDefinition.js';
 import ScenarioDefinition from './ScenarioDefinition.js';
 import StepEvent from './StepEvent.js';
 import TestExecutionSnapshot from './TestExecutionSnapshot.js';
+import GitHubRevisionFileLines from './GitHubRevisionFileLines.js';
 
 const interfaceResolvers = {
     __resolveType<T extends String>(parent: { __typename: T }): T {
@@ -85,6 +86,11 @@ const resolvers: Resolvers = {
     GitActor: interfaceResolvers,
     GitRepository: interfaceResolvers,
     GitRevision: interfaceResolvers,
+    GitRevisionFile: interfaceResolvers,
+    GitRevisionFileLines: interfaceResolvers,
+    GitHubRevisionFileLines,
+    SourceCodeManagementRevisionFileLines: interfaceResolvers,
+    SourceCodeManagementRevisionFile: interfaceResolvers,
     SourceCodeManagementRepository: interfaceResolvers,
     SourceCodeManagementRevision: interfaceResolvers,
     StepEventConnection,
