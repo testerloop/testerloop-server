@@ -29,9 +29,13 @@ interface GitRevisionFile implements SourceCodeManagementRevisionFile {
   path: String!
 }
 
-interface GitRevisionFileLines implements SourceCodeManagementRevisionFileLines {
+interface GitRevisionFileLine implements SourceCodeManagementRevisionFileLine {
   file: GitRevisionFile!
-  startLine: Int!
-  endLine: Int!
+  line: Int!
+  url: URL!
+}
+
+interface GitRevisionFileLineColumn implements SourceCodeManagementRevisionFileLineColumn {
+  line: GitRevisionFileLine!
   column: Int!
 }

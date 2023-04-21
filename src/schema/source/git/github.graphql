@@ -48,10 +48,13 @@ type GitHubRevisionFile implements SourceCodeManagementRevisionFile & GitRevisio
   path: String!
 }
 
-type GitHubRevisionFileLines implements SourceCodeManagementRevisionFileLines & GitRevisionFileLines {
+type GitHubRevisionFileLine implements SourceCodeManagementRevisionFileLine & GitRevisionFileLine {
   file: GitHubRevisionFile!
-  startLine: Int!
-  endLine: Int!
-  column: Int!
+  line: Int!
   url: URL!
+}
+
+type GitHubRevisionFileLineColumn implements SourceCodeManagementRevisionFileLineColumn & GitRevisionFileLineColumn {
+  line: GitHubRevisionFileLine!
+  column: Int!
 }

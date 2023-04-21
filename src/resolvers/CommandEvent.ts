@@ -57,8 +57,7 @@ const resolvers: CommandEventResolvers = {
             message: err.message,
             stackTrace: err.stack,
             revisionFile: {
-                startLine: line,
-                endLine: line,
+                line,
                 column,
                 file: {
                     path: relativeFile,

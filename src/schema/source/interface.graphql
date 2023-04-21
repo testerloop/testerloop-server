@@ -11,9 +11,13 @@ interface SourceCodeManagementRevisionFile {
   path: String!
 }
 
-interface SourceCodeManagementRevisionFileLines {
+interface SourceCodeManagementRevisionFileLine {
   file: SourceCodeManagementRevisionFile!
-  startLine: Int!
-  endLine: Int!
+  line: Int!
+  url: URL!
+}
+
+interface SourceCodeManagementRevisionFileLineColumn {
+  line: SourceCodeManagementRevisionFileLine!
   column: Int!
 }

@@ -91,7 +91,7 @@ export type CommandEventEdge = {
 export type CommandEventError = {
   readonly __typename: 'CommandEventError';
   readonly message: Scalars['String'];
-  readonly revisionFile: GitHubRevisionFileLines;
+  readonly revisionFile: GitHubRevisionFileLineColumn;
   readonly stackTrace: Scalars['String'];
   readonly type: Scalars['String'];
 };
@@ -228,13 +228,17 @@ export type GitHubRevisionFile = GitRevisionFile & SourceCodeManagementRevisionF
   readonly revision: GitHubRevision;
 };
 
-export type GitHubRevisionFileLines = GitRevisionFileLines & SourceCodeManagementRevisionFileLines & {
-  readonly __typename: 'GitHubRevisionFileLines';
-  readonly column: Scalars['Int'];
-  readonly endLine: Scalars['Int'];
+export type GitHubRevisionFileLine = GitRevisionFileLine & SourceCodeManagementRevisionFileLine & {
+  readonly __typename: 'GitHubRevisionFileLine';
   readonly file: GitHubRevisionFile;
-  readonly startLine: Scalars['Int'];
+  readonly line: Scalars['Int'];
   readonly url: Scalars['URL'];
+};
+
+export type GitHubRevisionFileLineColumn = GitRevisionFileLineColumn & SourceCodeManagementRevisionFileLineColumn & {
+  readonly __typename: 'GitHubRevisionFileLineColumn';
+  readonly column: Scalars['Int'];
+  readonly line: GitHubRevisionFileLine;
 };
 
 export type GitHubUser = {
@@ -267,11 +271,15 @@ export type GitRevisionFile = {
   readonly revision: GitRevision;
 };
 
-export type GitRevisionFileLines = {
-  readonly column: Scalars['Int'];
-  readonly endLine: Scalars['Int'];
+export type GitRevisionFileLine = {
   readonly file: GitRevisionFile;
-  readonly startLine: Scalars['Int'];
+  readonly line: Scalars['Int'];
+  readonly url: Scalars['URL'];
+};
+
+export type GitRevisionFileLineColumn = {
+  readonly column: Scalars['Int'];
+  readonly line: GitRevisionFileLine;
 };
 
 export type HttpBody = {
@@ -513,11 +521,15 @@ export type SourceCodeManagementRevisionFile = {
   readonly revision: SourceCodeManagementRevision;
 };
 
-export type SourceCodeManagementRevisionFileLines = {
-  readonly column: Scalars['Int'];
-  readonly endLine: Scalars['Int'];
+export type SourceCodeManagementRevisionFileLine = {
   readonly file: SourceCodeManagementRevisionFile;
-  readonly startLine: Scalars['Int'];
+  readonly line: Scalars['Int'];
+  readonly url: Scalars['URL'];
+};
+
+export type SourceCodeManagementRevisionFileLineColumn = {
+  readonly column: Scalars['Int'];
+  readonly line: SourceCodeManagementRevisionFileLine;
 };
 
 export type StepDefinition = {
@@ -716,7 +728,7 @@ export type ResolversTypes = {
   CommandEvent: ResolverTypeWrapper<CommandEventModel>;
   CommandEventConnection: ResolverTypeWrapper<CommandEventConnectionModel>;
   CommandEventEdge: ResolverTypeWrapper<CommandEventEdgeModel>;
-  CommandEventError: ResolverTypeWrapper<Omit<CommandEventError, 'revisionFile'> & { revisionFile: ResolversTypes['GitHubRevisionFileLines'] }>;
+  CommandEventError: ResolverTypeWrapper<Omit<CommandEventError, 'revisionFile'> & { revisionFile: ResolversTypes['GitHubRevisionFileLineColumn'] }>;
   CommandEventFilterInput: CommandEventFilterInput;
   CommandEventStatus: CommandEventStatus;
   ConsoleEvent: ResolversTypes['ConsoleLogEvent'];
@@ -738,12 +750,14 @@ export type ResolversTypes = {
   GitHubRepositoryOwner: ResolverTypeWrapper<GitHubRepositoryOwner>;
   GitHubRevision: ResolverTypeWrapper<GitHubRevisionModel>;
   GitHubRevisionFile: ResolverTypeWrapper<Omit<GitHubRevisionFile, 'revision'> & { revision: ResolversTypes['GitHubRevision'] }>;
-  GitHubRevisionFileLines: ResolverTypeWrapper<Omit<GitHubRevisionFileLines, 'file'> & { file: ResolversTypes['GitHubRevisionFile'] }>;
+  GitHubRevisionFileLine: ResolverTypeWrapper<Omit<GitHubRevisionFileLine, 'file'> & { file: ResolversTypes['GitHubRevisionFile'] }>;
+  GitHubRevisionFileLineColumn: ResolverTypeWrapper<Omit<GitHubRevisionFileLineColumn, 'line'> & { line: ResolversTypes['GitHubRevisionFileLine'] }>;
   GitHubUser: ResolverTypeWrapper<GitHubUser>;
   GitRepository: ResolversTypes['GitHubRepository'];
   GitRevision: ResolversTypes['GitHubRevision'];
   GitRevisionFile: ResolversTypes['GitHubRevisionFile'];
-  GitRevisionFileLines: ResolversTypes['GitHubRevisionFileLines'];
+  GitRevisionFileLine: ResolversTypes['GitHubRevisionFileLine'];
+  GitRevisionFileLineColumn: ResolversTypes['GitHubRevisionFileLineColumn'];
   HttpBody: ResolversTypes['HttpRequestBody'] | ResolversTypes['HttpResponseBody'];
   HttpHeaderOrderBy: HttpHeaderOrderBy;
   HttpHeaderOrderInput: HttpHeaderOrderInput;
@@ -776,7 +790,8 @@ export type ResolversTypes = {
   SourceCodeManagementRepository: ResolversTypes['GitHubRepository'];
   SourceCodeManagementRevision: ResolversTypes['GitHubRevision'];
   SourceCodeManagementRevisionFile: ResolversTypes['GitHubRevisionFile'];
-  SourceCodeManagementRevisionFileLines: ResolversTypes['GitHubRevisionFileLines'];
+  SourceCodeManagementRevisionFileLine: ResolversTypes['GitHubRevisionFileLine'];
+  SourceCodeManagementRevisionFileLineColumn: ResolversTypes['GitHubRevisionFileLineColumn'];
   StepDefinition: ResolverTypeWrapper<StepDefinition>;
   StepEvent: ResolverTypeWrapper<StepEventModel>;
   StepEventConnection: ResolverTypeWrapper<StepEventConnectionModel>;
@@ -805,7 +820,7 @@ export type ResolversParentTypes = {
   CommandEvent: CommandEventModel;
   CommandEventConnection: CommandEventConnectionModel;
   CommandEventEdge: CommandEventEdgeModel;
-  CommandEventError: Omit<CommandEventError, 'revisionFile'> & { revisionFile: ResolversParentTypes['GitHubRevisionFileLines'] };
+  CommandEventError: Omit<CommandEventError, 'revisionFile'> & { revisionFile: ResolversParentTypes['GitHubRevisionFileLineColumn'] };
   CommandEventFilterInput: CommandEventFilterInput;
   ConsoleEvent: ResolversParentTypes['ConsoleLogEvent'];
   ConsoleEventFilterInput: ConsoleEventFilterInput;
@@ -823,12 +838,14 @@ export type ResolversParentTypes = {
   GitHubRepositoryOwner: GitHubRepositoryOwner;
   GitHubRevision: GitHubRevisionModel;
   GitHubRevisionFile: Omit<GitHubRevisionFile, 'revision'> & { revision: ResolversParentTypes['GitHubRevision'] };
-  GitHubRevisionFileLines: Omit<GitHubRevisionFileLines, 'file'> & { file: ResolversParentTypes['GitHubRevisionFile'] };
+  GitHubRevisionFileLine: Omit<GitHubRevisionFileLine, 'file'> & { file: ResolversParentTypes['GitHubRevisionFile'] };
+  GitHubRevisionFileLineColumn: Omit<GitHubRevisionFileLineColumn, 'line'> & { line: ResolversParentTypes['GitHubRevisionFileLine'] };
   GitHubUser: GitHubUser;
   GitRepository: ResolversParentTypes['GitHubRepository'];
   GitRevision: ResolversParentTypes['GitHubRevision'];
   GitRevisionFile: ResolversParentTypes['GitHubRevisionFile'];
-  GitRevisionFileLines: ResolversParentTypes['GitHubRevisionFileLines'];
+  GitRevisionFileLine: ResolversParentTypes['GitHubRevisionFileLine'];
+  GitRevisionFileLineColumn: ResolversParentTypes['GitHubRevisionFileLineColumn'];
   HttpBody: ResolversParentTypes['HttpRequestBody'] | ResolversParentTypes['HttpResponseBody'];
   HttpHeaderOrderInput: HttpHeaderOrderInput;
   HttpHeaders: HttpHeaders;
@@ -858,7 +875,8 @@ export type ResolversParentTypes = {
   SourceCodeManagementRepository: ResolversParentTypes['GitHubRepository'];
   SourceCodeManagementRevision: ResolversParentTypes['GitHubRevision'];
   SourceCodeManagementRevisionFile: ResolversParentTypes['GitHubRevisionFile'];
-  SourceCodeManagementRevisionFileLines: ResolversParentTypes['GitHubRevisionFileLines'];
+  SourceCodeManagementRevisionFileLine: ResolversParentTypes['GitHubRevisionFileLine'];
+  SourceCodeManagementRevisionFileLineColumn: ResolversParentTypes['GitHubRevisionFileLineColumn'];
   StepDefinition: StepDefinition;
   StepEvent: StepEventModel;
   StepEventConnection: StepEventConnectionModel;
@@ -952,7 +970,7 @@ export type CommandEventEdgeResolvers<ContextType = Context, ParentType extends 
 
 export type CommandEventErrorResolvers<ContextType = Context, ParentType extends ResolversParentTypes['CommandEventError'] = ResolversParentTypes['CommandEventError']> = {
   message: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  revisionFile: Resolver<ResolversTypes['GitHubRevisionFileLines'], ParentType, ContextType>;
+  revisionFile: Resolver<ResolversTypes['GitHubRevisionFileLineColumn'], ParentType, ContextType>;
   stackTrace: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   type: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
@@ -1051,12 +1069,16 @@ export type GitHubRevisionFileResolvers<ContextType = Context, ParentType extend
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type GitHubRevisionFileLinesResolvers<ContextType = Context, ParentType extends ResolversParentTypes['GitHubRevisionFileLines'] = ResolversParentTypes['GitHubRevisionFileLines']> = {
-  column: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  endLine: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+export type GitHubRevisionFileLineResolvers<ContextType = Context, ParentType extends ResolversParentTypes['GitHubRevisionFileLine'] = ResolversParentTypes['GitHubRevisionFileLine']> = {
   file: Resolver<ResolversTypes['GitHubRevisionFile'], ParentType, ContextType>;
-  startLine: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  line: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   url: Resolver<ResolversTypes['URL'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type GitHubRevisionFileLineColumnResolvers<ContextType = Context, ParentType extends ResolversParentTypes['GitHubRevisionFileLineColumn'] = ResolversParentTypes['GitHubRevisionFileLineColumn']> = {
+  column: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  line: Resolver<ResolversTypes['GitHubRevisionFileLine'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -1080,8 +1102,12 @@ export type GitRevisionFileResolvers<ContextType = Context, ParentType extends R
   __resolveType: TypeResolveFn<'GitHubRevisionFile', ParentType, ContextType>;
 };
 
-export type GitRevisionFileLinesResolvers<ContextType = Context, ParentType extends ResolversParentTypes['GitRevisionFileLines'] = ResolversParentTypes['GitRevisionFileLines']> = {
-  __resolveType: TypeResolveFn<'GitHubRevisionFileLines', ParentType, ContextType>;
+export type GitRevisionFileLineResolvers<ContextType = Context, ParentType extends ResolversParentTypes['GitRevisionFileLine'] = ResolversParentTypes['GitRevisionFileLine']> = {
+  __resolveType: TypeResolveFn<'GitHubRevisionFileLine', ParentType, ContextType>;
+};
+
+export type GitRevisionFileLineColumnResolvers<ContextType = Context, ParentType extends ResolversParentTypes['GitRevisionFileLineColumn'] = ResolversParentTypes['GitRevisionFileLineColumn']> = {
+  __resolveType: TypeResolveFn<'GitHubRevisionFileLineColumn', ParentType, ContextType>;
 };
 
 export type HttpBodyResolvers<ContextType = Context, ParentType extends ResolversParentTypes['HttpBody'] = ResolversParentTypes['HttpBody']> = {
@@ -1245,8 +1271,12 @@ export type SourceCodeManagementRevisionFileResolvers<ContextType = Context, Par
   __resolveType: TypeResolveFn<'GitHubRevisionFile', ParentType, ContextType>;
 };
 
-export type SourceCodeManagementRevisionFileLinesResolvers<ContextType = Context, ParentType extends ResolversParentTypes['SourceCodeManagementRevisionFileLines'] = ResolversParentTypes['SourceCodeManagementRevisionFileLines']> = {
-  __resolveType: TypeResolveFn<'GitHubRevisionFileLines', ParentType, ContextType>;
+export type SourceCodeManagementRevisionFileLineResolvers<ContextType = Context, ParentType extends ResolversParentTypes['SourceCodeManagementRevisionFileLine'] = ResolversParentTypes['SourceCodeManagementRevisionFileLine']> = {
+  __resolveType: TypeResolveFn<'GitHubRevisionFileLine', ParentType, ContextType>;
+};
+
+export type SourceCodeManagementRevisionFileLineColumnResolvers<ContextType = Context, ParentType extends ResolversParentTypes['SourceCodeManagementRevisionFileLineColumn'] = ResolversParentTypes['SourceCodeManagementRevisionFileLineColumn']> = {
+  __resolveType: TypeResolveFn<'GitHubRevisionFileLineColumn', ParentType, ContextType>;
 };
 
 export type StepDefinitionResolvers<ContextType = Context, ParentType extends ResolversParentTypes['StepDefinition'] = ResolversParentTypes['StepDefinition']> = {
@@ -1356,12 +1386,14 @@ export type Resolvers<ContextType = Context> = {
   GitHubRepositoryOwner: GitHubRepositoryOwnerResolvers<ContextType>;
   GitHubRevision: GitHubRevisionResolvers<ContextType>;
   GitHubRevisionFile: GitHubRevisionFileResolvers<ContextType>;
-  GitHubRevisionFileLines: GitHubRevisionFileLinesResolvers<ContextType>;
+  GitHubRevisionFileLine: GitHubRevisionFileLineResolvers<ContextType>;
+  GitHubRevisionFileLineColumn: GitHubRevisionFileLineColumnResolvers<ContextType>;
   GitHubUser: GitHubUserResolvers<ContextType>;
   GitRepository: GitRepositoryResolvers<ContextType>;
   GitRevision: GitRevisionResolvers<ContextType>;
   GitRevisionFile: GitRevisionFileResolvers<ContextType>;
-  GitRevisionFileLines: GitRevisionFileLinesResolvers<ContextType>;
+  GitRevisionFileLine: GitRevisionFileLineResolvers<ContextType>;
+  GitRevisionFileLineColumn: GitRevisionFileLineColumnResolvers<ContextType>;
   HttpBody: HttpBodyResolvers<ContextType>;
   HttpHeaders: HttpHeadersResolvers<ContextType>;
   HttpNetworkEvent: HttpNetworkEventResolvers<ContextType>;
@@ -1386,7 +1418,8 @@ export type Resolvers<ContextType = Context> = {
   SourceCodeManagementRepository: SourceCodeManagementRepositoryResolvers<ContextType>;
   SourceCodeManagementRevision: SourceCodeManagementRevisionResolvers<ContextType>;
   SourceCodeManagementRevisionFile: SourceCodeManagementRevisionFileResolvers<ContextType>;
-  SourceCodeManagementRevisionFileLines: SourceCodeManagementRevisionFileLinesResolvers<ContextType>;
+  SourceCodeManagementRevisionFileLine: SourceCodeManagementRevisionFileLineResolvers<ContextType>;
+  SourceCodeManagementRevisionFileLineColumn: SourceCodeManagementRevisionFileLineColumnResolvers<ContextType>;
   StepDefinition: StepDefinitionResolvers<ContextType>;
   StepEvent: StepEventResolvers<ContextType>;
   StepEventConnection: StepEventConnectionResolvers<ContextType>;
