@@ -13,7 +13,6 @@ const resolvers: CommandChainEventResolvers = {
             testRun: {
                 __typename: 'TestRun',
                 id: runId,
-                testExecutionId: id
             }
         };
     },

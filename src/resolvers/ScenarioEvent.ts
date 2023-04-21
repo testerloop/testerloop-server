@@ -29,7 +29,6 @@ const resolvers: ScenarioEventResolvers = {
             testRun: {
                 __typename: 'TestRun',
                 id: runId,
-                testExecutionId: id
             }
         };
     },

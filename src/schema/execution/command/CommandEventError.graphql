@@ -2,5 +2,5 @@ type CommandEventError {
   type: String!
   message: String!
   stackTrace: String!
-  revisionFile: GitHubRevisionFileLineColumn!
+  location: SourceCodeManagementRevisionFileLineColumn!
 }

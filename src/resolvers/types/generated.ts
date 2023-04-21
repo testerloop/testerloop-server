@@ -90,8 +90,8 @@ export type CommandEventEdge = {
 
 export type CommandEventError = {
   readonly __typename: 'CommandEventError';
+  readonly location: SourceCodeManagementRevisionFileLineColumn;
   readonly message: Scalars['String'];
-  readonly revisionFile: GitHubRevisionFileLineColumn;
   readonly stackTrace: Scalars['String'];
   readonly type: Scalars['String'];
 };
@@ -744,7 +744,7 @@ export type ResolversTypes = {
   CommandEvent: ResolverTypeWrapper<CommandEventModel>;
   CommandEventConnection: ResolverTypeWrapper<CommandEventConnectionModel>;
   CommandEventEdge: ResolverTypeWrapper<CommandEventEdgeModel>;
-  CommandEventError: ResolverTypeWrapper<Omit<CommandEventError, 'revisionFile'> & { revisionFile: ResolversTypes['GitHubRevisionFileLineColumn'] }>;
+  CommandEventError: ResolverTypeWrapper<CommandEventError>;
   CommandEventFilterInput: CommandEventFilterInput;
   CommandEventStatus: CommandEventStatus;
   ConsoleEvent: ResolversTypes['ConsoleLogEvent'];
@@ -838,7 +838,7 @@ export type ResolversParentTypes = {
   CommandEvent: CommandEventModel;
   CommandEventConnection: CommandEventConnectionModel;
   CommandEventEdge: CommandEventEdgeModel;
-  CommandEventError: Omit<CommandEventError, 'revisionFile'> & { revisionFile: ResolversParentTypes['GitHubRevisionFileLineColumn'] };
+  CommandEventError: CommandEventError;
   CommandEventFilterInput: CommandEventFilterInput;
   ConsoleEvent: ResolversParentTypes['ConsoleLogEvent'];
   ConsoleEventFilterInput: ConsoleEventFilterInput;
@@ -989,8 +989,8 @@ export type CommandEventEdgeResolvers<ContextType = Context, ParentType extends 
 };
 
 export type CommandEventErrorResolvers<ContextType = Context, ParentType extends ResolversParentTypes['CommandEventError'] = ResolversParentTypes['CommandEventError']> = {
+  location: Resolver<ResolversTypes['SourceCodeManagementRevisionFileLineColumn'], ParentType, ContextType>;
   message: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  revisionFile: Resolver<ResolversTypes['GitHubRevisionFileLineColumn'], ParentType, ContextType>;
   stackTrace: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   type: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;

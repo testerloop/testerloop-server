@@ -30,7 +30,6 @@ const resolvers: QueryResolvers = {
             testRun: {
                 __typename: 'TestRun',
                 id: runId,
-                testExecutionId: testExecution.id
             }
         };
     },

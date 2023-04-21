@@ -43,7 +43,6 @@ const resolvers: HttpNetworkEventResolvers = {
             testRun: {
                 __typename: 'TestRun',
                 id: runId,
-                testExecutionId: event.testExecutionId
             }
         };
     },

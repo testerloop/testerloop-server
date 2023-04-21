@@ -11,7 +11,6 @@ const resolvers: TestExecutionSnapshotResolvers = {
             testRun: {
                 __typename: 'TestRun',
                 id: runId,
-                testExecutionId
             }
         };
     },

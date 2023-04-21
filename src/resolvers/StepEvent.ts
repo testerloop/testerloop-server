@@ -79,7 +79,6 @@ const resolvers: StepEventResolvers = {
             testRun: {
                 __typename: 'TestRun',
                 id: runId,
-                testExecutionId: _id
             }
         };
     },

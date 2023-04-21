@@ -56,30 +56,34 @@ const resolvers: CommandEventResolvers = {
             type: err.name,
             message: err.message,
             stackTrace: err.stack,
-            revisionFile: {
-                line,
-                column,
-                file: {
-                    path: relativeFile,
-                    revision: {
-                        __typename: 'GitHubRevision',
-                        repository: cicd.repository,
-                        branch: cicd.branch,
-                        committer: cicd.committer,
-                        author: cicd.author,
-                        url: cicd.url,
-                        hash: cicd.hash,
-                        shortHash: cicd.shortHash,
-                    }
+            location: {
+                line: {
+                    __typename: 'GitHubRevisionFileLine',
+                    file: {
+                        __typename: 'GitHubRevisionFile',
+                        path: relativeFile,
+                        revision: {
+                            __typename: 'GitHubRevision',
+                            repository: cicd.repository,
+                            branch: cicd.branch,
+                            committer: cicd.committer,
+                            author: cicd.author,
+                            url: cicd.url,
+                            hash: cicd.hash,
+                            shortHash: cicd.shortHash,
+                        }
+                    },
+                    url: [
+                        cicd.serverUrl,
+                        cicd.repository.name,
+                        'blob',
+                        cicd.refName,
+                        relativeFile,
+                        `?#L${line}`,
+                    ].join('/'),
+                    line
                 },
-                url: [
-                    cicd.serverUrl,
-                    cicd.repository.name,
-                    'blob',
-                    cicd.refName,
-                    relativeFile,
-                    `?#L${line}`,
-                ].join('/'),
+                column,
             }
         }
     },
@@ -92,7 +96,6 @@ const resolvers: CommandEventResolvers = {
             testRun: {
                 __typename: 'TestRun',
                 id: runId,
-                testExecutionId
             }
         };
     },

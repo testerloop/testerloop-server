@@ -98,7 +98,6 @@ export type TestExecutionEvent =
 export interface TestRunModel {
     __typename: 'TestRun',
     id: string,
-    testExecutionId: string
 }
 
 export interface TestExecutionModel {
