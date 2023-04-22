@@ -480,6 +480,7 @@ export type Query = {
   readonly node: Maybe<Node>;
   readonly test: Scalars['Boolean'];
   readonly testExecution: Maybe<TestExecution>;
+  readonly testRun: Maybe<TestRun>;
 };
 
 
@@ -494,6 +495,11 @@ export type QueryNodeArgs = {
 
 
 export type QueryTestExecutionArgs = {
+  id: Scalars['ID'];
+};
+
+
+export type QueryTestRunArgs = {
   id: Scalars['ID'];
 };
 
@@ -1290,6 +1296,7 @@ export type QueryResolvers<ContextType = Context, ParentType extends ResolversPa
   node: Resolver<Maybe<ResolversTypes['Node']>, ParentType, ContextType, RequireFields<QueryNodeArgs, 'id'>>;
   test: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   testExecution: Resolver<Maybe<ResolversTypes['TestExecution']>, ParentType, ContextType, RequireFields<QueryTestExecutionArgs, 'id'>>;
+  testRun: Resolver<Maybe<ResolversTypes['TestRun']>, ParentType, ContextType, RequireFields<QueryTestRunArgs, 'id'>>;
 };
 
 export type ScenarioDefinitionResolvers<ContextType = Context, ParentType extends ResolversParentTypes['ScenarioDefinition'] = ResolversParentTypes['ScenarioDefinition']> = {

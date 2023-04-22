@@ -9,3 +9,7 @@ type TestRun implements Node {
     after: Cursor
   ): TestExecutionConnection!
 }
+
+extend type Query {
+  testRun(id: ID!): TestRun
+}
