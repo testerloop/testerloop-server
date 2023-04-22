@@ -6,6 +6,7 @@ import ConsoleLogEvent from './ConsoleLogEvent.js';
 import Query from './Query.js';
 import PageInfo from './PageInfo.js';
 import TestExecution from './TestExecution.js';
+import TestExecutionConnection from './TestExecutionConnection.js';
 import TestExecutionEventConnection from './TestExecutionEventConnection.js';
 import HttpNetworkEvent from './HttpNetworkEvent.js';
 import Cookie from './Cookie.js';
@@ -64,6 +65,8 @@ const resolvers: Resolvers = {
     IntervalEvent: interfaceResolvers,
     Node: interfaceResolvers,
     TestExecution,
+    TestExecutionConnection,
+    TestExecutionEdge: edgeResolvers,
     TestExecutionEvent: interfaceResolvers,
     TestExecutionEventConnection,
     TestExecutionEventEdge: edgeResolvers,

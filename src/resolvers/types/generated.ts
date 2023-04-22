@@ -1,5 +1,5 @@
 import { GraphQLResolveInfo, GraphQLScalarType, GraphQLScalarTypeConfig } from 'graphql';
-import { ConsoleLogEventModel, HttpNetworkEventModel, StepEventModel, StepEventEdgeModel, StepEventConnectionModel, ScenarioEventModel, TestExecutionModel, TestExecutionEventConnectionModel, TestExecutionEventEdgeModel, TestRunModel, GitHubRevisionModel, CommandChainEventModel, CommandChainEventEdgeModel, CommandChainEventConnectionModel, CommandEventModel, CommandEventEdgeModel, CommandEventConnectionModel, TestExecutionSnapshotModel, TestExecutionScreenshotModel, GitHubRevisionFileModel, GitHubRevisionFileLineModel, GitHubRevisionFileLineColumnModel, SourceCodeManagementRevisionFileLineColumnModel } from './mappers';
+import { ConsoleLogEventModel, HttpNetworkEventModel, StepEventModel, StepEventEdgeModel, StepEventConnectionModel, ScenarioEventModel, TestExecutionModel, TestExecutionConnectionModel, TestExecutionEdgeModel, TestExecutionEventConnectionModel, TestExecutionEventEdgeModel, TestRunModel, GitHubRevisionModel, CommandChainEventModel, CommandChainEventEdgeModel, CommandChainEventConnectionModel, CommandEventModel, CommandEventEdgeModel, CommandEventConnectionModel, TestExecutionSnapshotModel, TestExecutionScreenshotModel, GitHubRevisionFileModel, GitHubRevisionFileLineModel, GitHubRevisionFileLineColumnModel, SourceCodeManagementRevisionFileLineColumnModel } from './mappers';
 import { Context } from '../../context';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
@@ -588,6 +588,19 @@ export type TestExecutionEventsArgs = {
   first?: InputMaybe<Scalars['Int']>;
 };
 
+export type TestExecutionConnection = {
+  readonly __typename: 'TestExecutionConnection';
+  readonly edges: ReadonlyArray<TestExecutionEdge>;
+  readonly pageInfo: PageInfo;
+  readonly totalCount: Scalars['Int'];
+};
+
+export type TestExecutionEdge = {
+  readonly __typename: 'TestExecutionEdge';
+  readonly cursor: Scalars['Cursor'];
+  readonly node: TestExecution;
+};
+
 export type TestExecutionEnvironment = {
   readonly __typename: 'TestExecutionEnvironment';
   readonly browser: BrowserVersion;
@@ -665,9 +678,16 @@ export type TestExecutionSnapshot = Event & InstantaneousEvent & TestExecutionEv
 
 export type TestRun = Node & {
   readonly __typename: 'TestRun';
+  readonly executions: TestExecutionConnection;
   readonly id: Scalars['ID'];
   /** This field may be null if the data was not provided for collection. */
   readonly testCodeRevision: Maybe<SourceCodeManagementRevision>;
+};
+
+
+export type TestRunExecutionsArgs = {
+  after?: InputMaybe<Scalars['Cursor']>;
+  first?: InputMaybe<Scalars['Int']>;
 };
 
 
@@ -815,6 +835,8 @@ export type ResolversTypes = {
   StepEventEdge: ResolverTypeWrapper<StepEventEdgeModel>;
   String: ResolverTypeWrapper<Scalars['String']>;
   TestExecution: ResolverTypeWrapper<TestExecutionModel>;
+  TestExecutionConnection: ResolverTypeWrapper<TestExecutionConnectionModel>;
+  TestExecutionEdge: ResolverTypeWrapper<TestExecutionEdgeModel>;
   TestExecutionEnvironment: ResolverTypeWrapper<Omit<TestExecutionEnvironment, 'browser'> & { browser: ResolversTypes['BrowserVersion'] }>;
   TestExecutionEvent: ResolversTypes['CommandChainEvent'] | ResolversTypes['CommandEvent'] | ResolversTypes['ConsoleLogEvent'] | ResolversTypes['HttpNetworkEvent'] | ResolversTypes['ScenarioEvent'] | ResolversTypes['StepEvent'] | ResolversTypes['TestExecutionScreenshot'] | ResolversTypes['TestExecutionSnapshot'];
   TestExecutionEventConnection: ResolverTypeWrapper<TestExecutionEventConnectionModel>;
@@ -902,6 +924,8 @@ export type ResolversParentTypes = {
   StepEventEdge: StepEventEdgeModel;
   String: Scalars['String'];
   TestExecution: TestExecutionModel;
+  TestExecutionConnection: TestExecutionConnectionModel;
+  TestExecutionEdge: TestExecutionEdgeModel;
   TestExecutionEnvironment: Omit<TestExecutionEnvironment, 'browser'> & { browser: ResolversParentTypes['BrowserVersion'] };
   TestExecutionEvent: ResolversParentTypes['CommandChainEvent'] | ResolversParentTypes['CommandEvent'] | ResolversParentTypes['ConsoleLogEvent'] | ResolversParentTypes['HttpNetworkEvent'] | ResolversParentTypes['ScenarioEvent'] | ResolversParentTypes['StepEvent'] | ResolversParentTypes['TestExecutionScreenshot'] | ResolversParentTypes['TestExecutionSnapshot'];
   TestExecutionEventConnection: TestExecutionEventConnectionModel;
@@ -1348,6 +1372,19 @@ export type TestExecutionResolvers<ContextType = Context, ParentType extends Res
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type TestExecutionConnectionResolvers<ContextType = Context, ParentType extends ResolversParentTypes['TestExecutionConnection'] = ResolversParentTypes['TestExecutionConnection']> = {
+  edges: Resolver<ReadonlyArray<ResolversTypes['TestExecutionEdge']>, ParentType, ContextType>;
+  pageInfo: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>;
+  totalCount: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type TestExecutionEdgeResolvers<ContextType = Context, ParentType extends ResolversParentTypes['TestExecutionEdge'] = ResolversParentTypes['TestExecutionEdge']> = {
+  cursor: Resolver<ResolversTypes['Cursor'], ParentType, ContextType>;
+  node: Resolver<ResolversTypes['TestExecution'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type TestExecutionEnvironmentResolvers<ContextType = Context, ParentType extends ResolversParentTypes['TestExecutionEnvironment'] = ResolversParentTypes['TestExecutionEnvironment']> = {
   browser: Resolver<ResolversTypes['BrowserVersion'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
@@ -1386,6 +1423,7 @@ export type TestExecutionSnapshotResolvers<ContextType = Context, ParentType ext
 };
 
 export type TestRunResolvers<ContextType = Context, ParentType extends ResolversParentTypes['TestRun'] = ResolversParentTypes['TestRun']> = {
+  executions: Resolver<ResolversTypes['TestExecutionConnection'], ParentType, ContextType, Partial<TestRunExecutionsArgs>>;
   id: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   testCodeRevision: Resolver<Maybe<ResolversTypes['SourceCodeManagementRevision']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
@@ -1460,6 +1498,8 @@ export type Resolvers<ContextType = Context> = {
   StepEventConnection: StepEventConnectionResolvers<ContextType>;
   StepEventEdge: StepEventEdgeResolvers<ContextType>;
   TestExecution: TestExecutionResolvers<ContextType>;
+  TestExecutionConnection: TestExecutionConnectionResolvers<ContextType>;
+  TestExecutionEdge: TestExecutionEdgeResolvers<ContextType>;
   TestExecutionEnvironment: TestExecutionEnvironmentResolvers<ContextType>;
   TestExecutionEvent: TestExecutionEventResolvers<ContextType>;
   TestExecutionEventConnection: TestExecutionEventConnectionResolvers<ContextType>;

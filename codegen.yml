@@ -28,6 +28,8 @@ generates:
         StepEventConnection: ./mappers#StepEventConnectionModel
         ScenarioEvent: ./mappers#ScenarioEventModel
         TestExecution: ./mappers#TestExecutionModel
+        TestExecutionConnection: ./mappers#TestExecutionConnectionModel
+        TestExecutionEdge: ./mappers#TestExecutionEdgeModel
         TestExecutionEventConnection: ./mappers#TestExecutionEventConnectionModel
         TestExecutionEventEdge: ./mappers#TestExecutionEventEdgeModel
         TestRun: ./mappers#TestRunModel
