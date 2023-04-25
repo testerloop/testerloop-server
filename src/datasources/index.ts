@@ -9,12 +9,14 @@ import { CommandEvent } from './CommandEvent.js';
 import { Snapshot } from './Snapshot.js';
 import { ScenarioEvent } from './ScenarioEvent.js';
 import { Screenshot } from './Screenshot.js';
+import { TestRun } from './TestRun.js';
 
 export const createDataSources = (context: Context) => ({
     consoleEvent: new ConsoleEvent(context),
     networkEvent: new NetworkEvent(context),
     testExecution: new TestExecution(context),
     testResults: new TestResults(context),
+    testRun: new TestRun(context),
     testCodeRevision: new TestCodeRevision(context),
     stepEvent: new StepEvent(context),
     commandEvent: new CommandEvent(context),

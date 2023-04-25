@@ -100,6 +100,18 @@ export interface TestRunModel {
     id: string,
 }
 
+export interface TestRunEdgeModel {
+    cursor: string,
+    node: TestRunModel,
+}
+
+export interface TestRunConnectionModel {
+    edges: TestRunEdgeModel[],
+    totalCount: number,
+    hasPreviousPage: boolean,
+    hasNextPage: boolean,
+}
+
 export interface TestExecutionModel {
     __typename: 'TestExecution',
     id: string,

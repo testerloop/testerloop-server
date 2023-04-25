@@ -47,6 +47,27 @@ const resolvers: QueryResolvers = {
             id: decodedId,
         };
     },
+    async testRuns(root, { first, after }, { dataSources }) {
+        const {
+            edges,
+            hasNextPage,
+            hasPreviousPage,
+            totalCount,
+        } = await dataSources.testRun.getAll({ first, after });
+
+        return {
+            edges: edges.map(({ cursor, node }) => ({
+                cursor,
+                node: {
+                    __typename: 'TestRun',
+                    id: node.id,
+                },
+            })),
+            hasNextPage,
+            hasPreviousPage,
+            totalCount,
+        }
+    },
     async node(root, { id }, context, info) {
         const decodedId = decodeId(id);
         if (!decodedId) {
