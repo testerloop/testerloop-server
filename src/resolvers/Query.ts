@@ -33,6 +33,20 @@ const resolvers: QueryResolvers = {
             }
         };
     },
+    async testRun(root, { id }, { dataSources }) {
+        const decodedId = decodeIdForType('TestRun', id);
+        if (!decodedId) {
+            return null;
+        }
+        const { totalCount } = await dataSources.testExecution.getByTestRunId(decodedId, {});
+        if (totalCount === 0) {
+            return null;
+        }
+        return {
+            __typename: 'TestRun',
+            id: decodedId,
+        };
+    },
     async node(root, { id }, context, info) {
         const decodedId = decodeId(id);
         if (!decodedId) {
@@ -43,6 +57,8 @@ const resolvers: QueryResolvers = {
         switch (typename) {
             case 'TestExecution':
                 return resolvers.testExecution(root, { id }, context, info);
+            case 'TestRun':
+                return resolvers.testRun(root, { id }, context, info);
             default:
                 return null;
         }
