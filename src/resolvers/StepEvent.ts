@@ -48,40 +48,10 @@ const resolvers: StepEventResolvers = {
   },
   async definition({ _id }, _args, { dataSources }) {
     const event = await dataSources.stepEvent.getById(_id);
-    let mappedKeyword;
-    const name = event.name.trim();
-    switch (name) {
-      case "Given":
-        mappedKeyword = GherkinStepKeyword.Given;
-        break;
-      case "When":
-        mappedKeyword = GherkinStepKeyword.When;
-        break;
-      case "Then":
-        mappedKeyword = GherkinStepKeyword.Then;
-        break;
-      case "And":
-        mappedKeyword = GherkinStepKeyword.And;
-        break;
-      case "But":
-        mappedKeyword = GherkinStepKeyword.But;
-        break;
-      case "Before":
-        mappedKeyword = GherkinStepKeyword.Before;
-        break;
-      case "After":
-        mappedKeyword = GherkinStepKeyword.After;
-        break;
-      case "Step":
-        mappedKeyword = GherkinStepKeyword.Step;
-        break;
-      default:
-        throw new Error(`${name} is not a valid keyword`);
-    }
     return {
       __typename: "StepDefinition",
       description: event.message,
-      keyword: mappedKeyword,
+      keyword: event.name,
     };
   },
   async testExecution({ _id }, _args) {
