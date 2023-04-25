@@ -48,6 +48,19 @@ class S3Service {
       return result.contents;
   }
 
+  async listSubFolders(bucketName: string, prefix: string) {
+    const command = new ListObjectsV2Command({
+      Bucket: bucketName,
+      Prefix: prefix,
+      Delimiter: '/',
+    });
+    const response = await this.s3.send(command);
+    const objects = response.CommonPrefixes
+      ?.map((object) =>object.Prefix)
+      .filter((x: string | undefined): x is string => !!x);
+    return objects || [];
+  }
+
   async listObjects(bucketName: string, prefix: string) {
     const command = new ListObjectsV2Command({ Bucket: bucketName, Prefix: prefix });
     const response = await this.s3.send(command);

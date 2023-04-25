@@ -7,7 +7,31 @@ const resolvers: TestRunResolvers = {
     },
     async testCodeRevision ({ id }, _args, {dataSources}) {
         return dataSources.testCodeRevision.getById(id);
-      },
+    },
+    async executions({ id }, { first, after }, { dataSources }) {
+        const {
+            edges,
+            hasNextPage,
+            hasPreviousPage,
+            totalCount,
+        } = await dataSources.testExecution.getByTestRunId(id, { first, after });
+        return {
+            edges: edges.map(({ cursor, node }) => ({
+                cursor,
+                node: {
+                    __typename: 'TestExecution',
+                    id: `${id}/${node.id}`,
+                    testRun: {
+                        __typename: 'TestRun',
+                        id,
+                    }
+                },
+            })),
+            totalCount,
+            hasNextPage,
+            hasPreviousPage,
+        };
+    }
 }
 
 export default resolvers;

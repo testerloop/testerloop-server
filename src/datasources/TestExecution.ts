@@ -11,6 +11,21 @@ export class TestExecution {
         this.context = context;
     }
 
+    async getByTestRunId(id: string,  args: {
+        first?: number | null, after?: string | null;
+    }) {
+        const bucketName = config.AWS_BUCKET_NAME;
+        const results = await S3Service.listSubFolders(bucketName, `${id}/`);
+
+        const testExecutionIds = results
+            .map((folder) => ({
+                id: folder.split('/')[1]
+            }))
+            .filter(({ id }) => /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/.test(id));
+
+        return getPaginatedData(testExecutionIds, { first: args.first, after: args.after });
+    }
+
     async getById(id: string) {
         const bucketName = config.AWS_BUCKET_NAME;
         const [runId, requestId] = id.split('/');

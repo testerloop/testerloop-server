@@ -4,5 +4,8 @@ type TestRun implements Node {
   This field may be null if the data was not provided for collection.
   """
   testCodeRevision: SourceCodeManagementRevision
-  # TODO: Implement a field for all TestExecutions.
+  executions(
+    first: Int
+    after: Cursor
+  ): TestExecutionConnection!
 }

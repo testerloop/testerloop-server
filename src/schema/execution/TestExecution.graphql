@@ -12,6 +12,17 @@ type TestExecution implements Node & Event & IntervalEvent {
   ): TestExecutionEventConnection!
 }
 
+type TestExecutionConnection {
+    totalCount: Int!
+    edges: [TestExecutionEdge!]!
+    pageInfo: PageInfo!
+}
+
+type TestExecutionEdge {
+    cursor: Cursor!
+    node: TestExecution!
+}
+
 input TestExecutionEventFilterInput {
   type: [TestExecutionEventType!]
   consoleFilter: ConsoleEventFilterInput

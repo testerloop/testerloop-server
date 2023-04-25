@@ -106,6 +106,18 @@ export interface TestExecutionModel {
     testRun: TestRunModel,
 }
 
+export interface TestExecutionEdgeModel {
+    cursor: string,
+    node: TestExecutionModel,
+}
+
+export interface TestExecutionConnectionModel {
+    edges: TestExecutionEdgeModel[],
+    totalCount: number,
+    hasPreviousPage: boolean,
+    hasNextPage: boolean,
+}
+
 export interface TestExecutionEventEdgeModel {
     cursor: string,
     node: TestExecutionEvent,
