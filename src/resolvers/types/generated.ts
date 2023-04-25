@@ -152,9 +152,12 @@ export type Event = {
 };
 
 export enum GherkinStepKeyword {
+  After = 'AFTER',
   And = 'AND',
+  Before = 'BEFORE',
   But = 'BUT',
   Given = 'GIVEN',
+  Step = 'STEP',
   Then = 'THEN',
   When = 'WHEN'
 }
