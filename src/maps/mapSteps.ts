@@ -1,27 +1,30 @@
-import { CommandEventStatus } from '../resolvers/types/generated.js';
+import { CommandEventStatus, GherkinStepKeyword } from '../resolvers/types/generated.js';
 import mapStepData, { StepType } from './mapStepData.js';
+
+const isGherkinStepKeyword = (stepName: string): stepName is GherkinStepKeyword => Object.values(GherkinStepKeyword as Record<string, string>).includes(stepName)
 
 const mapSteps = (steps: unknown, testExecutionId: string, endedTestsAt: Date) => {
     const filteredData = mapStepData(steps);
 
-    const mappedSteps: (StepType & 
-        {   
-            __typename: 'StepEvent', 
+    const mappedSteps: (StepType &
+        {
+            __typename: 'StepEvent',
             _id: string,
-            at: Date, 
+            name: GherkinStepKeyword,
+            at: Date,
             until: Date,
             status: CommandEventStatus,
-            commandChains: 
-                { 
+            commandChains:
+                {
                     __typename: 'CommandChainEvent',
-                    id: string, 
+                    id: string,
                     at: Date,
                     until: Date,
-                    commands: (StepType & 
-                        {__typename: 'CommandEvent', 
-                        at: Date, 
+                    commands: (StepType &
+                        {__typename: 'CommandEvent',
+                        at: Date,
                         until: Date,
-                    })[] 
+                    })[]
                 }[]
         }
         )[] = [];
@@ -29,9 +32,9 @@ const mapSteps = (steps: unknown, testExecutionId: string, endedTestsAt: Date) =
     for (const [i, item] of filteredData.entries()) {
         const until = i < filteredData.length - 1 ? new Date(filteredData[i+1].wallClockStartedAt) : endedTestsAt;
         const at = new Date(item.wallClockStartedAt);
+        const maybeGherkinName = item.name.trim().toUpperCase();
 
-        
-        if (item.groupStart) {
+        if (item.groupStart && isGherkinStepKeyword(maybeGherkinName)) {
             if(mappedSteps.length){
                 const lastStep = mappedSteps[mappedSteps.length - 1]
                 lastStep.until = at
@@ -40,7 +43,8 @@ const mapSteps = (steps: unknown, testExecutionId: string, endedTestsAt: Date) =
             mappedSteps.push({
                 __typename: 'StepEvent',
                 _id: `${testExecutionId}/step/${item.id}`,
-                ...item, 
+                ...item,
+                name: maybeGherkinName,
                 at,
                 until,
                 status: item.state === 'failed'? CommandEventStatus.Failed : CommandEventStatus.Success,
