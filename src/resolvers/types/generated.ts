@@ -1,5 +1,5 @@
 import { GraphQLResolveInfo, GraphQLScalarType, GraphQLScalarTypeConfig } from 'graphql';
-import { ConsoleLogEventModel, HttpNetworkEventModel, StepEventModel, StepEventEdgeModel, StepEventConnectionModel, ScenarioEventModel, TestExecutionModel, TestExecutionConnectionModel, TestExecutionEdgeModel, TestExecutionEventConnectionModel, TestExecutionEventEdgeModel, TestRunModel, GitHubRevisionModel, CommandChainEventModel, CommandChainEventEdgeModel, CommandChainEventConnectionModel, CommandEventModel, CommandEventEdgeModel, CommandEventConnectionModel, TestExecutionSnapshotModel, TestExecutionScreenshotModel, GitHubRevisionFileModel, GitHubRevisionFileLineModel, GitHubRevisionFileLineColumnModel, SourceCodeManagementRevisionFileLineColumnModel } from './mappers';
+import { ConsoleLogEventModel, HttpNetworkEventModel, StepEventModel, StepEventEdgeModel, StepEventConnectionModel, ScenarioEventModel, TestExecutionModel, TestExecutionConnectionModel, TestExecutionEdgeModel, TestExecutionEventConnectionModel, TestExecutionEventEdgeModel, TestRunModel, TestRunConnectionModel, TestRunEdgeModel, GitHubRevisionModel, CommandChainEventModel, CommandChainEventEdgeModel, CommandChainEventConnectionModel, CommandEventModel, CommandEventEdgeModel, CommandEventConnectionModel, TestExecutionSnapshotModel, TestExecutionScreenshotModel, GitHubRevisionFileModel, GitHubRevisionFileLineModel, GitHubRevisionFileLineColumnModel, SourceCodeManagementRevisionFileLineColumnModel } from './mappers';
 import { Context } from '../../context';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
@@ -481,6 +481,7 @@ export type Query = {
   readonly test: Scalars['Boolean'];
   readonly testExecution: Maybe<TestExecution>;
   readonly testRun: Maybe<TestRun>;
+  readonly testRuns: TestRunConnection;
 };
 
 
@@ -501,6 +502,12 @@ export type QueryTestExecutionArgs = {
 
 export type QueryTestRunArgs = {
   id: Scalars['ID'];
+};
+
+
+export type QueryTestRunsArgs = {
+  after?: InputMaybe<Scalars['Cursor']>;
+  first?: InputMaybe<Scalars['Int']>;
 };
 
 export type ScenarioDefinition = {
@@ -699,6 +706,19 @@ export type TestRunExecutionsArgs = {
   first?: InputMaybe<Scalars['Int']>;
 };
 
+export type TestRunConnection = {
+  readonly __typename: 'TestRunConnection';
+  readonly edges: ReadonlyArray<TestRunEdge>;
+  readonly pageInfo: PageInfo;
+  readonly totalCount: Scalars['Int'];
+};
+
+export type TestRunEdge = {
+  readonly __typename: 'TestRunEdge';
+  readonly cursor: Scalars['Cursor'];
+  readonly node: TestRun;
+};
+
 
 
 export type ResolverTypeWrapper<T> = Promise<T> | T;
@@ -855,6 +875,8 @@ export type ResolversTypes = {
   TestExecutionScreenshot: ResolverTypeWrapper<TestExecutionScreenshotModel>;
   TestExecutionSnapshot: ResolverTypeWrapper<TestExecutionSnapshotModel>;
   TestRun: ResolverTypeWrapper<TestRunModel>;
+  TestRunConnection: ResolverTypeWrapper<TestRunConnectionModel>;
+  TestRunEdge: ResolverTypeWrapper<TestRunEdgeModel>;
   URL: ResolverTypeWrapper<Scalars['URL']>;
 };
 
@@ -943,6 +965,8 @@ export type ResolversParentTypes = {
   TestExecutionScreenshot: TestExecutionScreenshotModel;
   TestExecutionSnapshot: TestExecutionSnapshotModel;
   TestRun: TestRunModel;
+  TestRunConnection: TestRunConnectionModel;
+  TestRunEdge: TestRunEdgeModel;
   URL: Scalars['URL'];
 };
 
@@ -1297,6 +1321,7 @@ export type QueryResolvers<ContextType = Context, ParentType extends ResolversPa
   test: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   testExecution: Resolver<Maybe<ResolversTypes['TestExecution']>, ParentType, ContextType, RequireFields<QueryTestExecutionArgs, 'id'>>;
   testRun: Resolver<Maybe<ResolversTypes['TestRun']>, ParentType, ContextType, RequireFields<QueryTestRunArgs, 'id'>>;
+  testRuns: Resolver<ResolversTypes['TestRunConnection'], ParentType, ContextType, Partial<QueryTestRunsArgs>>;
 };
 
 export type ScenarioDefinitionResolvers<ContextType = Context, ParentType extends ResolversParentTypes['ScenarioDefinition'] = ResolversParentTypes['ScenarioDefinition']> = {
@@ -1439,6 +1464,19 @@ export type TestRunResolvers<ContextType = Context, ParentType extends Resolvers
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type TestRunConnectionResolvers<ContextType = Context, ParentType extends ResolversParentTypes['TestRunConnection'] = ResolversParentTypes['TestRunConnection']> = {
+  edges: Resolver<ReadonlyArray<ResolversTypes['TestRunEdge']>, ParentType, ContextType>;
+  pageInfo: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>;
+  totalCount: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type TestRunEdgeResolvers<ContextType = Context, ParentType extends ResolversParentTypes['TestRunEdge'] = ResolversParentTypes['TestRunEdge']> = {
+  cursor: Resolver<ResolversTypes['Cursor'], ParentType, ContextType>;
+  node: Resolver<ResolversTypes['TestRun'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export interface UrlScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['URL'], any> {
   name: 'URL';
 }
@@ -1517,6 +1555,8 @@ export type Resolvers<ContextType = Context> = {
   TestExecutionScreenshot: TestExecutionScreenshotResolvers<ContextType>;
   TestExecutionSnapshot: TestExecutionSnapshotResolvers<ContextType>;
   TestRun: TestRunResolvers<ContextType>;
+  TestRunConnection: TestRunConnectionResolvers<ContextType>;
+  TestRunEdge: TestRunEdgeResolvers<ContextType>;
   URL: GraphQLScalarType;
 };
 

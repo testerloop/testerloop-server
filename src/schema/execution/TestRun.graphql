@@ -10,6 +10,21 @@ type TestRun implements Node {
   ): TestExecutionConnection!
 }
 
+type TestRunConnection {
+  totalCount: Int!
+  edges: [TestRunEdge!]!
+  pageInfo: PageInfo!
+}
+
+type TestRunEdge {
+  cursor: Cursor!
+  node: TestRun!
+}
+
 extend type Query {
   testRun(id: ID!): TestRun
+  testRuns(
+    first: Int
+    after: Cursor
+  ): TestRunConnection!
 }

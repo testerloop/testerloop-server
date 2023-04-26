@@ -22,6 +22,7 @@ import HttpResponseBodyChunk from './HttpResponseBodyChunk.js';
 import KeyValuePair from './KeyValuePair.js';
 import NetworkEventTiming from './NetworkEventTiming.js';
 import TestRun from './TestRun.js';
+import TestRunConnection from './TestRunConnection.js';
 import GitHubBranch from './GitHubBranch.js';
 import GitHubActor from './GitHubActor.js';
 import GitHubRepository from './GitHubRepository.js';
@@ -88,6 +89,8 @@ const resolvers: Resolvers = {
     KeyValuePair,
     NetworkEventTiming,
     TestRun,
+    TestRunConnection,
+    TestRunEdge: edgeResolvers,
     GitHubBranch,
     GitBranch: interfaceResolvers,
     GitActor: interfaceResolvers,

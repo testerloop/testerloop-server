@@ -33,6 +33,8 @@ generates:
         TestExecutionEventConnection: ./mappers#TestExecutionEventConnectionModel
         TestExecutionEventEdge: ./mappers#TestExecutionEventEdgeModel
         TestRun: ./mappers#TestRunModel
+        TestRunConnection: ./mappers#TestRunConnectionModel
+        TestRunEdge: ./mappers#TestRunEdgeModel
         GitHubRevision: ./mappers#GitHubRevisionModel
         CommandChainEvent: ./mappers#CommandChainEventModel
         CommandChainEventEdge: ./mappers#CommandChainEventEdgeModel
