@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-const envFormat = z.object({
+export const envFormat = z.object({
     PORT: z.coerce.number(),
     AWS_SESSION_TOKEN: z.string(),
     AWS_BUCKET_REGION: z.string(),
