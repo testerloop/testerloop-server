@@ -32,11 +32,7 @@ class S3Service {
 
     this.s3 = new S3Client({
       region: config.AWS_BUCKET_REGION,
-      credentials: {
-        accessKeyId: config.AWS_ACCESS_KEY_ID,
-        secretAccessKey: config.AWS_SECRET_ACCESS_KEY,
-        sessionToken: config.AWS_SESSION_TOKEN
-      },
+      credentials: config.AWS_CREDENTIALS,
     });
   }
 
@@ -82,4 +78,3 @@ class S3Service {
 }
 
 export default new S3Service();
-
