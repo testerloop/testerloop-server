@@ -2,3 +2,4 @@
 src/
 .env
 .npmrc
+node_modules/
