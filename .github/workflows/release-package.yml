@@ -11,13 +11,14 @@ jobs:
       packages: write
       contents: read
     steps:
-      - name: Checkout Repository with Submodules
-        uses: actions/checkout@v2
+      - name: Checkout Repository
+        uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
           node-version: 18
           registry-url: https://npm.pkg.github.com/
       - run: |
+          npm ci
           npm run build
       - run: npm publish
         env:
