@@ -23,7 +23,13 @@ const resolvers: ConsoleLogEventResolvers = {
     },
     async message({ id }, _args, { dataSources }) {
         const event = assertNonNull(await dataSources.consoleEvent.getById(id));
-        if (event.args.length !== 1 || event.args[0].type !== 'string')
+        if (event.args.length !== 1)
+            throw new Error('Console event could not be serialized to a message.');
+
+        if (event.args[0].type === 'undefined')
+            return 'undefined';
+
+        if (event.args[0].type !== 'string')
             throw new Error('Console event could not be serialized to a message.');
         return event.args[0].value;
     },
