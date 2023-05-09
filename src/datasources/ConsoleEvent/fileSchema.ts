@@ -6,6 +6,9 @@ const baseLog = z.object({
             type: z.literal('string'),
             value: z.string(),
         }),
+        z.object({
+            type: z.literal('undefined'),
+        }),
     ])),
     id: z.string(),
     timestamp: z.coerce.date(),
