@@ -1,6 +1,6 @@
 import { Context } from '../context.js';
 import config from '../config.js';
-import { CommandEventStatus, HttpNetworkEventResourceType, TestExecutionEventFilterInput, TestExecutionEventType } from '../resolvers/types/generated.js';
+import { CommandEventStatus, ConsoleLogLevel, HttpNetworkEventResourceType, TestExecutionEventFilterInput, TestExecutionEventType } from '../resolvers/types/generated.js';
 import S3Service from '../S3Service.js';
 import getPaginatedData from '../util/getPaginatedData.js';
 
@@ -75,9 +75,29 @@ export class TestExecution {
                         if(evt.__typename !== 'ConsoleLogEvent') return false;
                         const { logLevel, message } = evt;
 
+                        let mappedLogLevel: ConsoleLogLevel;
+                        switch (logLevel) {
+                            case 'debug':
+                            case 'log':
+                                mappedLogLevel = ConsoleLogLevel.Log;
+                                break;
+                            case 'info':
+                                mappedLogLevel = ConsoleLogLevel.Info;
+                                break;
+                            case 'warning':
+                                mappedLogLevel = ConsoleLogLevel.Warn;
+                                break;
+                            case 'error':
+                                mappedLogLevel = ConsoleLogLevel.Error;
+                                break;
+                            default:
+                                const _: never = logLevel;
+                                throw new Error(`logLevel ${logLevel} not mappable`);
+                        }
+
                         if (
                             consoleFilters?.logLevel &&
-                            !consoleFilters.logLevel?.includes(logLevel)
+                            !consoleFilters.logLevel?.includes(mappedLogLevel)
                         ) {
                             return false;
                         }
