@@ -35,11 +35,10 @@ const resolvers: HttpNetworkEventResolvers = {
         return event.timings;
     },
     async testExecution({ id }, _args, { dataSources }) {
-        const event = assertNonNull(await dataSources.consoleEvent.getById(id));
-        const [runId, _] = id.split('/');
+        const [runId, testExecutionId] = id.split('/');
         return {
             __typename: 'TestExecution',
-            id: event.testExecutionId,
+            id: `${runId}/${testExecutionId}`,
             testRun: {
                 __typename: 'TestRun',
                 id: runId,

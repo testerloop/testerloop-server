@@ -1,25 +1,37 @@
 import { assertNonNull } from '../util/assertNonNull.js';
-import { ConsoleLogEventResolvers } from './types/generated.js';
+import { ConsoleLogEventResolvers, ConsoleLogLevel } from './types/generated.js';
 
 const resolvers: ConsoleLogEventResolvers = {
     async at({ id }, _args, { dataSources }) {
         const event = assertNonNull(await dataSources.consoleEvent.getById(id));
-        return event.at;
+        return event.timestamp;
     },
     async logLevel({ id }, _args, { dataSources }) {
         const event = assertNonNull(await dataSources.consoleEvent.getById(id));
-        return event.logLevel;
+
+        switch (event.type) {
+            case 'debug':
+            case 'log':
+                return ConsoleLogLevel.Log;
+            case 'info':
+                return ConsoleLogLevel.Info;
+            case 'warning':
+                return ConsoleLogLevel.Warn;
+            case 'error':
+                return ConsoleLogLevel.Error;
+        }
     },
     async message({ id }, _args, { dataSources }) {
         const event = assertNonNull(await dataSources.consoleEvent.getById(id));
-        return event.message;
+        if (event.args.length !== 1 || event.args[0].type !== 'string')
+            throw new Error('Console event could not be serialized to a message.');
+        return event.args[0].value;
     },
     async testExecution({ id }, _args, { dataSources }) {
-        const event = assertNonNull(await dataSources.consoleEvent.getById(id));
-        const [runId, _] = id.split('/');
+        const [runId, testExecutionId] = id.split('/');
         return {
             __typename: 'TestExecution',
-            id: event.testExecutionId,
+            id: `${runId}/${testExecutionId}`,
             testRun: {
                 __typename: 'TestRun',
                 id: runId,
