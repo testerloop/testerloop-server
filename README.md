@@ -6,7 +6,8 @@ This is the backend repository for Testerloop. The frontend can be found [here](
 
 Before getting started, make sure you have the following installed:
 
-- [Node.js](https://nodejs.org/en/download/)
+- [NVM](https://github.com/nvm-sh/nvm) 
+- [Node.js](https://nodejs.org/en/download/) (with v.18 set as the active version using NVM)
 - [npm](https://www.npmjs.com/get-npm)
 
 
@@ -15,7 +16,7 @@ Before getting started, make sure you have the following installed:
 1. Clone the repository:
 
 ```bash
-git clone https://github.com/testerloop/testerloop-server.git
+git clone git@github.com:testerloop/testerloop-server.git
 cd testerloop-server
 ```
 
