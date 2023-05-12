@@ -33,6 +33,18 @@ const resolvers: ConsoleLogEventResolvers = {
             throw new Error('Console event could not be serialized to a message.');
         return event.args[0].value;
     },
+    async stackTrace({ id }, _args, { dataSources }) {
+        const event = assertNonNull(await dataSources.consoleEvent.getById(id));
+        const callFrames = event.stackTrace.callFrames.map((callFrame) => ({
+            __typename: 'CallFrame' as const,
+            ...callFrame,
+        }));
+        return {
+            __typename: 'StackTrace',
+            callFrames: callFrames,
+        };
+    },
+
     async testExecution({ id }, _args, { dataSources }) {
         const [runId, testExecutionId] = id.split('/');
         return {

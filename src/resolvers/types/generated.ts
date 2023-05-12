@@ -31,6 +31,15 @@ export type Scalars = {
 
 export type BrowserVersion = ChromiumVersion;
 
+export type CallFrame = {
+  readonly __typename: 'CallFrame';
+  readonly columnNumber: Scalars['Int'];
+  readonly functionName: Scalars['String'];
+  readonly lineNumber: Scalars['Int'];
+  readonly scriptId: Scalars['String'];
+  readonly url: Scalars['String'];
+};
+
 /** See https://www.chromium.org/developers/version-numbers/ */
 export type ChromiumVersion = {
   readonly __typename: 'ChromiumVersion';
@@ -120,6 +129,7 @@ export type ConsoleLogEvent = ConsoleEvent & Event & InstantaneousEvent & TestEx
   readonly at: Scalars['DateTime'];
   readonly logLevel: ConsoleLogLevel;
   readonly message: Scalars['String'];
+  readonly stackTrace: StackTrace;
   readonly testExecution: TestExecution;
 };
 
@@ -554,6 +564,11 @@ export type SourceCodeManagementRevisionFileLineColumn = {
   readonly line: SourceCodeManagementRevisionFileLine;
 };
 
+export type StackTrace = {
+  readonly __typename: 'StackTrace';
+  readonly callFrames: ReadonlyArray<CallFrame>;
+};
+
 export type StepDefinition = {
   readonly __typename: 'StepDefinition';
   readonly description: Scalars['String'];
@@ -786,6 +801,7 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 export type ResolversTypes = {
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
   BrowserVersion: ResolversTypes['ChromiumVersion'];
+  CallFrame: ResolverTypeWrapper<CallFrame>;
   ChromiumVersion: ResolverTypeWrapper<ChromiumVersion>;
   CommandChainEvent: ResolverTypeWrapper<CommandChainEventModel>;
   CommandChainEventConnection: ResolverTypeWrapper<CommandChainEventConnectionModel>;
@@ -858,6 +874,7 @@ export type ResolversTypes = {
   SourceCodeManagementRevisionFile: ResolversTypes['GitHubRevisionFile'];
   SourceCodeManagementRevisionFileLine: ResolversTypes['GitHubRevisionFileLine'];
   SourceCodeManagementRevisionFileLineColumn: ResolverTypeWrapper<SourceCodeManagementRevisionFileLineColumnModel>;
+  StackTrace: ResolverTypeWrapper<StackTrace>;
   StepDefinition: ResolverTypeWrapper<StepDefinition>;
   StepEvent: ResolverTypeWrapper<StepEventModel>;
   StepEventConnection: ResolverTypeWrapper<StepEventConnectionModel>;
@@ -884,6 +901,7 @@ export type ResolversTypes = {
 export type ResolversParentTypes = {
   Boolean: Scalars['Boolean'];
   BrowserVersion: ResolversParentTypes['ChromiumVersion'];
+  CallFrame: CallFrame;
   ChromiumVersion: ChromiumVersion;
   CommandChainEvent: CommandChainEventModel;
   CommandChainEventConnection: CommandChainEventConnectionModel;
@@ -949,6 +967,7 @@ export type ResolversParentTypes = {
   SourceCodeManagementRevisionFile: ResolversParentTypes['GitHubRevisionFile'];
   SourceCodeManagementRevisionFileLine: ResolversParentTypes['GitHubRevisionFileLine'];
   SourceCodeManagementRevisionFileLineColumn: SourceCodeManagementRevisionFileLineColumnModel;
+  StackTrace: StackTrace;
   StepDefinition: StepDefinition;
   StepEvent: StepEventModel;
   StepEventConnection: StepEventConnectionModel;
@@ -987,6 +1006,15 @@ export type StreamDirectiveResolver<Result, Parent, ContextType = Context, Args 
 
 export type BrowserVersionResolvers<ContextType = Context, ParentType extends ResolversParentTypes['BrowserVersion'] = ResolversParentTypes['BrowserVersion']> = {
   __resolveType: TypeResolveFn<'ChromiumVersion', ParentType, ContextType>;
+};
+
+export type CallFrameResolvers<ContextType = Context, ParentType extends ResolversParentTypes['CallFrame'] = ResolversParentTypes['CallFrame']> = {
+  columnNumber: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  functionName: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  lineNumber: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  scriptId: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  url: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type ChromiumVersionResolvers<ContextType = Context, ParentType extends ResolversParentTypes['ChromiumVersion'] = ResolversParentTypes['ChromiumVersion']> = {
@@ -1061,6 +1089,7 @@ export type ConsoleLogEventResolvers<ContextType = Context, ParentType extends R
   at: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   logLevel: Resolver<ResolversTypes['ConsoleLogLevel'], ParentType, ContextType>;
   message: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  stackTrace: Resolver<ResolversTypes['StackTrace'], ParentType, ContextType>;
   testExecution: Resolver<ResolversTypes['TestExecution'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
@@ -1364,6 +1393,11 @@ export type SourceCodeManagementRevisionFileLineColumnResolvers<ContextType = Co
   __resolveType: TypeResolveFn<'GitHubRevisionFileLineColumn', ParentType, ContextType>;
 };
 
+export type StackTraceResolvers<ContextType = Context, ParentType extends ResolversParentTypes['StackTrace'] = ResolversParentTypes['StackTrace']> = {
+  callFrames: Resolver<ReadonlyArray<ResolversTypes['CallFrame']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type StepDefinitionResolvers<ContextType = Context, ParentType extends ResolversParentTypes['StepDefinition'] = ResolversParentTypes['StepDefinition']> = {
   description: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   keyword: Resolver<ResolversTypes['GherkinStepKeyword'], ParentType, ContextType>;
@@ -1483,6 +1517,7 @@ export interface UrlScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes[
 
 export type Resolvers<ContextType = Context> = {
   BrowserVersion: BrowserVersionResolvers<ContextType>;
+  CallFrame: CallFrameResolvers<ContextType>;
   ChromiumVersion: ChromiumVersionResolvers<ContextType>;
   CommandChainEvent: CommandChainEventResolvers<ContextType>;
   CommandChainEventConnection: CommandChainEventConnectionResolvers<ContextType>;
@@ -1541,6 +1576,7 @@ export type Resolvers<ContextType = Context> = {
   SourceCodeManagementRevisionFile: SourceCodeManagementRevisionFileResolvers<ContextType>;
   SourceCodeManagementRevisionFileLine: SourceCodeManagementRevisionFileLineResolvers<ContextType>;
   SourceCodeManagementRevisionFileLineColumn: SourceCodeManagementRevisionFileLineColumnResolvers<ContextType>;
+  StackTrace: StackTraceResolvers<ContextType>;
   StepDefinition: StepDefinitionResolvers<ContextType>;
   StepEvent: StepEventResolvers<ContextType>;
   StepEventConnection: StepEventConnectionResolvers<ContextType>;

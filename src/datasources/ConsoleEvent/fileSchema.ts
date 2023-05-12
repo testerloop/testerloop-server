@@ -1,5 +1,17 @@
 import z from 'zod';
 
+const callFrame = z.object({
+  functionName: z.string(),
+  scriptId: z.string(),
+  url: z.string(),
+  lineNumber: z.number(),
+  columnNumber: z.number(),
+});
+
+const stackTraceSchema = z.object({
+  callFrames: z.array(callFrame),
+});
+
 const baseLog = z.object({
     args: z.array(z.discriminatedUnion('type', [
         z.object({
@@ -12,6 +24,7 @@ const baseLog = z.object({
     ])),
     id: z.string(),
     timestamp: z.coerce.date(),
+  stackTrace: stackTraceSchema,
 });
 
 const logSchema = z.discriminatedUnion('type', [

@@ -9,6 +9,8 @@ import TestExecution from './TestExecution.js';
 import TestExecutionConnection from './TestExecutionConnection.js';
 import TestExecutionEventConnection from './TestExecutionEventConnection.js';
 import HttpNetworkEvent from './HttpNetworkEvent.js';
+import CallFrame from './CallFrame.js';
+import StackTrace from './StackTrace.js';
 import Cookie from './Cookie.js';
 import HttpHeaders from './HttpHeaders.js';
 import HttpNetworkEventInitiator from './HttpNetworkEventInitiator.js';
@@ -76,6 +78,7 @@ const resolvers: Resolvers = {
     NetworkEvent: interfaceResolvers,
     HttpBody: interfaceResolvers,
     HttpNetworkEvent,
+    CallFrame,
     Cookie,
     HttpHeaders,
     HttpNetworkEventInitiator,
@@ -118,6 +121,7 @@ const resolvers: Resolvers = {
     CommandChainEventEdge: edgeResolvers,
     CommandChainEvent,
     CommandChainEventConnection,
+    StackTrace,
     StepDefinition,
     ScenarioDefinition,
     GitHubActor,
