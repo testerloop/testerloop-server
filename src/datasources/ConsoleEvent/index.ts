@@ -5,7 +5,7 @@ import S3Service from '../../S3Service.js';
 import { Log, parseLogFile } from './fileSchema.js';
 
 export class ConsoleEvent {
-  context: Context;
+    context: Context;
 
     constructor(context: Context) {
         this.context = context;
