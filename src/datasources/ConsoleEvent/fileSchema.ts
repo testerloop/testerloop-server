@@ -1,15 +1,15 @@
 import z from 'zod';
 
 const callFrame = z.object({
-  functionName: z.string(),
-  scriptId: z.string(),
-  url: z.string(),
-  lineNumber: z.number(),
-  columnNumber: z.number(),
+    functionName: z.string(),
+    scriptId: z.string(),
+    url: z.string(),
+    lineNumber: z.number(),
+    columnNumber: z.number(),
 });
 
 const stackTraceSchema = z.object({
-  callFrames: z.array(callFrame),
+    callFrames: z.array(callFrame),
 });
 
 const baseLog = z.object({
@@ -24,7 +24,7 @@ const baseLog = z.object({
     ])),
     id: z.string(),
     timestamp: z.coerce.date(),
-  stackTrace: stackTraceSchema,
+    stackTrace: stackTraceSchema,
 });
 
 const logSchema = z.discriminatedUnion('type', [
