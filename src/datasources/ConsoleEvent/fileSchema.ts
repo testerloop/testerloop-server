@@ -2,7 +2,6 @@ import z from 'zod';
 
 const callFrame = z.object({
     functionName: z.string(),
-    scriptId: z.string(),
     url: z.string(),
     lineNumber: z.number(),
     columnNumber: z.number(),

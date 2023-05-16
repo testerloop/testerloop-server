@@ -1,7 +1,6 @@
 type CallFrame {
     functionName: String!
-    scriptId: String!
-    url: String!
+    url: URL!
     lineNumber: Int!
     columnNumber: Int!
 }
