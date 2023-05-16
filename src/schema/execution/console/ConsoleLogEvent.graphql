@@ -3,4 +3,5 @@ type ConsoleLogEvent implements Event & InstantaneousEvent & TestExecutionEvent 
     message: String!
     logLevel: ConsoleLogLevel!
     testExecution: TestExecution!
+    stackTrace: StackTrace!
 }

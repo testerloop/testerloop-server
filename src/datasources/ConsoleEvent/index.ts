@@ -35,6 +35,7 @@ export class ConsoleEvent {
                 at: log.timestamp,
                 logLevel: log.type,
                 message: JSON.stringify(log.args),
+                stackTrace: log.stackTrace,
             }));
     }
 

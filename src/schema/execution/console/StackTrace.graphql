@@ -1,0 +1,10 @@
+type CallFrame {
+    functionName: String!
+    url: URL!
+    lineNumber: Int!
+    columnNumber: Int!
+}
+
+type StackTrace {
+    callFrames: [CallFrame!]!
+}
