@@ -36,8 +36,7 @@ export type CallFrame = {
   readonly columnNumber: Scalars['Int'];
   readonly functionName: Scalars['String'];
   readonly lineNumber: Scalars['Int'];
-  readonly scriptId: Scalars['String'];
-  readonly url: Scalars['String'];
+  readonly url: Scalars['URL'];
 };
 
 /** See https://www.chromium.org/developers/version-numbers/ */
@@ -1012,8 +1011,7 @@ export type CallFrameResolvers<ContextType = Context, ParentType extends Resolve
   columnNumber: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   functionName: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   lineNumber: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  scriptId: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  url: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  url: Resolver<ResolversTypes['URL'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
