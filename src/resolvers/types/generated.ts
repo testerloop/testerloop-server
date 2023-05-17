@@ -123,9 +123,10 @@ export type ConsoleEventFilterInput = {
   readonly logSearch?: InputMaybe<Scalars['String']>;
 };
 
-export type ConsoleLogEvent = ConsoleEvent & Event & InstantaneousEvent & TestExecutionEvent & {
+export type ConsoleLogEvent = ConsoleEvent & Event & InstantaneousEvent & Node & TestExecutionEvent & {
   readonly __typename: 'ConsoleLogEvent';
   readonly at: Scalars['DateTime'];
+  readonly id: Scalars['ID'];
   readonly logLevel: ConsoleLogLevel;
   readonly message: Scalars['String'];
   readonly stackTrace: StackTrace;
@@ -485,12 +486,18 @@ export type PageInfo = {
 
 export type Query = {
   readonly __typename: 'Query';
+  readonly consoleLogEvent: Maybe<ConsoleLogEvent>;
   readonly httpNetworkEvent: Maybe<HttpNetworkEvent>;
   readonly node: Maybe<Node>;
   readonly test: Scalars['Boolean'];
   readonly testExecution: Maybe<TestExecution>;
   readonly testRun: Maybe<TestRun>;
   readonly testRuns: TestRunConnection;
+};
+
+
+export type QueryConsoleLogEventArgs = {
+  id: Scalars['ID'];
 };
 
 
@@ -861,7 +868,7 @@ export type ResolversTypes = {
   NetworkEventFilterInput: NetworkEventFilterInput;
   NetworkEventResponseStatusFilterInput: NetworkEventResponseStatusFilterInput;
   NetworkEventTiming: ResolverTypeWrapper<NetworkEventTiming>;
-  Node: ResolversTypes['CommandEvent'] | ResolversTypes['StepEvent'] | ResolversTypes['TestExecution'] | ResolversTypes['TestExecutionScreenshot'] | ResolversTypes['TestRun'];
+  Node: ResolversTypes['CommandEvent'] | ResolversTypes['ConsoleLogEvent'] | ResolversTypes['StepEvent'] | ResolversTypes['TestExecution'] | ResolversTypes['TestExecutionScreenshot'] | ResolversTypes['TestRun'];
   OrderDirection: OrderDirection;
   PageInfo: ResolverTypeWrapper<PageInfo>;
   Query: ResolverTypeWrapper<unknown>;
@@ -955,7 +962,7 @@ export type ResolversParentTypes = {
   NetworkEventFilterInput: NetworkEventFilterInput;
   NetworkEventResponseStatusFilterInput: NetworkEventResponseStatusFilterInput;
   NetworkEventTiming: NetworkEventTiming;
-  Node: ResolversParentTypes['CommandEvent'] | ResolversParentTypes['StepEvent'] | ResolversParentTypes['TestExecution'] | ResolversParentTypes['TestExecutionScreenshot'] | ResolversParentTypes['TestRun'];
+  Node: ResolversParentTypes['CommandEvent'] | ResolversParentTypes['ConsoleLogEvent'] | ResolversParentTypes['StepEvent'] | ResolversParentTypes['TestExecution'] | ResolversParentTypes['TestExecutionScreenshot'] | ResolversParentTypes['TestRun'];
   PageInfo: PageInfo;
   Query: unknown;
   ScenarioDefinition: ScenarioDefinition;
@@ -1085,6 +1092,7 @@ export type ConsoleEventResolvers<ContextType = Context, ParentType extends Reso
 
 export type ConsoleLogEventResolvers<ContextType = Context, ParentType extends ResolversParentTypes['ConsoleLogEvent'] = ResolversParentTypes['ConsoleLogEvent']> = {
   at: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
+  id: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   logLevel: Resolver<ResolversTypes['ConsoleLogLevel'], ParentType, ContextType>;
   message: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   stackTrace: Resolver<ResolversTypes['StackTrace'], ParentType, ContextType>;
@@ -1331,7 +1339,7 @@ export type NetworkEventTimingResolvers<ContextType = Context, ParentType extend
 };
 
 export type NodeResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Node'] = ResolversParentTypes['Node']> = {
-  __resolveType: TypeResolveFn<'CommandEvent' | 'StepEvent' | 'TestExecution' | 'TestExecutionScreenshot' | 'TestRun', ParentType, ContextType>;
+  __resolveType: TypeResolveFn<'CommandEvent' | 'ConsoleLogEvent' | 'StepEvent' | 'TestExecution' | 'TestExecutionScreenshot' | 'TestRun', ParentType, ContextType>;
 };
 
 export type PageInfoResolvers<ContextType = Context, ParentType extends ResolversParentTypes['PageInfo'] = ResolversParentTypes['PageInfo']> = {
@@ -1343,6 +1351,7 @@ export type PageInfoResolvers<ContextType = Context, ParentType extends Resolver
 };
 
 export type QueryResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
+  consoleLogEvent: Resolver<Maybe<ResolversTypes['ConsoleLogEvent']>, ParentType, ContextType, RequireFields<QueryConsoleLogEventArgs, 'id'>>;
   httpNetworkEvent: Resolver<Maybe<ResolversTypes['HttpNetworkEvent']>, ParentType, ContextType, RequireFields<QueryHttpNetworkEventArgs, 'id'>>;
   node: Resolver<Maybe<ResolversTypes['Node']>, ParentType, ContextType, RequireFields<QueryNodeArgs, 'id'>>;
   test: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;

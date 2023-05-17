@@ -1,7 +1,12 @@
-type ConsoleLogEvent implements Event & InstantaneousEvent & TestExecutionEvent & ConsoleEvent {
+type ConsoleLogEvent implements Node & Event & InstantaneousEvent & TestExecutionEvent & ConsoleEvent {
+    id: ID!
     at: DateTime!
     message: String!
     logLevel: ConsoleLogLevel!
     testExecution: TestExecution!
     stackTrace: StackTrace!
+}
+
+extend type Query {
+  consoleLogEvent(id: ID!): ConsoleLogEvent
 }

@@ -68,6 +68,10 @@ const resolvers: QueryResolvers = {
             totalCount,
         }
     },
+    async consoleLogEvent (root, { id }, { dataSources }) {
+        return null
+    },
+
     async node(root, { id }, context, info) {
         const decodedId = decodeId(id);
         if (!decodedId) {
