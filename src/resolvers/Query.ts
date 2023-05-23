@@ -80,6 +80,28 @@ const resolvers: QueryResolvers = {
         };
     },
 
+    async stackTrace(root, { id }, { dataSources }) {
+        const decodedId = decodeIdForType('StackTrace', id);
+        if (!decodedId) {
+            return null;
+        }
+        const consoleLogEventId = decodedId.replace('-stack', '');
+        const consoleLogEvent = await dataSources.consoleEvent.getById(consoleLogEventId);
+        if (!consoleLogEvent || !consoleLogEvent.stackTrace) {
+            return null;
+        }
+        const callFrames = consoleLogEvent.stackTrace.callFrames.map((callFrame, index) => ({
+            __typename: 'CallFrame' as const,
+            id: `${consoleLogEventId}-stack-${index}`,
+            ...callFrame,
+        }));
+        return {
+            __typename: 'StackTrace',
+            id: `${consoleLogEventId}-stack`,
+            callFrames: callFrames,
+        };
+    },
+
     async node(root, { id }, context, info) {
         const decodedId = decodeId(id);
         if (!decodedId) {
@@ -94,6 +116,8 @@ const resolvers: QueryResolvers = {
                 return resolvers.testRun(root, { id }, context, info);
             case 'ConsoleLogEvent':
                 return resolvers.consoleLogEvent(root, { id }, context, info);
+            case 'StackTrace':
+                return resolvers.stackTrace(root, { id }, context, info);
             default:
                 return null;
         }

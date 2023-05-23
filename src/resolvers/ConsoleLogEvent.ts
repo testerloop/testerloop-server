@@ -36,12 +36,14 @@ const resolvers: ConsoleLogEventResolvers = {
     },
     async stackTrace({ id }, _args, { dataSources }) {
         const event = assertNonNull(await dataSources.consoleEvent.getById(id));
-        const callFrames = event.stackTrace.callFrames.map((callFrame) => ({
+        const callFrames = event.stackTrace.callFrames.map((callFrame, idx) => ({
             __typename: 'CallFrame' as const,
+            id: `${event.id}-stack-${idx}`,
             ...callFrame,
         }));
         return {
             __typename: 'StackTrace',
+            id: `${event.id}-stack`,
             callFrames: callFrames,
         };
     },
