@@ -1,6 +1,6 @@
 import { decodeId, decodeIdForType } from '../util/id.js';
 import { QueryResolvers } from './types/generated.js';
-
+import { ConsoleLogEventModel } from './types/mappers.js';
 const resolvers: QueryResolvers = {
     test: () => true,
     async httpNetworkEvent(root, { id }, { dataSources }) {
@@ -68,8 +68,16 @@ const resolvers: QueryResolvers = {
             totalCount,
         }
     },
+
     async consoleLogEvent (root, { id }, { dataSources }) {
-        return null
+        const decodedId = decodeIdForType('ConsoleLogEvent', id);
+        if(!decodedId){
+            return null;
+        }
+        return {
+            __typename: 'ConsoleLogEvent',
+            id: decodedId,
+        };
     },
 
     async node(root, { id }, context, info) {
@@ -84,6 +92,8 @@ const resolvers: QueryResolvers = {
                 return resolvers.testExecution(root, { id }, context, info);
             case 'TestRun':
                 return resolvers.testRun(root, { id }, context, info);
+            case 'ConsoleLogEvent':
+                return resolvers.consoleLogEvent(root, { id }, context, info);
             default:
                 return null;
         }
