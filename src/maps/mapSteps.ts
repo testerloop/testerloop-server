@@ -65,22 +65,14 @@ const mapSteps = (steps: unknown, testExecutionId: string, endedTestsAt: Date) =
         if(command.state === 'failed'){
             step.status = CommandEventStatus.Failed;
         }
-        if (item.type === 'parent') {
-            if(step.commandChains.length){
-                const lastCommandChain = step.commandChains[step.commandChains.length - 1]
-                lastCommandChain.until = at
-            }
-            step.commandChains.push({
-                __typename: 'CommandChainEvent',
-                at,
-                until,
-                id: `${testExecutionId}/commandChain/${i + 1}`,
-                commands: [command],
-            })
-            continue;
-        }
-
-        step.commandChains[step.commandChains.length - 1].commands.push(command);
+        
+        step.commandChains.push({
+            __typename: 'CommandChainEvent',
+            at,
+            until,
+            id: `${testExecutionId}/commandChain/${i + 1}`,
+            commands: [command],
+        });
     }
 
     mappedSteps[mappedSteps.length - 1].until = endedTestsAt
