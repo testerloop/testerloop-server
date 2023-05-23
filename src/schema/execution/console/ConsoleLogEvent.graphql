@@ -8,5 +8,5 @@ type ConsoleLogEvent implements Node & Event & InstantaneousEvent & TestExecutio
 }
 
 extend type Query {
-  consoleLogEvent(id: ID!): ConsoleLogEvent
+    consoleLogEvent(id: ID!): ConsoleLogEvent
 }
