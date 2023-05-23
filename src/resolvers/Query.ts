@@ -1,6 +1,6 @@
 import { decodeId, decodeIdForType } from '../util/id.js';
 import { QueryResolvers } from './types/generated.js';
-import { ConsoleLogEventModel } from './types/mappers.js';
+
 const resolvers: QueryResolvers = {
     test: () => true,
     async httpNetworkEvent(root, { id }, { dataSources }) {

@@ -3,7 +3,6 @@ import { ConsoleLogEventResolvers, ConsoleLogLevel } from './types/generated.js'
 
 const resolvers: ConsoleLogEventResolvers = {
     id: ({ id }) => id,
-
     async at({ id }, _args, { dataSources }) {
         const event = assertNonNull(await dataSources.consoleEvent.getById(id));
         return event.timestamp;
@@ -46,7 +45,6 @@ const resolvers: ConsoleLogEventResolvers = {
             callFrames: callFrames,
         };
     },
-
     async testExecution({ id }, _args, { dataSources }) {
         const [runId, testExecutionId] = id.split('/');
         return {
