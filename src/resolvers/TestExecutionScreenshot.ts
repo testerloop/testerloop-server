@@ -14,9 +14,9 @@ const resolvers: TestExecutionScreenshotResolvers = {
     },
     async url({ id }, _args, { dataSources }) {
         const bucketName = config.AWS_BUCKET_NAME;
-
+        const bucketPath = config.AWS_BUCKET_PATH;
         const event = await dataSources.screenshot.getById(id);
-        const url = await S3Service.getSignedUrl(bucketName, event.fileName);
+        const url = await S3Service.getSignedUrl(bucketName, `${bucketPath}${event.fileName}`);
 
         return {
             __typename: 'SignedURL',

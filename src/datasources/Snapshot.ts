@@ -14,7 +14,8 @@ export class Snapshot {
     snapshotByTestExecutionIdDataLoader = new DataLoader<string, ReturnType<typeof mapSnapshots>>(
         (ids) => Promise.all(ids.map(async (testExecutionId) => {
             const bucketName = config.AWS_BUCKET_NAME;
-            const snapshots = await S3Service.getObject(bucketName, `${testExecutionId}/snapshots/snapshot-metadata.json`);
+            const bucketPath = config.AWS_BUCKET_PATH;
+            const snapshots = await S3Service.getObject(bucketName, `${bucketPath}${testExecutionId}/snapshots/snapshot-metadata.json`);
             const mappedSnapshots = mapSnapshots(snapshots, testExecutionId);
             return mappedSnapshots;
         }))

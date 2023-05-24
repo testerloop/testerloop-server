@@ -36,7 +36,8 @@ export class TestCodeRevision {
     cicdDataByRunIdDataLoader = new DataLoader<string, Cicd>(
         (ids) => Promise.all(ids.map(async (runId) => {
             const bucketName = config.AWS_BUCKET_NAME;
-            const cicdRaw = await S3Service.getObject(bucketName, `${runId}/logs/cicd.json`)
+            const bucketPath = config.AWS_BUCKET_PATH;
+            const cicdRaw = await S3Service.getObject(bucketName, `${bucketPath}${runId}/logs/cicd.json`)
             const cicd = CicdSchema.parse(cicdRaw);
             return cicd;
         }))

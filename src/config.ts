@@ -8,6 +8,7 @@ export const envFormat = z.object({
     AWS_ACCESS_KEY_ID: z.string().optional(),
     AWS_SECRET_ACCESS_KEY: z.string().optional(),
     AWS_BUCKET_NAME: z.string(),
+    AWS_BUCKET_PATH: z.string(),
     EXPIRES_IN: z.coerce.number()
 });
 
@@ -27,6 +28,7 @@ export default {
     PORT: config.PORT,
     AWS_BUCKET_REGION: config.AWS_BUCKET_REGION,
     AWS_BUCKET_NAME: config.AWS_BUCKET_NAME,
+    AWS_BUCKET_PATH: config.AWS_BUCKET_PATH,
     EXPIRES_IN: config.EXPIRES_IN,
     AWS_CREDENTIALS: awsCredentials,
 };

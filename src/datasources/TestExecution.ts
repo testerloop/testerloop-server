@@ -15,7 +15,8 @@ export class TestExecution {
         first?: number | null, after?: string | null;
     }) {
         const bucketName = config.AWS_BUCKET_NAME;
-        const results = await S3Service.listSubFolders(bucketName, `${id}/`);
+        const bucketPath = config.AWS_BUCKET_PATH;
+        const results = await S3Service.listSubFolders(bucketName, `${bucketPath}${id}/`);
 
         const testExecutionIds = results
             .map((folder) => ({
@@ -28,8 +29,9 @@ export class TestExecution {
 
     async getById(id: string) {
         const bucketName = config.AWS_BUCKET_NAME;
+        const bucketPath = config.AWS_BUCKET_PATH;
         const [runId, requestId] = id.split('/');
-        const results = await S3Service.getObject(bucketName, `${runId}/${requestId}/cypress/results.json`) as {startedTestsAt: string, endedTestsAt: string};
+        const results = await S3Service.getObject(bucketName, `${bucketPath}${runId}/${requestId}/cypress/results.json`) as {startedTestsAt: string, endedTestsAt: string};
 
         if (results) {
             return {
