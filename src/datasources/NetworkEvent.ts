@@ -14,7 +14,8 @@ export class NetworkEvent {
     networkEventsByTestExecutionIdDataLoader = new DataLoader<string, ReturnType<typeof mapNetworkEvents>>(
         (ids) => Promise.all(ids.map(async (testExecutionId) => {
             const bucketName = config.AWS_BUCKET_NAME;
-            const events = await S3Service.getObject(bucketName, `${testExecutionId}/har/network-events.har`);
+             const bucketPath = config.AWS_BUCKET_PATH || '';
+            const events = await S3Service.getObject(bucketName, `${bucketPath}${testExecutionId}/har/network-events.har`);
             const mappedEvents = mapNetworkEvents(events, testExecutionId);
 
             return mappedEvents;

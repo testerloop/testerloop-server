@@ -14,7 +14,8 @@ export class ConsoleEvent {
     logByTestExecutionIdDataLoader = new DataLoader<string, Record<string, Log>>(
         (ids) => Promise.all(ids.map(async (testExecutionId) => {
             const bucketName = config.AWS_BUCKET_NAME;
-            const json = await S3Service.getObject(bucketName, `${testExecutionId}/console/console-logs.json`);
+             const bucketPath = config.AWS_BUCKET_PATH || '';
+            const json = await S3Service.getObject(bucketName, `${bucketPath}${testExecutionId}/console/console-logs.json`);
             const parsed = parseLogFile(json);
             return Object.fromEntries(
                 parsed

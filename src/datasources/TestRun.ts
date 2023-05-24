@@ -15,7 +15,8 @@ export class TestRun {
         first?: number | null, after?: string | null;
     }) {
         const bucketName = config.AWS_BUCKET_NAME;
-        const results = await S3Service.listSubFolders(bucketName, '');
+        const bucketPath = config.AWS_BUCKET_PATH || '';
+        const results = await S3Service.listSubFolders(bucketName, `${bucketPath}`);
 
         const testExecutionIds = results
             .map((folder) => ({
