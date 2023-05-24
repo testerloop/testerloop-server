@@ -68,6 +68,18 @@ const resolvers: QueryResolvers = {
             totalCount,
         }
     },
+
+    async consoleLogEvent (root, { id }, { dataSources }) {
+        const decodedId = decodeIdForType('ConsoleLogEvent', id);
+        if(!decodedId){
+            return null;
+        }
+        return {
+            __typename: 'ConsoleLogEvent',
+            id: decodedId,
+        };
+    },
+
     async node(root, { id }, context, info) {
         const decodedId = decodeId(id);
         if (!decodedId) {
@@ -80,6 +92,8 @@ const resolvers: QueryResolvers = {
                 return resolvers.testExecution(root, { id }, context, info);
             case 'TestRun':
                 return resolvers.testRun(root, { id }, context, info);
+            case 'ConsoleLogEvent':
+                return resolvers.consoleLogEvent(root, { id }, context, info);
             default:
                 return null;
         }
