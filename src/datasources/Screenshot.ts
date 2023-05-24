@@ -14,7 +14,7 @@ export class Screenshot {
     screenshotByTestExecutionIdDataLoader = new DataLoader<string, ReturnType<typeof mapScreenshots>>(
         (ids) => Promise.all(ids.map(async (testExecutionId) => {
             const bucketName = config.AWS_BUCKET_NAME;
-            const bucketPath = config.AWS_BUCKET_PATH;
+             const bucketPath = config.AWS_BUCKET_PATH || '';
             const screenshots = await S3Service.listObjects(bucketName, `${bucketPath}${testExecutionId}/screenshots/`);
             return mapScreenshots(screenshots, testExecutionId)
         }))
