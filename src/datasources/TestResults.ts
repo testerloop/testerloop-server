@@ -32,7 +32,7 @@ export class TestResults {
     resultsByTestExecutionIdDataLoader = new DataLoader<string, Results>(
         (ids) => Promise.all(ids.map(async (testExecutionId) => {
             const bucketName = config.AWS_BUCKET_NAME;
-             const bucketPath = config.AWS_BUCKET_PATH || '';
+            const bucketPath = config.AWS_BUCKET_PATH || '';
             const rawResults = await S3Service.getObject(bucketName, `${bucketPath}${testExecutionId}/cypress/results.json`)
             const results = ResultsSchema.parse(rawResults);
             return results;
