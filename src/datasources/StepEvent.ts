@@ -14,7 +14,7 @@ export class StepEvent {
     stepByTestExecutionIdDataLoader = new DataLoader<string, ReturnType<typeof mapSteps>>(
         (ids) => Promise.all(ids.map(async (testExecutionId) => {
             const bucketName = config.AWS_BUCKET_NAME;
-             const bucketPath = config.AWS_BUCKET_PATH || '';
+            const bucketPath = config.AWS_BUCKET_PATH || '';
             const [steps, results] = await Promise.all([
                 S3Service.getObject(bucketName, `${bucketPath}${testExecutionId}/cypress/out.json`),
                 this.context.dataSources.testResults.getResultsByTestExecutionId(testExecutionId),
