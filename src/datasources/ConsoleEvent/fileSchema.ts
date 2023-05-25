@@ -20,6 +20,9 @@ const baseLog = z.object({
         z.object({
             type: z.literal('undefined'),
         }),
+        z.object({
+            type: z.literal('object'),
+        }),
     ])),
     id: z.string(),
     timestamp: z.coerce.date(),
