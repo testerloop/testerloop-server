@@ -3,14 +3,9 @@ type CallFrame {
     functionName: String!
     url: URL!
     lineNumber: Int!
-    columnNumber: Int!
 }
 
-type StackTrace implements Node {
+type StackTrace {
     id: ID!
     callFrames: [CallFrame!]!
-}
-
-extend type Query {
-    stackTrace(id: ID!): StackTrace
 }
