@@ -11,10 +11,6 @@ const UserSchema = z.object({
 });
 
 const CicdSchema = z.object({
-    GITHUB_SERVER_URL: z.string(),
-    GITHUB_REPOSITORY_OWNER: z.string(),
-    GITHUB_REPOSITORY: z.string(),
-    GITHUB_REF_NAME: z.string(),
     gitBranch: z.string(),
     author: UserSchema,
     committer: UserSchema,
@@ -51,16 +47,16 @@ export class TestCodeRevision {
 
         const owner = {
             __typename: 'GitHubRepositoryOwner' as const,
-            name: cicd.GITHUB_REPOSITORY_OWNER,
-            url: [cicd.GITHUB_SERVER_URL, cicd.GITHUB_REPOSITORY_OWNER].join('/'),
+            name: cicd.gitUrl.split("/")[3],
+            url: cicd.gitUrl.split("/").slice(0, 4).join("/"),
         }
 
         const repository = {
             __typename: 'GitHubRepository' as const ,
            _unused: false, 
            owner, 
-           name: cicd.GITHUB_REPOSITORY, 
-           url: [cicd.GITHUB_SERVER_URL, cicd.GITHUB_REPOSITORY].join('/')
+           name: cicd.gitUrl.split("/").slice(3, 5).join('/'), 
+           url: cicd.gitUrl,
        }
 
         return {
@@ -83,7 +79,7 @@ export class TestCodeRevision {
                     avatar: cicd.committer?.avatarUrl || null,
                     username: cicd.committer.name,
                     name: cicd.committer.name,
-                    url: [cicd.GITHUB_SERVER_URL, cicd.committer.name].join('/')
+                    url: ["https://github.com", cicd.committer.name].join('/')
                 }
             },
             author: {
@@ -95,12 +91,12 @@ export class TestCodeRevision {
                     avatar: cicd.author.avatarUrl || null,
                     username: cicd.author.name,
                     name: cicd.author.name,
-                    url: [cicd.GITHUB_SERVER_URL, cicd.author.name].join('/')
+                    url: ["https://github.com", cicd.author.name].join('/')
                 }
             },
             url: [cicd.gitUrl, 'commit', cicd.hash].join('/'),
-            serverUrl: cicd.GITHUB_SERVER_URL,
-            refName: cicd.GITHUB_REF_NAME
+            serverUrl: "https://github.com",
+            refName: cicd.gitBranch
         };
     }
 }
