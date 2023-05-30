@@ -69,7 +69,7 @@ export type CommandChainEventEdge = {
   readonly node: CommandChainEvent;
 };
 
-export type CommandEvent = Event & IntervalEvent & Node & TestExecutionEvent & {
+export type CommandEvent = Event & IntervalEvent & Node & SnapshotEvent & TestExecutionEvent & {
   readonly __typename: 'CommandEvent';
   readonly at: Scalars['DateTime'];
   readonly description: Scalars['String'];
@@ -546,6 +546,12 @@ export type SignedUrl = {
   readonly url: Scalars['URL'];
 };
 
+export type SnapshotEvent = {
+  readonly at: Scalars['DateTime'];
+  readonly nextSnapshot: TestExecutionSnapshot;
+  readonly previousSnapshot: TestExecutionSnapshot;
+};
+
 export type SourceCodeManagementRepository = {
   readonly _unused: Scalars['Boolean'];
 };
@@ -581,7 +587,7 @@ export type StepDefinition = {
   readonly keyword: GherkinStepKeyword;
 };
 
-export type StepEvent = Event & IntervalEvent & Node & TestExecutionEvent & {
+export type StepEvent = Event & IntervalEvent & Node & SnapshotEvent & TestExecutionEvent & {
   readonly __typename: 'StepEvent';
   readonly at: Scalars['DateTime'];
   readonly commandChains: CommandChainEventConnection;
@@ -875,6 +881,7 @@ export type ResolversTypes = {
   ScenarioDefinition: ResolverTypeWrapper<ScenarioDefinition>;
   ScenarioEvent: ResolverTypeWrapper<ScenarioEventModel>;
   SignedURL: ResolverTypeWrapper<SignedUrl>;
+  SnapshotEvent: ResolversTypes['CommandEvent'] | ResolversTypes['StepEvent'];
   SourceCodeManagementRepository: ResolversTypes['GitHubRepository'];
   SourceCodeManagementRevision: ResolversTypes['GitHubRevision'];
   SourceCodeManagementRevisionFile: ResolversTypes['GitHubRevisionFile'];
@@ -968,6 +975,7 @@ export type ResolversParentTypes = {
   ScenarioDefinition: ScenarioDefinition;
   ScenarioEvent: ScenarioEventModel;
   SignedURL: SignedUrl;
+  SnapshotEvent: ResolversParentTypes['CommandEvent'] | ResolversParentTypes['StepEvent'];
   SourceCodeManagementRepository: ResolversParentTypes['GitHubRepository'];
   SourceCodeManagementRevision: ResolversParentTypes['GitHubRevision'];
   SourceCodeManagementRevisionFile: ResolversParentTypes['GitHubRevisionFile'];
@@ -1380,6 +1388,10 @@ export type SignedUrlResolvers<ContextType = Context, ParentType extends Resolve
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type SnapshotEventResolvers<ContextType = Context, ParentType extends ResolversParentTypes['SnapshotEvent'] = ResolversParentTypes['SnapshotEvent']> = {
+  __resolveType: TypeResolveFn<'CommandEvent' | 'StepEvent', ParentType, ContextType>;
+};
+
 export type SourceCodeManagementRepositoryResolvers<ContextType = Context, ParentType extends ResolversParentTypes['SourceCodeManagementRepository'] = ResolversParentTypes['SourceCodeManagementRepository']> = {
   __resolveType: TypeResolveFn<'GitHubRepository', ParentType, ContextType>;
 };
@@ -1578,6 +1590,7 @@ export type Resolvers<ContextType = Context> = {
   ScenarioDefinition: ScenarioDefinitionResolvers<ContextType>;
   ScenarioEvent: ScenarioEventResolvers<ContextType>;
   SignedURL: SignedUrlResolvers<ContextType>;
+  SnapshotEvent: SnapshotEventResolvers<ContextType>;
   SourceCodeManagementRepository: SourceCodeManagementRepositoryResolvers<ContextType>;
   SourceCodeManagementRevision: SourceCodeManagementRevisionResolvers<ContextType>;
   SourceCodeManagementRevisionFile: SourceCodeManagementRevisionFileResolvers<ContextType>;

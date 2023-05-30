@@ -3,7 +3,7 @@ enum CommandEventStatus {
   FAILED
 }
 
-type CommandEvent implements Node & Event & IntervalEvent & TestExecutionEvent {
+type CommandEvent implements Node & Event & IntervalEvent & TestExecutionEvent & SnapshotEvent {
   id: ID!
   at: DateTime!
   until: DateTime!
