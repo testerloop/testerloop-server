@@ -26,7 +26,7 @@ const OptionsSchema = z.object({
     url: z.string(),
     wallClockStartedAt: z.string(),
     ended: z.boolean(),
-    snapshotID: z.number(),
+    snapshotID: z.number().optional(),
     group: z.optional(z.string()),
     err: z.optional(ErrorSchema)
   });

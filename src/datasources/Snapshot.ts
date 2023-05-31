@@ -3,12 +3,15 @@ import { Context } from '../context.js';
 import config from '../config.js';
 import S3Service from '../S3Service.js';
 import mapSnapshots from '../maps/mapSnapshots.js';
+import { SnapshotType } from '../maps/mapSnapshots';
 
 export class Snapshot {
     context: Context;
+    lastKnownSnapshot: SnapshotType | null
 
     constructor(context: Context) {
         this.context = context;
+        this.lastKnownSnapshot = null;
     }
 
     snapshotByTestExecutionIdDataLoader = new DataLoader<string, ReturnType<typeof mapSnapshots>>(
@@ -27,6 +30,11 @@ export class Snapshot {
     async getById(id: string) {
         const [runId, requestId, _] = id.split('/');
         const snapshots = await this.getSnapshotsByTestExecutionId(`${runId}/${requestId}`);
-        return snapshots[id] ?? null;
+        const snapshot = snapshots[id] ?? null;
+        if (snapshot) {
+            this.lastKnownSnapshot = snapshot;
+        }
+        return snapshot ?? this.lastKnownSnapshot;
     }
 }
+
