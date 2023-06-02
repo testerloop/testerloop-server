@@ -1,4 +1,4 @@
-type StepEvent implements Node & Event & IntervalEvent & TestExecutionEvent {
+type StepEvent implements Node & Event & IntervalEvent & TestExecutionEvent & SnapshotEvent {
   id: ID!
   at: DateTime!
   until: DateTime!

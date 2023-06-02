@@ -105,6 +105,7 @@ const resolvers: Resolvers = {
     GitHubRevisionFileLineColumn,
     GitHubRevisionFileLine,
     GitHubRevisionFile,
+    SnapshotEvent: interfaceResolvers,
     SourceCodeManagementRevisionFileLine: interfaceResolvers,
     SourceCodeManagementRevisionFileLineColumn: interfaceResolvers,
     SourceCodeManagementRevisionFile: interfaceResolvers,
