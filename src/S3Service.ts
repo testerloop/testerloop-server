@@ -59,7 +59,7 @@ class S3Service {
           throw new Error('Folder path found in sub-folder!');
         if (!folder.endsWith('/'))
           throw new Error('Sub-folder does not end with a "/"!');
-        return folder.slice(prefix.length, folder.length - 1);
+        return folder.slice(prefix.length, -1);
       });
     return objects || [];
   }
