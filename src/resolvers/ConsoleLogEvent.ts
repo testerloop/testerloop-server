@@ -40,7 +40,7 @@ const resolvers: ConsoleLogEventResolvers = {
         const event = assertNonNull(await dataSources.consoleEvent.getById(id));
         return {
             __typename: 'StackTrace',
-            id: `${id}/stack`,
+            id: id,
         };
     },
     async testExecution({ id }, _args, { dataSources }) {
