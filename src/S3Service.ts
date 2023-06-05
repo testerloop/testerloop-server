@@ -53,7 +53,14 @@ class S3Service {
     const response = await this.s3.send(command);
     const objects = response.CommonPrefixes
       ?.map((object) =>object.Prefix)
-      .filter((x: string | undefined): x is string => !!x);
+      .filter((x: string | undefined): x is string => !!x)
+      .map((folder) => {
+        if (!folder.startsWith(prefix))
+          throw new Error('Folder path found in sub-folder!');
+        if (!folder.endsWith('/'))
+          throw new Error('Sub-folder does not end with a "/"!');
+        return folder.slice(prefix.length, folder.length - 1);
+      });
     return objects || [];
   }
 

@@ -19,10 +19,8 @@ export class TestRun {
         const results = await S3Service.listSubFolders(bucketName, `${bucketPath}`);
 
         const testExecutionIds = results
-            .map((folder) => ({
-                id: folder.split('/')[0]
-            }))
-            .filter(({ id }) => /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/.test(id));
+            .filter((folder) => /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/.test(folder))
+            .map((folder) => ({ id: folder }));
 
         return getPaginatedData(testExecutionIds, { first: args.first, after: args.after });
     }
