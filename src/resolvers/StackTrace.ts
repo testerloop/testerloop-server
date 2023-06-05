@@ -1,5 +1,5 @@
 import { StackTraceResolvers } from './types/generated';
-import { assertNonNull } from '../util/assertNonNull';
+import { assertNonNull } from '../util/assertNonNull.js';
 
 
 const resolvers: StackTraceResolvers = {
