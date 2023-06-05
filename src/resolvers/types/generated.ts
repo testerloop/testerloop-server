@@ -1,5 +1,5 @@
 import { GraphQLResolveInfo, GraphQLScalarType, GraphQLScalarTypeConfig } from 'graphql';
-import { ConsoleLogEventModel, HttpNetworkEventModel, StepEventModel, StepEventEdgeModel, StepEventConnectionModel, ScenarioEventModel, TestExecutionModel, TestExecutionConnectionModel, TestExecutionEdgeModel, TestExecutionEventConnectionModel, TestExecutionEventEdgeModel, TestRunModel, TestRunConnectionModel, TestRunEdgeModel, GitHubRevisionModel, CommandChainEventModel, CommandChainEventEdgeModel, CommandChainEventConnectionModel, CommandEventModel, CommandEventEdgeModel, CommandEventConnectionModel, TestExecutionSnapshotModel, TestExecutionScreenshotModel, GitHubRevisionFileModel, GitHubRevisionFileLineModel, GitHubRevisionFileLineColumnModel, SourceCodeManagementRevisionFileLineColumnModel } from './mappers';
+import { ConsoleLogEventModel, StackTraceModel, HttpNetworkEventModel, StepEventModel, StepEventEdgeModel, StepEventConnectionModel, ScenarioEventModel, TestExecutionModel, TestExecutionConnectionModel, TestExecutionEdgeModel, TestExecutionEventConnectionModel, TestExecutionEventEdgeModel, TestRunModel, TestRunConnectionModel, TestRunEdgeModel, GitHubRevisionModel, CommandChainEventModel, CommandChainEventEdgeModel, CommandChainEventConnectionModel, CommandEventModel, CommandEventEdgeModel, CommandEventConnectionModel, TestExecutionSnapshotModel, TestExecutionScreenshotModel, GitHubRevisionFileModel, GitHubRevisionFileLineModel, GitHubRevisionFileLineColumnModel, SourceCodeManagementRevisionFileLineColumnModel } from './mappers';
 import { Context } from '../../context';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
@@ -888,7 +888,7 @@ export type ResolversTypes = {
   SourceCodeManagementRevisionFile: ResolversTypes['GitHubRevisionFile'];
   SourceCodeManagementRevisionFileLine: ResolversTypes['GitHubRevisionFileLine'];
   SourceCodeManagementRevisionFileLineColumn: ResolverTypeWrapper<SourceCodeManagementRevisionFileLineColumnModel>;
-  StackTrace: ResolverTypeWrapper<StackTrace>;
+  StackTrace: ResolverTypeWrapper<StackTraceModel>;
   StepDefinition: ResolverTypeWrapper<StepDefinition>;
   StepEvent: ResolverTypeWrapper<StepEventModel>;
   StepEventConnection: ResolverTypeWrapper<StepEventConnectionModel>;
@@ -982,7 +982,7 @@ export type ResolversParentTypes = {
   SourceCodeManagementRevisionFile: ResolversParentTypes['GitHubRevisionFile'];
   SourceCodeManagementRevisionFileLine: ResolversParentTypes['GitHubRevisionFileLine'];
   SourceCodeManagementRevisionFileLineColumn: SourceCodeManagementRevisionFileLineColumnModel;
-  StackTrace: StackTrace;
+  StackTrace: StackTraceModel;
   StepDefinition: StepDefinition;
   StepEvent: StepEventModel;
   StepEventConnection: StepEventConnectionModel;

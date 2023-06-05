@@ -37,17 +37,10 @@ const resolvers: ConsoleLogEventResolvers = {
         return event.args[0].value;
     },
     async stackTrace({ id }, _args, { dataSources }) {
-        console.log('stackTrace', id);
         const event = assertNonNull(await dataSources.consoleEvent.getById(id));
-        const callFrames = event.stackTrace.callFrames.map((callFrame, idx) => ({
-            __typename: 'CallFrame' as const,
-            id: `${event.id}-stack-${idx}`,
-            ...callFrame,
-        }));
         return {
             __typename: 'StackTrace',
-            id: `${event.id}-stack`,
-            callFrames: callFrames,
+            id: `${id}/stack`,
         };
     },
     async testExecution({ id }, _args, { dataSources }) {
