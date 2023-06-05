@@ -33,6 +33,7 @@ export type BrowserVersion = ChromiumVersion;
 
 export type CallFrame = {
   readonly __typename: 'CallFrame';
+  readonly columnNumber: Scalars['Int'];
   readonly functionName: Scalars['String'];
   readonly id: Scalars['ID'];
   readonly lineNumber: Scalars['Int'];
@@ -1024,6 +1025,7 @@ export type BrowserVersionResolvers<ContextType = Context, ParentType extends Re
 };
 
 export type CallFrameResolvers<ContextType = Context, ParentType extends ResolversParentTypes['CallFrame'] = ResolversParentTypes['CallFrame']> = {
+  columnNumber: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   functionName: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   id: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   lineNumber: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
