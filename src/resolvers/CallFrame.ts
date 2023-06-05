@@ -5,6 +5,7 @@ const resolvers: CallFrameResolvers = {
     functionName: (parent) => parent.functionName,
     lineNumber: (parent) => parent.lineNumber,
     url: (parent) => parent.url,
+    columnNumber: (parent) => parent.columnNumber,
 };
 
 export default resolvers
