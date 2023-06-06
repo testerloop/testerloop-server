@@ -12,7 +12,10 @@ const resolvers: CommandEventResolvers = {
     async previousSnapshot ({ id, at, snapshotID }, _args, { dataSources }) {
         const [runId, requestId, _] = id.split('/');
         const snapshot = await dataSources.snapshot.getById(`${runId}/${requestId}/snapshot/${snapshotID}`);
-        return { 
+        if (!snapshot) {
+            return null;
+        }
+        return {
             __typename: 'TestExecutionSnapshot' as const,
             testExecutionId: `${runId}/${requestId}`,
             at,
@@ -22,6 +25,9 @@ const resolvers: CommandEventResolvers = {
     async nextSnapshot ({ id, until, snapshotID }, _args, { dataSources }) {
         const [runId, requestId, _] = id.split('/');
         const snapshot = await dataSources.snapshot.getById(`${runId}/${requestId}/snapshot/${snapshotID}`);
+        if (!snapshot) {
+            return null;
+        }
         return { 
             __typename: 'TestExecutionSnapshot' as const,
             testExecutionId: `${runId}/${requestId}`,

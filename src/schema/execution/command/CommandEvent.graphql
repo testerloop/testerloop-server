@@ -14,8 +14,8 @@ type CommandEvent implements Node & Event & IntervalEvent & TestExecutionEvent &
   # Needs SourceCode stuff from Summary Panel Schema.
   # source: SourceCodeManagementRevisionFileLine!
   testExecution: TestExecution!
-  previousSnapshot: TestExecutionSnapshot!
-  nextSnapshot: TestExecutionSnapshot!
+  previousSnapshot: TestExecutionSnapshot
+  nextSnapshot: TestExecutionSnapshot
 }
 
 type CommandEventConnection {

@@ -76,8 +76,8 @@ export type CommandEvent = Event & IntervalEvent & Node & SnapshotEvent & TestEx
   readonly error: Maybe<CommandEventError>;
   readonly id: Scalars['ID'];
   readonly name: Scalars['String'];
-  readonly nextSnapshot: TestExecutionSnapshot;
-  readonly previousSnapshot: TestExecutionSnapshot;
+  readonly nextSnapshot: Maybe<TestExecutionSnapshot>;
+  readonly previousSnapshot: Maybe<TestExecutionSnapshot>;
   readonly status: CommandEventStatus;
   readonly testExecution: TestExecution;
   readonly until: Scalars['DateTime'];
@@ -548,8 +548,8 @@ export type SignedUrl = {
 
 export type SnapshotEvent = {
   readonly at: Scalars['DateTime'];
-  readonly nextSnapshot: TestExecutionSnapshot;
-  readonly previousSnapshot: TestExecutionSnapshot;
+  readonly nextSnapshot: Maybe<TestExecutionSnapshot>;
+  readonly previousSnapshot: Maybe<TestExecutionSnapshot>;
 };
 
 export type SourceCodeManagementRepository = {
@@ -593,8 +593,8 @@ export type StepEvent = Event & IntervalEvent & Node & SnapshotEvent & TestExecu
   readonly commandChains: CommandChainEventConnection;
   readonly definition: StepDefinition;
   readonly id: Scalars['ID'];
-  readonly nextSnapshot: TestExecutionSnapshot;
-  readonly previousSnapshot: TestExecutionSnapshot;
+  readonly nextSnapshot: Maybe<TestExecutionSnapshot>;
+  readonly previousSnapshot: Maybe<TestExecutionSnapshot>;
   readonly status: CommandEventStatus;
   readonly testExecution: TestExecution;
   readonly until: Scalars['DateTime'];
@@ -1065,8 +1065,8 @@ export type CommandEventResolvers<ContextType = Context, ParentType extends Reso
   error: Resolver<Maybe<ResolversTypes['CommandEventError']>, ParentType, ContextType>;
   id: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   name: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  nextSnapshot: Resolver<ResolversTypes['TestExecutionSnapshot'], ParentType, ContextType>;
-  previousSnapshot: Resolver<ResolversTypes['TestExecutionSnapshot'], ParentType, ContextType>;
+  nextSnapshot: Resolver<Maybe<ResolversTypes['TestExecutionSnapshot']>, ParentType, ContextType>;
+  previousSnapshot: Resolver<Maybe<ResolversTypes['TestExecutionSnapshot']>, ParentType, ContextType>;
   status: Resolver<ResolversTypes['CommandEventStatus'], ParentType, ContextType>;
   testExecution: Resolver<ResolversTypes['TestExecution'], ParentType, ContextType>;
   until: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
@@ -1428,8 +1428,8 @@ export type StepEventResolvers<ContextType = Context, ParentType extends Resolve
   commandChains: Resolver<ResolversTypes['CommandChainEventConnection'], ParentType, ContextType>;
   definition: Resolver<ResolversTypes['StepDefinition'], ParentType, ContextType>;
   id: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-  nextSnapshot: Resolver<ResolversTypes['TestExecutionSnapshot'], ParentType, ContextType>;
-  previousSnapshot: Resolver<ResolversTypes['TestExecutionSnapshot'], ParentType, ContextType>;
+  nextSnapshot: Resolver<Maybe<ResolversTypes['TestExecutionSnapshot']>, ParentType, ContextType>;
+  previousSnapshot: Resolver<Maybe<ResolversTypes['TestExecutionSnapshot']>, ParentType, ContextType>;
   status: Resolver<ResolversTypes['CommandEventStatus'], ParentType, ContextType>;
   testExecution: Resolver<ResolversTypes['TestExecution'], ParentType, ContextType>;
   until: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
