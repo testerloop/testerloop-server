@@ -1,5 +1,5 @@
 interface SnapshotEvent implements Event {
     at: DateTime!
-    previousSnapshot: TestExecutionSnapshot!
-    nextSnapshot: TestExecutionSnapshot!
+    previousSnapshot: TestExecutionSnapshot
+    nextSnapshot: TestExecutionSnapshot
 }
