@@ -22,6 +22,7 @@ generates:
         URL: string
       mappers:
         ConsoleLogEvent: ./mappers#ConsoleLogEventModel
+        StackTrace: ./mappers#StackTraceModel
         HttpNetworkEvent: ./mappers#HttpNetworkEventModel
         StepEvent: ./mappers#StepEventModel
         StepEventEdge: ./mappers#StepEventEdgeModel

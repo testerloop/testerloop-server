@@ -79,7 +79,7 @@ const resolvers: QueryResolvers = {
             id: decodedId,
         };
     },
-
+    
     async node(root, { id }, context, info) {
         const decodedId = decodeId(id);
         if (!decodedId) {

@@ -1,4 +1,5 @@
 type CallFrame {
+    id: ID!
     functionName: String!
     url: URL!
     lineNumber: Int!
@@ -6,5 +7,6 @@ type CallFrame {
 }
 
 type StackTrace {
+    id: ID!
     callFrames: [CallFrame!]!
 }

@@ -5,6 +5,11 @@ export interface ConsoleLogEventModel {
     id: string,
 }
 
+export interface StackTraceModel {
+    __typename: 'StackTrace',
+    id: string,
+}
+
 export interface HttpNetworkEventModel {
     __typename: 'HttpNetworkEvent',
     id: string,

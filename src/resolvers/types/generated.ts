@@ -1,5 +1,5 @@
 import { GraphQLResolveInfo, GraphQLScalarType, GraphQLScalarTypeConfig } from 'graphql';
-import { ConsoleLogEventModel, HttpNetworkEventModel, StepEventModel, StepEventEdgeModel, StepEventConnectionModel, ScenarioEventModel, TestExecutionModel, TestExecutionConnectionModel, TestExecutionEdgeModel, TestExecutionEventConnectionModel, TestExecutionEventEdgeModel, TestRunModel, TestRunConnectionModel, TestRunEdgeModel, GitHubRevisionModel, CommandChainEventModel, CommandChainEventEdgeModel, CommandChainEventConnectionModel, CommandEventModel, CommandEventEdgeModel, CommandEventConnectionModel, TestExecutionSnapshotModel, TestExecutionScreenshotModel, GitHubRevisionFileModel, GitHubRevisionFileLineModel, GitHubRevisionFileLineColumnModel, SourceCodeManagementRevisionFileLineColumnModel } from './mappers';
+import { ConsoleLogEventModel, StackTraceModel, HttpNetworkEventModel, StepEventModel, StepEventEdgeModel, StepEventConnectionModel, ScenarioEventModel, TestExecutionModel, TestExecutionConnectionModel, TestExecutionEdgeModel, TestExecutionEventConnectionModel, TestExecutionEventEdgeModel, TestRunModel, TestRunConnectionModel, TestRunEdgeModel, GitHubRevisionModel, CommandChainEventModel, CommandChainEventEdgeModel, CommandChainEventConnectionModel, CommandEventModel, CommandEventEdgeModel, CommandEventConnectionModel, TestExecutionSnapshotModel, TestExecutionScreenshotModel, GitHubRevisionFileModel, GitHubRevisionFileLineModel, GitHubRevisionFileLineColumnModel, SourceCodeManagementRevisionFileLineColumnModel } from './mappers';
 import { Context } from '../../context';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
@@ -35,6 +35,7 @@ export type CallFrame = {
   readonly __typename: 'CallFrame';
   readonly columnNumber: Scalars['Int'];
   readonly functionName: Scalars['String'];
+  readonly id: Scalars['ID'];
   readonly lineNumber: Scalars['Int'];
   readonly url: Scalars['URL'];
 };
@@ -579,6 +580,7 @@ export type SourceCodeManagementRevisionFileLineColumn = {
 export type StackTrace = {
   readonly __typename: 'StackTrace';
   readonly callFrames: ReadonlyArray<CallFrame>;
+  readonly id: Scalars['ID'];
 };
 
 export type StepDefinition = {
@@ -887,7 +889,7 @@ export type ResolversTypes = {
   SourceCodeManagementRevisionFile: ResolversTypes['GitHubRevisionFile'];
   SourceCodeManagementRevisionFileLine: ResolversTypes['GitHubRevisionFileLine'];
   SourceCodeManagementRevisionFileLineColumn: ResolverTypeWrapper<SourceCodeManagementRevisionFileLineColumnModel>;
-  StackTrace: ResolverTypeWrapper<StackTrace>;
+  StackTrace: ResolverTypeWrapper<StackTraceModel>;
   StepDefinition: ResolverTypeWrapper<StepDefinition>;
   StepEvent: ResolverTypeWrapper<StepEventModel>;
   StepEventConnection: ResolverTypeWrapper<StepEventConnectionModel>;
@@ -981,7 +983,7 @@ export type ResolversParentTypes = {
   SourceCodeManagementRevisionFile: ResolversParentTypes['GitHubRevisionFile'];
   SourceCodeManagementRevisionFileLine: ResolversParentTypes['GitHubRevisionFileLine'];
   SourceCodeManagementRevisionFileLineColumn: SourceCodeManagementRevisionFileLineColumnModel;
-  StackTrace: StackTrace;
+  StackTrace: StackTraceModel;
   StepDefinition: StepDefinition;
   StepEvent: StepEventModel;
   StepEventConnection: StepEventConnectionModel;
@@ -1025,6 +1027,7 @@ export type BrowserVersionResolvers<ContextType = Context, ParentType extends Re
 export type CallFrameResolvers<ContextType = Context, ParentType extends ResolversParentTypes['CallFrame'] = ResolversParentTypes['CallFrame']> = {
   columnNumber: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   functionName: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  id: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   lineNumber: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   url: Resolver<ResolversTypes['URL'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
@@ -1414,6 +1417,7 @@ export type SourceCodeManagementRevisionFileLineColumnResolvers<ContextType = Co
 
 export type StackTraceResolvers<ContextType = Context, ParentType extends ResolversParentTypes['StackTrace'] = ResolversParentTypes['StackTrace']> = {
   callFrames: Resolver<ReadonlyArray<ResolversTypes['CallFrame']>, ParentType, ContextType>;
+  id: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
