@@ -12,18 +12,24 @@ const stackTraceSchema = z.object({
 });
 
 const baseLog = z.object({
-    args: z.array(z.discriminatedUnion('type', [
-        z.object({
-            type: z.literal('string'),
-            value: z.string(),
-        }),
-        z.object({
-            type: z.literal('undefined'),
-        }),
-        z.object({
-            type: z.literal('object'),
-        }),
-    ])),
+    args: z.array(
+        z.discriminatedUnion('type', [
+            z.object({
+                type: z.literal('string'),
+                value: z.string(),
+            }),
+            z.object({
+                type: z.literal('undefined'),
+            }),
+            z.object({
+                type: z.literal('object'),
+            }),
+            z.object({
+                type: z.literal('boolean'),
+                value: z.boolean(),
+            }),
+        ])
+    ),
     id: z.string(),
     timestamp: z.coerce.date(),
     stackTrace: stackTraceSchema,

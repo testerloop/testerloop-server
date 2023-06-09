@@ -27,15 +27,25 @@ const resolvers: ConsoleLogEventResolvers = {
     async message({ id }, _args, { dataSources }) {
         const event = assertNonNull(await dataSources.consoleEvent.getById(id));
         if (event.args.length !== 1)
-            throw new Error('Console event could not be serialized to a message.');
+            throw new Error(
+                'Console event could not be serialized to a message.'
+            );
 
-        if (event.args[0].type === 'undefined')
-            return 'undefined';
-
-        if (event.args[0].type !== 'string')
-            throw new Error('Console event could not be serialized to a message.');
-        return event.args[0].value;
+        switch (event.args[0].type) {
+            case 'undefined':
+                return 'undefined';
+            case 'string':
+            case 'boolean':
+                return String(event.args[0].value);
+            case 'object':
+                return 'An object was logged, but Testerloop does not yet support displaying objects.';
+            default:
+                throw new Error(
+                    'Console event could not be serialized to a message.'
+                );
+        }
     },
+
     async stackTrace({ id }, _args, { dataSources }) {
         const event = assertNonNull(await dataSources.consoleEvent.getById(id));
         return {
@@ -51,9 +61,9 @@ const resolvers: ConsoleLogEventResolvers = {
             testRun: {
                 __typename: 'TestRun',
                 id: runId,
-            }
+            },
         };
     },
-}
+};
 
 export default resolvers;
