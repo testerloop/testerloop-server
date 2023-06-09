@@ -38,7 +38,7 @@ const resolvers: ConsoleLogEventResolvers = {
             case 'boolean':
                 return String(event.args[0].value);
             case 'object':
-                return 'An object was logged, but Testerloop does not yet support displaying objects.';
+                return 'Unsupported: An object was logged to the console.';
             default:
                 throw new Error(
                     'Console event could not be serialized to a message.'
