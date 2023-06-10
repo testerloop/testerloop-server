@@ -50,23 +50,27 @@ export class TestExecution {
         const networkFilters = filters?.networkFilter;
         const commandFilters = filters?.commandFilter;
 
-        const [logs, httpNetworkEvent, steps, commands, scenario, screenshots] = await Promise.all([
-            this.context.dataSources.consoleEvent.getLogsByTestExecutionId(id),
-            this.context.dataSources.networkEvent.getNetworkEventsByTestExecutionId(id),
-            this.context.dataSources.stepEvent.getStepsByTestExecutionId(id),
-            this.context.dataSources.commandEvent.getCommandsByTestExecutionId(id),
-            this.context.dataSources.scenarioEvent.getScenarioEventByTestExecutionId(id),
-            this.context.dataSources.screenshot.getScreenshotsByTestExecutionId(id)
-          ]);
-
-        let data = ([
-            ...Object.values(logs),
-            ...Object.values(httpNetworkEvent),
-            ...Object.values(steps),
-            ...Object.values(commands),
-            ...Object.values(scenario),
-            ...Object.values(screenshots)
-        ]).sort((a, b) => {
+        const data = (await Promise.all(
+            Object.entries({
+                [TestExecutionEventType.Console]:
+                () => this.context.dataSources.consoleEvent.getLogsByTestExecutionId(id),
+                [TestExecutionEventType.Network]:
+                () => this.context.dataSources.networkEvent.getNetworkEventsByTestExecutionId(id),
+                [TestExecutionEventType.Step]:
+                () => this.context.dataSources.stepEvent.getStepsByTestExecutionId(id),
+                [TestExecutionEventType.Command]:
+                () => this.context.dataSources.commandEvent.getCommandsByTestExecutionId(id),
+                [TestExecutionEventType.TestPart]:
+                () => this.context.dataSources.scenarioEvent.getScenarioEventByTestExecutionId(id),
+                [TestExecutionEventType.Screenshot]:
+                () => this.context.dataSources.screenshot.getScreenshotsByTestExecutionId(id)
+            })
+                .map(async ([type, fn]): Promise<Awaited<ReturnType<typeof fn>>[string][]> => {
+                    if (filters?.type?.includes(type as TestExecutionEventType) ?? true)
+                        return Object.values(await fn());
+                    return [];
+                })
+        )).flat().sort((a, b) => {
             return a.at.getTime() - b.at.getTime();
         }).filter((evt) => {
             return filters?.type?.some((type) => {
