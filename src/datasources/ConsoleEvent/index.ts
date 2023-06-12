@@ -28,8 +28,8 @@ export class ConsoleEvent {
         }))
     )
     async getLogsByTestExecutionId(testExecutionId: string) {
-        return Object.values(await this.logByTestExecutionIdDataLoader.load(testExecutionId))
-            .map((log) => ({
+        return Object.fromEntries(Object.entries(await this.logByTestExecutionIdDataLoader.load(testExecutionId))
+            .map(([key, log]) => [key, {
                 __typename: 'ConsoleLogEvent' as const,
                 id: log.id,
                 // TODO: These shouldn't be required.
@@ -37,7 +37,7 @@ export class ConsoleEvent {
                 logLevel: log.type,
                 message: JSON.stringify(log.args),
                 stackTrace: log.stackTrace,
-            }));
+            }]));
     }
 
     async getById(id: string) {
