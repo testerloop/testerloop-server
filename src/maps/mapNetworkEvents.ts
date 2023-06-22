@@ -51,7 +51,7 @@ const HttpNetworkResponseSchema = z.object({
 
 
 const HttpNetworkTimingsSchema = z.object({
-    _queued: z.number(),
+    _queued: z.optional(z.number()),
     blocked: z.number(),
     connect: z.number(),
     ssl: z.number(),
