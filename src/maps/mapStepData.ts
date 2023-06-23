@@ -50,8 +50,8 @@ const mapStepData = (steps: unknown) => {
             if (options.err?.codeFrame?.relativeFile) {
                 options.err.codeFrame.relativeFile =
                     options.err.codeFrame.relativeFile.replace(
-                        /^ypresssteps/,
-                        'cypress/steps'
+                        /^ypress/,
+                        'cypress/'
                     );
             }
             return options;
