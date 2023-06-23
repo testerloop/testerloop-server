@@ -46,7 +46,16 @@ const mapStepData = (steps: unknown) => {
     const filteredData = orderedSteps
         .filter((s) => s.options.state !== 'pending')
         .filter((s) => !['log', 'task'].includes(s.options.name))
-        .map(({ options }) => options);
+        .map(({ options }) => {
+            if (options.err?.codeFrame?.relativeFile) {
+                options.err.codeFrame.relativeFile =
+                    options.err.codeFrame.relativeFile.replace(
+                        /^ypresssteps/,
+                        'cypress/steps'
+                    );
+            }
+            return options;
+        });
 
     return filteredData;
 }
