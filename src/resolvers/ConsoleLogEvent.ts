@@ -26,24 +26,24 @@ const resolvers: ConsoleLogEventResolvers = {
     },
     async message({ id }, _args, { dataSources }) {
         const event = assertNonNull(await dataSources.consoleEvent.getById(id));
-        if (event.args.length !== 1)
-            throw new Error(
-                'Console event could not be serialized to a message.'
-            );
+        if (event.args.length < 1)
+            return 'Console event does not have any arguments.';
 
-        switch (event.args[0].type) {
-            case 'undefined':
-                return 'undefined';
-            case 'string':
-            case 'boolean':
-                return String(event.args[0].value);
-            case 'object':
-                return 'Unsupported: An object was logged to the console.';
-            default:
-                throw new Error(
-                    'Console event could not be serialized to a message.'
-                );
-        }
+        let messages = event.args.map((arg) => {
+            switch (arg.type) {
+                case 'undefined':
+                    return 'undefined';
+                case 'string':
+                case 'boolean':
+                    return String(arg.value);
+                case 'object':
+                    return JSON.stringify(arg);
+                default:
+                    return 'Unsupported argument type in console event.';
+            }
+        });
+
+        return messages.join(' ');
     },
 
     async stackTrace({ id }, _args, { dataSources }) {
