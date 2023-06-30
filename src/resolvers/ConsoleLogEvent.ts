@@ -29,7 +29,7 @@ const resolvers: ConsoleLogEventResolvers = {
         if (event.args.length < 1)
             return 'Console event does not have any arguments.';
 
-        let messages = event.args.map((arg) => {
+        const messages = event.args.map((arg) => {
             switch (arg.type) {
                 case 'undefined':
                     return 'undefined';
