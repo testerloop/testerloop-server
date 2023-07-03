@@ -66,13 +66,15 @@ const mapSteps = (steps: unknown, testExecutionId: string, endedTestsAt: Date) =
             step.status = CommandEventStatus.Failed;
         }
         
-        step.commandChains.push({
-            __typename: 'CommandChainEvent',
-            at,
-            until,
-            id: `${testExecutionId}/commandChain/${i + 1}`,
-            commands: [command],
-        });
+        if (step) {
+            step.commandChains.push({
+                __typename: 'CommandChainEvent',
+                at,
+                until,
+                id: `${testExecutionId}/commandChain/${i + 1}`,
+                commands: [command],
+            });
+        }
     }
 
     mappedSteps[mappedSteps.length - 1].until = endedTestsAt
