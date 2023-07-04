@@ -1,0 +1,13 @@
+type UploadInfo {
+    url: String
+    fields: [Field]
+}
+
+type Field {
+    key: String
+    value: String
+}
+
+type Mutation {
+    createRun(customerPath: String!, runID: String!): UploadInfo
+}
