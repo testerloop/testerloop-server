@@ -51,6 +51,9 @@ import GitHubRevisionFileLine from './GitHubRevisionFileLine.js';
 import GitHubRevisionFileLineColumn from './GitHubRevisionFileLineColumn.js';
 import TestExecutionScreenshot from './TestExecutionScreenshot.js';
 import SignedURL from './SignedURL.js';
+import UploadInfo from './UploadInfo.js';
+import Field from './Field.js';
+import Mutation from './Mutation.js';
 
 const interfaceResolvers = {
     __resolveType<T extends String>(parent: { __typename: T }): T {
@@ -59,6 +62,9 @@ const interfaceResolvers = {
 }
 
 const resolvers: Resolvers = {
+    UploadInfo,
+    Field,
+    Mutation,
     ConsoleEvent: interfaceResolvers,
     ConsoleLogEvent,
     Cursor,
@@ -137,7 +143,7 @@ const resolvers: Resolvers = {
     URL,
     TestExecutionSnapshot,
     TestExecutionScreenshot,
-    SignedURL
+    SignedURL,
 };
 
 export default resolvers;
