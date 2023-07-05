@@ -16,11 +16,13 @@ const resolvers: MutationResolvers = {
         return {
             __typename: 'UploadInfo',
             url: uploadInfo.url,
-            fields: uploadInfo.fields.map((field) => ({
-                __typename: 'Field',
-                key: field.key,
-                value: field.value,
-            })),
+            fields: uploadInfo.fields
+                .filter((field) => field.key !== 'key')
+                .map((field) => ({
+                    __typename: 'Field',
+                    key: field.key,
+                    value: field.value,
+                })),
         };
     },
 };
