@@ -55,7 +55,6 @@ class S3Service {
         expires: number = 3600
     ) {
         const { url, fields: presignedFields } = await createPresignedPost(
-            //@ts-ignore
             this.s3,
             {
                 Bucket: bucketName,
@@ -106,7 +105,6 @@ class S3Service {
 
         const command = new GetObjectCommand(params);
         const expiresAt = new Date(Date.now() + expiresIn * 1000);
-        //@ts-ignore
         const url = await getSignedUrl(this.s3, command, { expiresIn });
 
         return { url, expiresAt };
