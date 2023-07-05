@@ -18,8 +18,9 @@ export class CreateRun {
 
         return Promise.all(
             keys.map(async ({ customerPath, runID }) => {
-                const key = `${customerPath}/${runID}`;
-                const conditions = [['starts-with', '$key', key]];
+                const keyPrefix = `${customerPath}/${runID}/`;
+                const key = `${keyPrefix}${'${filename}'}`;
+                const conditions = [['starts-with', '$key', keyPrefix]];
                 const { url, fields } = await S3Service.getPresignedPost(
                     bucketName,
                     key,
