@@ -44,7 +44,7 @@ export class CreateRun {
         );
     });
 
-    async createRun(customerPath: string, runID: string) {
+    async getUploadLink(customerPath: string, runID: string) {
         return this.createRunDataLoader.load({ customerPath, runID });
     }
 }

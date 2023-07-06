@@ -8,7 +8,7 @@ const resolvers: MutationResolvers = {
         { dataSources },
         info
     ): Promise<UploadInfo> => {
-        const uploadInfo = await dataSources.createRun.createRun(
+        const uploadInfo = await dataSources.createRun.getUploadLink(
             customerPath,
             runID
         );
