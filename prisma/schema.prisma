@@ -11,14 +11,14 @@ datasource db {
 }
 
 model Organisation {
-  id                  Int                  @id @default(autoincrement())
-  name                String
-  slug                String
-  customPath          String
-  organisationApiKeys OrganisationApiKey[]
+  id         Int      @id @default(autoincrement())
+  name       String
+  slug       String
+  customPath String
+  apiKeys    ApiKey[]
 }
 
-model OrganisationApiKey {
+model ApiKey {
   id             Int          @id @default(autoincrement())
   apiKey         String
   isEnabled      Boolean
