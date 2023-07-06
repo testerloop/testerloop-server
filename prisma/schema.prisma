@@ -9,3 +9,19 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model Organisation {
+  id                  Int                  @id @default(autoincrement())
+  name                String
+  slug                String
+  customPath          String
+  organisationApiKeys OrganisationApiKey[]
+}
+
+model OrganisationApiKey {
+  id             Int          @id @default(autoincrement())
+  apiKey         String
+  isEnabled      Boolean
+  organisationId Int
+  organisation   Organisation @relation(fields: [organisationId], references: [id])
+}
