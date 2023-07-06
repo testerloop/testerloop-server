@@ -1,0 +1,17 @@
+# This file is for local dev enviroment only - it is not used in production or deploy a postgres database
+version: '3.8'
+services:
+  db:
+    image: postgres:14
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 123
+      POSTGRES_DB: api
+    volumes: 
+      - db:/var/lib/postgresql/data
+volumes:
+  db:
+    driver: local
+
