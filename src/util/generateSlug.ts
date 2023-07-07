@@ -3,7 +3,7 @@ import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
-export async function incrementSlug(slug: string) {
+export function incrementSlug(slug: string): string {
     const parts = slug.split('-');
     let num;
 
@@ -21,15 +21,15 @@ export async function getSlug(slug: string): Promise<string> {
         where: { slug },
     });
 
-    if (existingOrganization) {
-        const newSlug = await incrementSlug(slug);
-        return getSlug(newSlug);
+    if (!existingOrganization) {
+        return slug;
     }
 
-    return slug;
+    const newSlug = incrementSlug(slug);
+    return getSlug(newSlug);
 }
 
-export async function generateSlug(name: string) {
+export function generateSlug(name: string) {
     const slugifiedNameBase = slugify(name, {
         lower: true,
         strict: true,
