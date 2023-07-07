@@ -3,30 +3,20 @@ import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
-export function incrementSlug(slug: string): string {
-    const parts = slug.split('-');
-    let num;
-
-    if (parts.length > 1 && !isNaN(Number(parts[parts.length - 1]))) {
-        num = Number(parts.pop());
-    } else {
-        num = 0;
-    }
-
-    return `${parts.join('-')}-${num + 1}`;
-}
-
-export async function getSlug(slug: string): Promise<string> {
+export async function getSlug(
+    slug: string,
+    index: number = 0
+): Promise<string> {
+    const currentSlug = index === 0 ? slug : `${slug}-${index}`;
     const existingOrganization = await prisma.organisation.findUnique({
-        where: { slug },
+        where: { slug: currentSlug },
     });
 
     if (!existingOrganization) {
-        return slug;
+        return currentSlug;
     }
 
-    const newSlug = incrementSlug(slug);
-    return getSlug(newSlug);
+    return getSlug(slug, index + 1);
 }
 
 export function generateSlug(name: string) {
