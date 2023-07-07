@@ -447,7 +447,6 @@ export type Mutation = {
 
 export type MutationCreateRunArgs = {
   customerPath: Scalars['String'];
-  runID: Scalars['String'];
 };
 
 export type NetworkEvent = {
@@ -768,6 +767,7 @@ export type TestRunEdge = {
 export type UploadInfo = {
   readonly __typename: 'UploadInfo';
   readonly fields: Maybe<ReadonlyArray<Maybe<Field>>>;
+  readonly runID: Maybe<Scalars['String']>;
   readonly url: Maybe<Scalars['String']>;
 };
 
@@ -1375,7 +1375,7 @@ export type KeyValuePairResolvers<ContextType = Context, ParentType extends Reso
 };
 
 export type MutationResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
-  createRun: Resolver<Maybe<ResolversTypes['UploadInfo']>, ParentType, ContextType, RequireFields<MutationCreateRunArgs, 'customerPath' | 'runID'>>;
+  createRun: Resolver<Maybe<ResolversTypes['UploadInfo']>, ParentType, ContextType, RequireFields<MutationCreateRunArgs, 'customerPath'>>;
 };
 
 export type NetworkEventResolvers<ContextType = Context, ParentType extends ResolversParentTypes['NetworkEvent'] = ResolversParentTypes['NetworkEvent']> = {
@@ -1579,6 +1579,7 @@ export interface UrlScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes[
 
 export type UploadInfoResolvers<ContextType = Context, ParentType extends ResolversParentTypes['UploadInfo'] = ResolversParentTypes['UploadInfo']> = {
   fields: Resolver<Maybe<ReadonlyArray<Maybe<ResolversTypes['Field']>>>, ParentType, ContextType>;
+  runID: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   url: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };

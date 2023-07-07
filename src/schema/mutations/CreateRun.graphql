@@ -1,6 +1,7 @@
 type UploadInfo {
     url: String
     fields: [Field]
+    runID: String
 }
 
 type Field {
@@ -9,5 +10,5 @@ type Field {
 }
 
 type Mutation {
-    createRun(customerPath: String!, runID: String!): UploadInfo
+    createRun(customerPath: String!): UploadInfo
 }
