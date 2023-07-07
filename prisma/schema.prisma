@@ -25,5 +25,5 @@ model ApiKey {
   apiKey         String
   isEnabled      Boolean
   organisationId Int
-  organisation   Organisation @relation(fields: [organisationId], references: [id])
+  organisation   Organisation @relation(fields: [organisationId], references: [id], onDelete: Cascade)
 }

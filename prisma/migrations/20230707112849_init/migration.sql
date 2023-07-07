@@ -24,4 +24,4 @@ CREATE TABLE "ApiKey" (
 CREATE UNIQUE INDEX "Organisation_slug_key" ON "Organisation"("slug");
 
 -- AddForeignKey
-ALTER TABLE "ApiKey" ADD CONSTRAINT "ApiKey_organisationId_fkey" FOREIGN KEY ("organisationId") REFERENCES "Organisation"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "ApiKey" ADD CONSTRAINT "ApiKey_organisationId_fkey" FOREIGN KEY ("organisationId") REFERENCES "Organisation"("id") ON DELETE CASCADE ON UPDATE CASCADE;
