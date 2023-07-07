@@ -1,5 +1,6 @@
 import { PrismaClient, Prisma } from '@prisma/client';
 import slugify from 'slugify';
+import { PrismaSlug } from 'prisma-slug';
 const prisma = new PrismaClient();
 
 type SlugOptionalOrganisationCreateInput = Omit<
@@ -37,7 +38,7 @@ const db = prisma.$extends({
                 return prisma.organisation.create({
                     data: {
                         ...data,
-                        slug: slugifiedName.slice(0, 50),
+                        slug: slugifiedName,
                     },
                 });
             },
