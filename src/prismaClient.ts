@@ -1,6 +1,5 @@
 import { PrismaClient, Prisma } from '@prisma/client';
 import slugify from 'slugify';
-import { PrismaSlug } from 'prisma-slug';
 const prisma = new PrismaClient();
 
 type SlugOptionalOrganisationCreateInput = Omit<
