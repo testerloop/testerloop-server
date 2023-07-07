@@ -11,11 +11,13 @@ datasource db {
 }
 
 model Organisation {
-  id         Int      @id @default(autoincrement())
-  name       String
-  slug       String
-  customPath String
-  apiKeys    ApiKey[]
+  id           Int      @id @default(autoincrement())
+  name         String
+  slug         String   @unique
+  s3CstomPath  String
+  s3BucketName String
+  s3Region     String
+  apiKeys      ApiKey[]
 }
 
 model ApiKey {
