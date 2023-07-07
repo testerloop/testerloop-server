@@ -3,10 +3,7 @@ import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
-export async function getSlug(
-    slug: string,
-    index: number = 0
-): Promise<string> {
+export async function getSlug(slug: string, index: number = 0): Promise<string> {
     const currentSlug = index === 0 ? slug : `${slug}-${index}`;
     const existingOrganization = await prisma.organisation.findUnique({
         where: { slug: currentSlug },
