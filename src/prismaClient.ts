@@ -1,5 +1,5 @@
 import { PrismaClient, Prisma } from '@prisma/client';
-import slugify from 'slugify';
+import { generateSlug } from './util/generateSlug';
 const prisma = new PrismaClient();
 
 type SlugOptionalOrganisationCreateInput = Omit<
@@ -12,28 +12,7 @@ const db = prisma.$extends({
     model: {
         organisation: {
             async createWithSlug(data: SlugOptionalOrganisationCreateInput) {
-                const slugifiedNameBase = slugify(data.name, {
-                    lower: true,
-                    strict: true,
-                });
-                let slugifiedName = slugifiedNameBase;
-                let existingOrganization = await prisma.organisation.findUnique(
-                    {
-                        where: { slug: slugifiedName },
-                    }
-                );
-
-                if (existingOrganization) {
-                    let suffix = 1;
-                    do {
-                        slugifiedName = `${slugifiedNameBase}-${suffix++}`;
-                        existingOrganization =
-                            await prisma.organisation.findUnique({
-                                where: { slug: slugifiedName },
-                            });
-                    } while (existingOrganization);
-                }
-
+                const slugifiedName = await generateSlug(data.name);
                 return prisma.organisation.create({
                     data: {
                         ...data,
