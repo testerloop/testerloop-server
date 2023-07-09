@@ -1,6 +1,6 @@
-import { PrismaClient, Prisma } from '@prisma/client';
+import { Prisma } from '@prisma/client';
 import { generateSlug } from './util/generateSlug';
-const prisma = new PrismaClient();
+import prisma from 'prisma/basePrismaClient';
 
 type SlugOptionalOrganisationCreateInput = Omit<
     Prisma.OrganisationCreateInput,
