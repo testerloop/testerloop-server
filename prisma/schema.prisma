@@ -1,0 +1,29 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Organisation {
+  id           Int      @id @default(autoincrement())
+  name         String
+  slug         String   @unique
+  s3CstomPath  String
+  s3BucketName String
+  s3Region     String
+  apiKeys      ApiKey[]
+}
+
+model ApiKey {
+  id             Int          @id @default(autoincrement())
+  apiKey         String
+  isEnabled      Boolean
+  organisationId Int
+  organisation   Organisation @relation(fields: [organisationId], references: [id], onDelete: Cascade)
+}
