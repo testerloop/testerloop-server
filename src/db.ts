@@ -21,11 +21,10 @@ const db = prisma.$extends({
                 });
             },
             async getByApiKey(apiKey: string) {
-                const apiKeyRecord = await prisma.apiKey.findFirst({
+                return prisma.apiKey.findFirst({
                     where: { apiKey },
                     include: { organisation: true },
                 });
-                return apiKeyRecord;
             },
         },
     },
