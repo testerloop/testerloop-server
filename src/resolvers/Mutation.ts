@@ -1,23 +1,7 @@
 import { v4 as uuidv4 } from 'uuid';
 import { MutationResolvers } from './types/generated';
 import { UploadInfo } from './types/generated';
-import db from '../db.js';
-
-async function handleApiKey(apiKey: string) {
-    const apiKeyRecord = await db.organisation.getByApiKey(apiKey);
-
-    if (!apiKeyRecord) {
-        throw new Error('Invalid API key');
-    }
-
-    if (!apiKeyRecord.isEnabled) {
-        throw new Error(
-            'Your API key is not enabled. Please renew your subscription or contact Testerloop support.'
-        );
-    }
-
-    return apiKeyRecord.organisation;
-}
+import handleApiKey from '../util/handleApiKey.js';
 
 const resolvers: MutationResolvers = {
     createRun: async (
@@ -32,28 +16,15 @@ const resolvers: MutationResolvers = {
         info
     ): Promise<UploadInfo> => {
         const runID = uuidv4();
-        let apiKeyRecord;
         let s3BucketName;
         let customerPath;
         if (headers['api-key'] && !s3Config) {
             const apiKey = headers['api-key'] as string;
-            apiKeyRecord = await db.organisation.getByApiKey(apiKey);
-
-            if (!apiKeyRecord) {
-                throw new Error('Invalid API key');
-            }
-
-            if (!apiKeyRecord.isEnabled) {
-                throw new Error(
-                    'Your API key is not enabled. Please renew your subscription or contact Testerloop support.'
-                );
-            }
-            const organisation = apiKeyRecord?.organisation;
+            const organisation = await handleApiKey(apiKey);
             customerPath = organisation?.s3CustomPath;
             s3BucketName = organisation?.s3BucketName;
         } else {
-            customerPath = s3Config?.customerPath;
-            s3BucketName = s3Config?.bucket;
+            ({ customerPath, bucket: s3BucketName } = s3Config || {});
         }
 
         if (!customerPath || !s3BucketName) {
