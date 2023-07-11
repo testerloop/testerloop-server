@@ -25,7 +25,7 @@ const db = prisma.$extends({
                     where: { apiKey },
                     include: { organisation: true },
                 });
-                return apiKeyRecord?.organisation;
+                return apiKeyRecord;
             },
         },
     },

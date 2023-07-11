@@ -16,16 +16,23 @@ const resolvers: MutationResolvers = {
         info
     ): Promise<UploadInfo> => {
         const runID = uuidv4();
-        let organisation;
+        let apiKeyRecord;
         if (headers['api-key']) {
             const apiKey = headers['api-key'] as string;
-            organisation = await db.organisation.getByApiKey(apiKey);
+            apiKeyRecord = await db.organisation.getByApiKey(apiKey);
 
-            if (!organisation) {
+            if (!apiKeyRecord) {
                 throw new Error('Invalid API key');
+            }
+
+            if (!apiKeyRecord.isEnabled) {
+                throw new Error(
+                    'Your API key is not enabled. Please renew your subscription or contact Testerloop support.'
+                );
             }
         }
 
+        const organisation = apiKeyRecord?.organisation;
         const customerPath =
             s3Config?.customerPath ?? organisation?.s3CustomPath;
         const s3BucketName = s3Config?.bucket ?? organisation?.s3BucketName;
