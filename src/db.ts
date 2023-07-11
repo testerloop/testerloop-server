@@ -1,6 +1,6 @@
 import { Prisma } from '@prisma/client';
-import { generateSlug } from './util/generateSlug';
-import prisma from 'prisma/basePrismaClient';
+import { generateSlug } from './util/generateSlug.js';
+import prisma from '../prisma/basePrismaClient.js';
 
 type SlugOptionalOrganisationCreateInput = Omit<
     Prisma.OrganisationCreateInput,
@@ -19,6 +19,15 @@ const db = prisma.$extends({
                         slug: slugifiedName,
                     },
                 });
+            },
+            async getByApiKey(apiKey: string) {
+                console.log('Searching for API Key: ', apiKey);
+                const apiKeyRecord = await prisma.apiKey.findFirst({
+                    where: { apiKey },
+                    include: { organisation: true },
+                });
+                console.log('API Key Record: ', apiKeyRecord);
+                return apiKeyRecord?.organisation;
             },
         },
     },
