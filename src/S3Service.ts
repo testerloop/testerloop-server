@@ -2,6 +2,7 @@ import {
     GetObjectCommand,
     ListObjectsV2Command,
     S3Client,
+    PutObjectCommand,
 } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import config from './config.js';
@@ -108,6 +109,17 @@ class S3Service {
         const url = await getSignedUrl(this.s3, command, { expiresIn });
 
         return { url, expiresAt };
+    }
+
+    async putObject(bucketName: string, key: string, data: string) {
+        const command = new PutObjectCommand({
+            Bucket: bucketName,
+            Key: key,
+            Body: data,
+            ContentType: 'application/json',
+        });
+
+        return await this.s3.send(command);
     }
 }
 
