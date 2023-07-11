@@ -446,7 +446,8 @@ export type Mutation = {
 
 
 export type MutationCreateRunArgs = {
-  customerPath: Scalars['String'];
+  runEnvironmentDetails: Scalars['String'];
+  s3Config?: InputMaybe<S3Config>;
 };
 
 export type NetworkEvent = {
@@ -541,6 +542,11 @@ export type QueryTestRunArgs = {
 export type QueryTestRunsArgs = {
   after?: InputMaybe<Scalars['Cursor']>;
   first?: InputMaybe<Scalars['Int']>;
+};
+
+export type S3Config = {
+  readonly bucket?: InputMaybe<Scalars['String']>;
+  readonly customerPath?: InputMaybe<Scalars['String']>;
 };
 
 export type ScenarioDefinition = {
@@ -905,6 +911,7 @@ export type ResolversTypes = {
   OrderDirection: OrderDirection;
   PageInfo: ResolverTypeWrapper<PageInfo>;
   Query: ResolverTypeWrapper<unknown>;
+  S3Config: S3Config;
   ScenarioDefinition: ResolverTypeWrapper<ScenarioDefinition>;
   ScenarioEvent: ResolverTypeWrapper<ScenarioEventModel>;
   SignedURL: ResolverTypeWrapper<SignedUrl>;
@@ -1002,6 +1009,7 @@ export type ResolversParentTypes = {
   Node: ResolversParentTypes['CommandEvent'] | ResolversParentTypes['ConsoleLogEvent'] | ResolversParentTypes['StepEvent'] | ResolversParentTypes['TestExecution'] | ResolversParentTypes['TestExecutionScreenshot'] | ResolversParentTypes['TestRun'];
   PageInfo: PageInfo;
   Query: unknown;
+  S3Config: S3Config;
   ScenarioDefinition: ScenarioDefinition;
   ScenarioEvent: ScenarioEventModel;
   SignedURL: SignedUrl;
@@ -1375,7 +1383,7 @@ export type KeyValuePairResolvers<ContextType = Context, ParentType extends Reso
 };
 
 export type MutationResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
-  createRun: Resolver<Maybe<ResolversTypes['UploadInfo']>, ParentType, ContextType, RequireFields<MutationCreateRunArgs, 'customerPath'>>;
+  createRun: Resolver<Maybe<ResolversTypes['UploadInfo']>, ParentType, ContextType, RequireFields<MutationCreateRunArgs, 'runEnvironmentDetails'>>;
 };
 
 export type NetworkEventResolvers<ContextType = Context, ParentType extends ResolversParentTypes['NetworkEvent'] = ResolversParentTypes['NetworkEvent']> = {

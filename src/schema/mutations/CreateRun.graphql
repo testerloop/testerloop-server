@@ -9,6 +9,11 @@ type Field {
     value: String
 }
 
+input S3Config {
+    bucket: String
+    customerPath: String
+}
+
 type Mutation {
-    createRun(customerPath: String!): UploadInfo
+    createRun(runEnvironmentDetails: String!, s3Config: S3Config): UploadInfo
 }
