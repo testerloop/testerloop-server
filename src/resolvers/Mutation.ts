@@ -52,6 +52,7 @@ const resolvers: MutationResolvers = {
             __typename: 'UploadInfo',
             url: uploadInfo.url,
             runID: runID,
+            s3RunPath: `${s3BucketName}/${customerPath}/${runID}`,
             fields: uploadInfo.fields
                 .filter((field) => field.key !== 'key')
                 .map((field) => ({

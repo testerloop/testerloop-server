@@ -2,6 +2,7 @@ type UploadInfo {
     url: String
     fields: [Field]
     runID: String
+    s3RunPath: String
 }
 
 type Field {

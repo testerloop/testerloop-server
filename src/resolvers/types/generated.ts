@@ -774,6 +774,7 @@ export type UploadInfo = {
   readonly __typename: 'UploadInfo';
   readonly fields: Maybe<ReadonlyArray<Maybe<Field>>>;
   readonly runID: Maybe<Scalars['String']>;
+  readonly s3RunPath: Maybe<Scalars['String']>;
   readonly url: Maybe<Scalars['String']>;
 };
 
@@ -1588,6 +1589,7 @@ export interface UrlScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes[
 export type UploadInfoResolvers<ContextType = Context, ParentType extends ResolversParentTypes['UploadInfo'] = ResolversParentTypes['UploadInfo']> = {
   fields: Resolver<Maybe<ReadonlyArray<Maybe<ResolversTypes['Field']>>>, ParentType, ContextType>;
   runID: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  s3RunPath: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   url: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
