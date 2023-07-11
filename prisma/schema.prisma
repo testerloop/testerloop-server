@@ -14,7 +14,7 @@ model Organisation {
   id           Int      @id @default(autoincrement())
   name         String
   slug         String   @unique
-  s3CstomPath  String
+  s3CustomPath String
   s3BucketName String
   s3Region     String
   apiKeys      ApiKey[]

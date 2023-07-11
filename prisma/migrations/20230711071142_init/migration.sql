@@ -3,7 +3,7 @@ CREATE TABLE "Organisation" (
     "id" SERIAL NOT NULL,
     "name" TEXT NOT NULL,
     "slug" TEXT NOT NULL,
-    "s3CstomPath" TEXT NOT NULL,
+    "s3CustomPath" TEXT NOT NULL,
     "s3BucketName" TEXT NOT NULL,
     "s3Region" TEXT NOT NULL,
 
