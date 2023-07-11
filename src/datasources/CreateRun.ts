@@ -47,4 +47,13 @@ export class CreateRun {
     async getUploadLink(customerPath: string, runID: string) {
         return this.createRunDataLoader.load({ customerPath, runID });
     }
+    async uploadCICDFileToS3(
+        s3BucketName: string,
+        customerPath: string,
+        runID: string,
+        cicdJson: string
+    ) {
+        const key = `${customerPath}/${runID}/logs/cicd.json`;
+        await S3Service.putObject(s3BucketName, key, cicdJson);
+    }
 }
