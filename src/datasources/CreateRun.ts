@@ -11,13 +11,12 @@ export class CreateRun {
     }
 
     createRunDataLoader = new DataLoader<
-        { customerPath: string; runID: string },
+        { s3BucketName: string; customerPath: string; runID: string },
         { url: string; fields: { key: string; value: string }[] }
     >(async (keys) => {
-        const bucketName = config.AWS_BUCKET_NAME;
-
         return Promise.all(
-            keys.map(async ({ customerPath, runID }) => {
+            keys.map(async ({ s3BucketName, customerPath, runID }) => {
+                const bucketName = s3BucketName;
                 const keyPrefix = `${customerPath}/${runID}/`;
                 const key = `${keyPrefix}${'${filename}'}`;
                 const conditions = [['starts-with', '$key', keyPrefix]];
@@ -44,8 +43,16 @@ export class CreateRun {
         );
     });
 
-    async getUploadLink(customerPath: string, runID: string) {
-        return this.createRunDataLoader.load({ customerPath, runID });
+    async getUploadLink(
+        s3BucketName: string,
+        customerPath: string,
+        runID: string
+    ) {
+        return this.createRunDataLoader.load({
+            s3BucketName,
+            customerPath,
+            runID,
+        });
     }
     async uploadCICDFileToS3(
         s3BucketName: string,

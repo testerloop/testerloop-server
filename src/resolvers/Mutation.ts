@@ -44,6 +44,7 @@ const resolvers: MutationResolvers = {
         );
 
         const uploadInfo = await dataSources.createRun.getUploadLink(
+            s3BucketName,
             customerPath,
             runID
         );
