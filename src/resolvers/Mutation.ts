@@ -1,6 +1,6 @@
 import { v4 as uuidv4, v5 as uuidv5 } from 'uuid';
 import { MutationResolvers } from './types/generated';
-import { UploadInfo } from './types/generated';
+import { UploadInfo, TestCreationResponse } from './types/generated';
 import handleApiKey from '../util/handleApiKey.js';
 
 const resolvers: MutationResolvers = {
@@ -60,11 +60,17 @@ const resolvers: MutationResolvers = {
                 })),
         };
     },
-    createTest: async (parent, { testName, featureFile }): Promise<string> => {
+    createTest: async (
+        parent,
+        { testName, featureFile }
+    ): Promise<TestCreationResponse> => {
         const NAMESPACE = 'c9412f45-51ba-4b4d-9867-6117fb1646e1';
         const name = `${testName}-${featureFile}`;
         const testID = uuidv5(name, NAMESPACE);
-        return testID;
+        return {
+            __typename: 'TestCreationResponse',
+            testID,
+        };
     },
 };
 

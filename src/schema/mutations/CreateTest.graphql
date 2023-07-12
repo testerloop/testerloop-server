@@ -1,3 +1,7 @@
+type TestCreationResponse {
+    testID: String!
+}
+
 extend type Mutation {
-    createTest(testName: String!, featureFile: String!): String
+    createTest(testName: String!, featureFile: String!): TestCreationResponse!
 }

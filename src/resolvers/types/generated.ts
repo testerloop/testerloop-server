@@ -441,8 +441,8 @@ export type KeyValuePair = {
 
 export type Mutation = {
   readonly __typename: 'Mutation';
-  readonly createRun: Maybe<UploadInfo>;
-  readonly createTest: Maybe<Scalars['String']>;
+  readonly createRun: UploadInfo;
+  readonly createTest: TestCreationResponse;
 };
 
 
@@ -641,6 +641,11 @@ export type StepEventEdge = {
   readonly __typename: 'StepEventEdge';
   readonly cursor: Scalars['Cursor'];
   readonly node: StepEvent;
+};
+
+export type TestCreationResponse = {
+  readonly __typename: 'TestCreationResponse';
+  readonly testID: Scalars['String'];
 };
 
 export type TestExecution = Event & IntervalEvent & Node & {
@@ -934,6 +939,7 @@ export type ResolversTypes = {
   StepEventConnection: ResolverTypeWrapper<StepEventConnectionModel>;
   StepEventEdge: ResolverTypeWrapper<StepEventEdgeModel>;
   String: ResolverTypeWrapper<Scalars['String']>;
+  TestCreationResponse: ResolverTypeWrapper<TestCreationResponse>;
   TestExecution: ResolverTypeWrapper<TestExecutionModel>;
   TestExecutionConnection: ResolverTypeWrapper<TestExecutionConnectionModel>;
   TestExecutionEdge: ResolverTypeWrapper<TestExecutionEdgeModel>;
@@ -1032,6 +1038,7 @@ export type ResolversParentTypes = {
   StepEventConnection: StepEventConnectionModel;
   StepEventEdge: StepEventEdgeModel;
   String: Scalars['String'];
+  TestCreationResponse: TestCreationResponse;
   TestExecution: TestExecutionModel;
   TestExecutionConnection: TestExecutionConnectionModel;
   TestExecutionEdge: TestExecutionEdgeModel;
@@ -1390,8 +1397,8 @@ export type KeyValuePairResolvers<ContextType = Context, ParentType extends Reso
 };
 
 export type MutationResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
-  createRun: Resolver<Maybe<ResolversTypes['UploadInfo']>, ParentType, ContextType, RequireFields<MutationCreateRunArgs, 'runEnvironmentDetails'>>;
-  createTest: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType, RequireFields<MutationCreateTestArgs, 'featureFile' | 'testName'>>;
+  createRun: Resolver<ResolversTypes['UploadInfo'], ParentType, ContextType, RequireFields<MutationCreateRunArgs, 'runEnvironmentDetails'>>;
+  createTest: Resolver<ResolversTypes['TestCreationResponse'], ParentType, ContextType, RequireFields<MutationCreateTestArgs, 'featureFile' | 'testName'>>;
 };
 
 export type NetworkEventResolvers<ContextType = Context, ParentType extends ResolversParentTypes['NetworkEvent'] = ResolversParentTypes['NetworkEvent']> = {
@@ -1504,6 +1511,11 @@ export type StepEventConnectionResolvers<ContextType = Context, ParentType exten
 export type StepEventEdgeResolvers<ContextType = Context, ParentType extends ResolversParentTypes['StepEventEdge'] = ResolversParentTypes['StepEventEdge']> = {
   cursor: Resolver<ResolversTypes['Cursor'], ParentType, ContextType>;
   node: Resolver<ResolversTypes['StepEvent'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type TestCreationResponseResolvers<ContextType = Context, ParentType extends ResolversParentTypes['TestCreationResponse'] = ResolversParentTypes['TestCreationResponse']> = {
+  testID: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -1669,6 +1681,7 @@ export type Resolvers<ContextType = Context> = {
   StepEvent: StepEventResolvers<ContextType>;
   StepEventConnection: StepEventConnectionResolvers<ContextType>;
   StepEventEdge: StepEventEdgeResolvers<ContextType>;
+  TestCreationResponse: TestCreationResponseResolvers<ContextType>;
   TestExecution: TestExecutionResolvers<ContextType>;
   TestExecutionConnection: TestExecutionConnectionResolvers<ContextType>;
   TestExecutionEdge: TestExecutionEdgeResolvers<ContextType>;
