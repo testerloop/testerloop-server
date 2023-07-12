@@ -1,10 +1,10 @@
 import { startStandaloneServer } from '@apollo/server/standalone';
 import config from './config.js';
-import { createStandaloneContext } from './context.js';
+import { createContext } from './context.js';
 import server from './server.js';
 
 const { url } = await startStandaloneServer(server, {
-    context: createStandaloneContext,
+    context: createContext,
     listen: {
         port: config.PORT,
     },
