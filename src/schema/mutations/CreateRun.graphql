@@ -15,6 +15,6 @@ input S3Config {
     customerPath: String
 }
 
-type Mutation {
+extend type Mutation {
     createRun(runEnvironmentDetails: String!, s3Config: S3Config): UploadInfo
 }
