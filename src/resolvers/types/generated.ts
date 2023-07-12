@@ -507,7 +507,6 @@ export type Query = {
   readonly consoleLogEvent: Maybe<ConsoleLogEvent>;
   readonly httpNetworkEvent: Maybe<HttpNetworkEvent>;
   readonly node: Maybe<Node>;
-  readonly test: Scalars['Boolean'];
   readonly testExecution: Maybe<TestExecution>;
   readonly testRun: Maybe<TestRun>;
   readonly testRuns: TestRunConnection;
@@ -1413,7 +1412,6 @@ export type QueryResolvers<ContextType = Context, ParentType extends ResolversPa
   consoleLogEvent: Resolver<Maybe<ResolversTypes['ConsoleLogEvent']>, ParentType, ContextType, RequireFields<QueryConsoleLogEventArgs, 'id'>>;
   httpNetworkEvent: Resolver<Maybe<ResolversTypes['HttpNetworkEvent']>, ParentType, ContextType, RequireFields<QueryHttpNetworkEventArgs, 'id'>>;
   node: Resolver<Maybe<ResolversTypes['Node']>, ParentType, ContextType, RequireFields<QueryNodeArgs, 'id'>>;
-  test: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   testExecution: Resolver<Maybe<ResolversTypes['TestExecution']>, ParentType, ContextType, RequireFields<QueryTestExecutionArgs, 'id'>>;
   testRun: Resolver<Maybe<ResolversTypes['TestRun']>, ParentType, ContextType, RequireFields<QueryTestRunArgs, 'id'>>;
   testRuns: Resolver<ResolversTypes['TestRunConnection'], ParentType, ContextType, Partial<QueryTestRunsArgs>>;

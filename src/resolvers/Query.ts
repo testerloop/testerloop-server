@@ -2,7 +2,6 @@ import { decodeId, decodeIdForType } from '../util/id.js';
 import { QueryResolvers } from './types/generated.js';
 
 const resolvers: QueryResolvers = {
-    test: () => true,
     async httpNetworkEvent(root, { id }, { dataSources }) {
         const decodedId = decodeIdForType('NetworkEvent', id);
         if(!decodedId){
