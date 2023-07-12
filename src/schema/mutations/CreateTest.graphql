@@ -1,0 +1,3 @@
+extend type Mutation {
+    createTest(testName: String!, featureFile: String!): String
+}

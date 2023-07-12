@@ -442,12 +442,19 @@ export type KeyValuePair = {
 export type Mutation = {
   readonly __typename: 'Mutation';
   readonly createRun: Maybe<UploadInfo>;
+  readonly createTest: Maybe<Scalars['String']>;
 };
 
 
 export type MutationCreateRunArgs = {
   runEnvironmentDetails: Scalars['String'];
   s3Config?: InputMaybe<S3Config>;
+};
+
+
+export type MutationCreateTestArgs = {
+  featureFile: Scalars['String'];
+  testName: Scalars['String'];
 };
 
 export type NetworkEvent = {
@@ -1384,6 +1391,7 @@ export type KeyValuePairResolvers<ContextType = Context, ParentType extends Reso
 
 export type MutationResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
   createRun: Resolver<Maybe<ResolversTypes['UploadInfo']>, ParentType, ContextType, RequireFields<MutationCreateRunArgs, 'runEnvironmentDetails'>>;
+  createTest: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType, RequireFields<MutationCreateTestArgs, 'featureFile' | 'testName'>>;
 };
 
 export type NetworkEventResolvers<ContextType = Context, ParentType extends ResolversParentTypes['NetworkEvent'] = ResolversParentTypes['NetworkEvent']> = {
