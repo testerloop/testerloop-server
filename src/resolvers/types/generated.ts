@@ -162,6 +162,12 @@ export type Event = {
   readonly at: Scalars['DateTime'];
 };
 
+export type Field = {
+  readonly __typename: 'Field';
+  readonly key: Maybe<Scalars['String']>;
+  readonly value: Maybe<Scalars['String']>;
+};
+
 export enum GherkinStepKeyword {
   After = 'AFTER',
   And = 'AND',
@@ -433,6 +439,17 @@ export type KeyValuePair = {
   readonly value: Scalars['String'];
 };
 
+export type Mutation = {
+  readonly __typename: 'Mutation';
+  readonly createRun: Maybe<UploadInfo>;
+};
+
+
+export type MutationCreateRunArgs = {
+  runEnvironmentDetails: Scalars['String'];
+  s3Config?: InputMaybe<S3Config>;
+};
+
 export type NetworkEvent = {
   readonly at: Scalars['DateTime'];
   readonly id: Scalars['ID'];
@@ -525,6 +542,11 @@ export type QueryTestRunArgs = {
 export type QueryTestRunsArgs = {
   after?: InputMaybe<Scalars['Cursor']>;
   first?: InputMaybe<Scalars['Int']>;
+};
+
+export type S3Config = {
+  readonly bucket?: InputMaybe<Scalars['String']>;
+  readonly customerPath?: InputMaybe<Scalars['String']>;
 };
 
 export type ScenarioDefinition = {
@@ -748,6 +770,14 @@ export type TestRunEdge = {
   readonly node: TestRun;
 };
 
+export type UploadInfo = {
+  readonly __typename: 'UploadInfo';
+  readonly fields: Maybe<ReadonlyArray<Maybe<Field>>>;
+  readonly runID: Maybe<Scalars['String']>;
+  readonly s3RunPath: Maybe<Scalars['String']>;
+  readonly url: Maybe<Scalars['String']>;
+};
+
 
 
 export type ResolverTypeWrapper<T> = Promise<T> | T;
@@ -834,6 +864,7 @@ export type ResolversTypes = {
   Cursor: ResolverTypeWrapper<Scalars['Cursor']>;
   DateTime: ResolverTypeWrapper<Scalars['DateTime']>;
   Event: ResolversTypes['CommandChainEvent'] | ResolversTypes['CommandEvent'] | ResolversTypes['ConsoleLogEvent'] | ResolversTypes['HttpNetworkEvent'] | ResolversTypes['HttpResponseBodyChunk'] | ResolversTypes['NetworkEventTiming'] | ResolversTypes['ScenarioEvent'] | ResolversTypes['StepEvent'] | ResolversTypes['TestExecution'] | ResolversTypes['TestExecutionScreenshot'] | ResolversTypes['TestExecutionSnapshot'];
+  Field: ResolverTypeWrapper<Field>;
   GherkinStepKeyword: GherkinStepKeyword;
   GitActor: ResolversTypes['GitHubActor'];
   GitBranch: ResolversTypes['GitHubBranch'];
@@ -872,6 +903,7 @@ export type ResolversTypes = {
   Int: ResolverTypeWrapper<Scalars['Int']>;
   IntervalEvent: ResolversTypes['CommandChainEvent'] | ResolversTypes['CommandEvent'] | ResolversTypes['HttpNetworkEvent'] | ResolversTypes['NetworkEventTiming'] | ResolversTypes['ScenarioEvent'] | ResolversTypes['StepEvent'] | ResolversTypes['TestExecution'];
   KeyValuePair: ResolverTypeWrapper<KeyValuePair>;
+  Mutation: ResolverTypeWrapper<unknown>;
   NetworkEvent: ResolversTypes['HttpNetworkEvent'];
   NetworkEventFilterInput: NetworkEventFilterInput;
   NetworkEventResponseStatusFilterInput: NetworkEventResponseStatusFilterInput;
@@ -880,6 +912,7 @@ export type ResolversTypes = {
   OrderDirection: OrderDirection;
   PageInfo: ResolverTypeWrapper<PageInfo>;
   Query: ResolverTypeWrapper<unknown>;
+  S3Config: S3Config;
   ScenarioDefinition: ResolverTypeWrapper<ScenarioDefinition>;
   ScenarioEvent: ResolverTypeWrapper<ScenarioEventModel>;
   SignedURL: ResolverTypeWrapper<SignedUrl>;
@@ -910,6 +943,7 @@ export type ResolversTypes = {
   TestRunConnection: ResolverTypeWrapper<TestRunConnectionModel>;
   TestRunEdge: ResolverTypeWrapper<TestRunEdgeModel>;
   URL: ResolverTypeWrapper<Scalars['URL']>;
+  UploadInfo: ResolverTypeWrapper<UploadInfo>;
 };
 
 /** Mapping between all available schema types and the resolvers parents */
@@ -933,6 +967,7 @@ export type ResolversParentTypes = {
   Cursor: Scalars['Cursor'];
   DateTime: Scalars['DateTime'];
   Event: ResolversParentTypes['CommandChainEvent'] | ResolversParentTypes['CommandEvent'] | ResolversParentTypes['ConsoleLogEvent'] | ResolversParentTypes['HttpNetworkEvent'] | ResolversParentTypes['HttpResponseBodyChunk'] | ResolversParentTypes['NetworkEventTiming'] | ResolversParentTypes['ScenarioEvent'] | ResolversParentTypes['StepEvent'] | ResolversParentTypes['TestExecution'] | ResolversParentTypes['TestExecutionScreenshot'] | ResolversParentTypes['TestExecutionSnapshot'];
+  Field: Field;
   GitActor: ResolversParentTypes['GitHubActor'];
   GitBranch: ResolversParentTypes['GitHubBranch'];
   GitHubActor: GitHubActor;
@@ -967,6 +1002,7 @@ export type ResolversParentTypes = {
   Int: Scalars['Int'];
   IntervalEvent: ResolversParentTypes['CommandChainEvent'] | ResolversParentTypes['CommandEvent'] | ResolversParentTypes['HttpNetworkEvent'] | ResolversParentTypes['NetworkEventTiming'] | ResolversParentTypes['ScenarioEvent'] | ResolversParentTypes['StepEvent'] | ResolversParentTypes['TestExecution'];
   KeyValuePair: KeyValuePair;
+  Mutation: unknown;
   NetworkEvent: ResolversParentTypes['HttpNetworkEvent'];
   NetworkEventFilterInput: NetworkEventFilterInput;
   NetworkEventResponseStatusFilterInput: NetworkEventResponseStatusFilterInput;
@@ -974,6 +1010,7 @@ export type ResolversParentTypes = {
   Node: ResolversParentTypes['CommandEvent'] | ResolversParentTypes['ConsoleLogEvent'] | ResolversParentTypes['StepEvent'] | ResolversParentTypes['TestExecution'] | ResolversParentTypes['TestExecutionScreenshot'] | ResolversParentTypes['TestRun'];
   PageInfo: PageInfo;
   Query: unknown;
+  S3Config: S3Config;
   ScenarioDefinition: ScenarioDefinition;
   ScenarioEvent: ScenarioEventModel;
   SignedURL: SignedUrl;
@@ -1003,6 +1040,7 @@ export type ResolversParentTypes = {
   TestRunConnection: TestRunConnectionModel;
   TestRunEdge: TestRunEdgeModel;
   URL: Scalars['URL'];
+  UploadInfo: UploadInfo;
 };
 
 export type DeferDirectiveArgs = {
@@ -1132,6 +1170,12 @@ export interface DateTimeScalarConfig extends GraphQLScalarTypeConfig<ResolversT
 
 export type EventResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Event'] = ResolversParentTypes['Event']> = {
   __resolveType: TypeResolveFn<'CommandChainEvent' | 'CommandEvent' | 'ConsoleLogEvent' | 'HttpNetworkEvent' | 'HttpResponseBodyChunk' | 'NetworkEventTiming' | 'ScenarioEvent' | 'StepEvent' | 'TestExecution' | 'TestExecutionScreenshot' | 'TestExecutionSnapshot', ParentType, ContextType>;
+};
+
+export type FieldResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Field'] = ResolversParentTypes['Field']> = {
+  key: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  value: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type GitActorResolvers<ContextType = Context, ParentType extends ResolversParentTypes['GitActor'] = ResolversParentTypes['GitActor']> = {
@@ -1339,6 +1383,10 @@ export type KeyValuePairResolvers<ContextType = Context, ParentType extends Reso
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type MutationResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
+  createRun: Resolver<Maybe<ResolversTypes['UploadInfo']>, ParentType, ContextType, RequireFields<MutationCreateRunArgs, 'runEnvironmentDetails'>>;
+};
+
 export type NetworkEventResolvers<ContextType = Context, ParentType extends ResolversParentTypes['NetworkEvent'] = ResolversParentTypes['NetworkEvent']> = {
   __resolveType: TypeResolveFn<'HttpNetworkEvent', ParentType, ContextType>;
 };
@@ -1538,6 +1586,14 @@ export interface UrlScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes[
   name: 'URL';
 }
 
+export type UploadInfoResolvers<ContextType = Context, ParentType extends ResolversParentTypes['UploadInfo'] = ResolversParentTypes['UploadInfo']> = {
+  fields: Resolver<Maybe<ReadonlyArray<Maybe<ResolversTypes['Field']>>>, ParentType, ContextType>;
+  runID: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  s3RunPath: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  url: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type Resolvers<ContextType = Context> = {
   BrowserVersion: BrowserVersionResolvers<ContextType>;
   CallFrame: CallFrameResolvers<ContextType>;
@@ -1555,6 +1611,7 @@ export type Resolvers<ContextType = Context> = {
   Cursor: GraphQLScalarType;
   DateTime: GraphQLScalarType;
   Event: EventResolvers<ContextType>;
+  Field: FieldResolvers<ContextType>;
   GitActor: GitActorResolvers<ContextType>;
   GitBranch: GitBranchResolvers<ContextType>;
   GitHubActor: GitHubActorResolvers<ContextType>;
@@ -1586,6 +1643,7 @@ export type Resolvers<ContextType = Context> = {
   InstantaneousEvent: InstantaneousEventResolvers<ContextType>;
   IntervalEvent: IntervalEventResolvers<ContextType>;
   KeyValuePair: KeyValuePairResolvers<ContextType>;
+  Mutation: MutationResolvers<ContextType>;
   NetworkEvent: NetworkEventResolvers<ContextType>;
   NetworkEventTiming: NetworkEventTimingResolvers<ContextType>;
   Node: NodeResolvers<ContextType>;
@@ -1618,6 +1676,7 @@ export type Resolvers<ContextType = Context> = {
   TestRunConnection: TestRunConnectionResolvers<ContextType>;
   TestRunEdge: TestRunEdgeResolvers<ContextType>;
   URL: GraphQLScalarType;
+  UploadInfo: UploadInfoResolvers<ContextType>;
 };
 
 export type DirectiveResolvers<ContextType = Context> = {

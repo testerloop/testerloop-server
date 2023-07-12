@@ -1,0 +1,20 @@
+type UploadInfo {
+    url: String
+    fields: [Field]
+    runID: String
+    s3RunPath: String
+}
+
+type Field {
+    key: String
+    value: String
+}
+
+input S3Config {
+    bucket: String
+    customerPath: String
+}
+
+type Mutation {
+    createRun(runEnvironmentDetails: String!, s3Config: S3Config): UploadInfo
+}
