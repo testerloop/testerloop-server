@@ -12,11 +12,7 @@ export type Context = {
     };
 };
 
-export const createContext = async ({
-    req,
-}: {
-    req: Request;
-}): Promise<Context> => {
+export const createContext = async ({ req }: { req: Request }): Promise<Context> => {
     let dataSources: DataSources | null = null;
     const context = {
         get dataSources() {
