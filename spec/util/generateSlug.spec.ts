@@ -7,7 +7,7 @@ describe('generateSlug util', () => {
         id: 1,
         name: 'Test String',
         slug: 'test-string',
-        s3CstomPath: 'test-path',
+        s3CustomPath: 'test-path',
         s3BucketName: 'test-bucket',
         s3Region: 'test-region',
     };
