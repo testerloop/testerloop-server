@@ -4,7 +4,7 @@ import { UploadInfo } from './types/generated';
 import handleApiKey from '../util/handleApiKey.js';
 
 const resolvers: MutationResolvers = {
-    createRun: async (
+    createTestRun: async (
         parent,
         { runEnvironmentDetails, s3Config },
         {
@@ -39,14 +39,14 @@ const resolvers: MutationResolvers = {
         const s3RunPath = `${s3BucketName}/${customerPath}/${runID}`;
 
         console.log(`Uploading cicd.json file to: ${s3RunPath}/logs/`);
-        await dataSources.createRun.uploadCICDFileToS3(
+        await dataSources.createTestRun.uploadCICDFileToS3(
             s3BucketName,
             customerPath,
             runID,
             runEnvironmentDetails
         );
         console.log('Creating presigned POST url for upload to S3');
-        const uploadInfo = await dataSources.createRun.getUploadLink(
+        const uploadInfo = await dataSources.createTestRun.getUploadLink(
             s3BucketName,
             customerPath,
             runID
