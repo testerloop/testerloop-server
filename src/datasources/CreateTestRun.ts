@@ -3,14 +3,14 @@ import { Context } from '../context.js';
 import config from '../config.js';
 import S3Service from '../S3Service.js';
 
-export class CreateRun {
+export class CreateTestRun {
     context: Context;
 
     constructor(context: Context) {
         this.context = context;
     }
 
-    createRunDataLoader = new DataLoader<
+    createTestRunDataLoader = new DataLoader<
         { s3BucketName: string; customerPath: string; runID: string },
         { url: string; fields: { key: string; value: string }[] }
     >(async (keys) => {
@@ -48,7 +48,7 @@ export class CreateRun {
         customerPath: string,
         runID: string
     ) {
-        return this.createRunDataLoader.load({
+        return this.createTestRunDataLoader.load({
             s3BucketName,
             customerPath,
             runID,
