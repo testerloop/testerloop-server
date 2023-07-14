@@ -441,13 +441,14 @@ export type KeyValuePair = {
 
 export type Mutation = {
   readonly __typename: 'Mutation';
-  readonly createTest: TestCreationResponse;
+  readonly createTestExecution: TestExecutionCreationResponse;
   readonly createTestRun: Maybe<UploadInfo>;
 };
 
 
-export type MutationCreateTestArgs = {
+export type MutationCreateTestExecutionArgs = {
   featureFile: Scalars['String'];
+  s3Config?: InputMaybe<S3Config>;
   testName: Scalars['String'];
 };
 
@@ -643,11 +644,6 @@ export type StepEventEdge = {
   readonly node: StepEvent;
 };
 
-export type TestCreationResponse = {
-  readonly __typename: 'TestCreationResponse';
-  readonly testID: Scalars['String'];
-};
-
 export type TestExecution = Event & IntervalEvent & Node & {
   readonly __typename: 'TestExecution';
   readonly at: Scalars['DateTime'];
@@ -671,6 +667,12 @@ export type TestExecutionConnection = {
   readonly edges: ReadonlyArray<TestExecutionEdge>;
   readonly pageInfo: PageInfo;
   readonly totalCount: Scalars['Int'];
+};
+
+export type TestExecutionCreationResponse = {
+  readonly __typename: 'TestExecutionCreationResponse';
+  readonly testExecutionGroupId: Scalars['ID'];
+  readonly testExecutionId: Scalars['ID'];
 };
 
 export type TestExecutionEdge = {
@@ -939,9 +941,9 @@ export type ResolversTypes = {
   StepEventConnection: ResolverTypeWrapper<StepEventConnectionModel>;
   StepEventEdge: ResolverTypeWrapper<StepEventEdgeModel>;
   String: ResolverTypeWrapper<Scalars['String']>;
-  TestCreationResponse: ResolverTypeWrapper<TestCreationResponse>;
   TestExecution: ResolverTypeWrapper<TestExecutionModel>;
   TestExecutionConnection: ResolverTypeWrapper<TestExecutionConnectionModel>;
+  TestExecutionCreationResponse: ResolverTypeWrapper<TestExecutionCreationResponse>;
   TestExecutionEdge: ResolverTypeWrapper<TestExecutionEdgeModel>;
   TestExecutionEnvironment: ResolverTypeWrapper<Omit<TestExecutionEnvironment, 'browser'> & { browser: ResolversTypes['BrowserVersion'] }>;
   TestExecutionEvent: ResolversTypes['CommandChainEvent'] | ResolversTypes['CommandEvent'] | ResolversTypes['ConsoleLogEvent'] | ResolversTypes['HttpNetworkEvent'] | ResolversTypes['ScenarioEvent'] | ResolversTypes['StepEvent'] | ResolversTypes['TestExecutionScreenshot'] | ResolversTypes['TestExecutionSnapshot'];
@@ -1038,9 +1040,9 @@ export type ResolversParentTypes = {
   StepEventConnection: StepEventConnectionModel;
   StepEventEdge: StepEventEdgeModel;
   String: Scalars['String'];
-  TestCreationResponse: TestCreationResponse;
   TestExecution: TestExecutionModel;
   TestExecutionConnection: TestExecutionConnectionModel;
+  TestExecutionCreationResponse: TestExecutionCreationResponse;
   TestExecutionEdge: TestExecutionEdgeModel;
   TestExecutionEnvironment: Omit<TestExecutionEnvironment, 'browser'> & { browser: ResolversParentTypes['BrowserVersion'] };
   TestExecutionEvent: ResolversParentTypes['CommandChainEvent'] | ResolversParentTypes['CommandEvent'] | ResolversParentTypes['ConsoleLogEvent'] | ResolversParentTypes['HttpNetworkEvent'] | ResolversParentTypes['ScenarioEvent'] | ResolversParentTypes['StepEvent'] | ResolversParentTypes['TestExecutionScreenshot'] | ResolversParentTypes['TestExecutionSnapshot'];
@@ -1397,7 +1399,7 @@ export type KeyValuePairResolvers<ContextType = Context, ParentType extends Reso
 };
 
 export type MutationResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
-  createTest: Resolver<ResolversTypes['TestCreationResponse'], ParentType, ContextType, RequireFields<MutationCreateTestArgs, 'featureFile' | 'testName'>>;
+  createTestExecution: Resolver<ResolversTypes['TestExecutionCreationResponse'], ParentType, ContextType, RequireFields<MutationCreateTestExecutionArgs, 'featureFile' | 'testName'>>;
   createTestRun: Resolver<Maybe<ResolversTypes['UploadInfo']>, ParentType, ContextType, RequireFields<MutationCreateTestRunArgs, 'runEnvironmentDetails'>>;
 };
 
@@ -1514,11 +1516,6 @@ export type StepEventEdgeResolvers<ContextType = Context, ParentType extends Res
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type TestCreationResponseResolvers<ContextType = Context, ParentType extends ResolversParentTypes['TestCreationResponse'] = ResolversParentTypes['TestCreationResponse']> = {
-  testID: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
 export type TestExecutionResolvers<ContextType = Context, ParentType extends ResolversParentTypes['TestExecution'] = ResolversParentTypes['TestExecution']> = {
   at: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   environment: Resolver<ResolversTypes['TestExecutionEnvironment'], ParentType, ContextType>;
@@ -1534,6 +1531,12 @@ export type TestExecutionConnectionResolvers<ContextType = Context, ParentType e
   edges: Resolver<ReadonlyArray<ResolversTypes['TestExecutionEdge']>, ParentType, ContextType>;
   pageInfo: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>;
   totalCount: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type TestExecutionCreationResponseResolvers<ContextType = Context, ParentType extends ResolversParentTypes['TestExecutionCreationResponse'] = ResolversParentTypes['TestExecutionCreationResponse']> = {
+  testExecutionGroupId: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  testExecutionId: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -1681,9 +1684,9 @@ export type Resolvers<ContextType = Context> = {
   StepEvent: StepEventResolvers<ContextType>;
   StepEventConnection: StepEventConnectionResolvers<ContextType>;
   StepEventEdge: StepEventEdgeResolvers<ContextType>;
-  TestCreationResponse: TestCreationResponseResolvers<ContextType>;
   TestExecution: TestExecutionResolvers<ContextType>;
   TestExecutionConnection: TestExecutionConnectionResolvers<ContextType>;
+  TestExecutionCreationResponse: TestExecutionCreationResponseResolvers<ContextType>;
   TestExecutionEdge: TestExecutionEdgeResolvers<ContextType>;
   TestExecutionEnvironment: TestExecutionEnvironmentResolvers<ContextType>;
   TestExecutionEvent: TestExecutionEventResolvers<ContextType>;
