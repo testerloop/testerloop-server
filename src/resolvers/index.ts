@@ -54,15 +54,19 @@ import SignedURL from './SignedURL.js';
 import UploadInfo from './UploadInfo.js';
 import Field from './Field.js';
 import Mutation from './Mutation.js';
+import TestExecutionStatus from './TestExecutionStatus.js';
+import TestRunStatus from './TestRunStatus.js';
 
 const interfaceResolvers = {
     __resolveType<T extends String>(parent: { __typename: T }): T {
         return parent.__typename;
-    }
-}
+    },
+};
 
 const resolvers: Resolvers = {
     UploadInfo,
+    TestExecutionStatus,
+    TestRunStatus,
     Field,
     Mutation,
     ConsoleEvent: interfaceResolvers,
