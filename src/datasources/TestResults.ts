@@ -5,8 +5,9 @@ import S3Service from '../S3Service.js';
 import * as z from 'zod';
 
 const TestSchema = z.object({
-    title: z.array(z.string())
-})
+    title: z.array(z.string()),
+    state: z.string(),
+});
 
 const RunSchema = z.object({
     tests: z.array(TestSchema)
