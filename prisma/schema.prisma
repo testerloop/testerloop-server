@@ -21,7 +21,7 @@ model Organisation {
 }
 
 model ApiKey {
-  id             Int          @id @default(autoincrement())
+  id             String          @id @default(uuid()) @db.Uuid
   apiKey         String
   isEnabled      Boolean
   organisationId String       @db.Uuid

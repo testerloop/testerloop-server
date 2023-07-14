@@ -12,7 +12,7 @@ CREATE TABLE "Organisation" (
 
 -- CreateTable
 CREATE TABLE "ApiKey" (
-    "id" SERIAL NOT NULL,
+    "id" UUID NOT NULL,
     "apiKey" TEXT NOT NULL,
     "isEnabled" BOOLEAN NOT NULL,
     "organisationId" UUID NOT NULL,
