@@ -16,5 +16,8 @@ input S3Config {
 }
 
 extend type Mutation {
-    createTestRun(runEnvironmentDetails: String!, s3Config: S3Config): UploadInfo
+    createTestRun(
+        runEnvironmentDetails: String!
+        s3Config: S3Config
+    ): UploadInfo
 }

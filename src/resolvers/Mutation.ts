@@ -1,34 +1,28 @@
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4, v5 as uuidv5 } from 'uuid';
 import { MutationResolvers } from './types/generated';
-import { UploadInfo } from './types/generated';
-import handleApiKey from '../util/handleApiKey.js';
+import { UploadInfo, TestExecutionCreationResponse } from './types/generated';
 
 const resolvers: MutationResolvers = {
     createTestRun: async (
         parent,
         { runEnvironmentDetails, s3Config },
-        {
-            dataSources,
-            request: {
-                req: { headers },
-            },
-        },
+        { dataSources, auth },
         info
     ): Promise<UploadInfo> => {
         const runID = uuidv4();
         console.log('Creating run with ID: ', runID);
         let s3BucketName;
         let customerPath;
-        if (headers['api-key'] && !s3Config) {
-            console.log('API Key found');
-            const apiKey = headers['api-key'] as string;
-            const organisation = await handleApiKey(apiKey);
-            console.log('Valid API key found for: ', organisation.name);
-            customerPath = organisation?.s3CustomPath;
-            s3BucketName = organisation?.s3BucketName;
+        if (!s3Config) {
+            if (!auth) {
+                throw new Error('Authorization required');
+            }
+            const organisation = auth.organisation;
+            customerPath = organisation.s3CustomPath;
+            s3BucketName = organisation.s3BucketName;
         } else {
-            console.log('No API key found, attempting to use s3Config');
-            ({ customerPath, bucket: s3BucketName } = s3Config || {});
+            console.log('Using s3Config');
+            ({ customerPath, bucket: s3BucketName } = s3Config);
         }
 
         if (!customerPath || !s3BucketName) {
@@ -64,6 +58,32 @@ const resolvers: MutationResolvers = {
                     key: key,
                     value: value,
                 })),
+        };
+    },
+    createTestExecution: async (
+        parent,
+        { testName, featureFile, s3Config },
+        { auth }
+    ): Promise<TestExecutionCreationResponse> => {
+        let organisationIdentifier;
+        if (!s3Config) {
+            if (!auth) {
+                throw new Error('Authorization required');
+            }
+            organisationIdentifier = auth.organisation.id;
+        } else {
+            console.log('Using s3Config');
+            organisationIdentifier = s3Config.customerPath;
+        }
+
+        const NAMESPACE = 'c9412f45-51ba-4b4d-9867-6117fb1646e1';
+        const name = `${testName}-${featureFile}-${organisationIdentifier}`;
+        const testExecutionGroupID = uuidv5(name, NAMESPACE);
+        const testExecutionID = uuidv4();
+        return {
+            __typename: 'TestExecutionCreationResponse',
+            testExecutionId: testExecutionID,
+            testExecutionGroupId: testExecutionGroupID,
         };
     },
 };
