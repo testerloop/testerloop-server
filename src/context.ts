@@ -28,12 +28,11 @@ export const createContext = async ({
     if (req.headers['x-api-key']) {
         const apiKey = req.headers['x-api-key'] as string;
         const organisation = await handleApiKey(apiKey);
-        if (organisation) {
-            console.log('Valid API key found for: ', organisation.name);
-            auth = {
-                organisation: organisation,
-            };
-        }
+        if (!organisation) throw new Error('Invalid API key provided');
+        console.log('Valid API key found for: ', organisation.name);
+        auth = {
+            organisation: organisation,
+        };
     }
 
     const context = {
