@@ -70,7 +70,7 @@ const resolvers: MutationResolvers = {
             if (!auth) {
                 throw new Error('Authorization required');
             }
-            organisationIdentifier = auth.organisation.slug;
+            organisationIdentifier = auth.organisation.id;
         } else {
             console.log('Using s3Config');
             organisationIdentifier = s3Config.customerPath;
