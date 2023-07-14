@@ -103,11 +103,11 @@ const resolvers: QueryResolvers = {
     async getRun(parent, { runId }, { dataSources }) {
         const testExecutions = await dataSources.testExecution.getByTestRunId(
             runId,
-            { first: 1 }
+            {}
         );
         console.log('executions ', testExecutions);
         const testExecutionStatuses = await Promise.all(
-            testExecutions.edges.map(async (testExecution) => {
+            testExecutions.edges.map(async (testExecution, idx) => {
                 console.log('testExecution ', testExecution);
                 const testResults = await dataSources.testResults.getById(
                     `${runId}/${testExecution.node.id}`
@@ -115,6 +115,9 @@ const resolvers: QueryResolvers = {
                 console.log('testResults ', testResults);
                 let runStatus;
                 let testOutcome;
+                const testName =
+                    testResults.runs[0].tests[0].title.slice(-1)[0] ?? '';
+                console.log('testName ', testName);
                 if (testResults) {
                     if (testResults.status === 'finished') {
                         runStatus = RunStatus.Completed;
@@ -136,7 +139,7 @@ const resolvers: QueryResolvers = {
                     __typename: 'TestExecutionStatus' as const,
                     runStatus,
                     testOutcome,
-                    name: testExecution.node.id,
+                    name: testName,
                     id: testExecution.node.id,
                 };
             })

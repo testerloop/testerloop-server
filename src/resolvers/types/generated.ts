@@ -505,7 +505,7 @@ export type PageInfo = {
 export type Query = {
   readonly __typename: 'Query';
   readonly consoleLogEvent: Maybe<ConsoleLogEvent>;
-  readonly getRun: Maybe<TestRunStatus>;
+  readonly getRun: TestRunStatus;
   readonly httpNetworkEvent: Maybe<HttpNetworkEvent>;
   readonly node: Maybe<Node>;
   readonly testExecution: Maybe<TestExecution>;
@@ -756,10 +756,10 @@ export type TestExecutionSnapshot = Event & InstantaneousEvent & TestExecutionEv
 
 export type TestExecutionStatus = {
   readonly __typename: 'TestExecutionStatus';
-  readonly id: Maybe<Scalars['ID']>;
-  readonly name: Maybe<Scalars['String']>;
-  readonly runStatus: Maybe<RunStatus>;
-  readonly testOutcome: Maybe<TestOutcome>;
+  readonly id: Scalars['ID'];
+  readonly name: Scalars['String'];
+  readonly runStatus: RunStatus;
+  readonly testOutcome: TestOutcome;
 };
 
 export enum TestOutcome {
@@ -797,8 +797,8 @@ export type TestRunEdge = {
 
 export type TestRunStatus = {
   readonly __typename: 'TestRunStatus';
-  readonly status: Maybe<RunStatus>;
-  readonly testExecutions: Maybe<ReadonlyArray<Maybe<TestExecutionStatus>>>;
+  readonly status: RunStatus;
+  readonly testExecutions: ReadonlyArray<Maybe<TestExecutionStatus>>;
 };
 
 export type UploadInfo = {
@@ -1448,7 +1448,7 @@ export type PageInfoResolvers<ContextType = Context, ParentType extends Resolver
 
 export type QueryResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
   consoleLogEvent: Resolver<Maybe<ResolversTypes['ConsoleLogEvent']>, ParentType, ContextType, RequireFields<QueryConsoleLogEventArgs, 'id'>>;
-  getRun: Resolver<Maybe<ResolversTypes['TestRunStatus']>, ParentType, ContextType, RequireFields<QueryGetRunArgs, 'runId'>>;
+  getRun: Resolver<ResolversTypes['TestRunStatus'], ParentType, ContextType, RequireFields<QueryGetRunArgs, 'runId'>>;
   httpNetworkEvent: Resolver<Maybe<ResolversTypes['HttpNetworkEvent']>, ParentType, ContextType, RequireFields<QueryHttpNetworkEventArgs, 'id'>>;
   node: Resolver<Maybe<ResolversTypes['Node']>, ParentType, ContextType, RequireFields<QueryNodeArgs, 'id'>>;
   testExecution: Resolver<Maybe<ResolversTypes['TestExecution']>, ParentType, ContextType, RequireFields<QueryTestExecutionArgs, 'id'>>;
@@ -1600,10 +1600,10 @@ export type TestExecutionSnapshotResolvers<ContextType = Context, ParentType ext
 };
 
 export type TestExecutionStatusResolvers<ContextType = Context, ParentType extends ResolversParentTypes['TestExecutionStatus'] = ResolversParentTypes['TestExecutionStatus']> = {
-  id: Resolver<Maybe<ResolversTypes['ID']>, ParentType, ContextType>;
-  name: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  runStatus: Resolver<Maybe<ResolversTypes['RunStatus']>, ParentType, ContextType>;
-  testOutcome: Resolver<Maybe<ResolversTypes['TestOutcome']>, ParentType, ContextType>;
+  id: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  name: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  runStatus: Resolver<ResolversTypes['RunStatus'], ParentType, ContextType>;
+  testOutcome: Resolver<ResolversTypes['TestOutcome'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -1628,8 +1628,8 @@ export type TestRunEdgeResolvers<ContextType = Context, ParentType extends Resol
 };
 
 export type TestRunStatusResolvers<ContextType = Context, ParentType extends ResolversParentTypes['TestRunStatus'] = ResolversParentTypes['TestRunStatus']> = {
-  status: Resolver<Maybe<ResolversTypes['RunStatus']>, ParentType, ContextType>;
-  testExecutions: Resolver<Maybe<ReadonlyArray<Maybe<ResolversTypes['TestExecutionStatus']>>>, ParentType, ContextType>;
+  status: Resolver<ResolversTypes['RunStatus'], ParentType, ContextType>;
+  testExecutions: Resolver<ReadonlyArray<Maybe<ResolversTypes['TestExecutionStatus']>>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 

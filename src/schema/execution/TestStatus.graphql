@@ -12,17 +12,17 @@ enum TestOutcome {
 }
 
 type TestExecutionStatus {
-    runStatus: RunStatus
-    testOutcome: TestOutcome
-    name: String
-    id: ID
+    id: ID!
+    name: String!
+    runStatus: RunStatus!
+    testOutcome: TestOutcome!
 }
 
 type TestRunStatus {
-    status: RunStatus
-    testExecutions: [TestExecutionStatus]
+    status: RunStatus!
+    testExecutions: [TestExecutionStatus]!
 }
 
 extend type Query {
-    getRun(runId: ID!): TestRunStatus
+    getRun(runId: ID!): TestRunStatus!
 }
