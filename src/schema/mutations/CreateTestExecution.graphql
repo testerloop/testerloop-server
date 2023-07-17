@@ -1,0 +1,12 @@
+type TestExecutionCreationResponse {
+    testExecutionId: ID! # TODO: Switch to returning the TestExecution directly
+    testExecutionGroupId: ID!
+}
+
+extend type Mutation {
+    createTestExecution(
+        testName: String!
+        featureFile: String!
+        s3Config: S3Config
+    ): TestExecutionCreationResponse!
+}

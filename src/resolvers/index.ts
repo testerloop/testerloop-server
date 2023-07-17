@@ -30,7 +30,7 @@ import GitHubActor from './GitHubActor.js';
 import GitHubRepository from './GitHubRepository.js';
 import GitHubOrganization from './GitHubOrganization.js';
 import GitHubRevision from './GitHubRevision.js';
-import GitHubUser from './GitHubUser.js'; 
+import GitHubUser from './GitHubUser.js';
 import TestExecutionEnvironment from './TestExecutionEnvironment.js';
 import ChromiumVersion from './ChromiumVersion.js';
 import URL from './scalars/URL.js';
@@ -57,6 +57,7 @@ import Mutation from './Mutation.js';
 import TestExecutionStatus from './TestExecutionStatus.js';
 import TestRunStatus from './TestRunStatus.js';
 
+import TestExecutionCreationResponse from './TestExecutionCreationResponse.js';
 const interfaceResolvers = {
     __resolveType<T extends String>(parent: { __typename: T }): T {
         return parent.__typename;
@@ -64,6 +65,7 @@ const interfaceResolvers = {
 };
 
 const resolvers: Resolvers = {
+    TestExecutionCreationResponse,
     UploadInfo,
     TestExecutionStatus,
     TestRunStatus,

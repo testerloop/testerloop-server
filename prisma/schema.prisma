@@ -23,7 +23,7 @@ enum TestStatus {
 }
 
 model Organisation {
-  id           Int       @id @default(autoincrement())
+  id           String    @id @default(uuid()) @db.Uuid
   name         String
   slug         String    @unique
   s3CustomPath String
@@ -34,18 +34,18 @@ model Organisation {
 }
 
 model ApiKey {
-  id             Int          @id @default(autoincrement())
+  id             String       @id @default(uuid()) @db.Uuid
   apiKey         String
   isEnabled      Boolean
-  organisationId Int
+  organisationId String       @db.Uuid
   organisation   Organisation @relation(fields: [organisationId], references: [id], onDelete: Cascade)
 }
 
 model TestRun {
-  id             String          @id @default(uuid())
+  id             String          @id @default(uuid()) @db.Uuid
   testExecutions TestExecution[]
   status         RunStatus
-  organisationId Int
+  organisationId String          @db.Uuid
   organisation   Organisation    @relation(fields: [organisationId], references: [id], onDelete: Cascade)
 }
 

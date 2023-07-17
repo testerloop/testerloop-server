@@ -1,6 +1,6 @@
 -- CreateTable
 CREATE TABLE "Organisation" (
-    "id" SERIAL NOT NULL,
+    "id" UUID NOT NULL,
     "name" TEXT NOT NULL,
     "slug" TEXT NOT NULL,
     "s3CustomPath" TEXT NOT NULL,
@@ -12,10 +12,10 @@ CREATE TABLE "Organisation" (
 
 -- CreateTable
 CREATE TABLE "ApiKey" (
-    "id" SERIAL NOT NULL,
+    "id" UUID NOT NULL,
     "apiKey" TEXT NOT NULL,
     "isEnabled" BOOLEAN NOT NULL,
-    "organisationId" INTEGER NOT NULL,
+    "organisationId" UUID NOT NULL,
 
     CONSTRAINT "ApiKey_pkey" PRIMARY KEY ("id")
 );
