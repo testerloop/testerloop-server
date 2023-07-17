@@ -18,7 +18,7 @@ const resolvers: MutationResolvers = {
 
         if (!customerPath || !s3BucketName) {
             throw new Error(
-                'Failed to verify authentication. Please provide API key or s3Config.'
+                'Failed to verify organisation details. Please provide API key or s3Config.'
             );
         }
         const s3RunPath = `${s3BucketName}/${customerPath}/${runID}`;
@@ -61,7 +61,7 @@ const resolvers: MutationResolvers = {
 
         if (!organisationIdentifier) {
             throw new Error(
-                'Failed to verify authentication. Please provide API key or s3Config'
+                'Failed to verify organisation details. Please provide API key or s3Config'
             );
         }
 
