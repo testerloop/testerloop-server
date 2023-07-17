@@ -106,42 +106,59 @@ const resolvers: QueryResolvers = {
             {}
         );
         console.log('executions ', testExecutions);
+
         const testExecutionStatuses = await Promise.all(
             testExecutions.edges.map(async (testExecution, idx) => {
                 console.log('testExecution ', testExecution);
-                const testResults = await dataSources.testResults.getById(
+
+                const fileExists = await dataSources.testResults.doResultsExist(
                     `${runId}/${testExecution.node.id}`
                 );
-                console.log('testResults ', testResults);
-                let runStatus;
-                let testOutcome;
-                const testName =
-                    testResults.runs[0].tests[0].title.slice(-1)[0] ?? '';
-                console.log('testName ', testName);
-                if (testResults) {
-                    if (testResults.status === 'finished') {
-                        runStatus = RunStatus.Completed;
-                        testOutcome = testResults.runs[0].tests.every(
-                            (test) => test.state === 'passed'
-                        )
-                            ? TestOutcome.Passed
-                            : TestOutcome.Failed;
+
+                if (fileExists) {
+                    const testResults = await dataSources.testResults.getById(
+                        `${runId}/${testExecution.node.id}`
+                    );
+                    console.log('testResults ', testResults);
+                    let runStatus;
+                    let testOutcome;
+                    const testName =
+                        testResults.runs[0].tests[0].title.slice(-1)[0] ?? '';
+                    console.log('testName ', testName);
+
+                    if (testResults) {
+                        if (testResults.status === 'finished') {
+                            runStatus = RunStatus.Completed;
+                            testOutcome = testResults.runs[0].tests.every(
+                                (test) => test.state === 'passed'
+                            )
+                                ? TestOutcome.Passed
+                                : TestOutcome.Failed;
+                        } else {
+                            runStatus = RunStatus.Running;
+                            testOutcome = TestOutcome.NotYetCompleted;
+                        }
                     } else {
-                        runStatus = RunStatus.Running;
+                        runStatus = RunStatus.Queued;
                         testOutcome = TestOutcome.NotYetCompleted;
                     }
-                } else {
-                    runStatus = RunStatus.Queued;
-                    testOutcome = TestOutcome.NotYetCompleted;
-                }
 
-                return {
-                    __typename: 'TestExecutionStatus' as const,
-                    runStatus,
-                    testOutcome,
-                    name: testName,
-                    id: testExecution.node.id,
-                };
+                    return {
+                        __typename: 'TestExecutionStatus' as const,
+                        runStatus,
+                        testOutcome,
+                        name: testName,
+                        id: testExecution.node.id,
+                    };
+                } else {
+                    return {
+                        __typename: 'TestExecutionStatus' as const,
+                        runStatus: RunStatus.Running,
+                        testOutcome: TestOutcome.NotYetCompleted,
+                        name: '',
+                        id: testExecution.node.id,
+                    };
+                }
             })
         );
 

@@ -45,5 +45,12 @@ export class TestResults {
     
     async getById(id: string) {
         return this.getResultsByTestExecutionId(id);
-    };
+    }
+
+    async doResultsExist(testExecutionId: string) {
+        const bucketName = config.AWS_BUCKET_NAME;
+        const bucketPath = config.AWS_BUCKET_PATH;
+        const s3Key = `${bucketPath}${testExecutionId}/cypress/results.json`;
+        return S3Service.doesFileExist(bucketName, s3Key);
+    }
 }
