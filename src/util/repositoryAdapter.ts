@@ -1,9 +1,6 @@
 import { Organisation } from '@prisma/client';
+import { S3Config } from 'src/resolvers/types/generated';
 
-export interface S3Config {
-    customerPath?: string | null;
-    bucket?: string | null;
-}
 
 class RepositoryAdapter {
     async getBucketAndPath(
