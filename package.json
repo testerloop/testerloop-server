@@ -1,6 +1,6 @@
 {
     "name": "@testerloop/server",
-    "version": "0.1.12",
+    "version": "0.1.13",
     "devDependencies": {
         "@graphql-codegen/cli": "^2.16.4",
         "@graphql-codegen/typescript": "^2.8.7",
@@ -39,7 +39,7 @@
         "graphql": "^17.0.0-alpha.2"
     },
     "scripts": {
-        "build": "tsc --project tsconfig.json && cp -r src/schema/ dist/schema/ && cp -r prisma/ dist/prisma/",
+        "build": "rm -rf ./dist && tsc --project tsconfig.json && cp -r src/schema/ dist/schema/ && cp -r prisma/ dist/prisma/",
         "dev": "concurrently -k \"nodemon src/dev.ts\" \"graphql-codegen --watch\"",
         "generate": "graphql-codegen"
     },
