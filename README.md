@@ -120,5 +120,11 @@ npm run build
 
 ## Tests
 
+To run all tests:
 
+    npm test
+
+To run a specific test file:
+
+    npm test -- generateSlug
 

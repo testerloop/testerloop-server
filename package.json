@@ -41,7 +41,8 @@
     "scripts": {
         "build": "tsc --project tsconfig.json && cp -r src/schema/ dist/schema/",
         "dev": "concurrently -k \"nodemon src/dev.ts\" \"graphql-codegen --watch\"",
-        "generate": "graphql-codegen"
+        "generate": "graphql-codegen",
+        "test": "npx jest"
     },
     "type": "module"
 }
