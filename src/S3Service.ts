@@ -122,13 +122,7 @@ class S3Service {
             );
             return true;
         } catch (error) {
-            if (
-                error instanceof Error &&
-                error.message.includes('UnknownError')
-            ) {
-                return false;
-            }
-            throw error;
+            return false;
         }
     }
 
