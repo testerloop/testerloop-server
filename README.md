@@ -59,6 +59,17 @@ In the same aws directory create a file called `config` and insert this:
     region=eu-west-3
     output=json
 
+In order to pull down npm packages from testerloop's private npm registry, create a new file at user root:
+    
+    touch ~/.npmrc 
+
+and insert the following:
+
+    @testerloop:registry=https://npm.pkg.github.com
+    //npm.pkg.github.com/:_authToken=[GITHUB_TOKEN]
+
+If you do this, you don't need to create a separate .npmrc file for every repository.
+
 ## Build Database
 
 Firstly you want to build and run the postgres docker image by running the following command. If you don't already have the postgres docker image, it will pull the image and build it for you, and then it will run it in detatch mode.
