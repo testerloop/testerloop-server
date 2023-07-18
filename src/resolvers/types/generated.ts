@@ -773,14 +773,8 @@ export type TestExecutionStatus = {
   readonly id: Scalars['ID'];
   readonly name: Scalars['String'];
   readonly runStatus: RunStatus;
-  readonly testOutcome: TestOutcome;
+  readonly testStatus: TestStatus;
 };
-
-export enum TestOutcome {
-  Failed = 'FAILED',
-  NotYetCompleted = 'NOT_YET_COMPLETED',
-  Passed = 'PASSED'
-}
 
 export type TestRun = Node & {
   readonly __typename: 'TestRun';
@@ -814,6 +808,12 @@ export type TestRunStatus = {
   readonly status: RunStatus;
   readonly testExecutions: ReadonlyArray<Maybe<TestExecutionStatus>>;
 };
+
+export enum TestStatus {
+  Failed = 'FAILED',
+  Passed = 'PASSED',
+  Pending = 'PENDING'
+}
 
 export type UploadInfo = {
   readonly __typename: 'UploadInfo';
@@ -987,11 +987,11 @@ export type ResolversTypes = {
   TestExecutionScreenshot: ResolverTypeWrapper<TestExecutionScreenshotModel>;
   TestExecutionSnapshot: ResolverTypeWrapper<TestExecutionSnapshotModel>;
   TestExecutionStatus: ResolverTypeWrapper<TestExecutionStatus>;
-  TestOutcome: TestOutcome;
   TestRun: ResolverTypeWrapper<TestRunModel>;
   TestRunConnection: ResolverTypeWrapper<TestRunConnectionModel>;
   TestRunEdge: ResolverTypeWrapper<TestRunEdgeModel>;
   TestRunStatus: ResolverTypeWrapper<TestRunStatus>;
+  TestStatus: TestStatus;
   URL: ResolverTypeWrapper<Scalars['URL']>;
   UploadInfo: ResolverTypeWrapper<UploadInfo>;
 };
@@ -1626,7 +1626,7 @@ export type TestExecutionStatusResolvers<ContextType = Context, ParentType exten
   id: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   name: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   runStatus: Resolver<ResolversTypes['RunStatus'], ParentType, ContextType>;
-  testOutcome: Resolver<ResolversTypes['TestOutcome'], ParentType, ContextType>;
+  testStatus: Resolver<ResolversTypes['TestStatus'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 

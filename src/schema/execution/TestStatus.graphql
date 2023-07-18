@@ -5,17 +5,17 @@ enum RunStatus {
     # RE_RUNNING TODO: implement
 }
 
-enum TestOutcome {
+enum TestStatus {
     FAILED
     PASSED
-    NOT_YET_COMPLETED
+    PENDING
 }
 
 type TestExecutionStatus {
     id: ID!
     name: String!
     runStatus: RunStatus!
-    testOutcome: TestOutcome!
+    testStatus: TestStatus!
 }
 
 type TestRunStatus {

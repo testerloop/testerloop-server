@@ -1,6 +1,6 @@
 import { decodeId, decodeIdForType } from '../util/id.js';
 import { QueryResolvers } from './types/generated.js';
-import { RunStatus, TestOutcome } from './types/generated.js';
+import { RunStatus, TestStatus } from './types/generated.js';
 import {
     checkS3ResultsExistAndGetData,
     getRunStatusAndOutcome,
@@ -120,13 +120,13 @@ const resolvers: QueryResolvers = {
                 );
 
                 if (testResults) {
-                    const { runStatus, testOutcome, testName } =
+                    const { runStatus, testStatus, testName } =
                         getRunStatusAndOutcome(testResults);
 
                     return {
                         __typename: 'TestExecutionStatus' as const,
                         runStatus,
-                        testOutcome,
+                        testStatus,
                         name: testName,
                         id: testExecution.node.id,
                     };
@@ -134,7 +134,7 @@ const resolvers: QueryResolvers = {
                     return {
                         __typename: 'TestExecutionStatus' as const,
                         runStatus: RunStatus.Running,
-                        testOutcome: TestOutcome.NotYetCompleted,
+                        testStatus: TestStatus.Pending,
                         name: '',
                         id: testExecution.node.id,
                     };

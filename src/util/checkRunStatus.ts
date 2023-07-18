@@ -1,5 +1,4 @@
-import { RunStatus } from '../resolvers/types/generated.js';
-import { TestOutcome } from '../resolvers/types/generated.js';
+import { RunStatus, TestStatus } from '../resolvers/types/generated.js';
 
 export async function checkS3ResultsExistAndGetData(
     testRunId: string,
@@ -21,25 +20,25 @@ export async function checkS3ResultsExistAndGetData(
 
 export function getRunStatusAndOutcome(testResults: any) {
     let runStatus;
-    let testOutcome;
+    let testStatus;
     const testName = testResults.runs[0].tests[0].title.slice(-1)[0] ?? '';
 
     if (testResults) {
         if (testResults.status === 'finished') {
             runStatus = RunStatus.Completed;
-            testOutcome = testResults.runs[0].tests.every(
+            testStatus = testResults.runs[0].tests.every(
                 (test: any) => test.state === 'passed'
             )
-                ? TestOutcome.Passed
-                : TestOutcome.Failed;
+                ? TestStatus.Passed
+                : TestStatus.Failed;
         } else {
             runStatus = RunStatus.Running;
-            testOutcome = TestOutcome.NotYetCompleted;
+            testStatus = TestStatus.Pending;
         }
     } else {
         runStatus = RunStatus.Queued;
-        testOutcome = TestOutcome.NotYetCompleted;
+        testStatus = TestStatus.Pending;
     }
 
-    return { runStatus, testOutcome, testName };
+    return { runStatus, testStatus, testName };
 }
