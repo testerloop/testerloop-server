@@ -1,7 +1,8 @@
 import { v4 as uuidv4, v5 as uuidv5 } from 'uuid';
 import { MutationResolvers } from './types/generated';
 import { UploadInfo, TestExecutionCreationResponse } from './types/generated';
-import repositoryAdapter from '../util/repositoryAdapter.js';
+import { getBucketAndPath } from '../util/getBucketAndPath.js';
+import { getOrganisationIdentifier } from '../util/getOrganisationIdentifier.js';
 
 const resolvers: MutationResolvers = {
     createTestRun: async (
@@ -13,8 +14,10 @@ const resolvers: MutationResolvers = {
         const runID = uuidv4();
         console.log('Creating run with ID: ', runID);
 
-        const { s3BucketName, customerPath } =
-            await repositoryAdapter.getBucketAndPath(auth, s3Config || {});
+        const { s3BucketName, customerPath } = await getBucketAndPath(
+            auth,
+            s3Config || {}
+        );
 
         if (!customerPath || !s3BucketName) {
             throw new Error(
@@ -56,8 +59,10 @@ const resolvers: MutationResolvers = {
         { testName, featureFile, s3Config },
         { auth }
     ): Promise<TestExecutionCreationResponse> => {
-        const organisationIdentifier =
-            repositoryAdapter.getOrganisationIdentifier(auth, s3Config || {});
+        const organisationIdentifier = getOrganisationIdentifier(
+            auth,
+            s3Config || {}
+        );
 
         if (!organisationIdentifier) {
             throw new Error(
