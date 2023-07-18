@@ -54,7 +54,7 @@ model TestExecution {
   name      String
   result    TestStatus
   at        DateTime   @default(now())
-  until     DateTime
-  testRunId String
+  until     DateTime?
+  testRunId String     @db.Uuid
   testRun   TestRun    @relation(fields: [testRunId], references: [id])
 }
