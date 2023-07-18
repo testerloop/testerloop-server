@@ -1,6 +1,6 @@
 import { Prisma } from '@prisma/client';
 import { generateSlug } from './util/generateSlug.js';
-import prisma from '../prisma/basePrismaClient.js';
+import prisma from './basePrismaClient.js';
 
 type SlugOptionalOrganisationCreateInput = Omit<
     Prisma.OrganisationCreateInput,

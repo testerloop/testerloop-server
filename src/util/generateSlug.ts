@@ -1,5 +1,5 @@
 import slugify from 'slugify';
-import prisma from '../../prisma/basePrismaClient.js';
+import prisma from '../basePrismaClient';
 
 export async function getSlug(slug: string, index: number = 0): Promise<string> {
     const currentSlug = index === 0 ? slug : `${slug}-${index}`;
