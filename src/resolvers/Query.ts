@@ -1,6 +1,10 @@
 import { decodeId, decodeIdForType } from '../util/id.js';
 import { QueryResolvers } from './types/generated.js';
 import { RunStatus, TestOutcome } from './types/generated.js';
+import {
+    checkS3ResultsExistAndGetData,
+    getRunStatusAndOutcome,
+} from '../util/checkRunStatus.js';
 
 const resolvers: QueryResolvers = {
     async httpNetworkEvent(root, { id }, { dataSources }) {
@@ -109,39 +113,15 @@ const resolvers: QueryResolvers = {
 
         const testExecutionStatuses = await Promise.all(
             testExecutions.edges.map(async (testExecution, idx) => {
-                console.log('testExecution ', testExecution);
-
-                const fileExists = await dataSources.testResults.doResultsExist(
-                    `${runId}/${testExecution.node.id}`
+                const testResults = await checkS3ResultsExistAndGetData(
+                    runId,
+                    testExecution.node.id,
+                    dataSources
                 );
 
-                if (fileExists) {
-                    const testResults = await dataSources.testResults.getById(
-                        `${runId}/${testExecution.node.id}`
-                    );
-                    console.log('testResults ', testResults);
-                    let runStatus;
-                    let testOutcome;
-                    const testName =
-                        testResults.runs[0].tests[0].title.slice(-1)[0] ?? '';
-                    console.log('testName ', testName);
-
-                    if (testResults) {
-                        if (testResults.status === 'finished') {
-                            runStatus = RunStatus.Completed;
-                            testOutcome = testResults.runs[0].tests.every(
-                                (test) => test.state === 'passed'
-                            )
-                                ? TestOutcome.Passed
-                                : TestOutcome.Failed;
-                        } else {
-                            runStatus = RunStatus.Running;
-                            testOutcome = TestOutcome.NotYetCompleted;
-                        }
-                    } else {
-                        runStatus = RunStatus.Queued;
-                        testOutcome = TestOutcome.NotYetCompleted;
-                    }
+                if (testResults) {
+                    const { runStatus, testOutcome, testName } =
+                        getRunStatusAndOutcome(testResults);
 
                     return {
                         __typename: 'TestExecutionStatus' as const,
@@ -162,11 +142,14 @@ const resolvers: QueryResolvers = {
             })
         );
 
-        const runStatus = testExecutionStatuses.every(
-            (status) => status.runStatus === RunStatus.Completed
-        )
-            ? RunStatus.Completed
-            : RunStatus.Running;
+        const runStatus =
+            testExecutions.totalCount === 0
+                ? RunStatus.Queued
+                : testExecutionStatuses.every(
+                      (status) => status.runStatus === RunStatus.Completed
+                  )
+                ? RunStatus.Completed
+                : RunStatus.Running;
 
         return {
             __typename: 'TestRunStatus',
