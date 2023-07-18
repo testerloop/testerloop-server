@@ -1,6 +1,8 @@
 import { v4 as uuidv4, v5 as uuidv5 } from 'uuid';
 import { MutationResolvers } from './types/generated';
 import { UploadInfo, TestExecutionCreationResponse } from './types/generated';
+import { getBucketAndPath } from '../util/getBucketAndPath.js';
+import { getOrganisationIdentifier } from '../util/getOrganisationIdentifier.js';
 
 const resolvers: MutationResolvers = {
     createTestRun: async (
@@ -11,23 +13,15 @@ const resolvers: MutationResolvers = {
     ): Promise<UploadInfo> => {
         const runID = uuidv4();
         console.log('Creating run with ID: ', runID);
-        let s3BucketName;
-        let customerPath;
-        if (!s3Config) {
-            if (!auth) {
-                throw new Error('Authorization required');
-            }
-            const organisation = auth.organisation;
-            customerPath = organisation.s3CustomPath;
-            s3BucketName = organisation.s3BucketName;
-        } else {
-            console.log('Using s3Config');
-            ({ customerPath, bucket: s3BucketName } = s3Config);
-        }
+
+        const { s3BucketName, customerPath } = await getBucketAndPath(
+            auth,
+            s3Config || {}
+        );
 
         if (!customerPath || !s3BucketName) {
             throw new Error(
-                'Invalid configuration. Please provide s3BucketName and customerPath.'
+                'Failed to verify organisation details. Please provide API key or s3Config.'
             );
         }
         const s3RunPath = `${s3BucketName}/${customerPath}/${runID}`;
@@ -65,15 +59,15 @@ const resolvers: MutationResolvers = {
         { testName, featureFile, s3Config },
         { auth }
     ): Promise<TestExecutionCreationResponse> => {
-        let organisationIdentifier;
-        if (!s3Config) {
-            if (!auth) {
-                throw new Error('Authorization required');
-            }
-            organisationIdentifier = auth.organisation.id;
-        } else {
-            console.log('Using s3Config');
-            organisationIdentifier = s3Config.customerPath;
+        const organisationIdentifier = getOrganisationIdentifier(
+            auth,
+            s3Config || {}
+        );
+
+        if (!organisationIdentifier) {
+            throw new Error(
+                'Failed to verify organisation details. Please provide API key or s3Config'
+            );
         }
 
         const NAMESPACE = 'c9412f45-51ba-4b4d-9867-6117fb1646e1';

@@ -1,7 +1,7 @@
-import handleApiKey from './util/handleApiKey.js';
 import { IncomingHttpHeaders } from 'http';
 import { DataSources, createDataSources } from './datasources/index.js';
 import { Organisation } from '@prisma/client';
+import { prismaClient } from './db.js';
 interface Request {
     headers: IncomingHttpHeaders;
 }
@@ -27,7 +27,7 @@ export const createContext = async ({
     let auth: Auth | null = null;
     if (req.headers['x-api-key']) {
         const apiKey = req.headers['x-api-key'] as string;
-        const organisation = await handleApiKey(apiKey);
+        const organisation = await prismaClient.getByApiKey(apiKey);
         if (!organisation) throw new Error('Invalid API key provided');
         console.log('Valid API key found for: ', organisation.name);
         auth = {
