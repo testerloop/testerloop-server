@@ -39,7 +39,7 @@
         "graphql": "^17.0.0-alpha.2"
     },
     "scripts": {
-        "build": "tsc --project tsconfig.json && cp -r src/schema/ dist/schema/ && cp -r src/prisma/ dist/prisma/",
+        "build": "tsc --project tsconfig.json && cp -r src/schema/ dist/schema/ && cp -r prisma/ dist/prisma/",
         "dev": "concurrently -k \"nodemon src/dev.ts\" \"graphql-codegen --watch\"",
         "generate": "graphql-codegen"
     },
