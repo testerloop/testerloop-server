@@ -1,6 +1,5 @@
 import DataLoader from 'dataloader';
 import { Context } from '../context.js';
-import config from '../config.js';
 import S3Service from '../S3Service.js';
 
 export class CreateTestRun {

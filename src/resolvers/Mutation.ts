@@ -1,29 +1,20 @@
 import { v4 as uuidv4, v5 as uuidv5 } from 'uuid';
 import { MutationResolvers } from './types/generated';
 import { UploadInfo, TestExecutionCreationResponse } from './types/generated';
-import { getBucketAndPath } from '../util/getBucketAndPath.js';
-import { getOrganisationIdentifier } from '../util/getOrganisationIdentifier.js';
 
 const resolvers: MutationResolvers = {
     createTestRun: async (
-        parent,
+        _,
         { runEnvironmentDetails, s3Config },
-        { dataSources, auth },
-        info
+        { dataSources, auth, repository }
     ): Promise<UploadInfo> => {
         const runID = uuidv4();
         console.log('Creating run with ID: ', runID);
 
-        const { s3BucketName, customerPath } = await getBucketAndPath(
-            auth,
-            s3Config || {}
+        const { s3BucketName, customerPath } = repository.getBucketAndPath(
+            auth || s3Config
         );
 
-        if (!customerPath || !s3BucketName) {
-            throw new Error(
-                'Failed to verify organisation details. Please provide API key or s3Config.'
-            );
-        }
         const s3RunPath = `${s3BucketName}/${customerPath}/${runID}`;
 
         console.log(`Uploading cicd.json file to: ${s3RunPath}/logs/`);
@@ -55,13 +46,12 @@ const resolvers: MutationResolvers = {
         };
     },
     createTestExecution: async (
-        parent,
+        _,
         { testName, featureFile, s3Config },
-        { auth }
+        { auth, repository }
     ): Promise<TestExecutionCreationResponse> => {
-        const organisationIdentifier = getOrganisationIdentifier(
-            auth,
-            s3Config || {}
+        const organisationIdentifier = repository.getOrganisationIdentifier(
+            auth || s3Config || undefined
         );
 
         if (!organisationIdentifier) {

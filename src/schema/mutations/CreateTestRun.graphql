@@ -11,8 +11,8 @@ type Field {
 }
 
 input S3Config {
-    bucket: String
-    customerPath: String
+    bucket: String!
+    customerPath: String!
 }
 
 extend type Mutation {

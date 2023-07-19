@@ -4,18 +4,18 @@ import {
     SlugOptionalOrganisationCreateInput,
 } from './interfaces/prisma.js';
 import { generateSlug } from './util/generateSlug.js';
+import config from './config.js';
 
-export class PrismaDB implements PrismaInterface {
-    prisma: PrismaClient | null = null;
+export default class PrismaDB implements PrismaInterface {
+    prisma: PrismaClient = new PrismaClient();
 
-    async initialiseClient() {
-        this.prisma = new PrismaClient();
-        return this.prisma;
+    __construct() {
+      if (!config.DB_ENABLED) {
+        throw new Error("DB not enabled");
+      }
     }
 
     async createWithSlug(data: SlugOptionalOrganisationCreateInput) {
-        if (!this.prisma) return null;
-
         const slugifiedName = generateSlug(data.name);
         const slug = await this.getSlug(slugifiedName);
         return this.prisma.organisation.create({
@@ -57,30 +57,3 @@ export class PrismaDB implements PrismaInterface {
         return this.getSlug(slug, index + 1);
     }
 }
-
-export class NoPrismaDB implements PrismaInterface {
-    private throwError(): never {
-        throw new Error('Database operations are not allowed');
-    }
-
-    async initialiseClient(): Promise<PrismaClient | null> {
-        this.throwError();
-    }
-
-    async createWithSlug(
-        data: SlugOptionalOrganisationCreateInput
-    ): Promise<Organisation | null> {
-        this.throwError();
-    }
-
-    async getByApiKey(apiKey: string): Promise<Organisation | null> {
-        this.throwError();
-    }
-
-    async getSlug(slug: string, index: number = 0): Promise<string> {
-        this.throwError();
-    }
-}
-
-export const prismaClient: PrismaInterface =
-    process.env.ENABLE_DB === 'true' ? new PrismaDB() : new NoPrismaDB();

@@ -7,7 +7,6 @@ export type SlugOptionalOrganisationCreateInput = Omit<
 > & { slug?: string };
 
 export interface PrismaInterface {
-    initialiseClient: () => Promise<PrismaClient | null>;
     createWithSlug: (
         data: SlugOptionalOrganisationCreateInput
     ) => Promise<Organisation | null>;
