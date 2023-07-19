@@ -1,4 +1,5 @@
 import { Context } from '../context.js';
+
 import { ConsoleEvent } from './ConsoleEvent/index.js';
 import { NetworkEvent } from './NetworkEvent.js';
 import { TestExecution } from './TestExecution.js';

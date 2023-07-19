@@ -8,10 +8,14 @@ export class CommandEvent {
     }
 
     async getCommandsByTestExecutionId(id: string) {
-        const steps = await this.context.dataSources.stepEvent.getStepsByTestExecutionId(id);
+        const steps =
+            await this.context.dataSources.stepEvent.getStepsByTestExecutionId(
+                id,
+            );
 
-        const commands = Object.values(steps).flatMap(
-            ({ commandChains }) => commandChains.flatMap(({ commands }) => commands))
+        const commands = Object.values(steps).flatMap(({ commandChains }) =>
+            commandChains.flatMap(({ commands }) => commands),
+        );
 
         return Object.fromEntries(
             commands.map((obj) => [
@@ -19,8 +23,8 @@ export class CommandEvent {
                 {
                     ...obj,
                     id: `${id}/commandEvent/${obj.id}`,
-                }
-            ])
-            );
+                },
+            ]),
+        );
     }
 }

@@ -1,4 +1,4 @@
-import { GitHubRevisionFileLineColumnResolvers } from "./types/generated";
+import { GitHubRevisionFileLineColumnResolvers } from './types/generated';
 
 const resolvers: GitHubRevisionFileLineColumnResolvers = {
     column: ({ column }) => column,

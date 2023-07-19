@@ -1,5 +1,5 @@
 """
-    See https://www.chromium.org/developers/version-numbers/
+See https://www.chromium.org/developers/version-numbers/
 """
 type ChromiumVersion {
     major: Int!
@@ -8,8 +8,7 @@ type ChromiumVersion {
     patch: Int!
 }
 
-union BrowserVersion =
-  | ChromiumVersion
+union BrowserVersion = ChromiumVersion
 
 type TestExecutionEnvironment {
     browser: BrowserVersion!

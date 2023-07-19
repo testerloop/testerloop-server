@@ -1,5 +1,5 @@
 type TestExecutionSnapshot implements Event & InstantaneousEvent & TestExecutionEvent {
-  at: DateTime!
-  testExecution: TestExecution!
-  dom: String!
+    at: DateTime!
+    testExecution: TestExecution!
+    dom: String!
 }

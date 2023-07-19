@@ -1,4 +1,5 @@
 import getPaginatedData from '../util/getPaginatedData.js';
+
 import { CommandChainEventResolvers } from './types/generated.js';
 
 const resolvers: CommandChainEventResolvers = {
@@ -13,9 +14,9 @@ const resolvers: CommandChainEventResolvers = {
             testRun: {
                 __typename: 'TestRun',
                 id: runId,
-            }
+            },
         };
     },
-}
+};
 
 export default resolvers;
