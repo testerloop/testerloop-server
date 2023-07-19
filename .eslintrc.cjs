@@ -32,7 +32,6 @@ module.exports = {
                 distinctGroup: false,
             },
         ],
-        '@typescript-eslint/no-explicit-any': 'off', // example of turning off a rule
         'import/no-unresolved': 'off',
         '@typescript-eslint/no-unused-vars': [
             'error',
