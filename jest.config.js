@@ -7,5 +7,4 @@ export default {
         '^prisma/(.*)$': '<rootDir>/prisma/$1',
         '^spec/(.*)$': '<rootDir>/spec/$1',
     },
-    setupFilesAfterEnv: ['<rootDir>/spec/__mocks__/singleton.ts'],
 };

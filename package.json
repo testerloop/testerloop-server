@@ -1,6 +1,6 @@
 {
     "name": "@testerloop/server",
-    "version": "0.1.12",
+    "version": "0.1.14",
     "devDependencies": {
         "@graphql-codegen/cli": "^2.16.4",
         "@graphql-codegen/typescript": "^2.8.7",
@@ -30,6 +30,7 @@
         "@aws-sdk/client-s3": "^3.293.0",
         "@aws-sdk/s3-presigned-post": "^3.293.0",
         "@aws-sdk/s3-request-presigner": "^3.293.0",
+        "prisma": "^4.16.2",
         "@prisma/client": "^4.16.2",
         "aws-sdk": "^2.1337.0",
         "dataloader": "^2.2.2",
@@ -46,7 +47,7 @@
         "graphql": "^17.0.0-alpha.2"
     },
     "scripts": {
-        "build": "tsc --project tsconfig.json && cp -r src/schema/ dist/schema/",
+        "build": "rm -rf ./dist && tsc --project tsconfig.json && cp -r src/schema/ dist/schema/ && cp -r prisma/ dist/prisma/",
         "dev": "concurrently -k \"nodemon src/dev.ts\" \"graphql-codegen --watch\"",
         "generate": "graphql-codegen",
         "lint": "eslint --ext .ts src",
