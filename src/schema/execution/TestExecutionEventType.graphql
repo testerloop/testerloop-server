@@ -1,20 +1,20 @@
 enum TestExecutionEventType {
-  CONSOLE
-  """
-  Returns all commands executed in the `TestExecution` flattened outside of the test layout.
-  """
-  COMMAND
-  NETWORK
-  """
-  Returns all of the steps of the `TestExecution`, flattened outside of their containing `BackgroundEvent` or `ScenarioEvent`.
-  """
-  STEP
-  """
-  Returns the top-level parts of the `TestExecution`
+    CONSOLE
+    """
+    Returns all commands executed in the `TestExecution` flattened outside of the test layout.
+    """
+    COMMAND
+    NETWORK
+    """
+    Returns all of the steps of the `TestExecution`, flattened outside of their containing `BackgroundEvent` or `ScenarioEvent`.
+    """
+    STEP
+    """
+    Returns the top-level parts of the `TestExecution`
 
-  For BDD this will be `BackgroundEvent` & `ScenarioEvent`.
-  For other tests, this can include `Before All`/`Before Each`/`Test`/`After Each`/`After All` parts
-  """
-  TEST_PART
-  SCREENSHOT
+    For BDD this will be `BackgroundEvent` & `ScenarioEvent`.
+    For other tests, this can include `Before All`/`Before Each`/`Test`/`After Each`/`After All` parts
+    """
+    TEST_PART
+    SCREENSHOT
 }

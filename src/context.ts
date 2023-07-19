@@ -9,9 +9,11 @@ export const createContext = async (): Promise<Context> => {
     const context = {
         get dataSources() {
             if (dataSources === null)
-                throw new Error('DataSources are not available during DataSource initialization.');
+                throw new Error(
+                    'DataSources are not available during DataSource initialization.',
+                );
             return dataSources;
-        }
+        },
     };
     dataSources = createDataSources(context);
     return context;

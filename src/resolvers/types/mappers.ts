@@ -1,150 +1,149 @@
-import { StepType } from "../../maps/mapStepData";
+import { StepType } from '../../maps/mapStepData';
 
 export interface ConsoleLogEventModel {
-    __typename: 'ConsoleLogEvent',
-    id: string,
+    __typename: 'ConsoleLogEvent';
+    id: string;
 }
 
 export interface StackTraceModel {
-    __typename: 'StackTrace',
-    id: string,
+    __typename: 'StackTrace';
+    id: string;
 }
 
 export interface HttpNetworkEventModel {
-    __typename: 'HttpNetworkEvent',
-    id: string,
+    __typename: 'HttpNetworkEvent';
+    id: string;
 }
 
 export interface StepEventModel extends StepType {
-    __typename: 'StepEvent',
-    _id: string,
-    at: Date,
-    until: Date,
+    __typename: 'StepEvent';
+    _id: string;
+    at: Date;
+    until: Date;
 }
 
 export interface ScenarioEventModel {
-    __typename: 'ScenarioEvent',
-    id: string,
+    __typename: 'ScenarioEvent';
+    id: string;
 }
 
 export interface TestExecutionSnapshotModel {
-    __typename: 'TestExecutionSnapshot',
-    at: Date,
-    dom: string,
-    testExecutionId: string
+    __typename: 'TestExecutionSnapshot';
+    at: Date;
+    dom: string;
+    testExecutionId: string;
 }
 
 export interface TestExecutionScreenshotModel {
-    __typename: 'TestExecutionScreenshot',
-    id: string,
-    testExecutionId: string
+    __typename: 'TestExecutionScreenshot';
+    id: string;
+    testExecutionId: string;
 }
 
 export interface CommandEventModel extends StepType {
-    __typename: 'CommandEvent',
-    id: string,
-    at: Date,
-    until: Date,
+    __typename: 'CommandEvent';
+    id: string;
+    at: Date;
+    until: Date;
 }
 
 export interface CommandChainEventModel {
-    __typename: 'CommandChainEvent',
-    id: string,
-    at: Date,
-    until: Date
-    commands: CommandEventModel[]
+    __typename: 'CommandChainEvent';
+    id: string;
+    at: Date;
+    until: Date;
+    commands: CommandEventModel[];
 }
 
 export interface CommandEventEdgeModel {
-    cursor: string,
-    node: CommandEventModel,
+    cursor: string;
+    node: CommandEventModel;
 }
 
 export interface CommandEventConnectionModel {
-    edges: CommandEventEdgeModel[],
-    totalCount: number,
-    hasPreviousPage: boolean,
-    hasNextPage: boolean,
+    edges: CommandEventEdgeModel[];
+    totalCount: number;
+    hasPreviousPage: boolean;
+    hasNextPage: boolean;
 }
 
 export interface StepEventEdgeModel {
-    cursor: string,
-    node: StepEventModel,
+    cursor: string;
+    node: StepEventModel;
 }
 
 export interface StepEventConnectionModel {
-    edges: StepEventEdgeModel[],
-    totalCount: number,
-    hasPreviousPage: boolean,
-    hasNextPage: boolean,
+    edges: StepEventEdgeModel[];
+    totalCount: number;
+    hasPreviousPage: boolean;
+    hasNextPage: boolean;
 }
 
-
 export interface CommandChainEventEdgeModel {
-    cursor: string,
-    node: CommandChainEventModel,
+    cursor: string;
+    node: CommandChainEventModel;
 }
 
 export interface CommandChainEventConnectionModel {
-    edges: CommandChainEventEdgeModel[],
-    totalCount: number,
-    hasPreviousPage: boolean,
-    hasNextPage: boolean,
+    edges: CommandChainEventEdgeModel[];
+    totalCount: number;
+    hasPreviousPage: boolean;
+    hasNextPage: boolean;
 }
 
 export type TestExecutionEvent =
     | ConsoleLogEventModel
-    | HttpNetworkEventModel 
+    | HttpNetworkEventModel
     | ScenarioEventModel
     | StepEventModel
     | CommandEventModel
     | TestExecutionScreenshotModel;
-    
+
 export interface TestRunModel {
-    __typename: 'TestRun',
-    id: string,
+    __typename: 'TestRun';
+    id: string;
 }
 
 export interface TestRunEdgeModel {
-    cursor: string,
-    node: TestRunModel,
+    cursor: string;
+    node: TestRunModel;
 }
 
 export interface TestRunConnectionModel {
-    edges: TestRunEdgeModel[],
-    totalCount: number,
-    hasPreviousPage: boolean,
-    hasNextPage: boolean,
+    edges: TestRunEdgeModel[];
+    totalCount: number;
+    hasPreviousPage: boolean;
+    hasNextPage: boolean;
 }
 
 export interface TestExecutionModel {
-    __typename: 'TestExecution',
-    id: string,
-    testRun: TestRunModel,
+    __typename: 'TestExecution';
+    id: string;
+    testRun: TestRunModel;
 }
 
 export interface TestExecutionEdgeModel {
-    cursor: string,
-    node: TestExecutionModel,
+    cursor: string;
+    node: TestExecutionModel;
 }
 
 export interface TestExecutionConnectionModel {
-    edges: TestExecutionEdgeModel[],
-    totalCount: number,
-    hasPreviousPage: boolean,
-    hasNextPage: boolean,
+    edges: TestExecutionEdgeModel[];
+    totalCount: number;
+    hasPreviousPage: boolean;
+    hasNextPage: boolean;
 }
 
 export interface TestExecutionEventEdgeModel {
-    cursor: string,
-    node: TestExecutionEvent,
+    cursor: string;
+    node: TestExecutionEvent;
 }
 
 export interface TestExecutionEventConnectionModel {
-    edges: TestExecutionEventEdgeModel[],
-    totalCount: number,
-    hasPreviousPage: boolean,
-    hasNextPage: boolean,
+    edges: TestExecutionEventEdgeModel[];
+    totalCount: number;
+    hasPreviousPage: boolean;
+    hasNextPage: boolean;
 }
 
 export interface GitHubRevisionModel {
@@ -157,7 +156,7 @@ export interface GitHubRevisionModel {
     hash: string;
     shortHash: string;
 }
-  
+
 export interface GitHubRepositoryOwner {
     __typename: 'GitHubRepositoryOwner';
     name: string;
@@ -171,21 +170,21 @@ export interface GitHubRepository {
     owner: GitHubRepositoryOwner;
     url: string;
 }
-  
+
 export interface GitHubBranch {
     __typename: 'GitHubBranch';
     repository: GitHubRepository;
     name: string;
     url: string;
 }
-  
+
 export interface GitHubActor {
     __typename: 'GitHubActor';
     name: string;
     email: string;
     user: GitHubUser;
 }
-  
+
 export interface GitHubUser {
     __typename: 'GitHubUser';
     avatar: string | null;
@@ -195,23 +194,23 @@ export interface GitHubUser {
 }
 
 export interface GitHubRevisionFileModel {
-    __typename: "GitHubRevisionFile"
+    __typename: 'GitHubRevisionFile';
     revision: GitHubRevisionModel;
     path: string;
 }
 
 export interface GitHubRevisionFileLineModel {
-    __typename: "GitHubRevisionFileLine"
+    __typename: 'GitHubRevisionFileLine';
     file: GitHubRevisionFileModel;
     line: number;
     url: string;
 }
 
 export interface GitHubRevisionFileLineColumnModel {
-    __typename: "GitHubRevisionFileLineColumn"
+    __typename: 'GitHubRevisionFileLineColumn';
     line: GitHubRevisionFileLineModel;
     column: number;
 }
 
 export type SourceCodeManagementRevisionFileLineColumnModel =
-    | GitHubRevisionFileLineColumnModel
+    GitHubRevisionFileLineColumnModel;

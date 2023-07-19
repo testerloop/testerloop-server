@@ -1,4 +1,5 @@
 import { ApolloServer } from '@apollo/server';
+
 import schema from './schema.js';
 import resolvers from './resolvers/index.js';
 import { Context } from './context.js';

@@ -3,15 +3,15 @@ import { z } from 'zod';
 const CodeFrameSchema = z.object({
     line: z.number(),
     column: z.number(),
-    relativeFile: z.string()
-})
+    relativeFile: z.string(),
+});
 
 const ErrorSchema = z.object({
     message: z.string(),
     name: z.string(),
     stack: z.string(),
-    codeFrame: CodeFrameSchema
-})
+    codeFrame: CodeFrameSchema,
+});
 
 const OptionsSchema = z.object({
     name: z.string(),
@@ -28,20 +28,23 @@ const OptionsSchema = z.object({
     ended: z.boolean(),
     snapshotID: z.optional(z.number()),
     group: z.optional(z.string()),
-    err: z.optional(ErrorSchema)
-  });
+    err: z.optional(ErrorSchema),
+});
 
 const StepSchema = z.object({
-    options: OptionsSchema
-})
+    options: OptionsSchema,
+});
 
-const StepsSchema = z.array(StepSchema)
+const StepsSchema = z.array(StepSchema);
 
 export type StepType = z.infer<typeof OptionsSchema>;
 
 const mapStepData = (steps: unknown) => {
-    const orderedSteps = StepsSchema.parse(steps).sort((a, b) =>
-        new Date(a.options.wallClockStartedAt).getTime() - new Date(b.options.wallClockStartedAt).getTime());
+    const orderedSteps = StepsSchema.parse(steps).sort(
+        (a, b) =>
+            new Date(a.options.wallClockStartedAt).getTime() -
+            new Date(b.options.wallClockStartedAt).getTime(),
+    );
 
     const filteredData = orderedSteps
         .filter((s) => s.options.state !== 'pending')
@@ -51,13 +54,13 @@ const mapStepData = (steps: unknown) => {
                 options.err.codeFrame.relativeFile =
                     options.err.codeFrame.relativeFile.replace(
                         /^ypress/,
-                        'cypress/'
+                        'cypress/',
                     );
             }
             return options;
         });
 
     return filteredData;
-}
+};
 
 export default mapStepData;

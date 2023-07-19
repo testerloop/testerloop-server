@@ -1,4 +1,5 @@
 import { Context } from '../context.js';
+
 import { ConsoleEvent } from './ConsoleEvent/index.js';
 import { NetworkEvent } from './NetworkEvent.js';
 import { TestExecution } from './TestExecution.js';
@@ -22,7 +23,7 @@ export const createDataSources = (context: Context) => ({
     commandEvent: new CommandEvent(context),
     snapshot: new Snapshot(context),
     scenarioEvent: new ScenarioEvent(context),
-    screenshot: new Screenshot(context)
+    screenshot: new Screenshot(context),
 });
 
 export type DataSources = ReturnType<typeof createDataSources>;

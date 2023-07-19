@@ -1,6 +1,6 @@
 import { HttpResponseBodyResolvers } from './types/generated.js';
 
-const resolvers: HttpResponseBodyResolvers  = {
+const resolvers: HttpResponseBodyResolvers = {
     chunks: ({ chunks }) => chunks,
     data: ({ data }) => data,
     encoding: ({ encoding }) => encoding,

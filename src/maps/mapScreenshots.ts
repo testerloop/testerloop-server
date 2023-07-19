@@ -1,6 +1,5 @@
 import path from 'path';
 
-
 const mapScreenshots = (rawScreenshots: string[], testExecutionId: string) => {
     return Object.fromEntries(
         rawScreenshots.map((fileName) => {
@@ -13,11 +12,11 @@ const mapScreenshots = (rawScreenshots: string[], testExecutionId: string) => {
                     fileName,
                     id,
                     at: new Date(parseInt(name)),
-                    testExecutionId
-                }
-            ]
-        })
+                    testExecutionId,
+                },
+            ];
+        }),
     );
-}
+};
 
 export default mapScreenshots;

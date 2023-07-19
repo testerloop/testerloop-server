@@ -1,43 +1,56 @@
-import { CommandEventStatus, GherkinStepKeyword } from '../resolvers/types/generated.js';
+import {
+    CommandEventStatus,
+    GherkinStepKeyword,
+} from '../resolvers/types/generated.js';
+
 import mapStepData, { StepType } from './mapStepData.js';
 
-const isGherkinStepKeyword = (stepName: string): stepName is GherkinStepKeyword => Object.values(GherkinStepKeyword as Record<string, string>).includes(stepName)
+const isGherkinStepKeyword = (
+    stepName: string,
+): stepName is GherkinStepKeyword =>
+    Object.values(GherkinStepKeyword as Record<string, string>).includes(
+        stepName,
+    );
 
-const mapSteps = (steps: unknown, testExecutionId: string, endedTestsAt: Date) => {
+const mapSteps = (
+    steps: unknown,
+    testExecutionId: string,
+    endedTestsAt: Date,
+) => {
     const filteredData = mapStepData(steps);
 
-    const mappedSteps: (StepType &
-        {
-            __typename: 'StepEvent',
-            _id: string,
-            name: GherkinStepKeyword,
-            at: Date,
-            until: Date,
-            status: CommandEventStatus,
-            commandChains:
-                {
-                    __typename: 'CommandChainEvent',
-                    id: string,
-                    at: Date,
-                    until: Date,
-                    commands: (StepType &
-                        {__typename: 'CommandEvent',
-                        at: Date,
-                        until: Date,
-                    })[]
-                }[]
-        }
-        )[] = [];
+    const mappedSteps: (StepType & {
+        __typename: 'StepEvent';
+        _id: string;
+        name: GherkinStepKeyword;
+        at: Date;
+        until: Date;
+        status: CommandEventStatus;
+        commandChains: {
+            __typename: 'CommandChainEvent';
+            id: string;
+            at: Date;
+            until: Date;
+            commands: (StepType & {
+                __typename: 'CommandEvent';
+                at: Date;
+                until: Date;
+            })[];
+        }[];
+    })[] = [];
 
     for (const [i, item] of filteredData.entries()) {
-        const until = i < filteredData.length - 1 ? new Date(filteredData[i+1].wallClockStartedAt) : endedTestsAt;
+        const until =
+            i < filteredData.length - 1
+                ? new Date(filteredData[i + 1].wallClockStartedAt)
+                : endedTestsAt;
         const at = new Date(item.wallClockStartedAt);
         const maybeGherkinName = item.name.trim().toUpperCase();
 
         if (item.groupStart && isGherkinStepKeyword(maybeGherkinName)) {
-            if(mappedSteps.length){
-                const lastStep = mappedSteps[mappedSteps.length - 1]
-                lastStep.until = at
+            if (mappedSteps.length) {
+                const lastStep = mappedSteps[mappedSteps.length - 1];
+                lastStep.until = at;
             }
 
             mappedSteps.push({
@@ -47,7 +60,10 @@ const mapSteps = (steps: unknown, testExecutionId: string, endedTestsAt: Date) =
                 name: maybeGherkinName,
                 at,
                 until,
-                status: item.state === 'failed'? CommandEventStatus.Failed : CommandEventStatus.Success,
+                status:
+                    item.state === 'failed'
+                        ? CommandEventStatus.Failed
+                        : CommandEventStatus.Success,
                 commandChains: [],
             });
             continue;
@@ -60,12 +76,12 @@ const mapSteps = (steps: unknown, testExecutionId: string, endedTestsAt: Date) =
             at,
             until,
             ...item,
-            id: `${testExecutionId}/commandEvent/${item.id}`
+            id: `${testExecutionId}/commandEvent/${item.id}`,
         };
-        if(command.state === 'failed'){
+        if (command.state === 'failed') {
             step.status = CommandEventStatus.Failed;
         }
-        
+
         if (step) {
             step.commandChains.push({
                 __typename: 'CommandChainEvent',
@@ -77,14 +93,9 @@ const mapSteps = (steps: unknown, testExecutionId: string, endedTestsAt: Date) =
         }
     }
 
-    mappedSteps[mappedSteps.length - 1].until = endedTestsAt
+    mappedSteps[mappedSteps.length - 1].until = endedTestsAt;
 
-    return Object.fromEntries(
-        mappedSteps.map((obj) => [
-            obj._id,
-            obj
-        ])
-      );
-}
+    return Object.fromEntries(mappedSteps.map((obj) => [obj._id, obj]));
+};
 
 export default mapSteps;
