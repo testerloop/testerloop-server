@@ -1,8 +1,11 @@
 # Testerloop Server
 
-This is the backend repository for Testerloop. The frontend can be found [here](https://github.com/testerloop/testerloop-frontend). The backend is built using Node.js, TypeScript, and Apollo Server. It utilizes AWS S3 for storage and requires an AWS account and configured S3 buckets.
+This is the backend repository for Testerloop. The frontend can be found [here](https://github.com/testerloop/testerloop-frontend). The backend is built using Node.js, TypeScript, and Apollo Server. It utilizes AWS S3 for storage and requires an AWS account and configured S3 buckets. It also uses [Prisma](https://www.prisma.io/docs) to interact with a postgres database. 
 
-Testerloop server also uses [Prisma](https://www.prisma.io/docs) to interact with a postgres database. 
+This repo can be run locally for local development (instructions are included below), but it is not deployed as a standalone service. It is used as an NPM package by the [Testerloop App](https://github.com/testerloop/testerloop-app), which is deployed as our [staging site](www.otf.overloop.io) in an ECS cluster on AWS Fargate.
+
+New versions of the backend package are published to NPM using [GitHub Actions](https://github.com/testerloop/testerloop-app/blob/master/.github/workflows/release-package.yml) when new releases are created on GitHub.
+
 
 ## Prerequisites
 
