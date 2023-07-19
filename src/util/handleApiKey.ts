@@ -9,7 +9,7 @@ async function handleApiKey(apiKey: string) {
 
     if (!apiKeyRecord.isEnabled) {
         throw new Error(
-            'Your API key is not enabled. Please renew your subscription or contact Testerloop support.'
+            'Your API key is not enabled. Please renew your subscription or contact Testerloop support.',
         );
     }
 
