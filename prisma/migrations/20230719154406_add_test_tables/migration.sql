@@ -15,7 +15,7 @@ CREATE TABLE "TestRun" (
 
 -- CreateTable
 CREATE TABLE "TestExecution" (
-    "id" TEXT NOT NULL,
+    "id" UUID NOT NULL,
     "name" TEXT NOT NULL,
     "result" "TestStatus" NOT NULL,
     "at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
