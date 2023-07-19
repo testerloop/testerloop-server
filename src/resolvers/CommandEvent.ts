@@ -1,5 +1,9 @@
 import { encodeId } from '../util/id.js';
-import { CommandEventResolvers, CommandEventStatus } from './types/generated.js';
+
+import {
+    CommandEventResolvers,
+    CommandEventStatus,
+} from './types/generated.js';
 
 const resolvers: CommandEventResolvers = {
     async id({ id }) {
@@ -9,9 +13,11 @@ const resolvers: CommandEventResolvers = {
     until: ({ until }) => until,
     name: ({ name }) => name,
     description: ({ message }) => message,
-    async previousSnapshot ({ id, at, snapshotID }, _args, { dataSources }) {
+    async previousSnapshot({ id, at, snapshotID }, _args, { dataSources }) {
         const [runId, requestId, _] = id.split('/');
-        const snapshot = await dataSources.snapshot.getById(`${runId}/${requestId}/snapshot/${snapshotID}`);
+        const snapshot = await dataSources.snapshot.getById(
+            `${runId}/${requestId}/snapshot/${snapshotID}`,
+        );
         if (!snapshot) {
             return null;
         }
@@ -19,40 +25,42 @@ const resolvers: CommandEventResolvers = {
             __typename: 'TestExecutionSnapshot' as const,
             testExecutionId: `${runId}/${requestId}`,
             at,
-            dom: snapshot.beforeBody
-        }
+            dom: snapshot.beforeBody,
+        };
     },
-    async nextSnapshot ({ id, until, snapshotID }, _args, { dataSources }) {
+    async nextSnapshot({ id, until, snapshotID }, _args, { dataSources }) {
         const [runId, requestId, _] = id.split('/');
-        const snapshot = await dataSources.snapshot.getById(`${runId}/${requestId}/snapshot/${snapshotID}`);
+        const snapshot = await dataSources.snapshot.getById(
+            `${runId}/${requestId}/snapshot/${snapshotID}`,
+        );
         if (!snapshot) {
             return null;
         }
-        return { 
+        return {
             __typename: 'TestExecutionSnapshot' as const,
             testExecutionId: `${runId}/${requestId}`,
             at: until,
-            dom: snapshot.afterBody
-        }
+            dom: snapshot.afterBody,
+        };
     },
     status({ state }) {
-        switch(state){
+        switch (state) {
             case 'failed':
-                return CommandEventStatus.Failed
+                return CommandEventStatus.Failed;
             case 'passed':
-                return CommandEventStatus.Success
+                return CommandEventStatus.Success;
             default:
-                throw new Error(`State ${state} is not a valid state`)
+                throw new Error(`State ${state} is not a valid state`);
         }
     },
     async error({ id, err }, _args, { dataSources }) {
-        if(!err){
+        if (!err) {
             return null;
         }
 
         const { codeFrame } = err;
         const { relativeFile, line, column } = codeFrame;
-        
+
         const [runId, _] = id.split('/');
 
         const cicd = await dataSources.testCodeRevision.getById(runId);
@@ -78,7 +86,7 @@ const resolvers: CommandEventResolvers = {
                             url: cicd.url,
                             hash: cicd.hash,
                             shortHash: cicd.shortHash,
-                        }
+                        },
                     },
                     url: [
                         cicd.serverUrl,
@@ -88,11 +96,11 @@ const resolvers: CommandEventResolvers = {
                         relativeFile,
                         `?#L${line}`,
                     ].join('/'),
-                    line
+                    line,
                 },
                 column,
-            }
-        }
+            },
+        };
     },
     async testExecution({ id }, _args) {
         const [runId, requestId, _] = id.split('/');
@@ -103,9 +111,9 @@ const resolvers: CommandEventResolvers = {
             testRun: {
                 __typename: 'TestRun',
                 id: runId,
-            }
+            },
         };
     },
-}
+};
 
 export default resolvers;

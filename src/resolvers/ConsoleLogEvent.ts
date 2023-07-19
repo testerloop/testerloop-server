@@ -1,6 +1,10 @@
 import { assertNonNull } from '../util/assertNonNull.js';
-import { ConsoleLogEventResolvers, ConsoleLogLevel } from './types/generated.js';
 import { encodeId } from '../util/id.js';
+
+import {
+    ConsoleLogEventResolvers,
+    ConsoleLogLevel,
+} from './types/generated.js';
 const resolvers: ConsoleLogEventResolvers = {
     id({ id }) {
         return encodeId('ConsoleLogEvent', id);
@@ -46,14 +50,13 @@ const resolvers: ConsoleLogEventResolvers = {
         return messages.join(' ');
     },
 
-    async stackTrace({ id }, _args, { dataSources }) {
-        const event = assertNonNull(await dataSources.consoleEvent.getById(id));
+    async stackTrace({ id }, _args) {
         return {
             __typename: 'StackTrace',
             id: id,
         };
     },
-    async testExecution({ id }, _args, { dataSources }) {
+    async testExecution({ id }, _args) {
         const [runId, testExecutionId] = id.split('/');
         return {
             __typename: 'TestExecution',

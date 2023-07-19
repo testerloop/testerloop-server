@@ -4,10 +4,10 @@ interface TestExecutionEvent implements Event {
 }
 
 """
-    Represents the connection to TestExecutionEvents
+Represents the connection to TestExecutionEvents
 
-    See:
-    - https://relay.dev/graphql/connections.htm#sec-Connection-Types
+See:
+- https://relay.dev/graphql/connections.htm#sec-Connection-Types
 """
 type TestExecutionEventConnection {
     totalCount: Int!
@@ -16,10 +16,10 @@ type TestExecutionEventConnection {
 }
 
 """
-    Represents and Edge to the TestExecution Node.
+Represents and Edge to the TestExecution Node.
 
-    See:
-    - https://relay.dev/graphql/connections.htm#sec-Edge-Types
+See:
+- https://relay.dev/graphql/connections.htm#sec-Edge-Types
 """
 type TestExecutionEventEdge {
     cursor: Cursor!

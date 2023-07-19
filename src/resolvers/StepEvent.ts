@@ -1,6 +1,7 @@
 import getPaginatedData from '../util/getPaginatedData.js';
 import { encodeId } from '../util/id.js';
-import { GherkinStepKeyword, StepEventResolvers } from './types/generated.js';
+
+import { StepEventResolvers } from './types/generated.js';
 
 const resolvers: StepEventResolvers = {
     id({ _id }) {
@@ -24,7 +25,9 @@ const resolvers: StepEventResolvers = {
     },
     async previousSnapshot({ _id, at, snapshotID }, _args, { dataSources }) {
         const [runId, requestId, _] = _id.split('/');
-        const snapshot = await dataSources.snapshot.getById(`${runId}/${requestId}/snapshot/${snapshotID}`);
+        const snapshot = await dataSources.snapshot.getById(
+            `${runId}/${requestId}/snapshot/${snapshotID}`,
+        );
 
         if (!snapshot) {
             return null;
@@ -40,7 +43,9 @@ const resolvers: StepEventResolvers = {
 
     async nextSnapshot({ _id, until, snapshotID }, _args, { dataSources }) {
         const [runId, requestId, _] = _id.split('/');
-        const snapshot = await dataSources.snapshot.getById(`${runId}/${requestId}/snapshot/${snapshotID}`);
+        const snapshot = await dataSources.snapshot.getById(
+            `${runId}/${requestId}/snapshot/${snapshotID}`,
+        );
 
         if (!snapshot) {
             return null;

@@ -1,18 +1,18 @@
 enum GherkinStepKeyword {
-  GIVEN
-  WHEN
-  THEN
-  AND
-  BUT
-  BEFORE
-  AFTER
-  STEP
+    GIVEN
+    WHEN
+    THEN
+    AND
+    BUT
+    BEFORE
+    AFTER
+    STEP
 }
 
 type StepDefinition {
-  description: String!
-  keyword: GherkinStepKeyword!
+    description: String!
+    keyword: GherkinStepKeyword!
 
-  # Needs SourceCode stuff from Summary Panel Schema.
-  # source: SourceCodeManagementRevisionFileLine!
+    # Needs SourceCode stuff from Summary Panel Schema.
+    # source: SourceCodeManagementRevisionFileLine!
 }
