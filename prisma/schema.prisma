@@ -10,20 +10,51 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum RunStatus {
+  RUNNING
+  COMPLETED
+  QUEUED
+}
+
+enum TestStatus {
+  PASSED
+  FAILED
+  PENDING
+}
+
 model Organisation {
-  id           String   @id @default(uuid()) @db.Uuid
+  id           String    @id @default(uuid()) @db.Uuid
   name         String
-  slug         String   @unique
+  slug         String    @unique
   s3CustomPath String
   s3BucketName String
   s3Region     String
+  testRuns     TestRun[]
   apiKeys      ApiKey[]
 }
 
 model ApiKey {
-  id             String          @id @default(uuid()) @db.Uuid
+  id             String       @id @default(uuid()) @db.Uuid
   apiKey         String
   isEnabled      Boolean
   organisationId String       @db.Uuid
   organisation   Organisation @relation(fields: [organisationId], references: [id], onDelete: Cascade)
+}
+
+model TestRun {
+  id             String          @id @default(uuid()) @db.Uuid
+  testExecutions TestExecution[]
+  status         RunStatus
+  organisationId String          @db.Uuid
+  organisation   Organisation    @relation(fields: [organisationId], references: [id], onDelete: Cascade)
+}
+
+model TestExecution {
+  id        String     @id @default(uuid()) @db.Uuid
+  name      String
+  result    TestStatus
+  at        DateTime   @default(now())
+  until     DateTime?
+  testRunId String     @db.Uuid
+  testRun   TestRun    @relation(fields: [testRunId], references: [id])
 }
