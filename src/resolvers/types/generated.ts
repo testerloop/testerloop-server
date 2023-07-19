@@ -564,8 +564,8 @@ export enum RunStatus {
 }
 
 export type S3Config = {
-  readonly bucket?: InputMaybe<Scalars['String']>;
-  readonly customerPath?: InputMaybe<Scalars['String']>;
+  readonly bucket: Scalars['String'];
+  readonly customerPath: Scalars['String'];
 };
 
 export type ScenarioDefinition = {

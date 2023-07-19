@@ -6,9 +6,11 @@ import {
     HeadObjectCommand,
 } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
-import config from './config.js';
-import LRUCache from 'lru-cache';
+import { LRUCache } from 'lru-cache';
 import { createPresignedPost } from '@aws-sdk/s3-presigned-post';
+import type { Conditions } from '@aws-sdk/s3-presigned-post/dist-types/types.js';
+
+import config from './config.js';
 
 class S3Service {
     private s3: S3Client;
@@ -28,7 +30,7 @@ class S3Service {
 
                 const params = { Bucket: bucketName, Key: key };
                 const response = await this.s3.send(
-                    new GetObjectCommand(params)
+                    new GetObjectCommand(params),
                 );
                 const dataString = await response?.Body?.transformToString();
                 const contents = dataString ? JSON.parse(dataString) : null;
@@ -53,8 +55,8 @@ class S3Service {
     async getPresignedPost(
         bucketName: string,
         key: string,
-        conditions: any[],
-        expires: number = 3600
+        conditions: Conditions[],
+        expires: number = 3600,
     ) {
         const { url, fields: presignedFields } = await createPresignedPost(
             this.s3,
@@ -63,7 +65,7 @@ class S3Service {
                 Key: key,
                 Conditions: conditions,
                 Expires: expires,
-            }
+            },
         );
 
         return { url, fields: presignedFields };
@@ -101,7 +103,7 @@ class S3Service {
     async getSignedUrl(
         bucketName: string,
         key: string,
-        expiresIn = config.EXPIRES_IN
+        expiresIn = config.EXPIRES_IN,
     ) {
         const params = { Bucket: bucketName, Key: key };
 

@@ -1,4 +1,4 @@
-import { GitHubRevisionFileLineResolvers } from "./types/generated";
+import { GitHubRevisionFileLineResolvers } from './types/generated';
 
 const resolvers: GitHubRevisionFileLineResolvers = {
     url: ({ url }) => url,

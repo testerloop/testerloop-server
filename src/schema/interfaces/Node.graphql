@@ -1,7 +1,7 @@
 """
-    Represents a Node according to the Global Object Identification spec.
+Represents a Node according to the Global Object Identification spec.
 
-    See https://graphql.org/learn/global-object-identification/
+See https://graphql.org/learn/global-object-identification/
 """
 interface Node {
     id: ID!

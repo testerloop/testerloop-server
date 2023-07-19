@@ -1,4 +1,4 @@
-import { GraphQLScalarType } from "graphql";
+import { GraphQLScalarType } from 'graphql';
 
 const cursor = new GraphQLScalarType({
     name: 'Cursor',
@@ -13,7 +13,7 @@ const cursor = new GraphQLScalarType({
             throw new Error('Failed to parse Cursor.');
         }
         return value;
-    }
+    },
 });
 
 export default cursor;

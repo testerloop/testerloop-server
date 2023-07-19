@@ -1,27 +1,27 @@
 interface HttpBody {
-  size: Int!
-  mimeType: String!
-  data: String!
-  encoding: String
+    size: Int!
+    mimeType: String!
+    data: String!
+    encoding: String
 }
 
 type HttpRequestBody implements HttpBody {
-  size: Int!
-  mimeType: String!
-  data: String!
-  encoding: String
+    size: Int!
+    mimeType: String!
+    data: String!
+    encoding: String
 }
 
 type HttpResponseBody implements HttpBody {
-  size: Int!
-  mimeType: String!
-  data: String!
-  encoding: String
-  chunks: [HttpResponseBodyChunk!]!
+    size: Int!
+    mimeType: String!
+    data: String!
+    encoding: String
+    chunks: [HttpResponseBodyChunk!]!
 }
 
 type HttpResponseBodyChunk implements Event & InstantaneousEvent {
-  at: DateTime!
-  size: Int!
-  data: String!
+    at: DateTime!
+    size: Int!
+    data: String!
 }

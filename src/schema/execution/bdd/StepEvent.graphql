@@ -1,22 +1,22 @@
 type StepEvent implements Node & Event & IntervalEvent & TestExecutionEvent & SnapshotEvent {
-  id: ID!
-  at: DateTime!
-  until: DateTime!
-  commandChains: CommandChainEventConnection!
-  definition: StepDefinition!
-  status: CommandEventStatus!
-  previousSnapshot: TestExecutionSnapshot
-  nextSnapshot: TestExecutionSnapshot
-  testExecution: TestExecution!
+    id: ID!
+    at: DateTime!
+    until: DateTime!
+    commandChains: CommandChainEventConnection!
+    definition: StepDefinition!
+    status: CommandEventStatus!
+    previousSnapshot: TestExecutionSnapshot
+    nextSnapshot: TestExecutionSnapshot
+    testExecution: TestExecution!
 }
 
 type StepEventConnection {
-  totalCount: Int!
-  edges: [StepEventEdge!]!
-  pageInfo: PageInfo!
+    totalCount: Int!
+    edges: [StepEventEdge!]!
+    pageInfo: PageInfo!
 }
 
 type StepEventEdge {
-  cursor: Cursor!
-  node: StepEvent!
+    cursor: Cursor!
+    node: StepEvent!
 }

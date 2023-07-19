@@ -1,23 +1,23 @@
 interface SourceCodeManagementRepository {
-  _unused: Boolean! # Remove when this type gets more fields
+    _unused: Boolean! # Remove when this type gets more fields
 }
 
 interface SourceCodeManagementRevision {
-  repository: SourceCodeManagementRepository!
+    repository: SourceCodeManagementRepository!
 }
 
 interface SourceCodeManagementRevisionFile {
-  revision: SourceCodeManagementRevision!
-  path: String!
+    revision: SourceCodeManagementRevision!
+    path: String!
 }
 
 interface SourceCodeManagementRevisionFileLine {
-  file: SourceCodeManagementRevisionFile!
-  line: Int!
-  url: URL!
+    file: SourceCodeManagementRevisionFile!
+    line: Int!
+    url: URL!
 }
 
 interface SourceCodeManagementRevisionFileLineColumn {
-  line: SourceCodeManagementRevisionFileLine!
-  column: Int!
+    line: SourceCodeManagementRevisionFileLine!
+    column: Int!
 }

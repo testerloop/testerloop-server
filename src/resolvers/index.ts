@@ -1,5 +1,7 @@
 import { DateTimeScalar } from 'graphql-date-scalars';
+
 import { edgeResolvers } from '../util/connection.js';
+
 import { Resolvers } from './types/generated.js';
 import Cursor from './scalars/Cursor.js';
 import ConsoleLogEvent from './ConsoleLogEvent.js';
@@ -59,7 +61,7 @@ import TestRunStatus from './TestRunStatus.js';
 
 import TestExecutionCreationResponse from './TestExecutionCreationResponse.js';
 const interfaceResolvers = {
-    __resolveType<T extends String>(parent: { __typename: T }): T {
+    __resolveType<T extends string>(parent: { __typename: T }): T {
         return parent.__typename;
     },
 };
