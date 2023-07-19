@@ -109,7 +109,6 @@ const resolvers: QueryResolvers = {
             runId,
             {},
         );
-        console.log('executions ', testExecutions);
 
         const testExecutionStatuses = await Promise.all(
             testExecutions.edges.map(async (testExecution) => {
@@ -118,27 +117,19 @@ const resolvers: QueryResolvers = {
                     testExecution.node.id,
                     dataSources,
                 );
+                const {
+                    runStatus = RunStatus.Running,
+                    testStatus = TestStatus.Pending,
+                    testName = '',
+                } = testResults ? getRunStatusAndOutcome(testResults) : {};
 
-                if (testResults) {
-                    const { runStatus, testStatus, testName } =
-                        getRunStatusAndOutcome(testResults);
-
-                    return {
-                        __typename: 'TestExecutionStatus' as const,
-                        runStatus,
-                        testStatus,
-                        name: testName,
-                        id: testExecution.node.id,
-                    };
-                } else {
-                    return {
-                        __typename: 'TestExecutionStatus' as const,
-                        runStatus: RunStatus.Running,
-                        testStatus: TestStatus.Pending,
-                        name: '',
-                        id: testExecution.node.id,
-                    };
-                }
+                return {
+                    __typename: 'TestExecutionStatus' as const,
+                    runStatus,
+                    testStatus,
+                    name: testName,
+                    id: testExecution.node.id,
+                };
             }),
         );
 
@@ -152,7 +143,7 @@ const resolvers: QueryResolvers = {
                 : RunStatus.Running;
 
         return {
-            __typename: 'TestRunStatus',
+            __typename: 'TestRunStatus' as const,
             status: runStatus,
             testExecutions: testExecutionStatuses,
         };
