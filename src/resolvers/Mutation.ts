@@ -1,18 +1,22 @@
 import { v4 as uuidv4, v5 as uuidv5 } from 'uuid';
-import { MutationResolvers } from './types/generated';
-import { UploadInfo, TestExecutionCreationResponse } from './types/generated';
+
+import {
+    MutationResolvers,
+    UploadInfo,
+    TestExecutionCreationResponse,
+} from './types/generated';
 
 const resolvers: MutationResolvers = {
     createTestRun: async (
         _,
         { runEnvironmentDetails, s3Config },
-        { dataSources, auth, repository }
+        { dataSources, auth, repository },
     ): Promise<UploadInfo> => {
         const runID = uuidv4();
         console.log('Creating run with ID: ', runID);
 
         const { s3BucketName, customerPath } = repository.getBucketAndPath(
-            auth || s3Config
+            auth || s3Config,
         );
 
         const s3RunPath = `${s3BucketName}/${customerPath}/${runID}`;
@@ -22,13 +26,13 @@ const resolvers: MutationResolvers = {
             s3BucketName,
             customerPath,
             runID,
-            runEnvironmentDetails
+            runEnvironmentDetails,
         );
         console.log('Creating presigned POST url for upload to S3');
         const uploadInfo = await dataSources.createTestRun.getUploadLink(
             s3BucketName,
             customerPath,
-            runID
+            runID,
         );
 
         return {
@@ -48,15 +52,15 @@ const resolvers: MutationResolvers = {
     createTestExecution: async (
         _,
         { testName, featureFile, s3Config },
-        { auth, repository }
+        { auth, repository },
     ): Promise<TestExecutionCreationResponse> => {
         const organisationIdentifier = repository.getOrganisationIdentifier(
-            auth || s3Config || undefined
+            auth || s3Config || undefined,
         );
 
         if (!organisationIdentifier) {
             throw new Error(
-                'Failed to verify organisation details. Please provide API key or s3Config'
+                'Failed to verify organisation details. Please provide API key or s3Config',
             );
         }
 

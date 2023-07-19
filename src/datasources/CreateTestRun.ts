@@ -1,4 +1,6 @@
 import DataLoader from 'dataloader';
+import { Conditions } from '@aws-sdk/s3-presigned-post/dist-types/types.js';
+
 import { Context } from '../context.js';
 import S3Service from '../S3Service.js';
 
@@ -18,11 +20,13 @@ export class CreateTestRun {
                 const bucketName = s3BucketName;
                 const keyPrefix = `${customerPath}/${runID}/`;
                 const key = `${keyPrefix}${'${filename}'}`;
-                const conditions = [['starts-with', '$key', keyPrefix]];
+                const conditions = [
+                    ['starts-with', '$key', keyPrefix],
+                ] as Conditions[];
                 const { url, fields } = await S3Service.getPresignedPost(
                     bucketName,
                     key,
-                    conditions
+                    conditions,
                 );
                 const formattedFields = Object.entries(fields).map(
                     ([key, value]) => {
@@ -30,7 +34,7 @@ export class CreateTestRun {
                             key,
                             value: String(value),
                         };
-                    }
+                    },
                 );
 
                 return {
@@ -38,14 +42,14 @@ export class CreateTestRun {
                     url,
                     fields: formattedFields,
                 };
-            })
+            }),
         );
     });
 
     async getUploadLink(
         s3BucketName: string,
         customerPath: string,
-        runID: string
+        runID: string,
     ) {
         return this.createTestRunDataLoader.load({
             s3BucketName,
@@ -57,7 +61,7 @@ export class CreateTestRun {
         s3BucketName: string,
         customerPath: string,
         runID: string,
-        cicdJson: string
+        cicdJson: string,
     ) {
         const key = `${customerPath}/${runID}/logs/cicd.json`;
         await S3Service.putObject(s3BucketName, key, cicdJson);

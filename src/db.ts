@@ -1,4 +1,5 @@
 import { PrismaClient, Organisation } from '@prisma/client';
+
 import {
     PrismaInterface,
     SlugOptionalOrganisationCreateInput,
@@ -10,9 +11,9 @@ export default class PrismaDB implements PrismaInterface {
     prisma: PrismaClient = new PrismaClient();
 
     __construct() {
-      if (!config.DB_ENABLED) {
-        throw new Error("DB not enabled");
-      }
+        if (!config.DB_ENABLED) {
+            throw new Error('DB not enabled');
+        }
     }
 
     async createWithSlug(data: SlugOptionalOrganisationCreateInput) {
@@ -36,7 +37,7 @@ export default class PrismaDB implements PrismaInterface {
 
         if (!apiKeyResult.isEnabled) {
             throw new Error(
-                'Your API key is not enabled. Please renew your subscription or contact Testerloop support.'
+                'Your API key is not enabled. Please renew your subscription or contact Testerloop support.',
             );
         }
         return apiKeyResult.organisation;

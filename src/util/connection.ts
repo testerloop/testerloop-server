@@ -2,4 +2,4 @@
 export const edgeResolvers = {
     node: <T>(parent: { node: T }): T => parent.node,
     cursor: (parent: { cursor: string }) => parent.cursor,
-}
+};

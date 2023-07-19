@@ -1,4 +1,3 @@
-import { AwsCredentialIdentity } from '@aws-sdk/types';
 import { z } from 'zod';
 
 export const envFormat = z.object({
@@ -10,12 +9,12 @@ export const envFormat = z.object({
     AWS_SECRET_ACCESS_KEY: z.string().optional(),
     AWS_BUCKET_NAME: z.string(),
     AWS_BUCKET_PATH: z.string().optional(),
-    EXPIRES_IN: z.coerce.number()
+    EXPIRES_IN: z.coerce.number(),
 });
 
 const config = envFormat.parse(process.env);
 
-let awsCredentials: AwsCredentialIdentity | undefined = undefined;
+let awsCredentials;
 
 if (config.AWS_ACCESS_KEY_ID && config.AWS_SECRET_ACCESS_KEY) {
     awsCredentials = {
@@ -26,7 +25,9 @@ if (config.AWS_ACCESS_KEY_ID && config.AWS_SECRET_ACCESS_KEY) {
 }
 
 if (config.AWS_BUCKET_PATH?.length && !config.AWS_BUCKET_PATH.endsWith('/')) {
-    throw new Error('Configuration error: AWS_BUCKET_PATH must end with "/" if specified');
+    throw new Error(
+        'Configuration error: AWS_BUCKET_PATH must end with "/" if specified',
+    );
 }
 
 export default {

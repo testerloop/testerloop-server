@@ -1,6 +1,8 @@
 import { IncomingHttpHeaders } from 'http';
-import { DataSources, createDataSources } from './datasources/index.js';
+
 import { Organisation } from '@prisma/client';
+
+import { DataSources, createDataSources } from './datasources/index.js';
 import config from './config.js';
 import repository from './repository/repository.js';
 
@@ -44,7 +46,9 @@ export const createContext = async ({
     req: Request;
 }): Promise<Context> => {
     let dataSources: DataSources | null = null;
-    const apiKey = req.headers['x-api-key'] ? (req.headers['x-api-key'] as string) : null;
+    const apiKey = req.headers['x-api-key']
+        ? (req.headers['x-api-key'] as string)
+        : null;
     console.log(apiKey);
     const auth = await getAuth(apiKey);
 
@@ -52,7 +56,7 @@ export const createContext = async ({
         get dataSources() {
             if (dataSources === null)
                 throw new Error(
-                    'DataSources are not available during DataSource initialization.'
+                    'DataSources are not available during DataSource initialization.',
                 );
             return dataSources;
         },

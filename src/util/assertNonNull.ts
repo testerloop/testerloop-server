@@ -3,4 +3,4 @@ export const assertNonNull = <T>(input: T | null): T => {
         throw new Error('Expected value to be non-null.');
     }
     return input;
-}
+};
