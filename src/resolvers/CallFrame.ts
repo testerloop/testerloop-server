@@ -1,4 +1,4 @@
-import { CallFrameResolvers } from './types/generated'
+import { CallFrameResolvers } from './types/generated';
 
 const resolvers: CallFrameResolvers = {
     id: ({ id }) => id,
@@ -8,4 +8,4 @@ const resolvers: CallFrameResolvers = {
     columnNumber: (parent) => parent.columnNumber,
 };
 
-export default resolvers
+export default resolvers;

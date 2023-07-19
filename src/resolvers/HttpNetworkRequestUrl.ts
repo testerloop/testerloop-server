@@ -1,7 +1,8 @@
 import { HttpNetworkRequestUrlResolvers } from './types/generated.js';
 
 const resolvers: HttpNetworkRequestUrlResolvers = {
-    nonKeyValueQueryString: ({ nonKeyValueQueryString }) => nonKeyValueQueryString,
+    nonKeyValueQueryString: ({ nonKeyValueQueryString }) =>
+        nonKeyValueQueryString,
     url: ({ url }) => url,
 };
 

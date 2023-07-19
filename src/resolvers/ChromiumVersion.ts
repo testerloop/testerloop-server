@@ -4,7 +4,7 @@ const resolvers: ChromiumVersionResolvers = {
     major: ({ major }) => major,
     minor: ({ minor }) => minor,
     patch: ({ patch }) => patch,
-    build: ({ build }) => build
+    build: ({ build }) => build,
 };
 
 export default resolvers;

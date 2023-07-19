@@ -1,7 +1,7 @@
 type ScenarioEvent implements Event & IntervalEvent & TestExecutionEvent {
-  at: DateTime!
-  until: DateTime!
-  definition: ScenarioDefinition!
-  steps: StepEventConnection!
-  testExecution: TestExecution!
+    at: DateTime!
+    until: DateTime!
+    definition: ScenarioDefinition!
+    steps: StepEventConnection!
+    testExecution: TestExecution!
 }

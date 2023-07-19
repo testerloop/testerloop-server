@@ -1,8 +1,8 @@
 """
-    Represents the severity of the log, as according to the specification:
+Represents the severity of the log, as according to the specification:
 
-    See:
-    - https://console.spec.whatwg.org/#loglevel-severity
+See:
+- https://console.spec.whatwg.org/#loglevel-severity
 """
 enum ConsoleLogLevel {
     LOG

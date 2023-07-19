@@ -1,9 +1,10 @@
 import { assertNonNull } from '../util/assertNonNull.js';
 import { encodeId } from '../util/id.js';
+
 import { HttpNetworkEventResolvers } from './types/generated';
 
 const resolvers: HttpNetworkEventResolvers = {
-    id({id}) {
+    id({ id }) {
         return encodeId('NetworkEvent', id);
     },
     async at({ id }, _args, { dataSources }) {
@@ -34,7 +35,7 @@ const resolvers: HttpNetworkEventResolvers = {
         const event = assertNonNull(await dataSources.networkEvent.getById(id));
         return event.timings;
     },
-    async testExecution({ id }, _args, { dataSources }) {
+    async testExecution({ id }, _args) {
         const [runId, testExecutionId] = id.split('/');
         return {
             __typename: 'TestExecution',
@@ -42,9 +43,9 @@ const resolvers: HttpNetworkEventResolvers = {
             testRun: {
                 __typename: 'TestRun',
                 id: runId,
-            }
+            },
         };
     },
-}
+};
 
 export default resolvers;

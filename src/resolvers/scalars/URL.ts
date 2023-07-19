@@ -1,4 +1,4 @@
-import { GraphQLScalarType } from "graphql";
+import { GraphQLScalarType } from 'graphql';
 
 const URL = new GraphQLScalarType({
     name: 'URL',
@@ -13,7 +13,7 @@ const URL = new GraphQLScalarType({
             throw new Error('Failed to parse URL.');
         }
         return value;
-    }
+    },
 });
 
 export default URL;
