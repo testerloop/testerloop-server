@@ -14,6 +14,6 @@ const resolvers: CommandChainEventConnectionResolvers = {
             endCursor,
         };
     },
-}
+};
 
 export default resolvers;

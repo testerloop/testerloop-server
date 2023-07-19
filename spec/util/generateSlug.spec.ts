@@ -4,7 +4,7 @@ import { prismaMock } from 'spec/__mocks__/singleton';
 
 describe('generateSlug util', () => {
     const mockOrganisation: Organisation = {
-        id: 1,
+        id: 'uuid',
         name: 'Test String',
         slug: 'test-string',
         s3CustomPath: 'test-path',

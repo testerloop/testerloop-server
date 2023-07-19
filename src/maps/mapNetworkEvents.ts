@@ -17,8 +17,8 @@ const NameValueSchema = z.object({
 
 const HttpNetworkRequestPostDataSchema = z.object({
     mimeType: z.string(),
-    text: z.nullable(z.string())
-})
+    text: z.nullable(z.string()),
+});
 
 const HttpNetworkRequestSchema = z.object({
     method: z.string(),
@@ -28,8 +28,8 @@ const HttpNetworkRequestSchema = z.object({
     headers: z.array(NameValueSchema),
     httpVersion: z.string(),
     bodySize: z.number(),
-    postData: z.optional(HttpNetworkRequestPostDataSchema)
-  });
+    postData: z.optional(HttpNetworkRequestPostDataSchema),
+});
 
 const HttpNetworkResponseContentSchema = z.object({
     size: z.number(),
@@ -46,9 +46,8 @@ const HttpNetworkResponseSchema = z.object({
     headers: z.array(NameValueSchema),
     httpVersion: z.string(),
     _transferSize: z.number(),
-    bodySize: z.number()
-  });
-
+    bodySize: z.number(),
+});
 
 const HttpNetworkTimingsSchema = z.object({
     _queued: z.optional(z.number()),
@@ -69,15 +68,15 @@ const HttpNetworkEventSchema = z.object({
     response: HttpNetworkResponseSchema,
     time: z.number(),
     timings: HttpNetworkTimingsSchema,
-  });
+});
 
 type HttpNetworkEventType = z.infer<typeof HttpNetworkEventSchema>;
 
 const NetworkDataSchema = z.object({
     log: z.object({
-      entries: z.array(HttpNetworkEventSchema),
+        entries: z.array(HttpNetworkEventSchema),
     }),
-  });
+});
 
 const convertToNetworkEventTiming = (
     startedTimestamp: number,
@@ -89,7 +88,7 @@ const convertToNetworkEventTiming = (
         send: number;
         wait: number;
         receive: number;
-    }
+    },
 ) => {
     const timingValues = [
         timings._queued || 0,
@@ -105,11 +104,11 @@ const convertToNetworkEventTiming = (
         .slice(0, -1)
         .reduce(
             (result, curValue) => [...result, (result.at(-1) || 0) + curValue],
-            [startedTimestamp]
+            [startedTimestamp],
         );
 
     const [queued, blocked, connect, ssl, send, wait, receive] = Array.from(
-        timingValues
+        timingValues,
     ).map((curValue, idx) => {
         const untilTime = cumStartTimes[idx] + curValue;
 
@@ -133,13 +132,13 @@ const convertToNetworkEventTiming = (
 };
 
 const convertNameValuesToKeyValuePairs = (
-    valuesPairs: { name: string; value: string }[]
+    valuesPairs: { name: string; value: string }[],
 ) =>
     valuesPairs.map(({ name, value }) => {
         return { __typename: 'KeyValuePair' as const, key: name, value: value };
     });
 
-const transformEntry = (entry: HttpNetworkEventType, testExecutionId: string, idx: number) => {
+const transformEntry = (entry: HttpNetworkEventType) => {
     const {
         startedDateTime,
         time,
@@ -150,92 +149,89 @@ const transformEntry = (entry: HttpNetworkEventType, testExecutionId: string, id
         response,
         timings,
     } = entry;
-        
-    const startedTimestamp = new Date(
-        Date.parse(startedDateTime)
-    ).getTime();
+
+    const startedTimestamp = new Date(Date.parse(startedDateTime)).getTime();
 
     return {
-            __typename: 'HttpNetworkEvent' as const,
-            resourceType,
-            at: new Date(Date.parse(startedDateTime)),
-            until: new Date(startedTimestamp + time),
-            initiator: {
-                __typename: 'HttpNetworkEventInitiator' as const,
-                origin: _initiator || null,
-                lineNumber: _initiator_line || null
+        __typename: 'HttpNetworkEvent' as const,
+        resourceType,
+        at: new Date(Date.parse(startedDateTime)),
+        until: new Date(startedTimestamp + time),
+        initiator: {
+            __typename: 'HttpNetworkEventInitiator' as const,
+            origin: _initiator || null,
+            lineNumber: _initiator_line || null,
+        },
+        timings: convertToNetworkEventTiming(startedTimestamp, timings),
+        request: {
+            __typename: 'HttpNetworkRequest' as const,
+            method: request.method,
+            url: {
+                __typename: 'HttpNetworkRequestUrl' as const,
+                url: request.url,
+                nonKeyValueQueryString: null,
             },
-            timings: convertToNetworkEventTiming(startedTimestamp, timings),
-            request: {
-                __typename: 'HttpNetworkRequest' as const,
-                method: request.method,
-                url: {
-                    __typename: 'HttpNetworkRequestUrl' as const,
-                    url: request.url,
-                    nonKeyValueQueryString: null,
-                },
-                queryString: convertNameValuesToKeyValuePairs(
-                    request.queryString
-                ),
-                cookies: request.cookies.map(({ ...arg }) => {
-                    return { __typename: 'Cookie' as const, ...arg };
-                }),
-                headers: {
-                    __typename: 'HttpHeaders' as const,
-                    size: request.headers.length,
-                    values: convertNameValuesToKeyValuePairs(
-                        request.headers
-                    ),
-                },
-                httpVersion: request.httpVersion,
-                body:
-                    (request.postData && {
-                        __typename: 'HttpRequestBody' as const,
-                        size: request.bodySize,
-                        mimeType: request.postData.mimeType,
-                        data: request.postData.text || '',
-                        encoding: null, // TODO: what should this be?
-                    }) ||
-                    null,
+            queryString: convertNameValuesToKeyValuePairs(request.queryString),
+            cookies: request.cookies.map(({ ...arg }) => {
+                return { __typename: 'Cookie' as const, ...arg };
+            }),
+            headers: {
+                __typename: 'HttpHeaders' as const,
+                size: request.headers.length,
+                values: convertNameValuesToKeyValuePairs(request.headers),
             },
-            response: {
-                __typename: 'HttpNetworkResponse' as const,
-                redirectURL: response.redirectURL,
-                status: response.status,
-                statusText: response.statusText,
-                body: {
-                    __typename: 'HttpResponseBody' as const,
-                    size: response.bodySize,
-                    mimeType: response.content.mimeType,
-                    data: response.content.text || '',
-                    encoding: null,
-                    chunks: [],
-                },
-                cookies: response?.cookies.map(({ ...arg }) => {
-                    return { __typename: 'Cookie' as const, ...arg };
-                }),
-                headers: {
-                    __typename: 'HttpHeaders' as const,
-                    size: response.headers.length,
-                    values: convertNameValuesToKeyValuePairs(
-                        response.headers
-                    ),
-                },
-                httpVersion: request.httpVersion,
-                transferSize: response._transferSize,
-                chunks: [], // TODO: we are not using this right now
+            httpVersion: request.httpVersion,
+            body:
+                (request.postData && {
+                    __typename: 'HttpRequestBody' as const,
+                    size: request.bodySize,
+                    mimeType: request.postData.mimeType,
+                    data: request.postData.text || '',
+                    encoding: null, // TODO: what should this be?
+                }) ||
+                null,
+        },
+        response: {
+            __typename: 'HttpNetworkResponse' as const,
+            redirectURL: response.redirectURL,
+            status: response.status,
+            statusText: response.statusText,
+            body: {
+                __typename: 'HttpResponseBody' as const,
+                size: response.bodySize,
+                mimeType: response.content.mimeType,
+                data: response.content.text || '',
+                encoding: null,
+                chunks: [],
             },
-        }        
-}
+            cookies: response?.cookies.map(({ ...arg }) => {
+                return { __typename: 'Cookie' as const, ...arg };
+            }),
+            headers: {
+                __typename: 'HttpHeaders' as const,
+                size: response.headers.length,
+                values: convertNameValuesToKeyValuePairs(response.headers),
+            },
+            httpVersion: request.httpVersion,
+            transferSize: response._transferSize,
+            chunks: [], // TODO: we are not using this right now
+        },
+    };
+};
 
-const mapNetworkEvents =  (networkData: unknown, testExecutionId: string) => 
-    Object.fromEntries(NetworkDataSchema.parse(networkData).log.entries
-        .map((entry, idx) => transformEntry(entry, testExecutionId, idx))
-        .filter(curr => !curr.request.url.url.includes('/__/') && 
-                        !curr.request.url.url.includes('/__cypress/'))
-        .map((curr, idx) => [`${testExecutionId}/network/${idx + 1}`, 
-            {id: `${testExecutionId}/network/${idx + 1}`, ...curr}]))
-   
-    
+const mapNetworkEvents = (networkData: unknown, testExecutionId: string) =>
+    Object.fromEntries(
+        NetworkDataSchema.parse(networkData)
+            .log.entries.map((entry) => transformEntry(entry))
+            .filter(
+                (curr) =>
+                    !curr.request.url.url.includes('/__/') &&
+                    !curr.request.url.url.includes('/__cypress/'),
+            )
+            .map((curr, idx) => [
+                `${testExecutionId}/network/${idx + 1}`,
+                { id: `${testExecutionId}/network/${idx + 1}`, ...curr },
+            ]),
+    );
 
 export default mapNetworkEvents;

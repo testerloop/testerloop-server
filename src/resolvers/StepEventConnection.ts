@@ -14,6 +14,6 @@ const resolvers: StepEventConnectionResolvers = {
             endCursor,
         };
     },
-}
+};
 
 export default resolvers;

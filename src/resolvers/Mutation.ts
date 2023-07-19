@@ -1,13 +1,16 @@
 import { v4 as uuidv4, v5 as uuidv5 } from 'uuid';
-import { MutationResolvers } from './types/generated';
-import { UploadInfo, TestExecutionCreationResponse } from './types/generated';
+
+import {
+    MutationResolvers,
+    UploadInfo,
+    TestExecutionCreationResponse,
+} from './types/generated';
 
 const resolvers: MutationResolvers = {
     createTestRun: async (
         parent,
         { runEnvironmentDetails, s3Config },
         { dataSources, auth },
-        info
     ): Promise<UploadInfo> => {
         const runID = uuidv4();
         console.log('Creating run with ID: ', runID);
@@ -27,7 +30,7 @@ const resolvers: MutationResolvers = {
 
         if (!customerPath || !s3BucketName) {
             throw new Error(
-                'Invalid configuration. Please provide s3BucketName and customerPath.'
+                'Invalid configuration. Please provide s3BucketName and customerPath.',
             );
         }
         const s3RunPath = `${s3BucketName}/${customerPath}/${runID}`;
@@ -37,13 +40,13 @@ const resolvers: MutationResolvers = {
             s3BucketName,
             customerPath,
             runID,
-            runEnvironmentDetails
+            runEnvironmentDetails,
         );
         console.log('Creating presigned POST url for upload to S3');
         const uploadInfo = await dataSources.createTestRun.getUploadLink(
             s3BucketName,
             customerPath,
-            runID
+            runID,
         );
 
         return {
@@ -63,7 +66,7 @@ const resolvers: MutationResolvers = {
     createTestExecution: async (
         parent,
         { testName, featureFile, s3Config },
-        { auth }
+        { auth },
     ): Promise<TestExecutionCreationResponse> => {
         let organisationIdentifier;
         if (!s3Config) {

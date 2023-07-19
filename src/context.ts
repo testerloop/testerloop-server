@@ -1,7 +1,9 @@
-import handleApiKey from './util/handleApiKey.js';
 import { IncomingHttpHeaders } from 'http';
-import { DataSources, createDataSources } from './datasources/index.js';
+
 import { Organisation } from '@prisma/client';
+
+import handleApiKey from './util/handleApiKey.js';
+import { DataSources, createDataSources } from './datasources/index.js';
 interface Request {
     headers: IncomingHttpHeaders;
 }
@@ -39,7 +41,7 @@ export const createContext = async ({
         get dataSources() {
             if (dataSources === null)
                 throw new Error(
-                    'DataSources are not available during DataSource initialization.'
+                    'DataSources are not available during DataSource initialization.',
                 );
             return dataSources;
         },
