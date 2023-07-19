@@ -1,5 +1,4 @@
-import { PrismaClient, Prisma } from '@prisma/client';
-import { Organisation } from '@prisma/client';
+import { Prisma, Organisation } from '@prisma/client';
 
 export type SlugOptionalOrganisationCreateInput = Omit<
     Prisma.OrganisationCreateInput,
@@ -8,7 +7,7 @@ export type SlugOptionalOrganisationCreateInput = Omit<
 
 export interface PrismaInterface {
     createWithSlug: (
-        data: SlugOptionalOrganisationCreateInput
+        data: SlugOptionalOrganisationCreateInput,
     ) => Promise<Organisation | null>;
     getByApiKey: (apiKey: string) => Promise<Organisation | null>;
     getSlug: (slug: string, index?: number) => Promise<string> | null;

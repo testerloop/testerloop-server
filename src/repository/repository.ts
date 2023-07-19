@@ -1,4 +1,5 @@
 import { Organisation } from '@prisma/client';
+
 import { S3Config, InputMaybe } from '../resolvers/types/generated';
 import { Auth } from '../context.js';
 import PrismaDB from '../db.js';
@@ -16,7 +17,9 @@ interface Repository {
     getByApiKey: (apiKey: string) => Promise<Organisation | null>;
     getBucketAndPath: (args: GetBucketAndPathArgs) => S3CustomerConfig;
     getOrganisationIdentifier: (args: GetBucketAndPathArgs) => string;
-    createOrganisation: (args: SlugOptionalOrganisationCreateInput) => Promise<Organisation | null>;
+    createOrganisation: (
+        args: SlugOptionalOrganisationCreateInput,
+    ) => Promise<Organisation | null>;
 }
 
 class PrismaRepository implements Repository {
@@ -77,26 +80,29 @@ class ConfigRepository implements Repository {
 
         if (!s3Config || !s3Config.customerPath || !s3Config.bucket) {
             throw new Error(
-                'Invalid configuration. Please provide s3BucketName and customerPath.'
+                'Invalid configuration. Please provide s3BucketName and customerPath.',
             );
         }
 
         return s3Config;
     }
 
-    async createOrganisation(_: SlugOptionalOrganisationCreateInput): Promise<any> {
-        this.notImplementedException();
+    createOrganisation(_: SlugOptionalOrganisationCreateInput): Promise<null> {
+        throw new Error('Method not implemented.');
     }
 
-    async getByApiKey(_: string): Promise<any> {
-        this.notImplementedException();
+    getByApiKey(_: string): Promise<null> {
+        throw new Error('Method not implemented.');
     }
+
     getBucketAndPath(args: GetBucketAndPathArgs) {
         const s3Config = this.validateArgs(args);
         console.log('Using s3Config');
 
         if (!s3Config.customerPath || !s3Config.bucket) {
-          throw new Error('Invalid configuration. Please provide s3BucketName and customerPath.');
+            throw new Error(
+                'Invalid configuration. Please provide s3BucketName and customerPath.',
+            );
         }
 
         const { customerPath, bucket } = s3Config;
