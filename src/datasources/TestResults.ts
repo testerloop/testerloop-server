@@ -22,7 +22,8 @@ const ResultsSchema = z.object({
     runs: z.array(RunSchema),
 });
 
-type Results = z.infer<typeof ResultsSchema>;
+export type Results = z.infer<typeof ResultsSchema>;
+export type Test = z.infer<typeof TestSchema>;
 
 export class TestResults {
     context: Context;

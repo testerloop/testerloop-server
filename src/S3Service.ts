@@ -120,7 +120,7 @@ class S3Service {
                 new HeadObjectCommand({
                     Bucket: bucketName,
                     Key: key,
-                })
+                }),
             );
             return true;
         } catch (error) {
