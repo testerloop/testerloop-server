@@ -23,20 +23,20 @@ export type Context = {
 };
 
 const getAuth = async (apiKey: string | null): Promise<Auth | undefined> => {
-  if (config.DB_ENABLED && !apiKey) throw new Error('API key is required');
+    if (config.DB_ENABLED && !apiKey) throw new Error('API key is required');
 
-  if (!apiKey || !config.DB_ENABLED) return;
+    if (!apiKey || !config.DB_ENABLED) return;
 
-  const organisation = await repository.getByApiKey(apiKey);
+    const organisation = await repository.getByApiKey(apiKey);
 
-  if (!organisation) throw new Error('Invalid API key provided');
+    if (!organisation) throw new Error('Invalid API key provided');
 
-  console.log('Valid API key found for: ', organisation.name);
+    console.log('Valid API key found for: ', organisation.name);
 
-  return {
-      organisation: organisation,
-  };
-}
+    return {
+        organisation: organisation,
+    };
+};
 
 export const createContext = async ({
     req,
@@ -44,7 +44,8 @@ export const createContext = async ({
     req: Request;
 }): Promise<Context> => {
     let dataSources: DataSources | null = null;
-    const apiKey = req.headers['x-api-key'] ? req.headers['x-api-key'] as string : null;
+    const apiKey = req.headers['x-api-key'] ? (req.headers['x-api-key'] as string) : null;
+    console.log(apiKey);
     const auth = await getAuth(apiKey);
 
     const context = {
