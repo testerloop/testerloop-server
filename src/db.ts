@@ -20,10 +20,7 @@ export default class PrismaDB implements PrismaInterface {
         const slugifiedName = generateSlug(data.name);
         const slug = await this.getSlug(slugifiedName);
         return this.prisma.organisation.create({
-            data: {
-                ...data,
-                slug: slug,
-            },
+            data: { ...data, slug },
         });
     }
 
