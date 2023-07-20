@@ -1,8 +1,4 @@
 import { decodeId, decodeIdForType } from '../util/id.js';
-import {
-    checkS3ResultsExistAndGetData,
-    getRunStatusAndOutcome,
-} from '../util/checkRunStatus.js';
 
 import { QueryResolvers, RunStatus, TestStatus } from './types/generated.js';
 
@@ -112,16 +108,20 @@ const resolvers: QueryResolvers = {
 
         const testExecutionStatuses = await Promise.all(
             testExecutions.edges.map(async (testExecution) => {
-                const testResults = await checkS3ResultsExistAndGetData(
-                    runId,
-                    testExecution.node.id,
-                    dataSources,
-                );
+                const testResults =
+                    await dataSources.testResults.checkS3ResultsExistAndGetData(
+                        runId,
+                        testExecution.node.id,
+                    );
                 const {
                     runStatus = RunStatus.Running,
                     testStatus = TestStatus.Pending,
                     testName = '',
-                } = testResults ? getRunStatusAndOutcome(testResults) : {};
+                } = testResults
+                    ? dataSources.testResults.getRunStatusAndOutcome(
+                          testResults,
+                      )
+                    : {};
 
                 return {
                     __typename: 'TestExecutionStatus' as const,
