@@ -121,15 +121,18 @@ const resolvers: QueryResolvers = {
                         runId,
                         testExecution.node.id,
                     );
-                const {
-                    runStatus = RunStatus.Running,
-                    testStatus = TestStatus.Pending,
-                    testName = '',
-                } = testResults
+
+                const currentTestStatus = testResults
                     ? dataSources.testResults.getRunStatusAndOutcome(
                           testResults,
                       )
-                    : {};
+                    : {
+                          runStatus: RunStatus.Running,
+                          testStatus: TestStatus.Pending,
+                          testName: '',
+                      };
+
+                const { runStatus, testStatus, testName } = currentTestStatus;
 
                 return {
                     __typename: 'TestExecutionStatus' as const,
