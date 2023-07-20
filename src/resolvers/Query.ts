@@ -106,6 +106,14 @@ const resolvers: QueryResolvers = {
             {},
         );
 
+        if (testExecutions.totalCount === 0) {
+            return {
+                __typename: 'TestRunStatus' as const,
+                status: RunStatus.Queued,
+                testExecutions: [],
+            };
+        }
+
         const testExecutionStatuses = await Promise.all(
             testExecutions.edges.map(async (testExecution) => {
                 const testResults =
@@ -133,14 +141,13 @@ const resolvers: QueryResolvers = {
             }),
         );
 
-        const runStatus =
-            testExecutions.totalCount === 0
-                ? RunStatus.Queued
-                : testExecutionStatuses.every(
-                      (status) => status.runStatus === RunStatus.Completed,
-                  )
-                ? RunStatus.Completed
-                : RunStatus.Running;
+        const isRunCompleted = testExecutionStatuses.every(
+            (status) => status.runStatus === RunStatus.Completed,
+        );
+
+        const runStatus = isRunCompleted
+            ? RunStatus.Completed
+            : RunStatus.Running;
 
         return {
             __typename: 'TestRunStatus' as const,
