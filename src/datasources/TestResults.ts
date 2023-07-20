@@ -76,7 +76,6 @@ export class TestResults {
     getRunStatusAndOutcome(testResults: Results | null) {
         if (!testResults) {
             return {
-                runStatus: RunStatus.Queued,
                 testStatus: TestStatus.Pending,
                 testName: '',
             };
@@ -123,18 +122,16 @@ export class TestResults {
                 const currentTestStatus = testResults
                     ? this.getRunStatusAndOutcome(testResults)
                     : {
-                          runStatus: RunStatus.Running,
                           testStatus: TestStatus.Pending,
                           testName: '',
                       };
 
-                const { runStatus, testStatus, testName } = currentTestStatus;
+                const { testStatus, testName } = currentTestStatus;
 
                 return {
                     __typename: 'TestExecutionStatus' as const,
-                    runStatus,
                     testStatus,
-                    name: testName,
+                    testName,
                     id: testExecution.node.id,
                 };
             }),

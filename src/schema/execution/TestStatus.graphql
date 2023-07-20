@@ -13,14 +13,13 @@ enum TestStatus {
 
 type TestExecutionStatus {
     id: ID!
-    name: String!
-    runStatus: RunStatus!
+    testName: String!
     testStatus: TestStatus!
 }
 
 type TestRunStatus {
-    status: RunStatus!
-    testExecutions: [TestExecutionStatus]!
+    runStatus: RunStatus!
+    testExecutionStatuses: [TestExecutionStatus]!
 }
 
 extend type Query {

@@ -771,8 +771,7 @@ export type TestExecutionSnapshot = Event & InstantaneousEvent & TestExecutionEv
 export type TestExecutionStatus = {
   readonly __typename: 'TestExecutionStatus';
   readonly id: Scalars['ID'];
-  readonly name: Scalars['String'];
-  readonly runStatus: RunStatus;
+  readonly testName: Scalars['String'];
   readonly testStatus: TestStatus;
 };
 
@@ -805,8 +804,8 @@ export type TestRunEdge = {
 
 export type TestRunStatus = {
   readonly __typename: 'TestRunStatus';
-  readonly status: RunStatus;
-  readonly testExecutions: ReadonlyArray<Maybe<TestExecutionStatus>>;
+  readonly runStatus: RunStatus;
+  readonly testExecutionStatuses: ReadonlyArray<Maybe<TestExecutionStatus>>;
 };
 
 export enum TestStatus {
@@ -1624,8 +1623,7 @@ export type TestExecutionSnapshotResolvers<ContextType = Context, ParentType ext
 
 export type TestExecutionStatusResolvers<ContextType = Context, ParentType extends ResolversParentTypes['TestExecutionStatus'] = ResolversParentTypes['TestExecutionStatus']> = {
   id: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-  name: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  runStatus: Resolver<ResolversTypes['RunStatus'], ParentType, ContextType>;
+  testName: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   testStatus: Resolver<ResolversTypes['TestStatus'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
@@ -1651,8 +1649,8 @@ export type TestRunEdgeResolvers<ContextType = Context, ParentType extends Resol
 };
 
 export type TestRunStatusResolvers<ContextType = Context, ParentType extends ResolversParentTypes['TestRunStatus'] = ResolversParentTypes['TestRunStatus']> = {
-  status: Resolver<ResolversTypes['RunStatus'], ParentType, ContextType>;
-  testExecutions: Resolver<ReadonlyArray<Maybe<ResolversTypes['TestExecutionStatus']>>, ParentType, ContextType>;
+  runStatus: Resolver<ResolversTypes['RunStatus'], ParentType, ContextType>;
+  testExecutionStatuses: Resolver<ReadonlyArray<Maybe<ResolversTypes['TestExecutionStatus']>>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 

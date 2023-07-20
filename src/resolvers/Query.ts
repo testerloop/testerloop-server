@@ -1,6 +1,6 @@
 import { decodeId, decodeIdForType } from '../util/id.js';
 
-import { QueryResolvers, RunStatus } from './types/generated.js';
+import { QueryResolvers, RunStatus, TestStatus } from './types/generated.js';
 
 const resolvers: QueryResolvers = {
     async httpNetworkEvent(root, { id }, { dataSources }) {
@@ -90,8 +90,8 @@ const resolvers: QueryResolvers = {
         if (testExecutions.totalCount === 0) {
             return {
                 __typename: 'TestRunStatus' as const,
-                status: RunStatus.Queued,
-                testExecutions: [],
+                runStatus: RunStatus.Queued,
+                testExecutionStatuses: [],
             };
         }
 
@@ -102,7 +102,7 @@ const resolvers: QueryResolvers = {
             );
 
         const isRunCompleted = testExecutionStatuses.every(
-            (status) => status.runStatus === RunStatus.Completed,
+            (status) => status.testStatus !== TestStatus.Pending,
         );
 
         const runStatus = isRunCompleted
@@ -111,8 +111,8 @@ const resolvers: QueryResolvers = {
 
         return {
             __typename: 'TestRunStatus' as const,
-            status: runStatus,
-            testExecutions: testExecutionStatuses,
+            runStatus,
+            testExecutionStatuses,
         };
     },
 

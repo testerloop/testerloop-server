@@ -1,8 +1,8 @@
 import { TestRunStatusResolvers } from './types/generated.js';
 
 const resolvers: TestRunStatusResolvers = {
-    status: ({ status }) => status,
-    testExecutions: ({ testExecutions }) => testExecutions,
+    runStatus: ({ runStatus }) => runStatus,
+    testExecutionStatuses: ({ testExecutionStatuses }) => testExecutionStatuses,
 };
 
 export default resolvers;
