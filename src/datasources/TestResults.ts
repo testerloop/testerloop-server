@@ -4,7 +4,11 @@ import * as z from 'zod';
 import config from '../config.js';
 import { Context } from '../context.js';
 import S3Service from '../S3Service.js';
-import { RunStatus, TestStatus } from '../resolvers/types/generated.js';
+import {
+    RunStatus,
+    TestStatus,
+    TestExecutionStatus,
+} from '../resolvers/types/generated.js';
 
 const TestSchema = z.object({
     title: z.array(z.string()),
@@ -93,6 +97,48 @@ export class TestResults {
             : TestStatus.Failed;
 
         return { runStatus, testStatus, testName };
+    }
+
+    async getTestExecutionStatuses(
+        testExecutions: {
+            edges: {
+                cursor: string;
+                node: {
+                    id: string;
+                };
+            }[];
+            totalCount: number;
+            hasPreviousPage: boolean;
+            hasNextPage: boolean;
+        },
+        runId: string,
+    ): Promise<TestExecutionStatus[]> {
+        return await Promise.all(
+            testExecutions.edges.map(async (testExecution) => {
+                const testResults = await this.checkS3ResultsExistAndGetData(
+                    runId,
+                    testExecution.node.id,
+                );
+
+                const currentTestStatus = testResults
+                    ? this.getRunStatusAndOutcome(testResults)
+                    : {
+                          runStatus: RunStatus.Running,
+                          testStatus: TestStatus.Pending,
+                          testName: '',
+                      };
+
+                const { runStatus, testStatus, testName } = currentTestStatus;
+
+                return {
+                    __typename: 'TestExecutionStatus' as const,
+                    runStatus,
+                    testStatus,
+                    name: testName,
+                    id: testExecution.node.id,
+                };
+            }),
+        );
     }
 
     async getResultsByTestExecutionId(testExecutionId: string) {

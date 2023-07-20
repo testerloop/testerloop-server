@@ -1,6 +1,6 @@
 import { decodeId, decodeIdForType } from '../util/id.js';
 
-import { QueryResolvers, RunStatus, TestStatus } from './types/generated.js';
+import { QueryResolvers, RunStatus } from './types/generated.js';
 
 const resolvers: QueryResolvers = {
     async httpNetworkEvent(root, { id }, { dataSources }) {
@@ -81,6 +81,41 @@ const resolvers: QueryResolvers = {
         };
     },
 
+    async getRun(parent, { runId }, { dataSources }) {
+        const testExecutions = await dataSources.testExecution.getByTestRunId(
+            runId,
+            {},
+        );
+
+        if (testExecutions.totalCount === 0) {
+            return {
+                __typename: 'TestRunStatus' as const,
+                status: RunStatus.Queued,
+                testExecutions: [],
+            };
+        }
+
+        const testExecutionStatuses =
+            await dataSources.testResults.getTestExecutionStatuses(
+                testExecutions,
+                runId,
+            );
+
+        const isRunCompleted = testExecutionStatuses.every(
+            (status) => status.runStatus === RunStatus.Completed,
+        );
+
+        const runStatus = isRunCompleted
+            ? RunStatus.Completed
+            : RunStatus.Running;
+
+        return {
+            __typename: 'TestRunStatus' as const,
+            status: runStatus,
+            testExecutions: testExecutionStatuses,
+        };
+    },
+
     async node(root, { id }, context, info) {
         const decodedId = decodeId(id);
         if (!decodedId) {
@@ -98,65 +133,6 @@ const resolvers: QueryResolvers = {
             default:
                 return null;
         }
-    },
-
-    async getRun(parent, { runId }, { dataSources }) {
-        const testExecutions = await dataSources.testExecution.getByTestRunId(
-            runId,
-            {},
-        );
-
-        if (testExecutions.totalCount === 0) {
-            return {
-                __typename: 'TestRunStatus' as const,
-                status: RunStatus.Queued,
-                testExecutions: [],
-            };
-        }
-
-        const testExecutionStatuses = await Promise.all(
-            testExecutions.edges.map(async (testExecution) => {
-                const testResults =
-                    await dataSources.testResults.checkS3ResultsExistAndGetData(
-                        runId,
-                        testExecution.node.id,
-                    );
-
-                const currentTestStatus = testResults
-                    ? dataSources.testResults.getRunStatusAndOutcome(
-                          testResults,
-                      )
-                    : {
-                          runStatus: RunStatus.Running,
-                          testStatus: TestStatus.Pending,
-                          testName: '',
-                      };
-
-                const { runStatus, testStatus, testName } = currentTestStatus;
-
-                return {
-                    __typename: 'TestExecutionStatus' as const,
-                    runStatus,
-                    testStatus,
-                    name: testName,
-                    id: testExecution.node.id,
-                };
-            }),
-        );
-
-        const isRunCompleted = testExecutionStatuses.every(
-            (status) => status.runStatus === RunStatus.Completed,
-        );
-
-        const runStatus = isRunCompleted
-            ? RunStatus.Completed
-            : RunStatus.Running;
-
-        return {
-            __typename: 'TestRunStatus' as const,
-            status: runStatus,
-            testExecutions: testExecutionStatuses,
-        };
     },
 };
 
