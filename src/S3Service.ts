@@ -3,6 +3,7 @@ import {
     ListObjectsV2Command,
     S3Client,
     PutObjectCommand,
+    HeadObjectCommand,
 } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { LRUCache } from 'lru-cache';
@@ -111,6 +112,20 @@ class S3Service {
         const url = await getSignedUrl(this.s3, command, { expiresIn });
 
         return { url, expiresAt };
+    }
+
+    async doesFileExist(bucketName: string, key: string) {
+        try {
+            await this.s3.send(
+                new HeadObjectCommand({
+                    Bucket: bucketName,
+                    Key: key,
+                }),
+            );
+            return true;
+        } catch (error) {
+            return false;
+        }
     }
 
     async putObject(bucketName: string, key: string, data: string) {

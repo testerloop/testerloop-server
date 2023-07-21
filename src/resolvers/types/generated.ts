@@ -513,6 +513,7 @@ export type PageInfo = {
 export type Query = {
   readonly __typename: 'Query';
   readonly consoleLogEvent: Maybe<ConsoleLogEvent>;
+  readonly getRun: TestRunStatus;
   readonly httpNetworkEvent: Maybe<HttpNetworkEvent>;
   readonly node: Maybe<Node>;
   readonly testExecution: Maybe<TestExecution>;
@@ -523,6 +524,11 @@ export type Query = {
 
 export type QueryConsoleLogEventArgs = {
   id: Scalars['ID'];
+};
+
+
+export type QueryGetRunArgs = {
+  runId: Scalars['ID'];
 };
 
 
@@ -550,6 +556,12 @@ export type QueryTestRunsArgs = {
   after?: InputMaybe<Scalars['Cursor']>;
   first?: InputMaybe<Scalars['Int']>;
 };
+
+export enum RunStatus {
+  Completed = 'COMPLETED',
+  Queued = 'QUEUED',
+  Running = 'RUNNING'
+}
 
 export type S3Config = {
   readonly bucket: Scalars['String'];
@@ -756,6 +768,13 @@ export type TestExecutionSnapshot = Event & InstantaneousEvent & TestExecutionEv
   readonly testExecution: TestExecution;
 };
 
+export type TestExecutionStatus = {
+  readonly __typename: 'TestExecutionStatus';
+  readonly id: Scalars['ID'];
+  readonly testName: Scalars['String'];
+  readonly testStatus: TestStatus;
+};
+
 export type TestRun = Node & {
   readonly __typename: 'TestRun';
   readonly executions: TestExecutionConnection;
@@ -782,6 +801,18 @@ export type TestRunEdge = {
   readonly cursor: Scalars['Cursor'];
   readonly node: TestRun;
 };
+
+export type TestRunStatus = {
+  readonly __typename: 'TestRunStatus';
+  readonly runStatus: RunStatus;
+  readonly testExecutionStatuses: ReadonlyArray<Maybe<TestExecutionStatus>>;
+};
+
+export enum TestStatus {
+  Failed = 'FAILED',
+  Passed = 'PASSED',
+  Pending = 'PENDING'
+}
 
 export type UploadInfo = {
   readonly __typename: 'UploadInfo';
@@ -925,6 +956,7 @@ export type ResolversTypes = {
   OrderDirection: OrderDirection;
   PageInfo: ResolverTypeWrapper<PageInfo>;
   Query: ResolverTypeWrapper<unknown>;
+  RunStatus: RunStatus;
   S3Config: S3Config;
   ScenarioDefinition: ResolverTypeWrapper<ScenarioDefinition>;
   ScenarioEvent: ResolverTypeWrapper<ScenarioEventModel>;
@@ -953,9 +985,12 @@ export type ResolversTypes = {
   TestExecutionEventType: TestExecutionEventType;
   TestExecutionScreenshot: ResolverTypeWrapper<TestExecutionScreenshotModel>;
   TestExecutionSnapshot: ResolverTypeWrapper<TestExecutionSnapshotModel>;
+  TestExecutionStatus: ResolverTypeWrapper<TestExecutionStatus>;
   TestRun: ResolverTypeWrapper<TestRunModel>;
   TestRunConnection: ResolverTypeWrapper<TestRunConnectionModel>;
   TestRunEdge: ResolverTypeWrapper<TestRunEdgeModel>;
+  TestRunStatus: ResolverTypeWrapper<TestRunStatus>;
+  TestStatus: TestStatus;
   URL: ResolverTypeWrapper<Scalars['URL']>;
   UploadInfo: ResolverTypeWrapper<UploadInfo>;
 };
@@ -1051,9 +1086,11 @@ export type ResolversParentTypes = {
   TestExecutionEventFilterInput: TestExecutionEventFilterInput;
   TestExecutionScreenshot: TestExecutionScreenshotModel;
   TestExecutionSnapshot: TestExecutionSnapshotModel;
+  TestExecutionStatus: TestExecutionStatus;
   TestRun: TestRunModel;
   TestRunConnection: TestRunConnectionModel;
   TestRunEdge: TestRunEdgeModel;
+  TestRunStatus: TestRunStatus;
   URL: Scalars['URL'];
   UploadInfo: UploadInfo;
 };
@@ -1427,6 +1464,7 @@ export type PageInfoResolvers<ContextType = Context, ParentType extends Resolver
 
 export type QueryResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
   consoleLogEvent: Resolver<Maybe<ResolversTypes['ConsoleLogEvent']>, ParentType, ContextType, RequireFields<QueryConsoleLogEventArgs, 'id'>>;
+  getRun: Resolver<ResolversTypes['TestRunStatus'], ParentType, ContextType, RequireFields<QueryGetRunArgs, 'runId'>>;
   httpNetworkEvent: Resolver<Maybe<ResolversTypes['HttpNetworkEvent']>, ParentType, ContextType, RequireFields<QueryHttpNetworkEventArgs, 'id'>>;
   node: Resolver<Maybe<ResolversTypes['Node']>, ParentType, ContextType, RequireFields<QueryNodeArgs, 'id'>>;
   testExecution: Resolver<Maybe<ResolversTypes['TestExecution']>, ParentType, ContextType, RequireFields<QueryTestExecutionArgs, 'id'>>;
@@ -1583,6 +1621,13 @@ export type TestExecutionSnapshotResolvers<ContextType = Context, ParentType ext
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type TestExecutionStatusResolvers<ContextType = Context, ParentType extends ResolversParentTypes['TestExecutionStatus'] = ResolversParentTypes['TestExecutionStatus']> = {
+  id: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  testName: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  testStatus: Resolver<ResolversTypes['TestStatus'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type TestRunResolvers<ContextType = Context, ParentType extends ResolversParentTypes['TestRun'] = ResolversParentTypes['TestRun']> = {
   executions: Resolver<ResolversTypes['TestExecutionConnection'], ParentType, ContextType, Partial<TestRunExecutionsArgs>>;
   id: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
@@ -1600,6 +1645,12 @@ export type TestRunConnectionResolvers<ContextType = Context, ParentType extends
 export type TestRunEdgeResolvers<ContextType = Context, ParentType extends ResolversParentTypes['TestRunEdge'] = ResolversParentTypes['TestRunEdge']> = {
   cursor: Resolver<ResolversTypes['Cursor'], ParentType, ContextType>;
   node: Resolver<ResolversTypes['TestRun'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type TestRunStatusResolvers<ContextType = Context, ParentType extends ResolversParentTypes['TestRunStatus'] = ResolversParentTypes['TestRunStatus']> = {
+  runStatus: Resolver<ResolversTypes['RunStatus'], ParentType, ContextType>;
+  testExecutionStatuses: Resolver<ReadonlyArray<Maybe<ResolversTypes['TestExecutionStatus']>>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -1694,9 +1745,11 @@ export type Resolvers<ContextType = Context> = {
   TestExecutionEventEdge: TestExecutionEventEdgeResolvers<ContextType>;
   TestExecutionScreenshot: TestExecutionScreenshotResolvers<ContextType>;
   TestExecutionSnapshot: TestExecutionSnapshotResolvers<ContextType>;
+  TestExecutionStatus: TestExecutionStatusResolvers<ContextType>;
   TestRun: TestRunResolvers<ContextType>;
   TestRunConnection: TestRunConnectionResolvers<ContextType>;
   TestRunEdge: TestRunEdgeResolvers<ContextType>;
+  TestRunStatus: TestRunStatusResolvers<ContextType>;
   URL: GraphQLScalarType;
   UploadInfo: UploadInfoResolvers<ContextType>;
 };

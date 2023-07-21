@@ -1,6 +1,6 @@
 import { decodeId, decodeIdForType } from '../util/id.js';
 
-import { QueryResolvers } from './types/generated.js';
+import { QueryResolvers, RunStatus, TestStatus } from './types/generated.js';
 
 const resolvers: QueryResolvers = {
     async httpNetworkEvent(root, { id }, { dataSources }) {
@@ -78,6 +78,41 @@ const resolvers: QueryResolvers = {
         return {
             __typename: 'ConsoleLogEvent',
             id: decodedId,
+        };
+    },
+
+    async getRun(parent, { runId }, { dataSources }) {
+        const testExecutions = await dataSources.testExecution.getByTestRunId(
+            runId,
+            {},
+        );
+
+        if (testExecutions.totalCount === 0) {
+            return {
+                __typename: 'TestRunStatus' as const,
+                runStatus: RunStatus.Queued,
+                testExecutionStatuses: [],
+            };
+        }
+
+        const testExecutionStatuses =
+            await dataSources.testResults.getTestExecutionStatuses(
+                testExecutions,
+                runId,
+            );
+
+        const isRunCompleted = testExecutionStatuses.every(
+            (status) => status.testStatus !== TestStatus.Pending,
+        );
+
+        const runStatus = isRunCompleted
+            ? RunStatus.Completed
+            : RunStatus.Running;
+
+        return {
+            __typename: 'TestRunStatus' as const,
+            runStatus,
+            testExecutionStatuses,
         };
     },
 
