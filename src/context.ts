@@ -1,7 +1,9 @@
 import handleApiKey from './util/handleApiKey.js';
 import { IncomingHttpHeaders } from 'http';
 import { DataSources, createDataSources } from './datasources/index.js';
-import { Organisation } from '@prisma/client';
+import { Organisation, User } from '@prisma/client';
+import authenticateUserService from './AuthenticateUserService.js';
+
 interface Request {
     headers: IncomingHttpHeaders;
 }
@@ -25,6 +27,7 @@ export const createContext = async ({
 }): Promise<Context> => {
     let dataSources: DataSources | null = null;
     let auth: Auth | null = null;
+    let user: User | null = null;
     if (req.headers['x-api-key']) {
         const apiKey = req.headers['x-api-key'] as string;
         const organisation = await handleApiKey(apiKey);
@@ -33,6 +36,12 @@ export const createContext = async ({
         auth = {
             organisation: organisation,
         };
+    }
+    if (req.headers.authorization) {
+        let token = req.headers.authorization.replace('Bearer ', '');
+        if (!token) throw new Error('Invalid jwt token');
+        const user = await authenticateUserService.getUser(token)
+        console.log('user', user);
     }
 
     const context = {
@@ -45,6 +54,7 @@ export const createContext = async ({
         },
         request: { req },
         auth,
+        user,
     };
 
     dataSources = createDataSources(context);
