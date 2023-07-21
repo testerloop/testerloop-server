@@ -441,9 +441,14 @@ export type KeyValuePair = {
 
 export type Mutation = {
   readonly __typename: 'Mutation';
+  readonly authenticateUser: UserAuthenticationResponse;
   readonly createTestExecution: TestExecutionCreationResponse;
   readonly createTestRun: Maybe<UploadInfo>;
-  readonly userAuthentication: UserAuthenticationResponse;
+};
+
+
+export type MutationAuthenticateUserArgs = {
+  accessToken: Scalars['String'];
 };
 
 
@@ -457,11 +462,6 @@ export type MutationCreateTestExecutionArgs = {
 export type MutationCreateTestRunArgs = {
   runEnvironmentDetails: Scalars['String'];
   s3Config?: InputMaybe<S3Config>;
-};
-
-
-export type MutationUserAuthenticationArgs = {
-  accessToken: Scalars['String'];
 };
 
 export type NetworkEvent = {
@@ -1412,9 +1412,9 @@ export type KeyValuePairResolvers<ContextType = Context, ParentType extends Reso
 };
 
 export type MutationResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
+  authenticateUser: Resolver<ResolversTypes['UserAuthenticationResponse'], ParentType, ContextType, RequireFields<MutationAuthenticateUserArgs, 'accessToken'>>;
   createTestExecution: Resolver<ResolversTypes['TestExecutionCreationResponse'], ParentType, ContextType, RequireFields<MutationCreateTestExecutionArgs, 'featureFile' | 'testName'>>;
   createTestRun: Resolver<Maybe<ResolversTypes['UploadInfo']>, ParentType, ContextType, RequireFields<MutationCreateTestRunArgs, 'runEnvironmentDetails'>>;
-  userAuthentication: Resolver<ResolversTypes['UserAuthenticationResponse'], ParentType, ContextType, RequireFields<MutationUserAuthenticationArgs, 'accessToken'>>;
 };
 
 export type NetworkEventResolvers<ContextType = Context, ParentType extends ResolversParentTypes['NetworkEvent'] = ResolversParentTypes['NetworkEvent']> = {

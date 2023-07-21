@@ -3,7 +3,7 @@ type UserAuthenticationResponse {
 }
 
 extend type Mutation {
-    userAuthentication(
+    authenticateUser(
         accessToken: String!
     ): UserAuthenticationResponse!
 }

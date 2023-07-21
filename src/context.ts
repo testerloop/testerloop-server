@@ -37,11 +37,11 @@ export const createContext = async ({
             organisation: organisation,
         };
     }
+
     if (req.headers.authorization) {
         let token = req.headers.authorization.replace('Bearer ', '');
         if (!token) throw new Error('Invalid jwt token');
-        const user = await authenticateUserService.getUser(token)
-        console.log('user', user);
+        user = await authenticateUserService.getUser(token)
     }
 
     const context = {

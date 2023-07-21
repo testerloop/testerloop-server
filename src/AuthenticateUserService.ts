@@ -38,6 +38,25 @@ class AuthenticateUserService {
         }
         return null;
     }
+
+    public async createUser(token: string): Promise<User | null> {
+        const payload = await this.decodeToken(token);
+        if (payload !== null) {
+            let user = await prisma.user.findUnique({
+                where: { sub: payload.sub as string }
+            });
+            if (user) {
+                return user;
+            }
+            user = await prisma.user.create({
+                data: {
+                    sub: payload.sub as string
+                }
+            });
+            return user;
+        }
+        return null;
+    }
 }
 
 export default new AuthenticateUserService();
