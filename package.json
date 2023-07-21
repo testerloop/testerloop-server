@@ -50,6 +50,7 @@
         "build": "rm -rf ./dist && tsc --project tsconfig.json && cp -r src/schema/ dist/schema/ && cp -r prisma/ dist/prisma/",
         "dev": "concurrently -k \"nodemon src/dev.ts\" \"graphql-codegen --watch\"",
         "generate": "graphql-codegen",
+        "test": "npx jest",
         "lint": "eslint --ext .ts src",
         "lint:fix": "eslint --fix --ext .ts src",
         "prettier": "npx prettier src --check",
