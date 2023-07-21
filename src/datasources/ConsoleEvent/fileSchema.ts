@@ -28,7 +28,7 @@ const baseLog = z.object({
                 type: z.literal('boolean'),
                 value: z.boolean(),
             }),
-        ])
+        ]),
     ),
     id: z.string(),
     timestamp: z.coerce.date(),
@@ -36,21 +36,31 @@ const baseLog = z.object({
 });
 
 const logSchema = z.discriminatedUnion('type', [
-    z.object({
-        type: z.literal('warning'),
-    }).merge(baseLog),
-    z.object({
-        type: z.literal('log'),
-    }).merge(baseLog),
-    z.object({
-        type: z.literal('info'),
-    }).merge(baseLog),
-    z.object({
-        type: z.literal('error'),
-    }).merge(baseLog),
-    z.object({
-        type: z.literal('debug'),
-    }).merge(baseLog),
+    z
+        .object({
+            type: z.literal('warning'),
+        })
+        .merge(baseLog),
+    z
+        .object({
+            type: z.literal('log'),
+        })
+        .merge(baseLog),
+    z
+        .object({
+            type: z.literal('info'),
+        })
+        .merge(baseLog),
+    z
+        .object({
+            type: z.literal('error'),
+        })
+        .merge(baseLog),
+    z
+        .object({
+            type: z.literal('debug'),
+        })
+        .merge(baseLog),
 ]);
 
 export type Log = z.infer<typeof logSchema>;

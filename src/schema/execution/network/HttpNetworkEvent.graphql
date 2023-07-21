@@ -1,62 +1,62 @@
 type HttpNetworkEvent implements Event & IntervalEvent & NetworkEvent & TestExecutionEvent {
-  id: ID!
-  at: DateTime!
-  until: DateTime!
-  resourceType: String
-  testExecution: TestExecution!
-  timings: HttpNetworkTimings!
-  request: HttpNetworkRequest!
-  response: HttpNetworkResponse!
-  initiator: HttpNetworkEventInitiator!
+    id: ID!
+    at: DateTime!
+    until: DateTime!
+    resourceType: String
+    testExecution: TestExecution!
+    timings: HttpNetworkTimings!
+    request: HttpNetworkRequest!
+    response: HttpNetworkResponse!
+    initiator: HttpNetworkEventInitiator!
 }
 
 type HttpHeaders {
-  size: Int!
-  values(
-    order: HttpHeaderOrderInput! = { by: WIRE, order: ASCENDING }
-  ): [KeyValuePair!]!
+    size: Int!
+    values(
+        order: HttpHeaderOrderInput! = { by: WIRE, order: ASCENDING }
+    ): [KeyValuePair!]!
 }
 
 type HttpNetworkRequestUrl {
-  url: String!
-  nonKeyValueQueryString: String
+    url: String!
+    nonKeyValueQueryString: String
 }
 
 type HttpNetworkRequest {
-  method: String!
-  url: HttpNetworkRequestUrl!
-  queryString: [KeyValuePair!]!
-  body: HttpRequestBody
-  cookies: [Cookie]!
-  headers: HttpHeaders!
-  httpVersion: String!
+    method: String!
+    url: HttpNetworkRequestUrl!
+    queryString: [KeyValuePair!]!
+    body: HttpRequestBody
+    cookies: [Cookie]!
+    headers: HttpHeaders!
+    httpVersion: String!
 }
 
 type HttpNetworkResponse {
-  redirectURL: String!
-  status: Int!
-  statusText: String!
-  body: HttpResponseBody!
-  cookies: [Cookie!]!
-  headers: HttpHeaders!
-  transferSize: Int!
+    redirectURL: String!
+    status: Int!
+    statusText: String!
+    body: HttpResponseBody!
+    cookies: [Cookie!]!
+    headers: HttpHeaders!
+    transferSize: Int!
 }
 
 type HttpNetworkTimings {
-  blocked: NetworkEventTiming!
-  connect: NetworkEventTiming!
-  send: NetworkEventTiming!
-  wait: NetworkEventTiming!
-  receive: NetworkEventTiming!
-  ssl: NetworkEventTiming!
-  queued: NetworkEventTiming!
+    blocked: NetworkEventTiming!
+    connect: NetworkEventTiming!
+    send: NetworkEventTiming!
+    wait: NetworkEventTiming!
+    receive: NetworkEventTiming!
+    ssl: NetworkEventTiming!
+    queued: NetworkEventTiming!
 }
 
 type HttpNetworkEventInitiator {
-  origin: String
-  lineNumber: Int
+    origin: String
+    lineNumber: Int
 }
 
 extend type Query {
-  httpNetworkEvent(id: ID!): HttpNetworkEvent
+    httpNetworkEvent(id: ID!): HttpNetworkEvent
 }

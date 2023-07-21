@@ -1,35 +1,24 @@
 import { v4 as uuidv4, v5 as uuidv5 } from 'uuid';
-import { MutationResolvers } from './types/generated';
-import { UploadInfo, TestExecutionCreationResponse } from './types/generated';
+
+import {
+    MutationResolvers,
+    UploadInfo,
+    TestExecutionCreationResponse,
+} from './types/generated';
 
 const resolvers: MutationResolvers = {
     createTestRun: async (
-        parent,
+        _,
         { runEnvironmentDetails, s3Config },
-        { dataSources, auth },
-        info
+        { dataSources, auth, repository },
     ): Promise<UploadInfo> => {
         const runID = uuidv4();
         console.log('Creating run with ID: ', runID);
-        let s3BucketName;
-        let customerPath;
-        if (!s3Config) {
-            if (!auth) {
-                throw new Error('Authorization required');
-            }
-            const organisation = auth.organisation;
-            customerPath = organisation.s3CustomPath;
-            s3BucketName = organisation.s3BucketName;
-        } else {
-            console.log('Using s3Config');
-            ({ customerPath, bucket: s3BucketName } = s3Config);
-        }
 
-        if (!customerPath || !s3BucketName) {
-            throw new Error(
-                'Invalid configuration. Please provide s3BucketName and customerPath.'
-            );
-        }
+        const { s3BucketName, customerPath } = repository.getBucketAndPath(
+            auth || s3Config,
+        );
+
         const s3RunPath = `${s3BucketName}/${customerPath}/${runID}`;
 
         console.log(`Uploading cicd.json file to: ${s3RunPath}/logs/`);
@@ -37,13 +26,13 @@ const resolvers: MutationResolvers = {
             s3BucketName,
             customerPath,
             runID,
-            runEnvironmentDetails
+            runEnvironmentDetails,
         );
         console.log('Creating presigned POST url for upload to S3');
         const uploadInfo = await dataSources.createTestRun.getUploadLink(
             s3BucketName,
             customerPath,
-            runID
+            runID,
         );
 
         return {
@@ -61,19 +50,18 @@ const resolvers: MutationResolvers = {
         };
     },
     createTestExecution: async (
-        parent,
+        _,
         { testName, featureFile, s3Config },
-        { auth }
+        { auth, repository },
     ): Promise<TestExecutionCreationResponse> => {
-        let organisationIdentifier;
-        if (!s3Config) {
-            if (!auth) {
-                throw new Error('Authorization required');
-            }
-            organisationIdentifier = auth.organisation.id;
-        } else {
-            console.log('Using s3Config');
-            organisationIdentifier = s3Config.customerPath;
+        const organisationIdentifier = repository.getOrganisationIdentifier(
+            auth || s3Config || undefined,
+        );
+
+        if (!organisationIdentifier) {
+            throw new Error(
+                'Failed to verify organisation details. Please provide API key or s3Config',
+            );
         }
 
         const NAMESPACE = 'c9412f45-51ba-4b4d-9867-6117fb1646e1';

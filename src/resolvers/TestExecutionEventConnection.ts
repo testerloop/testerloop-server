@@ -14,6 +14,6 @@ const resolvers: TestExecutionEventConnectionResolvers = {
             endCursor,
         };
     },
-}
+};
 
 export default resolvers;

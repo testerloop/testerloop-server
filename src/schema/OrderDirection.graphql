@@ -1,4 +1,4 @@
 enum OrderDirection {
-  ASCENDING
-  DESCENDING
+    ASCENDING
+    DESCENDING
 }

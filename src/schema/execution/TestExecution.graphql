@@ -1,15 +1,15 @@
 type TestExecution implements Node & Event & IntervalEvent {
-  id: ID!
-  at: DateTime!
-  until: DateTime!
-  title: String!
-  testRun: TestRun!
-  environment: TestExecutionEnvironment!
-  events(
-    first: Int
-    after: Cursor
-    filter: TestExecutionEventFilterInput
-  ): TestExecutionEventConnection!
+    id: ID!
+    at: DateTime!
+    until: DateTime!
+    title: String!
+    testRun: TestRun!
+    environment: TestExecutionEnvironment!
+    events(
+        first: Int
+        after: Cursor
+        filter: TestExecutionEventFilterInput
+    ): TestExecutionEventConnection!
 }
 
 type TestExecutionConnection {
@@ -24,32 +24,32 @@ type TestExecutionEdge {
 }
 
 input TestExecutionEventFilterInput {
-  type: [TestExecutionEventType!]
-  consoleFilter: ConsoleEventFilterInput
-  commandFilter: CommandEventFilterInput
-  networkFilter: NetworkEventFilterInput
+    type: [TestExecutionEventType!]
+    consoleFilter: ConsoleEventFilterInput
+    commandFilter: CommandEventFilterInput
+    networkFilter: NetworkEventFilterInput
 }
 
 input ConsoleEventFilterInput {
-  logLevel: [ConsoleLogLevel!]
-  logSearch: String
+    logLevel: [ConsoleLogLevel!]
+    logSearch: String
 }
 
 input CommandEventFilterInput {
-  status: [CommandEventStatus!]
+    status: [CommandEventStatus!]
 }
 
 input NetworkEventResponseStatusFilterInput {
-  gte: Int
-  lte: Int
+    gte: Int
+    lte: Int
 }
 
 input NetworkEventFilterInput {
-  urlSearch: String
-  resourceType: [HttpNetworkEventResourceType!]
-  status: NetworkEventResponseStatusFilterInput
+    urlSearch: String
+    resourceType: [HttpNetworkEventResourceType!]
+    status: NetworkEventResponseStatusFilterInput
 }
 
 extend type Query {
-  testExecution(id: ID!): TestExecution
+    testExecution(id: ID!): TestExecution
 }

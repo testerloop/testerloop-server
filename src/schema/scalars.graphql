@@ -1,18 +1,18 @@
 """
-    Represents a DateTime in ISO8601 format.
+Represents a DateTime in ISO8601 format.
 """
 scalar DateTime
 
 """
-    Represents the opaque Cursor as specified in The Relay Connection Spec.
+Represents the opaque Cursor as specified in The Relay Connection Spec.
 
-    See:
-    - https://graphql.org/learn/pagination/
-    - https://relay.dev/graphql/connections.htm#sec-Cursor
+See:
+- https://graphql.org/learn/pagination/
+- https://relay.dev/graphql/connections.htm#sec-Cursor
 """
 scalar Cursor
 
 """
-    Represents a valid URL.
+Represents a valid URL.
 """
 scalar URL
