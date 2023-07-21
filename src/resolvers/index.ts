@@ -55,6 +55,7 @@ import UploadInfo from './UploadInfo.js';
 import Field from './Field.js';
 import Mutation from './Mutation.js';
 import TestExecutionCreationResponse from './TestExecutionCreationResponse.js';
+import UserAuthenticationResponse from './UserAuthenticationResponse.js'; 
 const interfaceResolvers = {
     __resolveType<T extends String>(parent: { __typename: T }): T {
         return parent.__typename;
@@ -145,6 +146,7 @@ const resolvers: Resolvers = {
     TestExecutionSnapshot,
     TestExecutionScreenshot,
     SignedURL,
+    UserAuthenticationResponse,
 };
 
 export default resolvers;

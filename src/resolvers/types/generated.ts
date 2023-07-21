@@ -443,6 +443,7 @@ export type Mutation = {
   readonly __typename: 'Mutation';
   readonly createTestExecution: TestExecutionCreationResponse;
   readonly createTestRun: Maybe<UploadInfo>;
+  readonly userAuthentication: UserAuthenticationResponse;
 };
 
 
@@ -456,6 +457,11 @@ export type MutationCreateTestExecutionArgs = {
 export type MutationCreateTestRunArgs = {
   runEnvironmentDetails: Scalars['String'];
   s3Config?: InputMaybe<S3Config>;
+};
+
+
+export type MutationUserAuthenticationArgs = {
+  accessToken: Scalars['String'];
 };
 
 export type NetworkEvent = {
@@ -791,6 +797,11 @@ export type UploadInfo = {
   readonly url: Maybe<Scalars['String']>;
 };
 
+export type UserAuthenticationResponse = {
+  readonly __typename: 'UserAuthenticationResponse';
+  readonly id: Scalars['ID'];
+};
+
 
 
 export type ResolverTypeWrapper<T> = Promise<T> | T;
@@ -958,6 +969,7 @@ export type ResolversTypes = {
   TestRunEdge: ResolverTypeWrapper<TestRunEdgeModel>;
   URL: ResolverTypeWrapper<Scalars['URL']>;
   UploadInfo: ResolverTypeWrapper<UploadInfo>;
+  UserAuthenticationResponse: ResolverTypeWrapper<UserAuthenticationResponse>;
 };
 
 /** Mapping between all available schema types and the resolvers parents */
@@ -1056,6 +1068,7 @@ export type ResolversParentTypes = {
   TestRunEdge: TestRunEdgeModel;
   URL: Scalars['URL'];
   UploadInfo: UploadInfo;
+  UserAuthenticationResponse: UserAuthenticationResponse;
 };
 
 export type DeferDirectiveArgs = {
@@ -1401,6 +1414,7 @@ export type KeyValuePairResolvers<ContextType = Context, ParentType extends Reso
 export type MutationResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
   createTestExecution: Resolver<ResolversTypes['TestExecutionCreationResponse'], ParentType, ContextType, RequireFields<MutationCreateTestExecutionArgs, 'featureFile' | 'testName'>>;
   createTestRun: Resolver<Maybe<ResolversTypes['UploadInfo']>, ParentType, ContextType, RequireFields<MutationCreateTestRunArgs, 'runEnvironmentDetails'>>;
+  userAuthentication: Resolver<ResolversTypes['UserAuthenticationResponse'], ParentType, ContextType, RequireFields<MutationUserAuthenticationArgs, 'accessToken'>>;
 };
 
 export type NetworkEventResolvers<ContextType = Context, ParentType extends ResolversParentTypes['NetworkEvent'] = ResolversParentTypes['NetworkEvent']> = {
@@ -1615,6 +1629,11 @@ export type UploadInfoResolvers<ContextType = Context, ParentType extends Resolv
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type UserAuthenticationResponseResolvers<ContextType = Context, ParentType extends ResolversParentTypes['UserAuthenticationResponse'] = ResolversParentTypes['UserAuthenticationResponse']> = {
+  id: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type Resolvers<ContextType = Context> = {
   BrowserVersion: BrowserVersionResolvers<ContextType>;
   CallFrame: CallFrameResolvers<ContextType>;
@@ -1699,6 +1718,7 @@ export type Resolvers<ContextType = Context> = {
   TestRunEdge: TestRunEdgeResolvers<ContextType>;
   URL: GraphQLScalarType;
   UploadInfo: UploadInfoResolvers<ContextType>;
+  UserAuthenticationResponse: UserAuthenticationResponseResolvers<ContextType>;
 };
 
 export type DirectiveResolvers<ContextType = Context> = {

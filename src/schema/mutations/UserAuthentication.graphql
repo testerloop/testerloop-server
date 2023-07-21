@@ -1,0 +1,9 @@
+type UserAuthenticationResponse {
+    id: ID!
+}
+
+extend type Mutation {
+    userAuthentication(
+        accessToken: String!
+    ): UserAuthenticationResponse!
+}

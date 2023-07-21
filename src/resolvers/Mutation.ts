@@ -1,6 +1,6 @@
 import { v4 as uuidv4, v5 as uuidv5 } from 'uuid';
 import { MutationResolvers } from './types/generated';
-import { UploadInfo, TestExecutionCreationResponse } from './types/generated';
+import { UploadInfo, TestExecutionCreationResponse, UserAuthenticationResponse } from './types/generated';
 
 const resolvers: MutationResolvers = {
     createTestRun: async (
@@ -86,6 +86,16 @@ const resolvers: MutationResolvers = {
             testExecutionGroupId: testExecutionGroupID,
         };
     },
+    userAuthentication: async (
+        parent,
+        { accessToken },
+    ): Promise<UserAuthenticationResponse> => {
+        console.log(accessToken);
+        return {
+            __typename: 'UserAuthenticationResponse',
+            id: '1222',
+        };
+    }
 };
 
 export default resolvers;
