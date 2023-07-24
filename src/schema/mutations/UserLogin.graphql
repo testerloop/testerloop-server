@@ -1,0 +1,13 @@
+type User {
+    id: ID!
+}
+
+type UserLoginResponse {
+    user: User
+}
+
+extend type Mutation {
+    login(
+        accessToken: String!
+    ): UserLoginResponse
+}

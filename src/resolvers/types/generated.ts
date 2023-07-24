@@ -441,14 +441,9 @@ export type KeyValuePair = {
 
 export type Mutation = {
   readonly __typename: 'Mutation';
-  readonly authenticateUser: UserAuthenticationResponse;
   readonly createTestExecution: TestExecutionCreationResponse;
   readonly createTestRun: Maybe<UploadInfo>;
-};
-
-
-export type MutationAuthenticateUserArgs = {
-  accessToken: Scalars['String'];
+  readonly login: Maybe<UserLoginResponse>;
 };
 
 
@@ -462,6 +457,11 @@ export type MutationCreateTestExecutionArgs = {
 export type MutationCreateTestRunArgs = {
   runEnvironmentDetails: Scalars['String'];
   s3Config?: InputMaybe<S3Config>;
+};
+
+
+export type MutationLoginArgs = {
+  accessToken: Scalars['String'];
 };
 
 export type NetworkEvent = {
@@ -797,9 +797,14 @@ export type UploadInfo = {
   readonly url: Maybe<Scalars['String']>;
 };
 
-export type UserAuthenticationResponse = {
-  readonly __typename: 'UserAuthenticationResponse';
+export type User = {
+  readonly __typename: 'User';
   readonly id: Scalars['ID'];
+};
+
+export type UserLoginResponse = {
+  readonly __typename: 'UserLoginResponse';
+  readonly user: Maybe<User>;
 };
 
 
@@ -969,7 +974,8 @@ export type ResolversTypes = {
   TestRunEdge: ResolverTypeWrapper<TestRunEdgeModel>;
   URL: ResolverTypeWrapper<Scalars['URL']>;
   UploadInfo: ResolverTypeWrapper<UploadInfo>;
-  UserAuthenticationResponse: ResolverTypeWrapper<UserAuthenticationResponse>;
+  User: ResolverTypeWrapper<User>;
+  UserLoginResponse: ResolverTypeWrapper<UserLoginResponse>;
 };
 
 /** Mapping between all available schema types and the resolvers parents */
@@ -1068,7 +1074,8 @@ export type ResolversParentTypes = {
   TestRunEdge: TestRunEdgeModel;
   URL: Scalars['URL'];
   UploadInfo: UploadInfo;
-  UserAuthenticationResponse: UserAuthenticationResponse;
+  User: User;
+  UserLoginResponse: UserLoginResponse;
 };
 
 export type DeferDirectiveArgs = {
@@ -1412,9 +1419,9 @@ export type KeyValuePairResolvers<ContextType = Context, ParentType extends Reso
 };
 
 export type MutationResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
-  authenticateUser: Resolver<ResolversTypes['UserAuthenticationResponse'], ParentType, ContextType, RequireFields<MutationAuthenticateUserArgs, 'accessToken'>>;
   createTestExecution: Resolver<ResolversTypes['TestExecutionCreationResponse'], ParentType, ContextType, RequireFields<MutationCreateTestExecutionArgs, 'featureFile' | 'testName'>>;
   createTestRun: Resolver<Maybe<ResolversTypes['UploadInfo']>, ParentType, ContextType, RequireFields<MutationCreateTestRunArgs, 'runEnvironmentDetails'>>;
+  login: Resolver<Maybe<ResolversTypes['UserLoginResponse']>, ParentType, ContextType, RequireFields<MutationLoginArgs, 'accessToken'>>;
 };
 
 export type NetworkEventResolvers<ContextType = Context, ParentType extends ResolversParentTypes['NetworkEvent'] = ResolversParentTypes['NetworkEvent']> = {
@@ -1629,8 +1636,13 @@ export type UploadInfoResolvers<ContextType = Context, ParentType extends Resolv
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type UserAuthenticationResponseResolvers<ContextType = Context, ParentType extends ResolversParentTypes['UserAuthenticationResponse'] = ResolversParentTypes['UserAuthenticationResponse']> = {
+export type UserResolvers<ContextType = Context, ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']> = {
   id: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type UserLoginResponseResolvers<ContextType = Context, ParentType extends ResolversParentTypes['UserLoginResponse'] = ResolversParentTypes['UserLoginResponse']> = {
+  user: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -1718,7 +1730,8 @@ export type Resolvers<ContextType = Context> = {
   TestRunEdge: TestRunEdgeResolvers<ContextType>;
   URL: GraphQLScalarType;
   UploadInfo: UploadInfoResolvers<ContextType>;
-  UserAuthenticationResponse: UserAuthenticationResponseResolvers<ContextType>;
+  User: UserResolvers<ContextType>;
+  UserLoginResponse: UserLoginResponseResolvers<ContextType>;
 };
 
 export type DirectiveResolvers<ContextType = Context> = {
