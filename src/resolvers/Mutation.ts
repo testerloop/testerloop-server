@@ -51,11 +51,15 @@ const resolvers: MutationResolvers = {
     },
     createTestExecution: async (
         _,
-        { testName, featureFile, s3Config },
-        { auth, repository },
+        { runID, testName, featureFile, s3Config },
+        { dataSources, auth, repository },
     ): Promise<TestExecutionCreationResponse> => {
         const organisationIdentifier = repository.getOrganisationIdentifier(
             auth || s3Config || undefined,
+        );
+
+        const { s3BucketName, customerPath } = repository.getBucketAndPath(
+            auth || s3Config,
         );
 
         if (!organisationIdentifier) {
@@ -68,6 +72,12 @@ const resolvers: MutationResolvers = {
         const name = `${testName}-${featureFile}-${organisationIdentifier}`;
         const testExecutionGroupID = uuidv5(name, NAMESPACE);
         const testExecutionID = uuidv4();
+        await dataSources.createTestExecution.createFolder(
+            s3BucketName,
+            customerPath,
+            runID,
+            testExecutionID,
+        );
         return {
             __typename: 'TestExecutionCreationResponse',
             testExecutionId: testExecutionID,

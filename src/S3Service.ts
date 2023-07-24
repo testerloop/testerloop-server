@@ -138,6 +138,16 @@ class S3Service {
 
         return await this.s3.send(command);
     }
+
+    async createFolder(bucketName: string, key: string) {
+        const command = new PutObjectCommand({
+            Bucket: bucketName,
+            Key: `${key}/`,
+            Body: '',
+        });
+
+        return await this.s3.send(command);
+    }
 }
 
 export default new S3Service();
