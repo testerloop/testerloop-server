@@ -284,4 +284,9 @@ export class TestExecution {
 
         return getPaginatedData(data, { first: args.first, after: args.after });
     }
+
+    async getRerunId(id: string): Promise<string | null> {
+        const rerunId = await this.context.repository.getRerunOfId(id);
+        return rerunId ?? null;
+    }
 }
