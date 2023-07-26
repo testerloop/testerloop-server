@@ -38,6 +38,43 @@ const resolvers: TestExecutionResolvers = {
             testExecutionId: id,
         };
     },
+    async rerunOf({ id }, _args, { dataSources, auth }) {
+        const [runId, _] = id.split('/');
+        const rerunTestExecutionId = auth
+            ? await dataSources.testExecution.getRerunId(id)
+            : null;
+        return rerunTestExecutionId
+            ? {
+                  __typename: 'TestExecution',
+                  id: rerunTestExecutionId,
+                  testRun: { __typename: 'TestRun', id: runId },
+              }
+            : null;
+    },
+
+    async reruns({ id }, { first, after }, { dataSources }) {
+        const { edges, hasNextPage, hasPreviousPage, totalCount } =
+            await dataSources.testExecution.getByTestRunId(id, {
+                first,
+                after,
+            });
+        return {
+            edges: edges.map(({ cursor, node }) => ({
+                cursor,
+                node: {
+                    __typename: 'TestExecution',
+                    id: `${id}/${node.id}`,
+                    testRun: {
+                        __typename: 'TestRun',
+                        id,
+                    },
+                },
+            })),
+            totalCount,
+            hasNextPage,
+            hasPreviousPage,
+        };
+    },
     async environment({ id }, _args, { dataSources }) {
         const results = await dataSources.testResults.getById(id);
         const [major, minor, build, patch] = results.browserVersion
