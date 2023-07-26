@@ -448,6 +448,7 @@ export type Mutation = {
 
 export type MutationCreateTestExecutionArgs = {
   featureFile: Scalars['String'];
+  runID: Scalars['String'];
   s3Config?: InputMaybe<S3Config>;
   testName: Scalars['String'];
 };
@@ -1436,7 +1437,7 @@ export type KeyValuePairResolvers<ContextType = Context, ParentType extends Reso
 };
 
 export type MutationResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
-  createTestExecution: Resolver<ResolversTypes['TestExecutionCreationResponse'], ParentType, ContextType, RequireFields<MutationCreateTestExecutionArgs, 'featureFile' | 'testName'>>;
+  createTestExecution: Resolver<ResolversTypes['TestExecutionCreationResponse'], ParentType, ContextType, RequireFields<MutationCreateTestExecutionArgs, 'featureFile' | 'runID' | 'testName'>>;
   createTestRun: Resolver<Maybe<ResolversTypes['UploadInfo']>, ParentType, ContextType, RequireFields<MutationCreateTestRunArgs, 'runEnvironmentDetails'>>;
 };
 

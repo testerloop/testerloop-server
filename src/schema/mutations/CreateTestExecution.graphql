@@ -5,6 +5,7 @@ type TestExecutionCreationResponse {
 
 extend type Mutation {
     createTestExecution(
+        runID: String!
         testName: String!
         featureFile: String!
         s3Config: S3Config

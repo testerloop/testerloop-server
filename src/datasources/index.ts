@@ -12,6 +12,7 @@ import { ScenarioEvent } from './ScenarioEvent.js';
 import { Screenshot } from './Screenshot.js';
 import { TestRun } from './TestRun.js';
 import { CreateTestRun } from './CreateTestRun.js';
+import { CreateTestExecution } from './CreateTestExecution.js';
 
 export const createDataSources = (context: Context) => ({
     consoleEvent: new ConsoleEvent(context),
@@ -26,6 +27,7 @@ export const createDataSources = (context: Context) => ({
     scenarioEvent: new ScenarioEvent(context),
     screenshot: new Screenshot(context),
     createTestRun: new CreateTestRun(context),
+    createTestExecution: new CreateTestExecution(context),
 });
 
 export type DataSources = ReturnType<typeof createDataSources>;
