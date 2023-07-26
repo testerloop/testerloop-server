@@ -1,4 +1,4 @@
-import { Organisation } from '@prisma/client';
+import { Organisation, TestExecution, TestRun } from '@prisma/client';
 
 import { S3Config, InputMaybe } from '../resolvers/types/generated';
 import { Auth } from '../context.js';
@@ -64,6 +64,49 @@ class PrismaRepository implements Repository {
 
         return auth.organisation.slug;
     }
+    async findOrCreateTestExecutionGroup(testExecutionGroupId: string) {
+        let testExecutionGroup =
+            await this.db.prisma.testExecutionGroup.findUnique({
+                where: { id: testExecutionGroupId },
+            });
+
+        if (!testExecutionGroup) {
+            testExecutionGroup = await this.db.prisma.testExecutionGroup.create(
+                {
+                    data: { id: testExecutionGroupId },
+                },
+            );
+        }
+
+        return testExecutionGroup;
+    }
+
+    async getTestExecutionByGroupIdAndRunId(
+        testExecutionGroupId: string,
+        runID: string,
+    ) {
+        return this.db.prisma.testExecution.findFirst({
+            where: {
+                testExecutionGroupId,
+                testRunId: runID,
+            },
+        });
+    }
+    async createTestExecution(args: TestExecution) {
+        return this.db.prisma.testExecution.create({ data: args });
+    }
+
+    async createTestRun(args: TestRun) {
+        return this.db.prisma.testRun.create({ data: args });
+    }
+
+    async getRerunOfId(id: string): Promise<string | null> {
+        const execution = await this.db.prisma.testExecution.findUnique({
+            where: { id },
+            select: { rerunOfId: true },
+        });
+        return execution?.rerunOfId ?? null;
+    }
 }
 
 class ConfigRepository implements Repository {
@@ -114,6 +157,22 @@ class ConfigRepository implements Repository {
         const s3Config = this.validateArgs(args);
 
         return s3Config.customerPath;
+    }
+    findOrCreateTestExecutionGroup(_: string) {
+        throw new Error('Method not implemented.');
+    }
+
+    getTestExecutionByGroupIdAndRunId(_: string, __: string) {
+        throw new Error('Method not implemented.');
+    }
+    createTestExecution(_: TestExecution) {
+        throw new Error('Method not implemented.');
+    }
+    createTestRun(_: TestRun) {
+        throw new Error('Method not implemented.');
+    }
+    getRerunOfId(_: string) {
+        throw new Error('Method not implemented.');
     }
 }
 
