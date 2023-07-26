@@ -4,7 +4,7 @@ import { S3Config, InputMaybe } from '../resolvers/types/generated';
 import { Auth } from '../context.js';
 import PrismaDB from '../db.js';
 import config from '../config.js';
-import { SlugOptionalOrganisationCreateInput } from '../interfaces/prisma.js';
+import { OrganisationWithoutSlug } from '../interfaces/prisma.js';
 
 type GetBucketAndPathArgs = Auth | InputMaybe<S3Config> | undefined;
 
@@ -12,13 +12,12 @@ export interface S3CustomerConfig {
     s3BucketName: string;
     customerPath: string;
 }
-
 interface Repository {
     getByApiKey: (apiKey: string) => Promise<Organisation | null>;
     getBucketAndPath: (args: GetBucketAndPathArgs) => S3CustomerConfig;
     getOrganisationIdentifier: (args: GetBucketAndPathArgs) => string;
     createOrganisation: (
-        args: SlugOptionalOrganisationCreateInput,
+        args: OrganisationWithoutSlug,
     ) => Promise<Organisation | null>;
 }
 
@@ -43,7 +42,7 @@ class PrismaRepository implements Repository {
         return this.db.getByApiKey(apiKey);
     }
 
-    async createOrganisation(args: SlugOptionalOrganisationCreateInput) {
+    async createOrganisation(args: OrganisationWithoutSlug) {
         return this.db.createWithSlug(args);
     }
 
@@ -128,14 +127,6 @@ class ConfigRepository implements Repository {
         return s3Config;
     }
 
-    createOrganisation(_: SlugOptionalOrganisationCreateInput): Promise<null> {
-        throw new Error('Method not implemented.');
-    }
-
-    getByApiKey(_: string): Promise<null> {
-        throw new Error('Method not implemented.');
-    }
-
     getBucketAndPath(args: GetBucketAndPathArgs) {
         const s3Config = this.validateArgs(args);
         console.log('Using s3Config');
@@ -156,21 +147,37 @@ class ConfigRepository implements Repository {
 
         return s3Config.customerPath;
     }
+
+    createOrganisation(
+        _: OrganisationWithoutSlug,
+    ): Promise<Organisation | null> {
+        this.notImplementedException();
+        return Promise.resolve(null);
+    }
+
+    getByApiKey(_: string): Promise<Organisation | null> {
+        this.notImplementedException();
+        return Promise.resolve(null);
+    }
+
     findOrCreateTestExecutionGroup(_: string) {
-        throw new Error('Method not implemented.');
+        this.notImplementedException();
     }
 
     getTestExecutionByGroupIdAndRunId(_: string, __: string) {
-        throw new Error('Method not implemented.');
+        this.notImplementedException();
     }
+
     createTestExecution(_: TestExecution) {
-        throw new Error('Method not implemented.');
+        this.notImplementedException();
     }
+
     createTestRun(_: TestRun) {
-        throw new Error('Method not implemented.');
+        this.notImplementedException();
     }
+
     getRerunOfId(_: string) {
-        throw new Error('Method not implemented.');
+        this.notImplementedException();
     }
 }
 
