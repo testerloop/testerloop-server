@@ -5,6 +5,8 @@ type TestExecution implements Node & Event & IntervalEvent {
     title: String!
     testRun: TestRun!
     environment: TestExecutionEnvironment!
+    rerunOf: TestExecution
+    reruns(first: Int, after: Cursor): TestExecutionConnection!
     events(
         first: Int
         after: Cursor
