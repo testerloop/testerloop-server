@@ -64,21 +64,19 @@ class PrismaRepository implements Repository {
 
         return auth.organisation.slug;
     }
+
     async findOrCreateTestExecutionGroup(testExecutionGroupId: string) {
-        let testExecutionGroup =
+        const testExecutionGroup =
             await this.db.prisma.testExecutionGroup.findUnique({
                 where: { id: testExecutionGroupId },
             });
 
-        if (!testExecutionGroup) {
-            testExecutionGroup = await this.db.prisma.testExecutionGroup.create(
-                {
-                    data: { id: testExecutionGroupId },
-                },
-            );
-        }
-
-        return testExecutionGroup;
+        return (
+            testExecutionGroup ??
+            (await this.db.prisma.testExecutionGroup.create({
+                data: { id: testExecutionGroupId },
+            }))
+        );
     }
 
     async getTestExecutionByGroupIdAndRunId(
