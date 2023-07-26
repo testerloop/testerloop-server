@@ -4,7 +4,9 @@ import {
     MutationResolvers,
     UploadInfo,
     TestExecutionCreationResponse,
-} from './types/generated';
+    TestStatus,
+    RunStatus,
+} from './types/generated.js';
 
 const resolvers: MutationResolvers = {
     createTestRun: async (
@@ -34,6 +36,15 @@ const resolvers: MutationResolvers = {
             customerPath,
             runID,
         );
+        if (auth) {
+            console.log('Adding run to database');
+            const testRun = {
+                id: runID,
+                status: RunStatus.Running,
+                organisationId: auth.organisation.id,
+            };
+            await dataSources.createTestRun.addTestRunToDatabase(testRun);
+        }
 
         return {
             __typename: 'UploadInfo',
@@ -70,18 +81,41 @@ const resolvers: MutationResolvers = {
 
         const NAMESPACE = 'c9412f45-51ba-4b4d-9867-6117fb1646e1';
         const name = `${testName}-${featureFile}-${organisationIdentifier}`;
-        const testExecutionGroupID = uuidv5(name, NAMESPACE);
-        const testExecutionID = uuidv4();
+        const testExecutionGroupId = uuidv5(name, NAMESPACE);
+        const testExecutionId = uuidv4();
         await dataSources.createTestExecution.createFolder(
             s3BucketName,
             customerPath,
             runID,
-            testExecutionID,
+            testExecutionId,
         );
+
+        await dataSources.createTestExecution.findOrCreateTestExecutionGroup(
+            testExecutionGroupId,
+        );
+
+        const rerunOf =
+            await dataSources.createTestExecution.findTestExecutionGroupInRun(
+                testExecutionGroupId,
+                runID,
+            );
+
+        const testExecution = {
+            id: testExecutionId,
+            name: testName,
+            result: TestStatus.InProgress,
+            at: new Date(),
+            until: null,
+            testExecutionGroupId,
+            testRunId: runID,
+            rerunOfId: rerunOf?.id || null,
+        };
+
+        await dataSources.createTestExecution.updateDatabase(testExecution);
         return {
             __typename: 'TestExecutionCreationResponse',
-            testExecutionId: testExecutionID,
-            testExecutionGroupId: testExecutionGroupID,
+            testExecutionId,
+            testExecutionGroupId,
         };
     },
 };
