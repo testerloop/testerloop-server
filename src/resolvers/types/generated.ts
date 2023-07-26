@@ -560,7 +560,6 @@ export type QueryTestRunsArgs = {
 
 export enum RunStatus {
   Completed = 'COMPLETED',
-  Queued = 'QUEUED',
   Running = 'RUNNING'
 }
 
@@ -663,6 +662,8 @@ export type TestExecution = Event & IntervalEvent & Node & {
   readonly environment: TestExecutionEnvironment;
   readonly events: TestExecutionEventConnection;
   readonly id: Scalars['ID'];
+  readonly rerunOf: Maybe<TestExecution>;
+  readonly reruns: TestExecutionConnection;
   readonly testRun: TestRun;
   readonly title: Scalars['String'];
   readonly until: Scalars['DateTime'];
@@ -672,6 +673,12 @@ export type TestExecution = Event & IntervalEvent & Node & {
 export type TestExecutionEventsArgs = {
   after?: InputMaybe<Scalars['Cursor']>;
   filter?: InputMaybe<TestExecutionEventFilterInput>;
+  first?: InputMaybe<Scalars['Int']>;
+};
+
+
+export type TestExecutionRerunsArgs = {
+  after?: InputMaybe<Scalars['Cursor']>;
   first?: InputMaybe<Scalars['Int']>;
 };
 
@@ -811,8 +818,8 @@ export type TestRunStatus = {
 
 export enum TestStatus {
   Failed = 'FAILED',
-  Passed = 'PASSED',
-  Pending = 'PENDING'
+  InProgress = 'IN_PROGRESS',
+  Passed = 'PASSED'
 }
 
 export type UploadInfo = {
@@ -1560,6 +1567,8 @@ export type TestExecutionResolvers<ContextType = Context, ParentType extends Res
   environment: Resolver<ResolversTypes['TestExecutionEnvironment'], ParentType, ContextType>;
   events: Resolver<ResolversTypes['TestExecutionEventConnection'], ParentType, ContextType, Partial<TestExecutionEventsArgs>>;
   id: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  rerunOf: Resolver<Maybe<ResolversTypes['TestExecution']>, ParentType, ContextType>;
+  reruns: Resolver<ResolversTypes['TestExecutionConnection'], ParentType, ContextType, Partial<TestExecutionRerunsArgs>>;
   testRun: Resolver<ResolversTypes['TestRun'], ParentType, ContextType>;
   title: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   until: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
