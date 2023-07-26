@@ -1,5 +1,6 @@
 import DataLoader from 'dataloader';
 import { Conditions } from '@aws-sdk/s3-presigned-post/dist-types/types.js';
+import { TestRun } from '@prisma/client';
 
 import { Context } from '../context.js';
 import S3Service from '../S3Service.js';
@@ -65,5 +66,9 @@ export class CreateTestRun {
     ) {
         const key = `${customerPath}/${runID}/logs/cicd.json`;
         await S3Service.putObject(s3BucketName, key, cicdJson);
+    }
+
+    async addTestRunToDatabase(testRun: TestRun) {
+        this.context.repository.createTestRun(testRun);
     }
 }

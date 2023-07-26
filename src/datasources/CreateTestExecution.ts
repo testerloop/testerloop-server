@@ -1,4 +1,5 @@
 import DataLoader from 'dataloader';
+import { TestExecution } from '@prisma/client';
 
 import { Context } from '../context.js';
 import S3Service from '../S3Service.js';
@@ -26,6 +27,25 @@ export class CreateTestExecution {
             }),
         );
     });
+
+    async findTestExecutionGroupInRun(
+        testExecutionGroupID: string,
+        runID: string,
+    ) {
+        return this.context.repository.getTestExecutionByGroupIdAndRunId(
+            testExecutionGroupID,
+            runID,
+        );
+    }
+    async findOrCreateTestExecutionGroup(testExecutionGroupId: string) {
+        return this.context.repository.findOrCreateTestExecutionGroup(
+            testExecutionGroupId,
+        );
+    }
+
+    async updateDatabase(testExecution: TestExecution) {
+        return this.context.repository.createTestExecution(testExecution);
+    }
 
     async createFolder(
         s3BucketName: string,
