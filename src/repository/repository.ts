@@ -114,6 +114,15 @@ class PrismaRepository implements Repository {
         return this.db.prisma.testExecution.findUnique({ where: { id } });
     }
 
+    async getRerunsByTestId(testExecutionId: string) {
+        const reruns = await this.db.prisma.testExecution.findMany({
+            where: {
+                rerunOfId: testExecutionId,
+            },
+        });
+        return reruns;
+    }
+
     async updateTestExecutionResult(
         id: string,
         result: TestStatus,
@@ -201,6 +210,9 @@ class ConfigRepository implements Repository {
     }
 
     getTestExecutionById(_: string) {
+        this.notImplementedException();
+    }
+    getRerunsByTestId(_: string) {
         this.notImplementedException();
     }
     updateTestExecutionResult(
