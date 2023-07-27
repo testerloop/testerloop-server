@@ -4,7 +4,7 @@ import { TestStatus as PrismaTestStatus } from '@prisma/client';
 import {
     MutationResolvers,
     UploadInfo,
-    TestExecutionCreationResponse,
+    CreateTestExecutionResponse,
     TestStatus,
     RunStatus,
     TestExecutionStatus,
@@ -66,7 +66,7 @@ const resolvers: MutationResolvers = {
         _,
         { runID, testName, featureFile, s3Config },
         { dataSources, auth, repository },
-    ): Promise<TestExecutionCreationResponse> => {
+    ): Promise<CreateTestExecutionResponse> => {
         const organisationIdentifier = repository.getOrganisationIdentifier(
             auth || s3Config || undefined,
         );
@@ -105,7 +105,7 @@ const resolvers: MutationResolvers = {
 
         await repository.createTestExecution(testExecution);
         return {
-            __typename: 'TestExecutionCreationResponse',
+            __typename: 'CreateTestExecutionResponse',
             testExecutionId,
             testExecutionGroupId,
         };
