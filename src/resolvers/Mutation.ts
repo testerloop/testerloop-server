@@ -92,15 +92,12 @@ const resolvers: MutationResolvers = {
             testExecutionId,
         );
 
-        await dataSources.createTestExecution.findOrCreateTestExecutionGroup(
-            testExecutionGroupId,
-        );
+        await repository.findOrCreateTestExecutionGroup(testExecutionGroupId);
 
-        const rerunOf =
-            await dataSources.createTestExecution.findTestExecutionGroupInRun(
-                testExecutionGroupId,
-                runID,
-            );
+        const rerunOf = await repository.getTestExecutionByGroupIdAndRunId(
+            testExecutionGroupId,
+            runID,
+        );
 
         const testExecution = {
             id: testExecutionId,
@@ -113,7 +110,7 @@ const resolvers: MutationResolvers = {
             rerunOfId: rerunOf?.id || null,
         };
 
-        await dataSources.createTestExecution.updateDatabase(testExecution);
+        await repository.createTestExecution(testExecution);
         return {
             __typename: 'TestExecutionCreationResponse',
             testExecutionId,
