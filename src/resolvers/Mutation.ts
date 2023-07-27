@@ -1,4 +1,5 @@
 import { v4 as uuidv4, v5 as uuidv5 } from 'uuid';
+import { TestStatus as PrismaTestStatus } from '@prisma/client';
 
 import {
     MutationResolvers,
@@ -6,6 +7,7 @@ import {
     TestExecutionCreationResponse,
     TestStatus,
     RunStatus,
+    TestExecutionStatus,
 } from './types/generated.js';
 
 const resolvers: MutationResolvers = {
@@ -116,6 +118,32 @@ const resolvers: MutationResolvers = {
             __typename: 'TestExecutionCreationResponse',
             testExecutionId,
             testExecutionGroupId,
+        };
+    },
+
+    setTestExecutionStatus: async (
+        _,
+        { testExecutionId, testStatus },
+        { repository },
+    ): Promise<TestExecutionStatus> => {
+        const testExecution = await repository.getTestExecutionById(
+            testExecutionId,
+        );
+        const updatedTestStatus =
+            testStatus === TestStatus.Passed
+                ? PrismaTestStatus.PASSED
+                : PrismaTestStatus.FAILED;
+        const until = new Date();
+        repository.updateTestExecutionResult(
+            testExecutionId,
+            updatedTestStatus,
+            until,
+        );
+        return {
+            __typename: 'TestExecutionStatus',
+            id: testExecutionId,
+            testName: testExecution?.name || '',
+            testStatus,
         };
     },
 };

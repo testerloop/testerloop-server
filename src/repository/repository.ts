@@ -1,4 +1,9 @@
-import { Organisation, TestExecution, TestRun } from '@prisma/client';
+import {
+    Organisation,
+    TestExecution,
+    TestRun,
+    TestStatus,
+} from '@prisma/client';
 
 import { S3Config, InputMaybe } from '../resolvers/types/generated';
 import { Auth } from '../context.js';
@@ -104,6 +109,21 @@ class PrismaRepository implements Repository {
         });
         return execution?.rerunOfId ?? null;
     }
+
+    async getTestExecutionById(id: string): Promise<TestExecution | null> {
+        return this.db.prisma.testExecution.findUnique({ where: { id } });
+    }
+
+    async updateTestExecutionResult(
+        id: string,
+        result: TestStatus,
+        until: Date,
+    ): Promise<TestExecution | null> {
+        return this.db.prisma.testExecution.update({
+            where: { id },
+            data: { result, until },
+        });
+    }
 }
 
 class ConfigRepository implements Repository {
@@ -178,6 +198,18 @@ class ConfigRepository implements Repository {
 
     getRerunOfId(_: string) {
         this.notImplementedException();
+    }
+
+    getTestExecutionById(_: string) {
+        this.notImplementedException();
+    }
+    updateTestExecutionResult(
+        _: string,
+        __: TestStatus,
+        ___: Date,
+    ): Promise<TestExecution | null> {
+        this.notImplementedException();
+        return Promise.resolve(null);
     }
 }
 

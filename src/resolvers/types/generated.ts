@@ -443,6 +443,7 @@ export type Mutation = {
   readonly __typename: 'Mutation';
   readonly createTestExecution: TestExecutionCreationResponse;
   readonly createTestRun: Maybe<UploadInfo>;
+  readonly setTestExecutionStatus: TestExecutionStatus;
 };
 
 
@@ -457,6 +458,12 @@ export type MutationCreateTestExecutionArgs = {
 export type MutationCreateTestRunArgs = {
   runEnvironmentDetails: Scalars['String'];
   s3Config?: InputMaybe<S3Config>;
+};
+
+
+export type MutationSetTestExecutionStatusArgs = {
+  testExecutionId: Scalars['ID'];
+  testStatus: TestStatus;
 };
 
 export type NetworkEvent = {
@@ -1446,6 +1453,7 @@ export type KeyValuePairResolvers<ContextType = Context, ParentType extends Reso
 export type MutationResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
   createTestExecution: Resolver<ResolversTypes['TestExecutionCreationResponse'], ParentType, ContextType, RequireFields<MutationCreateTestExecutionArgs, 'featureFile' | 'runID' | 'testName'>>;
   createTestRun: Resolver<Maybe<ResolversTypes['UploadInfo']>, ParentType, ContextType, RequireFields<MutationCreateTestRunArgs, 'runEnvironmentDetails'>>;
+  setTestExecutionStatus: Resolver<ResolversTypes['TestExecutionStatus'], ParentType, ContextType, RequireFields<MutationSetTestExecutionStatusArgs, 'testExecutionId' | 'testStatus'>>;
 };
 
 export type NetworkEventResolvers<ContextType = Context, ParentType extends ResolversParentTypes['NetworkEvent'] = ResolversParentTypes['NetworkEvent']> = {

@@ -23,3 +23,7 @@ type TestRunStatus {
 extend type Query {
     getRun(runId: ID!): TestRunStatus!
 }
+
+extend type Mutation {
+    setTestExecutionStatus(testExecutionId: ID!, testStatus: TestStatus!): TestExecutionStatus!
+}
