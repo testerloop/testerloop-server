@@ -1,7 +1,6 @@
 import { v4 as uuidv4, v5 as uuidv5 } from 'uuid';
 import { MutationResolvers } from './types/generated';
-import { UploadInfo, TestExecutionCreationResponse, UserLoginResponse } from './types/generated';
-import authenticateUserService from '../AuthenticateUserService.js';
+import { UploadInfo, TestExecutionCreationResponse } from './types/generated';
 
 const resolvers: MutationResolvers = {
     createTestRun: async (
@@ -85,22 +84,6 @@ const resolvers: MutationResolvers = {
             __typename: 'TestExecutionCreationResponse',
             testExecutionId: testExecutionID,
             testExecutionGroupId: testExecutionGroupID,
-        };
-    },
-    login: async (
-        parent,
-        { accessToken },
-    ): Promise<UserLoginResponse> => {
-        const user = await authenticateUserService.getUser(accessToken);
-        if (!user) {
-            throw new Error('User is not authorized');
-        }
-        return {
-            __typename: 'UserLoginResponse',
-            user: {
-                __typename: 'User',
-                id: user.id,
-            },
         };
     },
 };
