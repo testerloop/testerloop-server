@@ -69,20 +69,6 @@ class PrismaRepository implements Repository {
         return auth.organisation.slug;
     }
 
-    async findOrCreateTestExecutionGroup(testExecutionGroupId: string) {
-        const testExecutionGroup =
-            await this.db.prisma.testExecutionGroup.findUnique({
-                where: { id: testExecutionGroupId },
-            });
-
-        return (
-            testExecutionGroup ??
-            (await this.db.prisma.testExecutionGroup.create({
-                data: { id: testExecutionGroupId },
-            }))
-        );
-    }
-
     async getTestExecutionByGroupIdAndRunId(
         testExecutionGroupId: string,
         runID: string,
@@ -96,6 +82,28 @@ class PrismaRepository implements Repository {
     }
 
     async createTestExecution(args: TestExecution) {
+        const { testExecutionGroupId, testRunId } = args;
+
+        const testExecutionGroup =
+            await this.db.prisma.testExecutionGroup.findUnique({
+                where: { id: testExecutionGroupId },
+            });
+
+        if (!testExecutionGroup) {
+            await this.db.prisma.testExecutionGroup.create({
+                data: { id: testExecutionGroupId },
+            });
+        }
+
+        const rerunOf = await this.getTestExecutionByGroupIdAndRunId(
+            testExecutionGroupId,
+            testRunId,
+        );
+
+        if (rerunOf) {
+            args.rerunOfId = rerunOf.id;
+        }
+
         return this.db.prisma.testExecution.create({ data: args });
     }
 
@@ -191,10 +199,6 @@ class ConfigRepository implements Repository {
     getByApiKey(_: string): Promise<Organisation | null> {
         this.notImplementedException();
         return Promise.resolve(null);
-    }
-
-    findOrCreateTestExecutionGroup(_: string) {
-        this.notImplementedException();
     }
 
     getTestExecutionByGroupIdAndRunId(_: string, __: string) {
