@@ -106,7 +106,7 @@ To apply prisma schemas to your local postgress, run the following command:
 To seed the database with some dummy data, run the following command:
 
 ``` bash
-    npx ts-node-esm prisma/seed.ts
+    npm run seed:db
 ```
 
 ## View Tables
