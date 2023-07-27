@@ -52,29 +52,21 @@ const resolvers: TestExecutionResolvers = {
             : null;
     },
 
-    async reruns({ id }, { first, after }, { dataSources }) {
-        const { edges, hasNextPage, hasPreviousPage, totalCount } =
-            await dataSources.testExecution.getByTestRunId(id, {
-                first,
-                after,
-            });
-        return {
-            edges: edges.map(({ cursor, node }) => ({
-                cursor,
-                node: {
+    //TODO - MAKE THIS A CONNECTION TYPE
+    async reruns({ id }, _args, { repository }) {
+        const reruns = await repository.getRerunsByTestId(id);
+
+        return (
+            (reruns &&
+                reruns.map((rerun) => ({
                     __typename: 'TestExecution',
-                    id: `${id}/${node.id}`,
-                    testRun: {
-                        __typename: 'TestRun',
-                        id,
-                    },
-                },
-            })),
-            totalCount,
-            hasNextPage,
-            hasPreviousPage,
-        };
+                    id: rerun.id,
+                    testRun: { __typename: 'TestRun', id: rerun.testRunId },
+                }))) ??
+            []
+        );
     },
+
     async environment({ id }, _args, { dataSources }) {
         const results = await dataSources.testResults.getById(id);
         const [major, minor, build, patch] = results.browserVersion
