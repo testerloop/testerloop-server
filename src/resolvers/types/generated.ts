@@ -670,7 +670,7 @@ export type TestExecution = Event & IntervalEvent & Node & {
   readonly events: TestExecutionEventConnection;
   readonly id: Scalars['ID'];
   readonly rerunOf: Maybe<TestExecution>;
-  readonly reruns: TestExecutionConnection;
+  readonly reruns: ReadonlyArray<TestExecution>;
   readonly testRun: TestRun;
   readonly title: Scalars['String'];
   readonly until: Scalars['DateTime'];
@@ -680,12 +680,6 @@ export type TestExecution = Event & IntervalEvent & Node & {
 export type TestExecutionEventsArgs = {
   after?: InputMaybe<Scalars['Cursor']>;
   filter?: InputMaybe<TestExecutionEventFilterInput>;
-  first?: InputMaybe<Scalars['Int']>;
-};
-
-
-export type TestExecutionRerunsArgs = {
-  after?: InputMaybe<Scalars['Cursor']>;
   first?: InputMaybe<Scalars['Int']>;
 };
 
@@ -1576,7 +1570,7 @@ export type TestExecutionResolvers<ContextType = Context, ParentType extends Res
   events: Resolver<ResolversTypes['TestExecutionEventConnection'], ParentType, ContextType, Partial<TestExecutionEventsArgs>>;
   id: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   rerunOf: Resolver<Maybe<ResolversTypes['TestExecution']>, ParentType, ContextType>;
-  reruns: Resolver<ResolversTypes['TestExecutionConnection'], ParentType, ContextType, Partial<TestExecutionRerunsArgs>>;
+  reruns: Resolver<ReadonlyArray<ResolversTypes['TestExecution']>, ParentType, ContextType>;
   testRun: Resolver<ResolversTypes['TestRun'], ParentType, ContextType>;
   title: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   until: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
