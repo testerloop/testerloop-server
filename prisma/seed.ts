@@ -1,5 +1,11 @@
 import { PrismaClient, RunStatus, TestStatus } from '@prisma/client';
 
+if (process.env.NODE_ENV === 'production') {
+    throw new Error(
+        'Seed script should not be called in production environment',
+    );
+}
+
 const prisma = new PrismaClient();
 
 async function main() {
