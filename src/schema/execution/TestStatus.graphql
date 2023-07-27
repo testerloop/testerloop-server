@@ -1,0 +1,27 @@
+enum RunStatus {
+    RUNNING
+    COMPLETED
+    QUEUED
+    # RE_RUNNING TODO: implement
+}
+
+enum TestStatus {
+    FAILED
+    PASSED
+    PENDING
+}
+
+type TestExecutionStatus {
+    id: ID!
+    testName: String!
+    testStatus: TestStatus!
+}
+
+type TestRunStatus {
+    runStatus: RunStatus!
+    testExecutionStatuses: [TestExecutionStatus]!
+}
+
+extend type Query {
+    getRun(runId: ID!): TestRunStatus!
+}

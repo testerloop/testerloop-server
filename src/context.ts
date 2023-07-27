@@ -1,14 +1,15 @@
-import handleApiKey from './util/handleApiKey.js';
 import { IncomingHttpHeaders } from 'http';
 import { DataSources, createDataSources } from './datasources/index.js';
 import { Organisation, User } from '@prisma/client';
 import authenticateUserService from './AuthenticateUserService.js';
+import config from './config.js';
+import repository from './repository/repository.js';
 
 interface Request {
     headers: IncomingHttpHeaders;
 }
 
-interface Auth {
+export interface Auth {
     organisation: Organisation;
 }
 
@@ -17,7 +18,23 @@ export type Context = {
     request: {
         req: Request;
     };
-    auth: Auth | null;
+    auth?: Auth;
+    config: typeof config;
+    repository: typeof repository;
+};
+
+const getAuth = async (apiKey: string | null): Promise<Auth | undefined> => {
+    if (config.DB_ENABLED && !apiKey) throw new Error('API key is required');
+
+    if (!apiKey || !config.DB_ENABLED) return;
+
+    const organisation = await repository.getByApiKey(apiKey);
+
+    if (!organisation) throw new Error('Invalid API key provided');
+
+    console.log('Valid API key found for: ', organisation.name);
+
+    return { organisation };
 };
 
 export const createContext = async ({
@@ -26,17 +43,11 @@ export const createContext = async ({
     req: Request;
 }): Promise<Context> => {
     let dataSources: DataSources | null = null;
-    let auth: Auth | null = null;
     let user: User | null = null;
-    if (req.headers['x-api-key']) {
-        const apiKey = req.headers['x-api-key'] as string;
-        const organisation = await handleApiKey(apiKey);
-        if (!organisation) throw new Error('Invalid API key provided');
-        console.log('Valid API key found for: ', organisation.name);
-        auth = {
-            organisation: organisation,
-        };
-    }
+    const apiKey = req.headers['x-api-key']
+        ? (req.headers['x-api-key'] as string)
+        : null;
+    const auth = await getAuth(apiKey);
 
     if (req.headers.authorization) {
         let token = req.headers.authorization.replace('Bearer ', '');
@@ -50,15 +61,18 @@ export const createContext = async ({
         get dataSources() {
             if (dataSources === null)
                 throw new Error(
-                    'DataSources are not available during DataSource initialization.'
+                    'DataSources are not available during DataSource initialization.',
                 );
             return dataSources;
         },
         request: { req },
         auth,
         user,
+        config,
+        repository,
     };
 
     dataSources = createDataSources(context);
+
     return context;
 };

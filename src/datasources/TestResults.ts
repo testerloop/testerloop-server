@@ -1,26 +1,34 @@
 import DataLoader from 'dataloader';
+import * as z from 'zod';
+
 import config from '../config.js';
 import { Context } from '../context.js';
 import S3Service from '../S3Service.js';
-import * as z from 'zod';
+import {
+    RunStatus,
+    TestStatus,
+    TestExecutionStatus,
+} from '../resolvers/types/generated.js';
 
 const TestSchema = z.object({
-    title: z.array(z.string())
-})
+    title: z.array(z.string()),
+    state: z.string(),
+});
 
 const RunSchema = z.object({
-    tests: z.array(TestSchema)
-})
+    tests: z.array(TestSchema),
+});
 
 const ResultsSchema = z.object({
     status: z.string(),
     startedTestsAt: z.string(),
     endedTestsAt: z.string(),
     browserVersion: z.string(),
-    runs: z.array(RunSchema)
+    runs: z.array(RunSchema),
 });
 
-type Results = z.infer<typeof ResultsSchema>;
+export type Results = z.infer<typeof ResultsSchema>;
+export type Test = z.infer<typeof TestSchema>;
 
 export class TestResults {
     context: Context;
@@ -30,19 +38,111 @@ export class TestResults {
     }
 
     resultsByTestExecutionIdDataLoader = new DataLoader<string, Results>(
-        (ids) => Promise.all(ids.map(async (testExecutionId) => {
-            const bucketName = config.AWS_BUCKET_NAME;
-            const bucketPath = config.AWS_BUCKET_PATH;
-            const rawResults = await S3Service.getObject(bucketName, `${bucketPath}${testExecutionId}/cypress/results.json`)
-            const results = ResultsSchema.parse(rawResults);
-            return results;
-        }))
-    )
+        (ids) =>
+            Promise.all(
+                ids.map(async (testExecutionId) => {
+                    const bucketName = config.AWS_BUCKET_NAME;
+                    const bucketPath = config.AWS_BUCKET_PATH;
+                    const rawResults = await S3Service.getObject(
+                        bucketName,
+                        `${bucketPath}${testExecutionId}/cypress/results.json`,
+                    );
+                    const results = ResultsSchema.parse(rawResults);
+                    return results;
+                }),
+            ),
+    );
+    async doResultsExist(testExecutionId: string) {
+        const bucketName = config.AWS_BUCKET_NAME;
+        const bucketPath = config.AWS_BUCKET_PATH;
+        const s3Key = `${bucketPath}${testExecutionId}/cypress/results.json`;
+        return S3Service.doesFileExist(bucketName, s3Key);
+    }
+
+    async checkS3ResultsExistAndGetData(
+        testRunId: string,
+        testExecutionId: string,
+    ): Promise<Results | null> {
+        const s3Path = `${testRunId}/${testExecutionId}`;
+        const fileExists = await this.doResultsExist(s3Path);
+
+        if (!fileExists) {
+            return null;
+        }
+
+        return await this.getById(s3Path);
+    }
+
+    getRunStatusAndOutcome(testResults: Results | null) {
+        if (!testResults) {
+            return {
+                testStatus: TestStatus.Pending,
+                testName: '',
+            };
+        }
+
+        const testName =
+            testResults.runs[0]?.tests[0]?.title.slice(-1)[0] ?? '';
+        const allTestsPassed = testResults.runs[0]?.tests.every(
+            (test: Test) => test.state === 'passed',
+        );
+
+        const runStatus =
+            testResults.status === 'finished'
+                ? RunStatus.Completed
+                : RunStatus.Running;
+        const testStatus = allTestsPassed
+            ? TestStatus.Passed
+            : TestStatus.Failed;
+
+        return { runStatus, testStatus, testName };
+    }
+
+    async getTestExecutionStatuses(
+        testExecutions: {
+            edges: {
+                cursor: string;
+                node: {
+                    id: string;
+                };
+            }[];
+            totalCount: number;
+            hasPreviousPage: boolean;
+            hasNextPage: boolean;
+        },
+        runId: string,
+    ): Promise<TestExecutionStatus[]> {
+        return await Promise.all(
+            testExecutions.edges.map(async (testExecution) => {
+                const testResults = await this.checkS3ResultsExistAndGetData(
+                    runId,
+                    testExecution.node.id,
+                );
+
+                const currentTestStatus = testResults
+                    ? this.getRunStatusAndOutcome(testResults)
+                    : {
+                          testStatus: TestStatus.Pending,
+                          testName: '',
+                      };
+
+                const { testStatus, testName } = currentTestStatus;
+
+                return {
+                    __typename: 'TestExecutionStatus' as const,
+                    testStatus,
+                    testName,
+                    id: testExecution.node.id,
+                };
+            }),
+        );
+    }
+
     async getResultsByTestExecutionId(testExecutionId: string) {
         return this.resultsByTestExecutionIdDataLoader.load(testExecutionId);
     }
-    
+
     async getById(id: string) {
         return this.getResultsByTestExecutionId(id);
-    };
+    }
 }

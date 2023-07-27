@@ -1,10 +1,11 @@
 import { decodeId, decodeIdForType } from '../util/id.js';
-import { QueryResolvers } from './types/generated.js';
+
+import { QueryResolvers, RunStatus, TestStatus } from './types/generated.js';
 
 const resolvers: QueryResolvers = {
     async httpNetworkEvent(root, { id }, { dataSources }) {
         const decodedId = decodeIdForType('NetworkEvent', id);
-        if(!decodedId){
+        if (!decodedId) {
             return null;
         }
         const event = await dataSources.networkEvent.getById(decodedId);
@@ -18,7 +19,9 @@ const resolvers: QueryResolvers = {
         if (!decodedId) {
             return null;
         }
-        const testExecution = await dataSources.testExecution.getById(decodedId);
+        const testExecution = await dataSources.testExecution.getById(
+            decodedId,
+        );
         if (!testExecution) {
             return null;
         }
@@ -29,7 +32,7 @@ const resolvers: QueryResolvers = {
             testRun: {
                 __typename: 'TestRun',
                 id: runId,
-            }
+            },
         };
     },
     async testRun(root, { id }, { dataSources }) {
@@ -37,7 +40,10 @@ const resolvers: QueryResolvers = {
         if (!decodedId) {
             return null;
         }
-        const { totalCount } = await dataSources.testExecution.getByTestRunId(decodedId, {});
+        const { totalCount } = await dataSources.testExecution.getByTestRunId(
+            decodedId,
+            {},
+        );
         if (totalCount === 0) {
             return null;
         }
@@ -47,12 +53,8 @@ const resolvers: QueryResolvers = {
         };
     },
     async testRuns(root, { first, after }, { dataSources }) {
-        const {
-            edges,
-            hasNextPage,
-            hasPreviousPage,
-            totalCount,
-        } = await dataSources.testRun.getAll({ first, after });
+        const { edges, hasNextPage, hasPreviousPage, totalCount } =
+            await dataSources.testRun.getAll({ first, after });
 
         return {
             edges: edges.map(({ cursor, node }) => ({
@@ -65,12 +67,12 @@ const resolvers: QueryResolvers = {
             hasNextPage,
             hasPreviousPage,
             totalCount,
-        }
+        };
     },
 
-    async consoleLogEvent (root, { id }, { dataSources }) {
+    async consoleLogEvent(root, { id }) {
         const decodedId = decodeIdForType('ConsoleLogEvent', id);
-        if(!decodedId){
+        if (!decodedId) {
             return null;
         }
         return {
@@ -78,7 +80,42 @@ const resolvers: QueryResolvers = {
             id: decodedId,
         };
     },
-    
+
+    async getRun(parent, { runId }, { dataSources }) {
+        const testExecutions = await dataSources.testExecution.getByTestRunId(
+            runId,
+            {},
+        );
+
+        if (testExecutions.totalCount === 0) {
+            return {
+                __typename: 'TestRunStatus' as const,
+                runStatus: RunStatus.Queued,
+                testExecutionStatuses: [],
+            };
+        }
+
+        const testExecutionStatuses =
+            await dataSources.testResults.getTestExecutionStatuses(
+                testExecutions,
+                runId,
+            );
+
+        const isRunCompleted = testExecutionStatuses.every(
+            (status) => status.testStatus !== TestStatus.Pending,
+        );
+
+        const runStatus = isRunCompleted
+            ? RunStatus.Completed
+            : RunStatus.Running;
+
+        return {
+            __typename: 'TestRunStatus' as const,
+            runStatus,
+            testExecutionStatuses,
+        };
+    },
+
     async node(root, { id }, context, info) {
         const decodedId = decodeId(id);
         if (!decodedId) {
