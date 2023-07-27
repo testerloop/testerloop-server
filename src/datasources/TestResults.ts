@@ -76,7 +76,7 @@ export class TestResults {
     getRunStatusAndOutcome(testResults: Results | null) {
         if (!testResults) {
             return {
-                testStatus: TestStatus.Pending,
+                testStatus: TestStatus.InProgress,
                 testName: '',
             };
         }
@@ -122,7 +122,7 @@ export class TestResults {
                 const currentTestStatus = testResults
                     ? this.getRunStatusAndOutcome(testResults)
                     : {
-                          testStatus: TestStatus.Pending,
+                          testStatus: TestStatus.InProgress,
                           testName: '',
                       };
 

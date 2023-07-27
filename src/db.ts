@@ -2,7 +2,7 @@ import { PrismaClient, Organisation } from '@prisma/client';
 
 import {
     PrismaInterface,
-    SlugOptionalOrganisationCreateInput,
+    OrganisationWithoutSlug,
 } from './interfaces/prisma.js';
 import { generateSlug } from './util/generateSlug.js';
 import config from './config.js';
@@ -16,7 +16,7 @@ export default class PrismaDB implements PrismaInterface {
         }
     }
 
-    async createWithSlug(data: SlugOptionalOrganisationCreateInput) {
+    async createWithSlug(data: OrganisationWithoutSlug) {
         const slugifiedName = generateSlug(data.name);
         const slug = await this.getSlug(slugifiedName);
         return this.prisma.organisation.create({

@@ -1,6 +1,6 @@
-import { TestExecutionCreationResponseResolvers } from './types/generated';
+import { CreateTestExecutionResponseResolvers } from './types/generated';
 
-const resolvers: TestExecutionCreationResponseResolvers = {
+const resolvers: CreateTestExecutionResponseResolvers = {
     testExecutionId: ({ testExecutionId }) => testExecutionId,
     testExecutionGroupId: ({ testExecutionGroupId }) => testExecutionGroupId,
 };

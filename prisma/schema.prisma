@@ -13,13 +13,12 @@ datasource db {
 enum RunStatus {
   RUNNING
   COMPLETED
-  QUEUED
 }
 
 enum TestStatus {
   PASSED
   FAILED
-  PENDING
+  IN_PROGRESS
 }
 
 model Organisation {
@@ -49,12 +48,22 @@ model TestRun {
   organisation   Organisation    @relation(fields: [organisationId], references: [id], onDelete: Cascade)
 }
 
+model TestExecutionGroup {
+  id             String          @id @default(uuid()) @db.Uuid
+  testExecutions TestExecution[]
+}
+
 model TestExecution {
-  id        String     @id @default(uuid()) @db.Uuid
-  name      String
-  result    TestStatus
-  at        DateTime   @default(now())
-  until     DateTime?
-  testRunId String     @db.Uuid
-  testRun   TestRun    @relation(fields: [testRunId], references: [id])
+  id                   String             @id @default(uuid()) @db.Uuid
+  name                 String
+  result               TestStatus
+  at                   DateTime           @default(now())
+  until                DateTime?
+  testRunId            String             @db.Uuid
+  testRun              TestRun            @relation(fields: [testRunId], references: [id])
+  rerunOfId            String?            @db.Uuid
+  rerunOf              TestExecution?     @relation("RerunOf", fields: [rerunOfId], references: [id])
+  reruns               TestExecution[]    @relation("RerunOf")
+  testExecutionGroupId String             @db.Uuid
+  testExecutionGroup   TestExecutionGroup @relation(fields: [testExecutionGroupId], references: [id])
 }

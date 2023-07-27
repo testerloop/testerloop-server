@@ -1,10 +1,14 @@
 import { v4 as uuidv4, v5 as uuidv5 } from 'uuid';
+import { TestStatus as PrismaTestStatus } from '@prisma/client';
 
 import {
     MutationResolvers,
     UploadInfo,
-    TestExecutionCreationResponse,
-} from './types/generated';
+    CreateTestExecutionResponse,
+    TestStatus,
+    RunStatus,
+    TestExecutionStatus,
+} from './types/generated.js';
 
 const resolvers: MutationResolvers = {
     createTestRun: async (
@@ -34,6 +38,15 @@ const resolvers: MutationResolvers = {
             customerPath,
             runID,
         );
+        if (auth) {
+            console.log('Adding run to database');
+            const testRun = {
+                id: runID,
+                status: RunStatus.Running,
+                organisationId: auth.organisation.id,
+            };
+            await repository.createTestRun(testRun);
+        }
 
         return {
             __typename: 'UploadInfo',
@@ -53,7 +66,7 @@ const resolvers: MutationResolvers = {
         _,
         { runID, testName, featureFile, s3Config },
         { dataSources, auth, repository },
-    ): Promise<TestExecutionCreationResponse> => {
+    ): Promise<CreateTestExecutionResponse> => {
         const organisationIdentifier = repository.getOrganisationIdentifier(
             auth || s3Config || undefined,
         );
@@ -70,18 +83,57 @@ const resolvers: MutationResolvers = {
 
         const NAMESPACE = 'c9412f45-51ba-4b4d-9867-6117fb1646e1';
         const name = `${testName}-${featureFile}-${organisationIdentifier}`;
-        const testExecutionGroupID = uuidv5(name, NAMESPACE);
-        const testExecutionID = uuidv4();
+        const testExecutionGroupId = uuidv5(name, NAMESPACE);
+        const testExecutionId = uuidv4();
         await dataSources.createTestExecution.createFolder(
             s3BucketName,
             customerPath,
             runID,
-            testExecutionID,
+            testExecutionId,
+        );
+
+        const testExecution = {
+            id: testExecutionId,
+            name: testName,
+            result: TestStatus.InProgress,
+            at: new Date(),
+            until: null,
+            testExecutionGroupId,
+            testRunId: runID,
+            rerunOfId: null,
+        };
+
+        await repository.createTestExecution(testExecution);
+        return {
+            __typename: 'CreateTestExecutionResponse',
+            testExecutionId,
+            testExecutionGroupId,
+        };
+    },
+
+    setTestExecutionStatus: async (
+        _,
+        { testExecutionId, testStatus },
+        { repository },
+    ): Promise<TestExecutionStatus> => {
+        const testExecution = await repository.getTestExecutionById(
+            testExecutionId,
+        );
+        const updatedTestStatus =
+            testStatus === TestStatus.Passed
+                ? PrismaTestStatus.PASSED
+                : PrismaTestStatus.FAILED;
+        const until = new Date();
+        repository.updateTestExecutionResult(
+            testExecutionId,
+            updatedTestStatus,
+            until,
         );
         return {
-            __typename: 'TestExecutionCreationResponse',
-            testExecutionId: testExecutionID,
-            testExecutionGroupId: testExecutionGroupID,
+            __typename: 'TestExecutionStatus',
+            id: testExecutionId,
+            testName: testExecution?.name || '',
+            testStatus,
         };
     },
 };

@@ -89,8 +89,8 @@ const resolvers: QueryResolvers = {
 
         if (testExecutions.totalCount === 0) {
             return {
-                __typename: 'TestRunStatus' as const,
-                runStatus: RunStatus.Queued,
+                __typename: 'TestRunStatus',
+                runStatus: RunStatus.Running,
                 testExecutionStatuses: [],
             };
         }
@@ -102,7 +102,7 @@ const resolvers: QueryResolvers = {
             );
 
         const isRunCompleted = testExecutionStatuses.every(
-            (status) => status.testStatus !== TestStatus.Pending,
+            (status) => status.testStatus !== TestStatus.InProgress,
         );
 
         const runStatus = isRunCompleted
@@ -110,7 +110,7 @@ const resolvers: QueryResolvers = {
             : RunStatus.Running;
 
         return {
-            __typename: 'TestRunStatus' as const,
+            __typename: 'TestRunStatus',
             runStatus,
             testExecutionStatuses,
         };

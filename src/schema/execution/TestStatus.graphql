@@ -1,14 +1,12 @@
 enum RunStatus {
     RUNNING
     COMPLETED
-    QUEUED
-    # RE_RUNNING TODO: implement
 }
 
 enum TestStatus {
     FAILED
     PASSED
-    PENDING
+    IN_PROGRESS
 }
 
 type TestExecutionStatus {
@@ -24,4 +22,11 @@ type TestRunStatus {
 
 extend type Query {
     getRun(runId: ID!): TestRunStatus!
+}
+
+extend type Mutation {
+    setTestExecutionStatus(
+        testExecutionId: ID!
+        testStatus: TestStatus!
+    ): TestExecutionStatus!
 }
