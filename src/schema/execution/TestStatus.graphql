@@ -25,5 +25,8 @@ extend type Query {
 }
 
 extend type Mutation {
-    setTestExecutionStatus(testExecutionId: ID!, testStatus: TestStatus!): TestExecutionStatus!
+    setTestExecutionStatus(
+        testExecutionId: ID!
+        testStatus: TestStatus!
+    ): TestExecutionStatus!
 }

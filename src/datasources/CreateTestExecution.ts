@@ -1,5 +1,4 @@
 import DataLoader from 'dataloader';
-import { TestExecution } from '@prisma/client';
 
 import { Context } from '../context.js';
 import S3Service from '../S3Service.js';
