@@ -45,7 +45,7 @@ const resolvers: MutationResolvers = {
                 status: RunStatus.Running,
                 organisationId: auth.organisation.id,
             };
-            await dataSources.createTestRun.addTestRunToDatabase(testRun);
+            await repository.createTestRun(testRun);
         }
 
         return {

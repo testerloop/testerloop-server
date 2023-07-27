@@ -38,10 +38,10 @@ const resolvers: TestExecutionResolvers = {
             testExecutionId: id,
         };
     },
-    async rerunOf({ id }, _args, { dataSources, auth }) {
+    async rerunOf({ id }, _args, { repository, auth }) {
         const [runId, _] = id.split('/');
         const rerunTestExecutionId = auth
-            ? await dataSources.testExecution.getRerunId(id)
+            ? await repository.getRerunOfId(id)
             : null;
         return rerunTestExecutionId
             ? {

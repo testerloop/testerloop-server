@@ -67,8 +67,4 @@ export class CreateTestRun {
         const key = `${customerPath}/${runID}/logs/cicd.json`;
         await S3Service.putObject(s3BucketName, key, cicdJson);
     }
-
-    async addTestRunToDatabase(testRun: TestRun) {
-        this.context.repository.createTestRun(testRun);
-    }
 }
