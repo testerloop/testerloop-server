@@ -1,8 +1,6 @@
 import { CognitoJwtVerifier } from 'aws-jwt-verify';
 import config from './config.js';
-import { User } from '@prisma/client';
-import prisma from '../prisma/basePrismaClient.js';
-
+import { PrismaClient, User } from '@prisma/client';
 
 const verifier = CognitoJwtVerifier.create({
     userPoolId: config.COGNITO_USER_POOL_ID,
@@ -15,6 +13,8 @@ type JsonObject = { [name: string]: Json };
 
 
 class AuthenticateUserService {
+
+    prisma: PrismaClient = new PrismaClient();
 
     private async decodeToken(token: string): Promise<JsonObject | null> {
         try {
@@ -33,7 +33,7 @@ class AuthenticateUserService {
         const payload = await this.decodeToken(token);
 
         if (payload !== null) {
-            return prisma.user.findUnique({
+            return this.prisma.user.findUnique({
                 where: { email: payload.email as string }
             });
         }
