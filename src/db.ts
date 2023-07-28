@@ -1,8 +1,9 @@
-import { PrismaClient, Organisation } from '@prisma/client';
+import { PrismaClient } from '@prisma/client';
 
 import {
     PrismaInterface,
     OrganisationWithoutSlug,
+    ApiKeyResult,
 } from './interfaces/prisma.js';
 import { generateSlug } from './util/generateSlug.js';
 
@@ -17,7 +18,7 @@ export default class PrismaDB implements PrismaInterface {
         });
     }
 
-    async getByApiKey(apiKey: string): Promise<Organisation | null> {
+    async getByApiKey(apiKey: string): Promise<ApiKeyResult | null> {
         if (!this.prisma) return null;
         const apiKeyResult = await this.prisma.apiKey.findFirst({
             where: { apiKey },
@@ -30,7 +31,7 @@ export default class PrismaDB implements PrismaInterface {
                 'Your API key is not enabled. Please renew your subscription or contact Testerloop support.',
             );
         }
-        return apiKeyResult.organisation;
+        return apiKeyResult;
     }
 
     async getSlug(slug: string, index: number = 0): Promise<string> {
@@ -46,5 +47,12 @@ export default class PrismaDB implements PrismaInterface {
         }
 
         return this.getSlug(slug, index + 1);
+    }
+
+    async getTestRun(runId: string) {
+        return this.prisma.testRun.findUnique({
+            where: { id: runId },
+            include: { testExecutions: true },
+        });
     }
 }
