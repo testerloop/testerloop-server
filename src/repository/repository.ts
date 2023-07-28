@@ -10,14 +10,13 @@ import { Auth } from '../context.js';
 import PrismaDB from '../db.js';
 import {
     OrganisationWithoutSlug,
-    ApiKeyResult,
     S3CustomerConfig,
 } from '../interfaces/prisma.js';
 
 type GetBucketAndPathArgs = Auth | InputMaybe<S3Config> | undefined;
 
 interface Repository {
-    getByApiKey: (apiKey: string) => Promise<ApiKeyResult | null>;
+    getByApiKey: (apiKey: string) => Promise<Organisation | null>;
     getBucketAndPath: (args: GetBucketAndPathArgs) => S3CustomerConfig;
     getOrganisationIdentifier: (args: GetBucketAndPathArgs) => string;
     createOrganisation: (

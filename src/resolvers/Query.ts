@@ -1,7 +1,6 @@
 import {
     RunStatus as PrismaRunStatus,
     TestStatus as PrismaTestStatus,
-    ApiPermissions,
 } from '@prisma/client';
 
 import { decodeId, decodeIdForType } from '../util/id.js';
@@ -88,7 +87,7 @@ const resolvers: QueryResolvers = {
     },
 
     async getRun(parent, { runId }, { dataSources, auth, repository }) {
-        if (!auth || !auth.permissions.includes(ApiPermissions.GET_RUN))
+        if (!auth)
             throw new Error(
                 'User is not authenticated or lacks GET_RUN permission',
             );

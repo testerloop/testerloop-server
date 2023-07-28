@@ -1,4 +1,4 @@
-import { Prisma, Organisation, ApiPermissions } from '@prisma/client';
+import { Prisma, Organisation } from '@prisma/client';
 
 export type OrganisationWithoutSlug = Omit<
     Prisma.OrganisationCreateInput,
@@ -10,16 +10,10 @@ export interface S3CustomerConfig {
     customerPath: string;
 }
 
-export interface ApiKeyResult {
-    organisation: Organisation;
-    apiKey: string;
-    permissions: ApiPermissions[];
-}
-
 export interface PrismaInterface {
     createWithSlug: (
         data: OrganisationWithoutSlug,
     ) => Promise<Organisation | null>;
-    getByApiKey: (apiKey: string) => Promise<ApiKeyResult | null>;
+    getByApiKey: (apiKey: string) => Promise<Organisation | null>;
     getSlug: (slug: string, index?: number) => Promise<string> | null;
 }

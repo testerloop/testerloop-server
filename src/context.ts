@@ -1,6 +1,6 @@
 import { IncomingHttpHeaders } from 'http';
 
-import { Organisation, User, ApiPermissions } from '@prisma/client';
+import { Organisation, User } from '@prisma/client';
 
 import { DataSources, createDataSources } from './datasources/index.js';
 import authenticateUserService from './AuthenticateUserService.js';
@@ -13,7 +13,6 @@ interface Request {
 
 export interface Auth {
     organisation: Organisation;
-    permissions: ApiPermissions[];
 }
 
 export type Context = {
@@ -29,15 +28,14 @@ export type Context = {
 const getAuth = async (apiKey: string | null): Promise<Auth | undefined> => {
     if (!apiKey) throw new Error('API key is required');
 
-    const apiKeyResult = await repository.getByApiKey(apiKey);
+    const organisation = await repository.getByApiKey(apiKey);
 
-    if (!apiKeyResult) throw new Error('Invalid API key provided');
+    if (!organisation) throw new Error('Invalid API key provided');
 
-    console.log('Valid API key found for: ', apiKeyResult.organisation.name);
+    console.log('Valid API key found for: ', organisation.name);
 
     return {
-        organisation: apiKeyResult.organisation,
-        permissions: apiKeyResult.permissions,
+        organisation: organisation,
     };
 };
 

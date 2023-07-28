@@ -1,5 +1,5 @@
 import { v4 as uuidv4, v5 as uuidv5 } from 'uuid';
-import { TestStatus as PrismaTestStatus, ApiPermissions } from '@prisma/client';
+import { TestStatus as PrismaTestStatus } from '@prisma/client';
 
 import {
     MutationResolvers,
@@ -16,11 +16,6 @@ const resolvers: MutationResolvers = {
         { runEnvironmentDetails },
         { dataSources, auth, repository },
     ): Promise<UploadInfo> => {
-        if (!auth?.permissions.includes(ApiPermissions.CREATE_TEST_RUN)) {
-            throw new Error(
-                'You do not have permission to perform this action.',
-            );
-        }
         const runID = uuidv4();
         console.log('Creating run with ID: ', runID);
 
@@ -71,11 +66,6 @@ const resolvers: MutationResolvers = {
         { runID, testName, featureFile },
         { dataSources, auth, repository },
     ): Promise<CreateTestExecutionResponse> => {
-        if (!auth?.permissions.includes(ApiPermissions.CREATE_TEST_EXECUTION)) {
-            throw new Error(
-                'You do not have permission to perform this action.',
-            );
-        }
         const organisationIdentifier =
             repository.getOrganisationIdentifier(auth);
 
