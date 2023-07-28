@@ -1,6 +1,8 @@
 import { IncomingHttpHeaders } from 'http';
-import { DataSources, createDataSources } from './datasources/index.js';
+
 import { Organisation, User } from '@prisma/client';
+
+import { DataSources, createDataSources } from './datasources/index.js';
 import authenticateUserService from './AuthenticateUserService.js';
 import config from './config.js';
 import repository from './repository/repository.js';

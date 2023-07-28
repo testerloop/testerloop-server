@@ -8,6 +8,5 @@ extend type Mutation {
         runID: String!
         testName: String!
         featureFile: String!
-        s3Config: S3Config
     ): CreateTestExecutionResponse!
 }
