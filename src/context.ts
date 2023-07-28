@@ -34,9 +34,7 @@ const getAuth = async (apiKey: string | null): Promise<Auth | undefined> => {
 
     console.log('Valid API key found for: ', organisation.name);
 
-    return {
-        organisation: organisation,
-    };
+    return { organisation };
 };
 
 export const createContext = async ({
