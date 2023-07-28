@@ -29,17 +29,6 @@ const ResultsSchema = z.object({
 
 export type Results = z.infer<typeof ResultsSchema>;
 export type Test = z.infer<typeof TestSchema>;
-export type TestExecutionsArray = {
-    edges: {
-        cursor: string;
-        node: {
-            id: string;
-        };
-    }[];
-    totalCount: number;
-    hasPreviousPage: boolean;
-    hasNextPage: boolean;
-};
 
 export class TestResults {
     context: Context;
@@ -110,7 +99,17 @@ export class TestResults {
     }
 
     async getTestExecutionStatuses(
-        testExecutions: TestExecutionsArray,
+        testExecutions: {
+            edges: {
+                cursor: string;
+                node: {
+                    id: string;
+                };
+            }[];
+            totalCount: number;
+            hasPreviousPage: boolean;
+            hasNextPage: boolean;
+        },
         runId: string,
     ): Promise<TestExecutionStatus[]> {
         return await Promise.all(
