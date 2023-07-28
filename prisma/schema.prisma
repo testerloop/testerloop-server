@@ -21,6 +21,12 @@ enum TestStatus {
   IN_PROGRESS
 }
 
+enum ApiPermissions {
+  CREATE_TEST_EXECUTION
+  CREATE_TEST_RUN
+  GET_RUN
+}
+
 model Organisation {
   id           String    @id @default(uuid()) @db.Uuid
   name         String
@@ -36,6 +42,7 @@ model ApiKey {
   id             String       @id @default(uuid()) @db.Uuid
   apiKey         String
   isEnabled      Boolean
+  permissions    ApiPermissions[]
   organisationId String       @db.Uuid
   organisation   Organisation @relation(fields: [organisationId], references: [id], onDelete: Cascade)
 }
