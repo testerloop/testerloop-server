@@ -29,6 +29,17 @@ const ResultsSchema = z.object({
 
 export type Results = z.infer<typeof ResultsSchema>;
 export type Test = z.infer<typeof TestSchema>;
+export type TestExecutionsArray = {
+    edges: {
+        cursor: string;
+        node: {
+            id: string;
+        };
+    }[];
+    totalCount: number;
+    hasPreviousPage: boolean;
+    hasNextPage: boolean;
+};
 
 export class TestResults {
     context: Context;
@@ -99,17 +110,7 @@ export class TestResults {
     }
 
     async getTestExecutionStatuses(
-        testExecutions: {
-            edges: {
-                cursor: string;
-                node: {
-                    id: string;
-                };
-            }[];
-            totalCount: number;
-            hasPreviousPage: boolean;
-            hasNextPage: boolean;
-        },
+        testExecutions: TestExecutionsArray,
         runId: string,
     ): Promise<TestExecutionStatus[]> {
         return await Promise.all(
@@ -136,6 +137,40 @@ export class TestResults {
                 };
             }),
         );
+    }
+
+    async getTestRunStatusFromS3(runId: string) {
+        const testExecutions =
+            await this.context.dataSources.testExecution.getByTestRunId(
+                runId,
+                {},
+            );
+        if (testExecutions.totalCount === 0) {
+            return {
+                __typename: 'TestRunStatus' as const,
+                runStatus: RunStatus.Running,
+                testExecutionStatuses: [],
+            };
+        }
+
+        const testExecutionStatuses = await this.getTestExecutionStatuses(
+            testExecutions,
+            runId,
+        );
+
+        const isRunCompleted = testExecutionStatuses.every(
+            (status) => status.testStatus !== TestStatus.InProgress,
+        );
+
+        const runStatus = isRunCompleted
+            ? RunStatus.Completed
+            : RunStatus.Running;
+
+        return {
+            __typename: 'TestRunStatus' as const,
+            runStatus,
+            testExecutionStatuses,
+        };
     }
 
     async getResultsByTestExecutionId(testExecutionId: string) {
