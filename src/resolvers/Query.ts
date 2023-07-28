@@ -91,13 +91,19 @@ const resolvers: QueryResolvers = {
 
         const testRun = await repository.getTestRun(runId);
 
-        if (!testRun)
-            return await dataSources.testResults.getTestRunStatusFromS3(runId);
+        if (!testRun) throw new Error('Run does not exist.');
 
         if (testRun.organisationId !== auth.organisation.id)
             throw new Error(
                 'User does not have permission to access this run result',
             );
+
+        if (testRun.status !== PrismaRunStatus.COMPLETED) {
+            const s3RunStatus =
+                await dataSources.testResults.getTestRunStatusFromS3(runId);
+            if (s3RunStatus.runStatus === RunStatus.Completed)
+                return s3RunStatus;
+        }
 
         const testExecutionStatuses = testRun.testExecutions.map(
             (execution) => ({
