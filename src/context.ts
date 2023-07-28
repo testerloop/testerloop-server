@@ -1,6 +1,8 @@
 import { IncomingHttpHeaders } from 'http';
-import { DataSources, createDataSources } from './datasources/index.js';
+
 import { Organisation, User } from '@prisma/client';
+
+import { DataSources, createDataSources } from './datasources/index.js';
 import authenticateUserService from './AuthenticateUserService.js';
 import config from './config.js';
 import repository from './repository/repository.js';
@@ -24,9 +26,7 @@ export type Context = {
 };
 
 const getAuth = async (apiKey: string | null): Promise<Auth | undefined> => {
-    if (config.DB_ENABLED && !apiKey) throw new Error('API key is required');
-
-    if (!apiKey || !config.DB_ENABLED) return;
+    if (!apiKey) throw new Error('API key is required');
 
     const organisation = await repository.getByApiKey(apiKey);
 
@@ -52,7 +52,7 @@ export const createContext = async ({
     if (req.headers.authorization) {
         const token = req.headers.authorization.replace('Bearer ', '');
         if (!token) throw new Error('Invalid token');
-        user = await authenticateUserService.getUser(token)
+        user = await authenticateUserService.getUser(token);
         if (!user) throw new Error('Invalid token');
         console.log('Valid user');
     }

@@ -8,7 +8,6 @@ import {
 import { S3Config, InputMaybe } from '../resolvers/types/generated';
 import { Auth } from '../context.js';
 import PrismaDB from '../db.js';
-import config from '../config.js';
 import { OrganisationWithoutSlug } from '../interfaces/prisma.js';
 
 type GetBucketAndPathArgs = Auth | InputMaybe<S3Config> | undefined;
@@ -147,92 +146,4 @@ class PrismaRepository implements Repository {
     }
 }
 
-class ConfigRepository implements Repository {
-    __construct() {
-        console.log('Starting ConfigRepository');
-    }
-
-    notImplementedException() {
-        throw new Error('notImplementedException');
-    }
-
-    validateArgs(args: GetBucketAndPathArgs): S3Config {
-        const s3Config = args as S3Config;
-
-        if (!s3Config || !s3Config.customerPath || !s3Config.bucket) {
-            throw new Error(
-                'Invalid configuration. Please provide s3BucketName and customerPath.',
-            );
-        }
-
-        return s3Config;
-    }
-
-    getBucketAndPath(args: GetBucketAndPathArgs) {
-        const s3Config = this.validateArgs(args);
-        console.log('Using s3Config');
-
-        if (!s3Config.customerPath || !s3Config.bucket) {
-            throw new Error(
-                'Invalid configuration. Please provide s3BucketName and customerPath.',
-            );
-        }
-
-        const { customerPath, bucket } = s3Config;
-
-        return { s3BucketName: bucket, customerPath };
-    }
-
-    getOrganisationIdentifier(args: GetBucketAndPathArgs) {
-        const s3Config = this.validateArgs(args);
-
-        return s3Config.customerPath;
-    }
-
-    createOrganisation(
-        _: OrganisationWithoutSlug,
-    ): Promise<Organisation | null> {
-        this.notImplementedException();
-        return Promise.resolve(null);
-    }
-
-    getByApiKey(_: string): Promise<Organisation | null> {
-        this.notImplementedException();
-        return Promise.resolve(null);
-    }
-
-    getTestExecutionByGroupIdAndRunId(_: string, __: string) {
-        this.notImplementedException();
-    }
-
-    createTestExecution(_: TestExecution) {
-        this.notImplementedException();
-    }
-
-    createTestRun(_: TestRun) {
-        this.notImplementedException();
-    }
-
-    getRerunOf(_: string) {
-        this.notImplementedException();
-    }
-
-    getTestExecutionById(_: string) {
-        this.notImplementedException();
-    }
-    getRerunsByTestId(_: string) {
-        this.notImplementedException();
-    }
-    updateTestExecutionResult(
-        _: string,
-        __: TestStatus,
-        ___: Date,
-    ): Promise<TestExecution | null> {
-        this.notImplementedException();
-        return Promise.resolve(null);
-    }
-}
-
-export default config.DB_ENABLED
-    ? new PrismaRepository()
-    : new ConfigRepository();
+export default new PrismaRepository();

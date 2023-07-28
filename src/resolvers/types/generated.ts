@@ -456,14 +456,12 @@ export type Mutation = {
 export type MutationCreateTestExecutionArgs = {
   featureFile: Scalars['String'];
   runID: Scalars['String'];
-  s3Config?: InputMaybe<S3Config>;
   testName: Scalars['String'];
 };
 
 
 export type MutationCreateTestRunArgs = {
   runEnvironmentDetails: Scalars['String'];
-  s3Config?: InputMaybe<S3Config>;
 };
 
 

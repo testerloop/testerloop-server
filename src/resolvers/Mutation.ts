@@ -13,15 +13,14 @@ import {
 const resolvers: MutationResolvers = {
     createTestRun: async (
         _,
-        { runEnvironmentDetails, s3Config },
+        { runEnvironmentDetails },
         { dataSources, auth, repository },
     ): Promise<UploadInfo> => {
         const runID = uuidv4();
         console.log('Creating run with ID: ', runID);
 
-        const { s3BucketName, customerPath } = repository.getBucketAndPath(
-            auth || s3Config,
-        );
+        const { s3BucketName, customerPath } =
+            repository.getBucketAndPath(auth);
 
         const s3RunPath = `${s3BucketName}/${customerPath}/${runID}`;
 
@@ -64,16 +63,14 @@ const resolvers: MutationResolvers = {
     },
     createTestExecution: async (
         _,
-        { runID, testName, featureFile, s3Config },
+        { runID, testName, featureFile },
         { dataSources, auth, repository },
     ): Promise<CreateTestExecutionResponse> => {
-        const organisationIdentifier = repository.getOrganisationIdentifier(
-            auth || s3Config || undefined,
-        );
+        const organisationIdentifier =
+            repository.getOrganisationIdentifier(auth);
 
-        const { s3BucketName, customerPath } = repository.getBucketAndPath(
-            auth || s3Config,
-        );
+        const { s3BucketName, customerPath } =
+            repository.getBucketAndPath(auth);
 
         if (!organisationIdentifier) {
             throw new Error(

@@ -5,16 +5,9 @@ import {
     OrganisationWithoutSlug,
 } from './interfaces/prisma.js';
 import { generateSlug } from './util/generateSlug.js';
-import config from './config.js';
 
 export default class PrismaDB implements PrismaInterface {
     prisma: PrismaClient = new PrismaClient();
-
-    __construct() {
-        if (!config.DB_ENABLED) {
-            throw new Error('DB not enabled');
-        }
-    }
 
     async createWithSlug(data: OrganisationWithoutSlug) {
         const slugifiedName = generateSlug(data.name);

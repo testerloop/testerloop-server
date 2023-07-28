@@ -2,7 +2,6 @@ import { z } from 'zod';
 
 export const envFormat = z.object({
     PORT: z.coerce.number(),
-    DB_ENABLED: z.coerce.boolean(),
     AWS_SESSION_TOKEN: z.string().optional(),
     AWS_BUCKET_REGION: z.string(),
     AWS_ACCESS_KEY_ID: z.string().optional(),
@@ -11,7 +10,7 @@ export const envFormat = z.object({
     AWS_BUCKET_PATH: z.string().optional(),
     EXPIRES_IN: z.coerce.number(),
     COGNITO_USER_POOL_ID: z.string(),
-    COGNITO_POOL_WEB_CLIENT_ID: z.string()
+    COGNITO_POOL_WEB_CLIENT_ID: z.string(),
 });
 
 const config = envFormat.parse(process.env);
@@ -34,12 +33,11 @@ if (config.AWS_BUCKET_PATH?.length && !config.AWS_BUCKET_PATH.endsWith('/')) {
 
 export default {
     PORT: config.PORT,
-    DB_ENABLED: config.DB_ENABLED || false,
     AWS_BUCKET_REGION: config.AWS_BUCKET_REGION,
     AWS_BUCKET_NAME: config.AWS_BUCKET_NAME,
     AWS_BUCKET_PATH: config.AWS_BUCKET_PATH || '',
     EXPIRES_IN: config.EXPIRES_IN,
     AWS_CREDENTIALS: awsCredentials,
     COGNITO_USER_POOL_ID: config.COGNITO_USER_POOL_ID,
-    COGNITO_POOL_WEB_CLIENT_ID: config.COGNITO_POOL_WEB_CLIENT_ID
+    COGNITO_POOL_WEB_CLIENT_ID: config.COGNITO_POOL_WEB_CLIENT_ID,
 };
