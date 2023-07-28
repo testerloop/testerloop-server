@@ -38,6 +38,37 @@ const resolvers: TestExecutionResolvers = {
             testExecutionId: id,
         };
     },
+    async rerunOf({ id }, _args, { repository, auth }) {
+        const rerunTestExecution = auth
+            ? await repository.getRerunOf(id)
+            : null;
+        return rerunTestExecution
+            ? {
+                  __typename: 'TestExecution',
+                  id: rerunTestExecution.id,
+                  testRun: {
+                      __typename: 'TestRun',
+                      id: rerunTestExecution.testRunId,
+                  },
+              }
+            : null;
+    },
+
+    //TODO - MAKE THIS A CONNECTION TYPE
+    async reruns({ id }, _args, { repository }) {
+        const reruns = await repository.getRerunsByTestId(id);
+
+        return (
+            (reruns &&
+                reruns.map((rerun) => ({
+                    __typename: 'TestExecution',
+                    id: rerun.id,
+                    testRun: { __typename: 'TestRun', id: rerun.testRunId },
+                }))) ??
+            []
+        );
+    },
+
     async environment({ id }, _args, { dataSources }) {
         const results = await dataSources.testResults.getById(id);
         const [major, minor, build, patch] = results.browserVersion

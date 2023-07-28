@@ -1,4 +1,4 @@
-type TestExecutionCreationResponse {
+type CreateTestExecutionResponse {
     testExecutionId: ID! # TODO: Switch to returning the TestExecution directly
     testExecutionGroupId: ID!
 }
@@ -9,5 +9,5 @@ extend type Mutation {
         testName: String!
         featureFile: String!
         s3Config: S3Config
-    ): TestExecutionCreationResponse!
+    ): CreateTestExecutionResponse!
 }
