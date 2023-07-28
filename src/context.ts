@@ -1,8 +1,7 @@
 import { IncomingHttpHeaders } from 'http';
-
-import { Organisation } from '@prisma/client';
-
 import { DataSources, createDataSources } from './datasources/index.js';
+import { Organisation, User } from '@prisma/client';
+import authenticateUserService from './AuthenticateUserService.js';
 import config from './config.js';
 import repository from './repository/repository.js';
 
@@ -44,10 +43,19 @@ export const createContext = async ({
     req: Request;
 }): Promise<Context> => {
     let dataSources: DataSources | null = null;
+    let user: User | null = null;
     const apiKey = req.headers['x-api-key']
         ? (req.headers['x-api-key'] as string)
         : null;
     const auth = await getAuth(apiKey);
+
+    if (req.headers.authorization) {
+        const token = req.headers.authorization.replace('Bearer ', '');
+        if (!token) throw new Error('Invalid token');
+        user = await authenticateUserService.getUser(token)
+        if (!user) throw new Error('Invalid token');
+        console.log('Valid user');
+    }
 
     const context = {
         get dataSources() {
@@ -59,6 +67,7 @@ export const createContext = async ({
         },
         request: { req },
         auth,
+        user,
         config,
         repository,
     };

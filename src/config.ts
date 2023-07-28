@@ -10,6 +10,8 @@ export const envFormat = z.object({
     AWS_BUCKET_NAME: z.string(),
     AWS_BUCKET_PATH: z.string().optional(),
     EXPIRES_IN: z.coerce.number(),
+    COGNITO_USER_POOL_ID: z.string(),
+    COGNITO_POOL_WEB_CLIENT_ID: z.string()
 });
 
 const config = envFormat.parse(process.env);
@@ -38,4 +40,6 @@ export default {
     AWS_BUCKET_PATH: config.AWS_BUCKET_PATH || '',
     EXPIRES_IN: config.EXPIRES_IN,
     AWS_CREDENTIALS: awsCredentials,
+    COGNITO_USER_POOL_ID: config.COGNITO_USER_POOL_ID,
+    COGNITO_POOL_WEB_CLIENT_ID: config.COGNITO_POOL_WEB_CLIENT_ID
 };
