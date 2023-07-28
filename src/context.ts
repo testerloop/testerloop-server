@@ -26,9 +26,7 @@ export type Context = {
 };
 
 const getAuth = async (apiKey: string | null): Promise<Auth | undefined> => {
-    if (config.DB_ENABLED && !apiKey) throw new Error('API key is required');
-
-    if (!apiKey || !config.DB_ENABLED) return;
+    if (!apiKey) throw new Error('API key is required');
 
     const organisation = await repository.getByApiKey(apiKey);
 
