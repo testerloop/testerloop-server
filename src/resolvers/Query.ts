@@ -117,7 +117,7 @@ const resolvers: QueryResolvers = {
                 : RunStatus.Running;
 
         return {
-            __typename: 'TestRunStatus' as const,
+            __typename: 'TestRunStatus',
             runStatus,
             testExecutionStatuses,
         };
