@@ -39,13 +39,22 @@ async function main() {
     });
 
     const testExecutionGroup = await prisma.testExecutionGroup.create({
-        data: {},
+        data: {
+            testName: 'Test Name 1',
+            featureFile: 'Feature File 1',
+        },
     });
     const testExecutionGroup2 = await prisma.testExecutionGroup.create({
-        data: {},
+        data: {
+            testName: 'Test Name 2',
+            featureFile: 'Feature File 2',
+        },
     });
     const testExecutionGroup3 = await prisma.testExecutionGroup.create({
-        data: {},
+        data: {
+            testName: 'Test Name 3',
+            featureFile: 'Feature File 3',
+        },
     });
 
     const testExecution1 = await prisma.testExecution.create({

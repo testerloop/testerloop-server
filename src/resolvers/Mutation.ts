@@ -66,6 +66,9 @@ const resolvers: MutationResolvers = {
         { runID, testName, featureFile },
         { auth, repository },
     ): Promise<CreateTestExecutionResponse> => {
+        if (!auth) {
+            throw new Error('Failed to verify organisation details.');
+        }
         const organisationIdentifier =
             repository.getOrganisationIdentifier(auth);
 
@@ -91,7 +94,11 @@ const resolvers: MutationResolvers = {
             rerunOfId: null,
         };
 
-        await repository.createTestExecution(testExecution);
+        await repository.createTestExecution(
+            testExecution,
+            testName,
+            featureFile,
+        );
         return {
             __typename: 'CreateTestExecutionResponse',
             testExecutionId,
