@@ -120,7 +120,7 @@ const resolvers: MutationResolvers = {
                 : PrismaTestStatus.FAILED;
 
         const until = new Date();
-        repository.updateTestExecutionResult(
+        await repository.updateTestExecutionResult(
             testExecutionId,
             updatedTestStatus,
             until,
