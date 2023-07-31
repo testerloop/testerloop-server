@@ -1,5 +1,8 @@
 import { v4 as uuidv4, v5 as uuidv5 } from 'uuid';
-import { TestStatus as PrismaTestStatus } from '@prisma/client';
+import {
+    TestStatus as PrismaTestStatus,
+    RunStatus as PrismaRunStatus,
+} from '@prisma/client';
 
 import {
     MutationResolvers,
@@ -107,20 +110,42 @@ const resolvers: MutationResolvers = {
         const testExecution = await repository.getTestExecutionById(
             testExecutionId,
         );
+        if (!testExecution) {
+            throw new Error('Test Execution not found.');
+        }
+
         const updatedTestStatus =
             testStatus === TestStatus.Passed
                 ? PrismaTestStatus.PASSED
                 : PrismaTestStatus.FAILED;
+
         const until = new Date();
         repository.updateTestExecutionResult(
             testExecutionId,
             updatedTestStatus,
             until,
         );
+
+        const run = await repository.getTestRun(testExecution.testRunId);
+        if (!run) {
+            throw new Error('Run not found.');
+        }
+        const allTestExecutionsCompleted = run.testExecutions.every(
+            (execution) =>
+                execution.result === PrismaTestStatus.PASSED ||
+                execution.result === PrismaTestStatus.FAILED,
+        );
+        if (allTestExecutionsCompleted) {
+            await repository.updateTestRunStatus(
+                testExecution.testRunId,
+                PrismaRunStatus.COMPLETED,
+            );
+        }
+
         return {
             __typename: 'TestExecutionStatus',
             id: testExecutionId,
-            testName: testExecution?.name || '',
+            testName: testExecution.name,
             testStatus,
         };
     },
