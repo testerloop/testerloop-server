@@ -1,3 +1,8 @@
+import {
+    RunStatus as PrismaRunStatus,
+    TestStatus as PrismaTestStatus,
+} from '@prisma/client';
+
 import { decodeId, decodeIdForType } from '../util/id.js';
 
 import { QueryResolvers, RunStatus, TestStatus } from './types/generated.js';
@@ -81,33 +86,41 @@ const resolvers: QueryResolvers = {
         };
     },
 
-    async getRun(parent, { runId }, { dataSources }) {
-        const testExecutions = await dataSources.testExecution.getByTestRunId(
-            runId,
-            {},
-        );
+    async getRun(parent, { runId }, { dataSources, auth, repository }) {
+        if (!auth) throw new Error('User is not authenticated.');
 
-        if (testExecutions.totalCount === 0) {
-            return {
-                __typename: 'TestRunStatus',
-                runStatus: RunStatus.Running,
-                testExecutionStatuses: [],
-            };
-        }
+        const testRun = await repository.getTestRun(runId);
 
-        const testExecutionStatuses =
-            await dataSources.testResults.getTestExecutionStatuses(
-                testExecutions,
-                runId,
+        if (!testRun) throw new Error('Run does not exist.');
+
+        if (testRun.organisationId !== auth.organisation.id)
+            throw new Error(
+                'User does not have permission to access this run result',
             );
 
-        const isRunCompleted = testExecutionStatuses.every(
-            (status) => status.testStatus !== TestStatus.InProgress,
+        if (testRun.status !== PrismaRunStatus.COMPLETED) {
+            const s3RunStatus =
+                await dataSources.testResults.getTestRunStatusFromS3(runId);
+            if (s3RunStatus.runStatus === RunStatus.Completed)
+                return s3RunStatus;
+        }
+
+        const testExecutionStatuses = testRun.testExecutions.map(
+            (execution) => ({
+                __typename: 'TestExecutionStatus' as const,
+                id: execution.id,
+                testName: execution.name,
+                testStatus:
+                    execution.result === PrismaTestStatus.PASSED
+                        ? TestStatus.Passed
+                        : TestStatus.Failed,
+            }),
         );
 
-        const runStatus = isRunCompleted
-            ? RunStatus.Completed
-            : RunStatus.Running;
+        const runStatus =
+            testRun.status === PrismaRunStatus.COMPLETED
+                ? RunStatus.Completed
+                : RunStatus.Running;
 
         return {
             __typename: 'TestRunStatus',

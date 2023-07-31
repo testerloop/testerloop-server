@@ -8,14 +8,13 @@ import {
 import { S3Config, InputMaybe } from '../resolvers/types/generated';
 import { Auth } from '../context.js';
 import PrismaDB from '../db.js';
-import { OrganisationWithoutSlug } from '../interfaces/prisma.js';
+import {
+    OrganisationWithoutSlug,
+    S3CustomerConfig,
+} from '../interfaces/prisma.js';
 
 type GetBucketAndPathArgs = Auth | InputMaybe<S3Config> | undefined;
 
-export interface S3CustomerConfig {
-    s3BucketName: string;
-    customerPath: string;
-}
 interface Repository {
     getByApiKey: (apiKey: string) => Promise<Organisation | null>;
     getBucketAndPath: (args: GetBucketAndPathArgs) => S3CustomerConfig;
@@ -143,6 +142,10 @@ class PrismaRepository implements Repository {
             where: { id },
             data: { result, until },
         });
+    }
+
+    async getTestRun(runId: string) {
+        return this.db.getTestRun(runId);
     }
 }
 

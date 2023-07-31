@@ -18,7 +18,6 @@ export default class PrismaDB implements PrismaInterface {
     }
 
     async getByApiKey(apiKey: string): Promise<Organisation | null> {
-        if (!this.prisma) return null;
         const apiKeyResult = await this.prisma.apiKey.findFirst({
             where: { apiKey },
             include: { organisation: true },
@@ -46,5 +45,12 @@ export default class PrismaDB implements PrismaInterface {
         }
 
         return this.getSlug(slug, index + 1);
+    }
+
+    async getTestRun(runId: string) {
+        return this.prisma.testRun.findUnique({
+            where: { id: runId },
+            include: { testExecutions: true },
+        });
     }
 }

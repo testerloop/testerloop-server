@@ -5,6 +5,11 @@ export type OrganisationWithoutSlug = Omit<
     'slug'
 > & { slug?: string };
 
+export interface S3CustomerConfig {
+    s3BucketName: string;
+    customerPath: string;
+}
+
 export interface PrismaInterface {
     createWithSlug: (
         data: OrganisationWithoutSlug,

@@ -138,6 +138,40 @@ export class TestResults {
         );
     }
 
+    async getTestRunStatusFromS3(runId: string) {
+        const testExecutions =
+            await this.context.dataSources.testExecution.getByTestRunId(
+                runId,
+                {},
+            );
+        if (testExecutions.totalCount === 0) {
+            return {
+                __typename: 'TestRunStatus' as const,
+                runStatus: RunStatus.Running,
+                testExecutionStatuses: [],
+            };
+        }
+
+        const testExecutionStatuses = await this.getTestExecutionStatuses(
+            testExecutions,
+            runId,
+        );
+
+        const isRunCompleted = testExecutionStatuses.every(
+            (status) => status.testStatus !== TestStatus.InProgress,
+        );
+
+        const runStatus = isRunCompleted
+            ? RunStatus.Completed
+            : RunStatus.Running;
+
+        return {
+            __typename: 'TestRunStatus' as const,
+            runStatus,
+            testExecutionStatuses,
+        };
+    }
+
     async getResultsByTestExecutionId(testExecutionId: string) {
         return this.resultsByTestExecutionIdDataLoader.load(testExecutionId);
     }
