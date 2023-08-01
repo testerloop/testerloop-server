@@ -56,7 +56,7 @@
         "lint:fix": "eslint --fix --ext .ts src",
         "prettier": "npx prettier src --check",
         "prettier:fix": "npm run prettier -- --write",
-        "seed:db": "npx ts-node-esm prisma/seed.ts"
+        "seed:db": "npx ts-node-esm src/seed.ts"
     },
     "type": "module"
 }
