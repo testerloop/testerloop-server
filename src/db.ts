@@ -5,8 +5,8 @@ import {
     OrganisationWithoutSlug,
 } from './interfaces/prisma.js';
 import { generateSlug } from './util/generateSlug.js';
-import apiKeyService from './ApiKeyService';
 import { v4 as uuidv4 } from 'uuid';
+import apiKeyService from './ApiKeyService.js';
 
 export default class PrismaDB implements PrismaInterface {
     prisma: PrismaClient = new PrismaClient();
@@ -46,7 +46,7 @@ export default class PrismaDB implements PrismaInterface {
         return apiKeyObj.organisation;
     }
 
-    async createApiKey(organisationId: string, name?: string): Promise<string> {
+    async createApiKey(organisationId: string, name?: string | null): Promise<string> {
         const { prefix, key, hashedKey } = await apiKeyService.generateKey();
         await this.prisma.apiKey.create({
             data: {

@@ -47,7 +47,7 @@ class PrismaRepository implements Repository {
         return this.db.getOrganisationFromApiKey(key);
     }
 
-    async createApiKey(organisationId: string, name?: string) {
+    async createApiKey(organisationId: string, name?: string | null) {
         return this.db.createApiKey(organisationId, name);
     }
 

@@ -11,7 +11,9 @@ import {
     TestStatus,
     RunStatus,
     TestExecutionStatus,
+    CreateApiKeyResponse,
 } from './types/generated.js';
+import repository from '../repository/repository.js';
 
 const resolvers: MutationResolvers = {
     createTestRun: async (
@@ -149,6 +151,15 @@ const resolvers: MutationResolvers = {
             testStatus,
         };
     },
+    createApiKey: async (_,
+        { organisationId, name },
+    ): Promise<CreateApiKeyResponse> => {
+        const apiKey = await repository.createApiKey(organisationId, name);
+        return {
+            __typename: "CreateApiKeyResponse",
+            apiKey,
+        }
+    }
 };
 
 export default resolvers;
