@@ -35,10 +35,13 @@ model Organisation {
 
 model ApiKey {
   id             String       @id @default(uuid()) @db.Uuid
-  apiKey         String
-  isEnabled      Boolean
+  prefix         String       @unique
+  hashedKey      String       @unique
+  name           String?
+  isEnabled      Boolean      @default(true)
   organisationId String       @db.Uuid
   organisation   Organisation @relation(fields: [organisationId], references: [id], onDelete: Cascade)
+  createdAt      DateTime     @default(now())
 }
 
 model User {

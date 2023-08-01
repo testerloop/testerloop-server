@@ -27,13 +27,13 @@ class ApiKeyService {
 
     public async generateKey() {
         const prefix = this.getPrefix();
-        const key = generateApiKey({ method: 'uuidv4', prefix });
-        const hashedKey = await this.hashKey(key as string);
+        const key = generateApiKey({ method: 'uuidv4', prefix }) as string;
+        const hashedKey = await this.hashKey(key);
         return {
             prefix,
             key,
             hashedKey
-        }
+        };
     }
 
     public async verifyKey(key: string, hashedKey: string): Promise<boolean> {

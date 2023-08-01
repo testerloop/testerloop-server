@@ -1,10 +1,12 @@
-import { PrismaClient, Organisation } from '@prisma/client';
+import { PrismaClient, Organisation, ApiKey } from '@prisma/client';
 
 import {
     PrismaInterface,
     OrganisationWithoutSlug,
 } from './interfaces/prisma.js';
 import { generateSlug } from './util/generateSlug.js';
+import apiKeyService from './ApiKeyService';
+import { v4 as uuidv4 } from 'uuid';
 
 export default class PrismaDB implements PrismaInterface {
     prisma: PrismaClient = new PrismaClient();
@@ -17,19 +19,44 @@ export default class PrismaDB implements PrismaInterface {
         });
     }
 
-    async getByApiKey(apiKey: string): Promise<Organisation | null> {
-        const apiKeyResult = await this.prisma.apiKey.findFirst({
-            where: { apiKey },
+    async getOrganisationFromApiKey(key: string): Promise<Organisation | null> {
+        const prefix = key.split('.')[0];
+        const apiKeyObj = await this.prisma.apiKey.findFirst({
+            where: {
+                prefix,
+            },
             include: { organisation: true },
         });
-        if (!apiKeyResult) throw new Error('Invalid API key provided');
 
-        if (!apiKeyResult.isEnabled) {
+        if (!apiKeyObj) {
+            throw new Error('Invalid API key provided');
+        }
+
+        const isValid = await apiKeyService.verifyKey(key, apiKeyObj.hashedKey);
+
+        if (!isValid) {
+            throw new Error('Invalid API key provided');
+        }
+
+        if (!apiKeyObj.isEnabled) {
             throw new Error(
                 'Your API key is not enabled. Please renew your subscription or contact Testerloop support.',
             );
         }
-        return apiKeyResult.organisation;
+        return apiKeyObj.organisation;
+    }
+
+    async createApiKey(organisationId: string, name?: string): Promise<string> {
+        const { prefix, key, hashedKey } = await apiKeyService.generateKey();
+        await this.prisma.apiKey.create({
+            data: {
+                prefix,
+                hashedKey,
+                organisationId,
+                name: name ?? null,
+            }
+        });
+        return key;
     }
 
     async getSlug(slug: string, index: number = 0): Promise<string> {
