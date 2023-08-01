@@ -90,6 +90,7 @@ const resolvers: QueryResolvers = {
         if (!auth) throw new Error('User is not authenticated.');
 
         const testRun = await repository.getTestRun(runId);
+
         if (!testRun) throw new Error('Run does not exist.');
 
         if (testRun.organisationId !== auth.organisation.id)
@@ -114,16 +115,7 @@ const resolvers: QueryResolvers = {
                     id,
                     testName,
                     featureFile,
-                    rerunOfId: rerunOfId
-                        ? {
-                              __typename: 'TestExecution' as const,
-                              id: rerunOfId,
-                              testRun: {
-                                  __typename: 'TestRun' as const,
-                                  id: runId,
-                              },
-                          }
-                        : null,
+                    rerunOfId,
                     testStatus:
                         result === PrismaTestStatus.PASSED
                             ? TestStatus.Passed

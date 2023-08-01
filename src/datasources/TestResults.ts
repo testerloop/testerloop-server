@@ -8,7 +8,6 @@ import {
     RunStatus,
     TestStatus,
     TestExecutionStatus,
-    TestRunStatus,
 } from '../resolvers/types/generated.js';
 
 const TestSchema = z.object({
@@ -141,7 +140,7 @@ export class TestResults {
         );
     }
 
-    async getTestRunStatusFromS3(runId: string): Promise<TestRunStatus> {
+    async getTestRunStatusFromS3(runId: string) {
         const testExecutions =
             await this.context.dataSources.testExecution.getByTestRunId(
                 runId,

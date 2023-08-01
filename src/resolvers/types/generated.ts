@@ -779,7 +779,7 @@ export type TestExecutionStatus = {
   readonly __typename: 'TestExecutionStatus';
   readonly featureFile: Scalars['String'];
   readonly id: Scalars['ID'];
-  readonly rerunOfId: Maybe<TestExecution>;
+  readonly rerunOfId: Maybe<Scalars['ID']>;
   readonly testName: Scalars['String'];
   readonly testStatus: TestStatus;
 };
@@ -994,11 +994,11 @@ export type ResolversTypes = {
   TestExecutionEventType: TestExecutionEventType;
   TestExecutionScreenshot: ResolverTypeWrapper<TestExecutionScreenshotModel>;
   TestExecutionSnapshot: ResolverTypeWrapper<TestExecutionSnapshotModel>;
-  TestExecutionStatus: ResolverTypeWrapper<Omit<TestExecutionStatus, 'rerunOfId'> & { rerunOfId: Maybe<ResolversTypes['TestExecution']> }>;
+  TestExecutionStatus: ResolverTypeWrapper<TestExecutionStatus>;
   TestRun: ResolverTypeWrapper<TestRunModel>;
   TestRunConnection: ResolverTypeWrapper<TestRunConnectionModel>;
   TestRunEdge: ResolverTypeWrapper<TestRunEdgeModel>;
-  TestRunStatus: ResolverTypeWrapper<Omit<TestRunStatus, 'testExecutionStatuses'> & { testExecutionStatuses: ReadonlyArray<Maybe<ResolversTypes['TestExecutionStatus']>> }>;
+  TestRunStatus: ResolverTypeWrapper<TestRunStatus>;
   TestStatus: TestStatus;
   URL: ResolverTypeWrapper<Scalars['URL']>;
   UploadInfo: ResolverTypeWrapper<UploadInfo>;
@@ -1095,11 +1095,11 @@ export type ResolversParentTypes = {
   TestExecutionEventFilterInput: TestExecutionEventFilterInput;
   TestExecutionScreenshot: TestExecutionScreenshotModel;
   TestExecutionSnapshot: TestExecutionSnapshotModel;
-  TestExecutionStatus: Omit<TestExecutionStatus, 'rerunOfId'> & { rerunOfId: Maybe<ResolversParentTypes['TestExecution']> };
+  TestExecutionStatus: TestExecutionStatus;
   TestRun: TestRunModel;
   TestRunConnection: TestRunConnectionModel;
   TestRunEdge: TestRunEdgeModel;
-  TestRunStatus: Omit<TestRunStatus, 'testExecutionStatuses'> & { testExecutionStatuses: ReadonlyArray<Maybe<ResolversParentTypes['TestExecutionStatus']>> };
+  TestRunStatus: TestRunStatus;
   URL: Scalars['URL'];
   UploadInfo: UploadInfo;
 };
@@ -1636,7 +1636,7 @@ export type TestExecutionSnapshotResolvers<ContextType = Context, ParentType ext
 export type TestExecutionStatusResolvers<ContextType = Context, ParentType extends ResolversParentTypes['TestExecutionStatus'] = ResolversParentTypes['TestExecutionStatus']> = {
   featureFile: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   id: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-  rerunOfId: Resolver<Maybe<ResolversTypes['TestExecution']>, ParentType, ContextType>;
+  rerunOfId: Resolver<Maybe<ResolversTypes['ID']>, ParentType, ContextType>;
   testName: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   testStatus: Resolver<ResolversTypes['TestStatus'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
