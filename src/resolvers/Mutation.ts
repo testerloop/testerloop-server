@@ -88,7 +88,7 @@ const resolvers: MutationResolvers = {
 
         const testExecution = {
             id: testExecutionId,
-            name: testName,
+            testName: testName,
             featureFile: featureFile,
             result: TestStatus.InProgress,
             at: new Date(),
@@ -150,13 +150,13 @@ const resolvers: MutationResolvers = {
                 PrismaRunStatus.COMPLETED,
             );
         }
-
+        const { testName, featureFile, rerunOfId } = testExecution;
         return {
             __typename: 'TestExecutionStatus',
             id: testExecutionId,
-            testName: testExecution.name,
-            featureFile: testExecution.featureFile,
-            rerunOfId: testExecution.rerunOfId,
+            testName,
+            featureFile,
+            rerunOfId,
             testStatus,
         };
     },

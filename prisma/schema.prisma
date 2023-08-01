@@ -22,14 +22,14 @@ enum TestStatus {
 }
 
 model Organisation {
-  id                 String               @id @default(uuid()) @db.Uuid
-  name               String
-  slug               String               @unique
-  s3CustomPath       String
-  s3BucketName       String
-  s3Region           String
-  testRuns           TestRun[]
-  apiKeys            ApiKey[]
+  id           String    @id @default(uuid()) @db.Uuid
+  name         String
+  slug         String    @unique
+  s3CustomPath String
+  s3BucketName String
+  s3Region     String
+  testRuns     TestRun[]
+  apiKeys      ApiKey[]
 }
 
 model ApiKey {
@@ -62,7 +62,7 @@ model TestExecutionGroup {
 
 model TestExecution {
   id                   String             @id @default(uuid()) @db.Uuid
-  name                 String
+  testName             String
   featureFile          String
   result               TestStatus
   at                   DateTime           @default(now())
