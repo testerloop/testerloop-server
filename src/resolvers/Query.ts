@@ -124,7 +124,6 @@ const resolvers: QueryResolvers = {
             },
         );
 
-
         const runStatus =
             testRun.status === PrismaRunStatus.COMPLETED
                 ? RunStatus.Completed
