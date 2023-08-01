@@ -9,6 +9,13 @@ if (process.env.NODE_ENV === 'production') {
 const prisma = new PrismaClient();
 
 async function main() {
+    const user = await prisma.user.create({
+        data: {
+            email: 'testuser@example.com',
+        },
+    });
+    console.log('Created User: ', user);
+
     const organisation = await prisma.organisation.create({
         data: {
             name: 'Testerloop',
@@ -25,6 +32,15 @@ async function main() {
         },
     });
     console.log('Created Organisation: ', organisation);
+
+    const userOrganisation = await prisma.userOrganisation.create({
+        data: {
+            userId: user.id,
+            organisationId: organisation.id,
+        },
+    });
+    console.log('Created UserOrganisation: ', userOrganisation);
+
     const testRun = await prisma.testRun.create({
         data: {
             status: RunStatus.COMPLETED,
