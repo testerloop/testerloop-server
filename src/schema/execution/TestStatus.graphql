@@ -14,7 +14,7 @@ type TestExecutionStatus {
     testName: String!
     featureFile: String!
     testStatus: TestStatus!
-    rerunOfId: ID
+    rerunOfId: TestExecution
 }
 
 type TestRunStatus {
