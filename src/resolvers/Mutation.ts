@@ -99,6 +99,7 @@ const resolvers: MutationResolvers = {
             testName,
             featureFile,
         );
+
         return {
             __typename: 'CreateTestExecutionResponse',
             testExecutionId,
