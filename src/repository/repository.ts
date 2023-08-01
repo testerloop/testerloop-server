@@ -80,7 +80,11 @@ class PrismaRepository implements Repository {
         });
     }
 
-    async createTestExecution(args: TestExecution) {
+    async createTestExecution(
+        args: TestExecution,
+        testName: string,
+        featureFile: string,
+    ) {
         const { testExecutionGroupId, testRunId } = args;
 
         const testExecutionGroup =
@@ -90,7 +94,7 @@ class PrismaRepository implements Repository {
 
         if (!testExecutionGroup) {
             await this.db.prisma.testExecutionGroup.create({
-                data: { id: testExecutionGroupId },
+                data: { id: testExecutionGroupId, testName, featureFile },
             });
         }
 
