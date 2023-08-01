@@ -61,6 +61,7 @@ async function main() {
         data: {
             name: 'Test Execution 1',
             result: TestStatus.FAILED,
+            featureFile: 'Feature File 1',
             testRunId: testRun.id,
             at: new Date(new Date().getTime() - 10 * 60000),
             until: new Date(),
@@ -71,6 +72,7 @@ async function main() {
     const testExecution2 = await prisma.testExecution.create({
         data: {
             name: 'Test Execution 1',
+            featureFile: 'Feature File 2',
             result: TestStatus.PASSED,
             testRunId: testRun.id,
             testExecutionGroupId: testExecutionGroup.id,
@@ -82,6 +84,7 @@ async function main() {
     const testExecution3 = await prisma.testExecution.create({
         data: {
             name: 'Test Execution 2',
+            featureFile: 'Feature File 3',
             result: TestStatus.IN_PROGRESS,
             testRunId: testRun2.id,
             testExecutionGroupId: testExecutionGroup2.id,
@@ -91,6 +94,7 @@ async function main() {
     const testExecution4 = await prisma.testExecution.create({
         data: {
             name: 'Test Execution 3',
+            featureFile: 'Feature File 3',
             result: TestStatus.IN_PROGRESS,
             testRunId: testRun2.id,
             testExecutionGroupId: testExecutionGroup3.id,

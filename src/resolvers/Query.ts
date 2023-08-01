@@ -110,6 +110,8 @@ const resolvers: QueryResolvers = {
                 __typename: 'TestExecutionStatus' as const,
                 id: execution.id,
                 testName: execution.name,
+                featureFile: execution.featureFile,
+                rerunOfId: execution.rerunOfId,
                 testStatus:
                     execution.result === PrismaTestStatus.PASSED
                         ? TestStatus.Passed

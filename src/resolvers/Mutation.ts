@@ -89,6 +89,7 @@ const resolvers: MutationResolvers = {
         const testExecution = {
             id: testExecutionId,
             name: testName,
+            featureFile: featureFile,
             result: TestStatus.InProgress,
             at: new Date(),
             until: null,
@@ -154,6 +155,8 @@ const resolvers: MutationResolvers = {
             __typename: 'TestExecutionStatus',
             id: testExecutionId,
             testName: testExecution.name,
+            featureFile: testExecution.featureFile,
+            rerunOfId: testExecution.rerunOfId,
             testStatus,
         };
     },

@@ -63,6 +63,7 @@ model TestExecutionGroup {
 model TestExecution {
   id                   String             @id @default(uuid()) @db.Uuid
   name                 String
+  featureFile          String
   result               TestStatus
   at                   DateTime           @default(now())
   until                DateTime?
