@@ -3,6 +3,7 @@ import {
     TestExecution,
     TestRun,
     TestStatus,
+    RunStatus,
 } from '@prisma/client';
 
 import { S3Config, InputMaybe } from '../resolvers/types/generated';
@@ -145,6 +146,16 @@ class PrismaRepository implements Repository {
         return this.db.prisma.testExecution.update({
             where: { id },
             data: { result, until },
+        });
+    }
+
+    async updateTestRunStatus(
+        id: string,
+        status: RunStatus,
+    ): Promise<TestRun | null> {
+        return this.db.prisma.testRun.update({
+            where: { id },
+            data: { status },
         });
     }
 
