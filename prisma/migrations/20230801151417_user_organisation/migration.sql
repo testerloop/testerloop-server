@@ -1,7 +1,7 @@
 -- CreateTable
 CREATE TABLE "UserOrganisation" (
     "id" UUID NOT NULL,
-    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "userId" UUID NOT NULL,
     "organisationId" UUID NOT NULL,
 
