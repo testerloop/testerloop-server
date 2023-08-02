@@ -1,11 +1,10 @@
-import { PrismaClient, Organisation, ApiKey } from '@prisma/client';
+import { PrismaClient, Organisation } from '@prisma/client';
 
 import {
     PrismaInterface,
     OrganisationWithoutSlug,
 } from './interfaces/prisma.js';
 import { generateSlug } from './util/generateSlug.js';
-import { v4 as uuidv4 } from 'uuid';
 import apiKeyService from './ApiKeyService.js';
 
 export default class PrismaDB implements PrismaInterface {
@@ -46,7 +45,10 @@ export default class PrismaDB implements PrismaInterface {
         return apiKeyObj.organisation;
     }
 
-    async createApiKey(organisationId: string, name?: string | null): Promise<string> {
+    async createApiKey(
+        organisationId: string,
+        name?: string | null,
+    ): Promise<string> {
         const { prefix, key, hashedKey } = await apiKeyService.generateKey();
         await this.prisma.apiKey.create({
             data: {
@@ -54,7 +56,7 @@ export default class PrismaDB implements PrismaInterface {
                 hashedKey,
                 organisationId,
                 name: name ?? null,
-            }
+            },
         });
         return key;
     }

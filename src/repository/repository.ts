@@ -18,7 +18,7 @@ type GetBucketAndPathArgs = Auth | InputMaybe<S3Config> | undefined;
 
 interface Repository {
     getOrganisationFromApiKey: (key: string) => Promise<Organisation | null>;
-    createApiKey: (organisationId: string, name?: string) => Promise<string>,
+    createApiKey: (organisationId: string, name?: string) => Promise<string>;
     getBucketAndPath: (args: GetBucketAndPathArgs) => S3CustomerConfig;
     getOrganisationIdentifier: (args: GetBucketAndPathArgs) => string;
     createOrganisation: (
