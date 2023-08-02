@@ -3,6 +3,12 @@ import { generateApiKey } from 'generate-api-key';
 import bcrypt from 'bcrypt';
 
 
+interface GeneratedKey {
+    prefix: string
+    key: string
+    hashedKey: string
+}
+
 class ApiKeyService {
     private prefixLength: number;
     private saltRounds = 10;
@@ -25,7 +31,7 @@ class ApiKeyService {
         return hashedKey;
     }
 
-    public async generateKey() {
+    public async generateKey(): Promise<GeneratedKey> {
         const prefix = this.getPrefix();
         const key = generateApiKey({ method: 'uuidv4', prefix }) as string;
         const hashedKey = await this.hashKey(key);
