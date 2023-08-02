@@ -2,11 +2,10 @@ import cryptoRandomString from 'crypto-random-string';
 import { generateApiKey } from 'generate-api-key';
 import bcrypt from 'bcrypt';
 
-
 interface GeneratedKey {
-    prefix: string
-    key: string
-    hashedKey: string
+    prefix: string;
+    key: string;
+    hashedKey: string;
 }
 
 class ApiKeyService {
@@ -38,7 +37,7 @@ class ApiKeyService {
         return {
             prefix,
             key,
-            hashedKey
+            hashedKey,
         };
     }
 
