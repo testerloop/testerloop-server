@@ -21,7 +21,7 @@ class ApiKeyService {
         return cryptoRandomString({ length: this.prefixLength });
     }
 
-    private async hashKey(key: string): Promise<string> {
+    public async hashKey(key: string): Promise<string> {
         let hashedKey = '';
         try {
             hashedKey = await bcrypt.hash(key, this.saltRounds);
@@ -31,8 +31,8 @@ class ApiKeyService {
         return hashedKey;
     }
 
-    public async generateKey(): Promise<GeneratedKey> {
-        const prefix = this.getPrefix();
+    public async generateKey(inPrefix?: string): Promise<GeneratedKey> {
+        const prefix = inPrefix ?? this.getPrefix();
         const key = generateApiKey({ method: 'uuidv4', prefix }) as string;
         const hashedKey = await this.hashKey(key);
         return {
