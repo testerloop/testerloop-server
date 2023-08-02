@@ -69,12 +69,15 @@ model TestRun {
 
 model TestExecutionGroup {
   id             String          @id @default(uuid()) @db.Uuid
+  testName       String
+  featureFile    String
   testExecutions TestExecution[]
 }
 
 model TestExecution {
   id                   String             @id @default(uuid()) @db.Uuid
-  name                 String
+  testName             String
+  featureFile          String
   result               TestStatus
   at                   DateTime           @default(now())
   until                DateTime?

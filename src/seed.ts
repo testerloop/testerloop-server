@@ -11,6 +11,13 @@ const testApiKey = process.env.TEST_API_KEY as string;
 const prisma = new PrismaClient();
 
 async function main() {
+    const user = await prisma.user.create({
+        data: {
+            email: 'testuser@example.com',
+        },
+    });
+    console.log('Created User: ', user);
+
     const hashedKey = await apiKeyService.hashKey(testApiKey);
     const organisation = await prisma.organisation.create({
         data: {
@@ -29,6 +36,15 @@ async function main() {
         },
     });
     console.log('Created Organisation: ', organisation);
+
+    const userOrganisation = await prisma.userOrganisation.create({
+        data: {
+            userId: user.id,
+            organisationId: organisation.id,
+        },
+    });
+    console.log('Created UserOrganisation: ', userOrganisation);
+
     const testRun = await prisma.testRun.create({
         data: {
             status: RunStatus.COMPLETED,
@@ -43,19 +59,29 @@ async function main() {
     });
 
     const testExecutionGroup = await prisma.testExecutionGroup.create({
-        data: {},
+        data: {
+            testName: 'Test Name 1',
+            featureFile: 'Feature File 1',
+        },
     });
     const testExecutionGroup2 = await prisma.testExecutionGroup.create({
-        data: {},
+        data: {
+            testName: 'Test Name 2',
+            featureFile: 'Feature File 2',
+        },
     });
     const testExecutionGroup3 = await prisma.testExecutionGroup.create({
-        data: {},
+        data: {
+            testName: 'Test Name 3',
+            featureFile: 'Feature File 3',
+        },
     });
 
     const testExecution1 = await prisma.testExecution.create({
         data: {
-            name: 'Test Execution 1',
+            testName: 'Test Execution 1',
             result: TestStatus.FAILED,
+            featureFile: 'Feature File 1',
             testRunId: testRun.id,
             at: new Date(new Date().getTime() - 10 * 60000),
             until: new Date(),
@@ -65,7 +91,8 @@ async function main() {
 
     const testExecution2 = await prisma.testExecution.create({
         data: {
-            name: 'Test Execution 1',
+            testName: 'Test Execution 1',
+            featureFile: 'Feature File 2',
             result: TestStatus.PASSED,
             testRunId: testRun.id,
             testExecutionGroupId: testExecutionGroup.id,
@@ -76,7 +103,8 @@ async function main() {
     });
     const testExecution3 = await prisma.testExecution.create({
         data: {
-            name: 'Test Execution 2',
+            testName: 'Test Execution 2',
+            featureFile: 'Feature File 3',
             result: TestStatus.IN_PROGRESS,
             testRunId: testRun2.id,
             testExecutionGroupId: testExecutionGroup2.id,
@@ -85,7 +113,8 @@ async function main() {
 
     const testExecution4 = await prisma.testExecution.create({
         data: {
-            name: 'Test Execution 3',
+            testName: 'Test Execution 3',
+            featureFile: 'Feature File 3',
             result: TestStatus.IN_PROGRESS,
             testRunId: testRun2.id,
             testExecutionGroupId: testExecutionGroup3.id,

@@ -789,7 +789,9 @@ export type TestExecutionSnapshot = Event & InstantaneousEvent & TestExecutionEv
 
 export type TestExecutionStatus = {
   readonly __typename: 'TestExecutionStatus';
+  readonly featureFile: Scalars['String'];
   readonly id: Scalars['ID'];
+  readonly rerunOfId: Maybe<Scalars['ID']>;
   readonly testName: Scalars['String'];
   readonly testStatus: TestStatus;
 };
@@ -1652,7 +1654,9 @@ export type TestExecutionSnapshotResolvers<ContextType = Context, ParentType ext
 };
 
 export type TestExecutionStatusResolvers<ContextType = Context, ParentType extends ResolversParentTypes['TestExecutionStatus'] = ResolversParentTypes['TestExecutionStatus']> = {
+  featureFile: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   id: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  rerunOfId: Resolver<Maybe<ResolversTypes['ID']>, ParentType, ContextType>;
   testName: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   testStatus: Resolver<ResolversTypes['TestStatus'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;

@@ -12,7 +12,9 @@ enum TestStatus {
 type TestExecutionStatus {
     id: ID!
     testName: String!
+    featureFile: String!
     testStatus: TestStatus!
+    rerunOfId: ID # This is not ideal and we'd like to return a TestExecution here
 }
 
 type TestRunStatus {

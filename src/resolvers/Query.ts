@@ -106,15 +106,22 @@ const resolvers: QueryResolvers = {
         }
 
         const testExecutionStatuses = testRun.testExecutions.map(
-            (execution) => ({
-                __typename: 'TestExecutionStatus' as const,
-                id: execution.id,
-                testName: execution.name,
-                testStatus:
-                    execution.result === PrismaTestStatus.PASSED
-                        ? TestStatus.Passed
-                        : TestStatus.Failed,
-            }),
+            (execution) => {
+                const { id, testName, featureFile, rerunOfId, result } =
+                    execution;
+
+                return {
+                    __typename: 'TestExecutionStatus' as const,
+                    id,
+                    testName,
+                    featureFile,
+                    rerunOfId,
+                    testStatus:
+                        result === PrismaTestStatus.PASSED
+                            ? TestStatus.Passed
+                            : TestStatus.Failed,
+                };
+            },
         );
 
         const runStatus =

@@ -132,6 +132,8 @@ export class TestResults {
                     __typename: 'TestExecutionStatus' as const,
                     testStatus,
                     testName,
+                    featureFile: '',
+                    rerunOfId: null,
                     id: testExecution.node.id,
                 };
             }),
