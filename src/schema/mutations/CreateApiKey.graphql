@@ -3,8 +3,5 @@ type CreateApiKeyResponse {
 }
 
 extend type Mutation {
-    createApiKey(
-        organisationId: String!
-        name: String
-    ): CreateApiKeyResponse!
+    createApiKey(organisationId: String!, name: String): CreateApiKeyResponse!
 }
