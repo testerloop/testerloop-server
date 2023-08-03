@@ -14,7 +14,7 @@ type TestExecutionStatus {
     testName: String!
     featureFile: String!
     testStatus: TestStatus!
-    rerunOfId: ID # TODO this is not ideal and we'd like to return a TestExecution here
+    rerunOfId: ID # This is not ideal and we'd like to return a TestExecution here
 }
 
 type TestRunStatus {
@@ -23,7 +23,7 @@ type TestRunStatus {
 }
 
 extend type Query {
-    getRunStatus(runId: ID!): TestRunStatus! # TODO this should really be achieved by Query.testRun in the future
+    getRun(runId: ID!): TestRunStatus!
 }
 
 extend type Mutation {
@@ -31,5 +31,4 @@ extend type Mutation {
         testExecutionId: ID!
         testStatus: TestStatus!
     ): TestExecutionStatus!
-    refreshRunStatus(runId: ID!): TestRunStatus!
 }
