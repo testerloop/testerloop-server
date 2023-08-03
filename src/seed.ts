@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import {
     PrismaClient,
     RunStatus,
@@ -115,13 +116,7 @@ async function main() {
         },
     });
 
-    console.log('Created Users: ', user);
-    console.log('Created Organisations: ', organisation);
-    console.log('Created UserOrganisations: ', userOrganisation);
-    console.log('Created TestRuns: ', testRun, testRun2);
-    console.log('Created TestExecutionGroups: ', testExecutionGroup);
-    console.log('Created Workers: ', worker1, worker2);
-    console.log('Created TestExecutions: ', testExecution1, testExecution2);
+    console.log('Data seeded successfully');
 }
 
 main()
