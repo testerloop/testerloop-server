@@ -68,7 +68,7 @@ const resolvers: MutationResolvers = {
     },
     createTestExecution: async (
         _,
-        { runID, testName, featureFile },
+        { runID, testName, featureFile, workerId },
         { auth, repository },
     ): Promise<CreateTestExecutionResponse> => {
         if (!auth) {
@@ -98,7 +98,7 @@ const resolvers: MutationResolvers = {
             testExecutionGroupId,
             testRunId: runID,
             rerunOfId: null,
-            workerId: 'testWorkerId',
+            workerId: workerId,
         };
 
         await repository.createTestExecution(
