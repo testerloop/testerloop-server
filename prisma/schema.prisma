@@ -21,6 +21,11 @@ enum TestStatus {
   IN_PROGRESS
 }
 
+enum ExecutorStatus {
+  STARTED
+  FINISHED
+}
+
 model Organisation {
   id                String             @id @default(uuid()) @db.Uuid
   name              String
@@ -58,10 +63,11 @@ model UserOrganisation {
 
 model TestRun {
   id             String          @id @default(uuid()) @db.Uuid
-  testExecutions TestExecution[]
   status         RunStatus
-  organisationId String          @db.Uuid
+  executors      Executor[]
+  testExecutions TestExecution[]
   organisation   Organisation    @relation(fields: [organisationId], references: [id], onDelete: Cascade)
+  organisationId String          @db.Uuid
 }
 
 model TestExecutionGroup {
@@ -85,4 +91,14 @@ model TestExecution {
   reruns               TestExecution[]    @relation("RerunOf")
   testExecutionGroupId String             @db.Uuid
   testExecutionGroup   TestExecutionGroup @relation(fields: [testExecutionGroupId], references: [id])
+  executorId           String             @db.Uuid
+  executor             Executor           @relation(fields: [executorId], references: [id])
+}
+
+model Executor {
+  id             String          @id @default(uuid()) @db.Uuid
+  status         ExecutorStatus
+  testRunId      String          @db.Uuid
+  testRun        TestRun         @relation(fields: [testRunId], references: [id])
+  testExecutions TestExecution[]
 }
