@@ -116,6 +116,19 @@ async function main() {
         },
     });
 
+    const testExecution3 = await prisma.testExecution.create({
+        data: {
+            testName: 'Test Execution 3',
+            featureFile: 'Feature File 3',
+            result: TestStatus.IN_PROGRESS,
+            testRunId: testRun2.id,
+            testExecutionGroupId: testExecutionGroup.id,
+            at: new Date(new Date().getTime() - 10 * 60000),
+            until: new Date(),
+            workerId: worker2.id,
+        },
+    });
+
     console.log('Data seeded successfully');
 }
 
