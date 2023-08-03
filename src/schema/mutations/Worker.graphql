@@ -4,15 +4,22 @@ enum WorkerStatus {
     COMPLETED
 }
 
+enum Executor {
+    LOCAL
+    ECS
+    LAMBDA
+}
+
 type Worker {
     id: ID!
     status: WorkerStatus!
     testRun: TestRun!
     testExecutions: [TestExecution]!
+    executor: Executor!
 }
 
 extend type Mutation {
-    createWorkers(runID: String!, count: Int!): [Worker!]!
+    createWorkers(runID: String!, count: Int!, executor: Executor!): [Worker!]!
     setWorkerStatus(id: ID!, status: WorkerStatus!): Worker!
 }
 

@@ -168,6 +168,12 @@ export type Event = {
   readonly at: Scalars['DateTime'];
 };
 
+export enum Executor {
+  Ecs = 'ECS',
+  Lambda = 'LAMBDA',
+  Local = 'LOCAL'
+}
+
 export type Field = {
   readonly __typename: 'Field';
   readonly key: Maybe<Scalars['String']>;
@@ -449,7 +455,10 @@ export type Mutation = {
   readonly __typename: 'Mutation';
   readonly createTestExecution: CreateTestExecutionResponse;
   readonly createTestRun: Maybe<UploadInfo>;
+  readonly createWorkers: ReadonlyArray<Worker>;
+  readonly refreshRunStatus: TestRunStatus;
   readonly setTestExecutionStatus: TestExecutionStatus;
+  readonly setWorkerStatus: Worker;
 };
 
 
@@ -465,9 +474,27 @@ export type MutationCreateTestRunArgs = {
 };
 
 
+export type MutationCreateWorkersArgs = {
+  count: Scalars['Int'];
+  executor: Executor;
+  runID: Scalars['String'];
+};
+
+
+export type MutationRefreshRunStatusArgs = {
+  runId: Scalars['ID'];
+};
+
+
 export type MutationSetTestExecutionStatusArgs = {
   testExecutionId: Scalars['ID'];
   testStatus: TestStatus;
+};
+
+
+export type MutationSetWorkerStatusArgs = {
+  id: Scalars['ID'];
+  status: WorkerStatus;
 };
 
 export type NetworkEvent = {
@@ -525,12 +552,13 @@ export type PageInfo = {
 export type Query = {
   readonly __typename: 'Query';
   readonly consoleLogEvent: Maybe<ConsoleLogEvent>;
-  readonly getRun: TestRunStatus;
+  readonly getRunStatus: TestRunStatus;
   readonly httpNetworkEvent: Maybe<HttpNetworkEvent>;
   readonly node: Maybe<Node>;
   readonly testExecution: Maybe<TestExecution>;
   readonly testRun: Maybe<TestRun>;
   readonly testRuns: TestRunConnection;
+  readonly worker: Worker;
 };
 
 
@@ -539,7 +567,7 @@ export type QueryConsoleLogEventArgs = {
 };
 
 
-export type QueryGetRunArgs = {
+export type QueryGetRunStatusArgs = {
   runId: Scalars['ID'];
 };
 
@@ -567,6 +595,11 @@ export type QueryTestRunArgs = {
 export type QueryTestRunsArgs = {
   after?: InputMaybe<Scalars['Cursor']>;
   first?: InputMaybe<Scalars['Int']>;
+};
+
+
+export type QueryWorkerArgs = {
+  id: Scalars['ID'];
 };
 
 export enum RunStatus {
@@ -831,6 +864,21 @@ export type UploadInfo = {
   readonly url: Maybe<Scalars['String']>;
 };
 
+export type Worker = {
+  readonly __typename: 'Worker';
+  readonly executor: Executor;
+  readonly id: Scalars['ID'];
+  readonly status: WorkerStatus;
+  readonly testExecutions: ReadonlyArray<Maybe<TestExecution>>;
+  readonly testRun: TestRun;
+};
+
+export enum WorkerStatus {
+  Completed = 'COMPLETED',
+  Pending = 'PENDING',
+  Started = 'STARTED'
+}
+
 
 
 export type ResolverTypeWrapper<T> = Promise<T> | T;
@@ -918,6 +966,7 @@ export type ResolversTypes = {
   Cursor: ResolverTypeWrapper<Scalars['Cursor']>;
   DateTime: ResolverTypeWrapper<Scalars['DateTime']>;
   Event: ResolversTypes['CommandChainEvent'] | ResolversTypes['CommandEvent'] | ResolversTypes['ConsoleLogEvent'] | ResolversTypes['HttpNetworkEvent'] | ResolversTypes['HttpResponseBodyChunk'] | ResolversTypes['NetworkEventTiming'] | ResolversTypes['ScenarioEvent'] | ResolversTypes['StepEvent'] | ResolversTypes['TestExecution'] | ResolversTypes['TestExecutionScreenshot'] | ResolversTypes['TestExecutionSnapshot'];
+  Executor: Executor;
   Field: ResolverTypeWrapper<Field>;
   GherkinStepKeyword: GherkinStepKeyword;
   GitActor: ResolversTypes['GitHubActor'];
@@ -1002,6 +1051,8 @@ export type ResolversTypes = {
   TestStatus: TestStatus;
   URL: ResolverTypeWrapper<Scalars['URL']>;
   UploadInfo: ResolverTypeWrapper<UploadInfo>;
+  Worker: ResolverTypeWrapper<Omit<Worker, 'testExecutions' | 'testRun'> & { testExecutions: ReadonlyArray<Maybe<ResolversTypes['TestExecution']>>, testRun: ResolversTypes['TestRun'] }>;
+  WorkerStatus: WorkerStatus;
 };
 
 /** Mapping between all available schema types and the resolvers parents */
@@ -1102,6 +1153,7 @@ export type ResolversParentTypes = {
   TestRunStatus: TestRunStatus;
   URL: Scalars['URL'];
   UploadInfo: UploadInfo;
+  Worker: Omit<Worker, 'testExecutions' | 'testRun'> & { testExecutions: ReadonlyArray<Maybe<ResolversParentTypes['TestExecution']>>, testRun: ResolversParentTypes['TestRun'] };
 };
 
 export type DeferDirectiveArgs = {
@@ -1453,7 +1505,10 @@ export type KeyValuePairResolvers<ContextType = Context, ParentType extends Reso
 export type MutationResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
   createTestExecution: Resolver<ResolversTypes['CreateTestExecutionResponse'], ParentType, ContextType, RequireFields<MutationCreateTestExecutionArgs, 'featureFile' | 'runID' | 'testName'>>;
   createTestRun: Resolver<Maybe<ResolversTypes['UploadInfo']>, ParentType, ContextType, RequireFields<MutationCreateTestRunArgs, 'runEnvironmentDetails'>>;
+  createWorkers: Resolver<ReadonlyArray<ResolversTypes['Worker']>, ParentType, ContextType, RequireFields<MutationCreateWorkersArgs, 'count' | 'executor' | 'runID'>>;
+  refreshRunStatus: Resolver<ResolversTypes['TestRunStatus'], ParentType, ContextType, RequireFields<MutationRefreshRunStatusArgs, 'runId'>>;
   setTestExecutionStatus: Resolver<ResolversTypes['TestExecutionStatus'], ParentType, ContextType, RequireFields<MutationSetTestExecutionStatusArgs, 'testExecutionId' | 'testStatus'>>;
+  setWorkerStatus: Resolver<ResolversTypes['Worker'], ParentType, ContextType, RequireFields<MutationSetWorkerStatusArgs, 'id' | 'status'>>;
 };
 
 export type NetworkEventResolvers<ContextType = Context, ParentType extends ResolversParentTypes['NetworkEvent'] = ResolversParentTypes['NetworkEvent']> = {
@@ -1480,12 +1535,13 @@ export type PageInfoResolvers<ContextType = Context, ParentType extends Resolver
 
 export type QueryResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
   consoleLogEvent: Resolver<Maybe<ResolversTypes['ConsoleLogEvent']>, ParentType, ContextType, RequireFields<QueryConsoleLogEventArgs, 'id'>>;
-  getRun: Resolver<ResolversTypes['TestRunStatus'], ParentType, ContextType, RequireFields<QueryGetRunArgs, 'runId'>>;
+  getRunStatus: Resolver<ResolversTypes['TestRunStatus'], ParentType, ContextType, RequireFields<QueryGetRunStatusArgs, 'runId'>>;
   httpNetworkEvent: Resolver<Maybe<ResolversTypes['HttpNetworkEvent']>, ParentType, ContextType, RequireFields<QueryHttpNetworkEventArgs, 'id'>>;
   node: Resolver<Maybe<ResolversTypes['Node']>, ParentType, ContextType, RequireFields<QueryNodeArgs, 'id'>>;
   testExecution: Resolver<Maybe<ResolversTypes['TestExecution']>, ParentType, ContextType, RequireFields<QueryTestExecutionArgs, 'id'>>;
   testRun: Resolver<Maybe<ResolversTypes['TestRun']>, ParentType, ContextType, RequireFields<QueryTestRunArgs, 'id'>>;
   testRuns: Resolver<ResolversTypes['TestRunConnection'], ParentType, ContextType, Partial<QueryTestRunsArgs>>;
+  worker: Resolver<ResolversTypes['Worker'], ParentType, ContextType, RequireFields<QueryWorkerArgs, 'id'>>;
 };
 
 export type ScenarioDefinitionResolvers<ContextType = Context, ParentType extends ResolversParentTypes['ScenarioDefinition'] = ResolversParentTypes['ScenarioDefinition']> = {
@@ -1680,6 +1736,15 @@ export type UploadInfoResolvers<ContextType = Context, ParentType extends Resolv
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type WorkerResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Worker'] = ResolversParentTypes['Worker']> = {
+  executor: Resolver<ResolversTypes['Executor'], ParentType, ContextType>;
+  id: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  status: Resolver<ResolversTypes['WorkerStatus'], ParentType, ContextType>;
+  testExecutions: Resolver<ReadonlyArray<Maybe<ResolversTypes['TestExecution']>>, ParentType, ContextType>;
+  testRun: Resolver<ResolversTypes['TestRun'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type Resolvers<ContextType = Context> = {
   BrowserVersion: BrowserVersionResolvers<ContextType>;
   CallFrame: CallFrameResolvers<ContextType>;
@@ -1766,6 +1831,7 @@ export type Resolvers<ContextType = Context> = {
   TestRunStatus: TestRunStatusResolvers<ContextType>;
   URL: GraphQLScalarType;
   UploadInfo: UploadInfoResolvers<ContextType>;
+  Worker: WorkerResolvers<ContextType>;
 };
 
 export type DirectiveResolvers<ContextType = Context> = {

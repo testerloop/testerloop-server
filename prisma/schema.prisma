@@ -27,6 +27,12 @@ enum WorkerStatus {
   COMPLETED
 }
 
+enum Executor {
+  ECS
+  LAMBDA
+  LOCAL
+}
+
 model Organisation {
   id                String             @id @default(uuid()) @db.Uuid
   name              String
@@ -101,6 +107,7 @@ model TestExecution {
 model Worker {
   id             String          @id @default(uuid()) @db.Uuid
   status         WorkerStatus
+  executor       Executor
   createdAt      DateTime        @default(now())
   startedAt      DateTime?
   completedAt    DateTime?
