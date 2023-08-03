@@ -16,14 +16,15 @@ enum RunStatus {
 }
 
 enum TestStatus {
+  IN_PROGRESS
   PASSED
   FAILED
-  IN_PROGRESS
 }
 
-enum ExecutorStatus {
+enum WorkerStatus {
+  PENDING
   STARTED
-  FINISHED
+  COMPLETED
 }
 
 model Organisation {
@@ -64,7 +65,9 @@ model UserOrganisation {
 model TestRun {
   id             String          @id @default(uuid()) @db.Uuid
   status         RunStatus
-  executors      Executor[]
+  createdAt      DateTime        @default(now())
+  completedAt    DateTime?
+  workers        Worker[]
   testExecutions TestExecution[]
   organisation   Organisation    @relation(fields: [organisationId], references: [id], onDelete: Cascade)
   organisationId String          @db.Uuid
@@ -91,13 +94,16 @@ model TestExecution {
   reruns               TestExecution[]    @relation("RerunOf")
   testExecutionGroupId String             @db.Uuid
   testExecutionGroup   TestExecutionGroup @relation(fields: [testExecutionGroupId], references: [id])
-  executorId           String             @db.Uuid
-  executor             Executor           @relation(fields: [executorId], references: [id])
+  workerId             String             @db.Uuid
+  worker               Worker             @relation(fields: [workerId], references: [id])
 }
 
-model Executor {
+model Worker {
   id             String          @id @default(uuid()) @db.Uuid
-  status         ExecutorStatus
+  status         WorkerStatus
+  createdAt      DateTime        @default(now())
+  startedAt      DateTime?
+  completedAt    DateTime?
   testRunId      String          @db.Uuid
   testRun        TestRun         @relation(fields: [testRunId], references: [id])
   testExecutions TestExecution[]
