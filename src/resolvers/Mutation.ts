@@ -46,6 +46,8 @@ const resolvers: MutationResolvers = {
                 id: runID,
                 status: RunStatus.Running,
                 organisationId: auth.organisation.id,
+                createdAt: new Date(),
+                completedAt: null,
             };
             await repository.createTestRun(testRun);
         }
@@ -96,6 +98,7 @@ const resolvers: MutationResolvers = {
             testExecutionGroupId,
             testRunId: runID,
             rerunOfId: null,
+            workerId: 'testWorkerId',
         };
 
         await repository.createTestExecution(
