@@ -1,0 +1,21 @@
+enum WorkerStatus {
+    PENDING
+    STARTED
+    COMPLETED
+}
+
+type Worker {
+    id: ID!
+    status: WorkerStatus!
+    testRun: TestRun!
+    testExecutions: [TestExecution]!
+}
+
+extend type Mutation {
+    createWorkers(runID: String!, count: Int!): [Worker!]!
+    setWorkerStatus(id: ID!, status: WorkerStatus!): Worker!
+}
+
+extend type Query {
+    worker(id: ID!): Worker!
+}
