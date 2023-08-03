@@ -1,4 +1,10 @@
-import { PrismaClient, RunStatus, TestStatus } from '@prisma/client';
+import {
+    PrismaClient,
+    RunStatus,
+    TestStatus,
+    WorkerStatus,
+    Executor,
+} from '@prisma/client';
 
 if (process.env.NODE_ENV === 'production') {
     throw new Error(
@@ -14,7 +20,6 @@ async function main() {
             email: 'testuser@example.com',
         },
     });
-    console.log('Created User: ', user);
 
     const organisation = await prisma.organisation.create({
         data: {
@@ -31,7 +36,6 @@ async function main() {
             },
         },
     });
-    console.log('Created Organisation: ', organisation);
 
     const userOrganisation = await prisma.userOrganisation.create({
         data: {
@@ -39,17 +43,20 @@ async function main() {
             organisationId: organisation.id,
         },
     });
-    console.log('Created UserOrganisation: ', userOrganisation);
 
     const testRun = await prisma.testRun.create({
         data: {
             status: RunStatus.COMPLETED,
+            createdAt: new Date(),
+            completedAt: new Date(),
             organisationId: organisation.id,
         },
     });
+
     const testRun2 = await prisma.testRun.create({
         data: {
             status: RunStatus.RUNNING,
+            createdAt: new Date(),
             organisationId: organisation.id,
         },
     });
@@ -60,75 +67,67 @@ async function main() {
             featureFile: 'Feature File 1',
         },
     });
-    const testExecutionGroup2 = await prisma.testExecutionGroup.create({
+
+    const worker1 = await prisma.worker.create({
         data: {
-            testName: 'Test Name 2',
-            featureFile: 'Feature File 2',
-        },
-    });
-    const testExecutionGroup3 = await prisma.testExecutionGroup.create({
-        data: {
-            testName: 'Test Name 3',
-            featureFile: 'Feature File 3',
+            status: WorkerStatus.COMPLETED,
+            executor: Executor.LOCAL,
+            createdAt: new Date(),
+            startedAt: new Date(),
+            completedAt: new Date(),
+            testRunId: testRun.id,
         },
     });
 
     const testExecution1 = await prisma.testExecution.create({
         data: {
             testName: 'Test Execution 1',
-            result: TestStatus.FAILED,
+            result: TestStatus.PASSED,
             featureFile: 'Feature File 1',
             testRunId: testRun.id,
+            testExecutionGroupId: testExecutionGroup.id,
             at: new Date(new Date().getTime() - 10 * 60000),
             until: new Date(),
-            testExecutionGroupId: testExecutionGroup.id,
+            workerId: worker1.id,
+        },
+    });
+
+    const worker2 = await prisma.worker.create({
+        data: {
+            status: WorkerStatus.STARTED,
+            executor: Executor.LOCAL,
+            createdAt: new Date(),
+            startedAt: new Date(),
+            testRunId: testRun2.id,
         },
     });
 
     const testExecution2 = await prisma.testExecution.create({
         data: {
-            testName: 'Test Execution 1',
+            testName: 'Test Execution 2',
             featureFile: 'Feature File 2',
-            result: TestStatus.PASSED,
-            testRunId: testRun.id,
+            result: TestStatus.IN_PROGRESS,
+            testRunId: testRun2.id,
             testExecutionGroupId: testExecutionGroup.id,
             at: new Date(new Date().getTime() - 10 * 60000),
             until: new Date(),
-            rerunOfId: testExecution1.id,
-        },
-    });
-    const testExecution3 = await prisma.testExecution.create({
-        data: {
-            testName: 'Test Execution 2',
-            featureFile: 'Feature File 3',
-            result: TestStatus.IN_PROGRESS,
-            testRunId: testRun2.id,
-            testExecutionGroupId: testExecutionGroup2.id,
+            workerId: worker2.id,
         },
     });
 
-    const testExecution4 = await prisma.testExecution.create({
-        data: {
-            testName: 'Test Execution 3',
-            featureFile: 'Feature File 3',
-            result: TestStatus.IN_PROGRESS,
-            testRunId: testRun2.id,
-            testExecutionGroupId: testExecutionGroup3.id,
-        },
-    });
-
-    console.log(
-        'Created Test Executions: ',
-        testExecution1,
-        testExecution2,
-        testExecution3,
-        testExecution4,
-    );
+    console.log('Created Users: ', user);
+    console.log('Created Organisations: ', organisation);
+    console.log('Created UserOrganisations: ', userOrganisation);
+    console.log('Created TestRuns: ', testRun, testRun2);
+    console.log('Created TestExecutionGroups: ', testExecutionGroup);
+    console.log('Created Workers: ', worker1, worker2);
+    console.log('Created TestExecutions: ', testExecution1, testExecution2);
 }
 
 main()
     .catch((e) => {
-        throw e;
+        console.error(e);
+        process.exit(1);
     })
     .finally(async () => {
         await prisma.$disconnect();
