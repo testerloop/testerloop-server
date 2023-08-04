@@ -59,7 +59,7 @@ import Mutation from './Mutation.js';
 import TestExecutionStatus from './TestExecutionStatus.js';
 import TestRunStatus from './TestRunStatus.js';
 import CreateTestExecutionResponse from './CreateTestExecutionResponse.js';
-
+import Worker from './Worker.js';
 const interfaceResolvers = {
     __resolveType<T extends string>(parent: { __typename: T }): T {
         return parent.__typename;
@@ -67,6 +67,7 @@ const interfaceResolvers = {
 };
 
 const resolvers: Resolvers = {
+    Worker,
     CreateTestExecutionResponse,
     UploadInfo,
     TestExecutionStatus,

@@ -11,7 +11,7 @@ import {
     TestStatus,
     WorkerStatus,
 } from './types/generated.js';
-import { Worker, Executor } from './types/generated';
+import { Executor } from './types/generated';
 
 const resolvers: QueryResolvers = {
     async httpNetworkEvent(root, { id }, { dataSources }) {
