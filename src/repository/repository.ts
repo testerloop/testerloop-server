@@ -1,5 +1,4 @@
 import {
-    Organisation,
     TestExecution,
     TestRun,
     TestStatus,
@@ -12,31 +11,18 @@ import {
 import { S3Config, InputMaybe } from '../resolvers/types/generated';
 import { Auth } from '../context.js';
 import PrismaDB from '../db.js';
-import {
-    OrganisationWithoutSlug,
-    S3CustomerConfig,
-} from '../interfaces/prisma.js';
+import { OrganisationWithoutSlug } from '../interfaces/prisma.js';
 
 type GetBucketAndPathArgs = Auth | InputMaybe<S3Config> | undefined;
 
-interface Repository {
-    getOrganisationFromApiKey: (key: string) => Promise<Organisation | null>;
-    createApiKey: (organisationId: string, name?: string) => Promise<string>;
-    getBucketAndPath: (args: GetBucketAndPathArgs) => S3CustomerConfig;
-    getOrganisationIdentifier: (args: GetBucketAndPathArgs) => string;
-    createOrganisation: (
-        args: OrganisationWithoutSlug,
-    ) => Promise<Organisation | null>;
-}
-
-class PrismaRepository implements Repository {
-    db: PrismaDB = new PrismaDB();
+class PrismaRepository {
+    private db: PrismaDB = new PrismaDB();
 
     __construct() {
         console.log('Starting PrismaRepository');
     }
 
-    validateArgs(args: GetBucketAndPathArgs): Auth {
+    private validateArgs(args: GetBucketAndPathArgs): Auth {
         const auth = args as Auth;
 
         if (!auth || !auth.organisation) {
@@ -188,6 +174,7 @@ class PrismaRepository implements Repository {
             },
         });
     }
+
     async getWorker(workerId: string) {
         return this.db.prisma.worker.findUnique({ where: { id: workerId } });
     }
@@ -222,11 +209,13 @@ class PrismaRepository implements Repository {
             where: { testRunId: runId },
         });
     }
+
     async getTestExecutionsbyRunId(runId: string) {
         return this.db.prisma.testExecution.findMany({
             where: { testRunId: runId },
         });
     }
+
     async getTestExecutionsByWorkerId(workerId: string) {
         return this.db.prisma.testExecution.findMany({
             where: { workerId },
