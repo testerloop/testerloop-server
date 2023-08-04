@@ -101,17 +101,18 @@ const resolvers: MutationResolvers = {
         { repository },
     ): Promise<Worker> => {
         const worker = await repository.getWorker(workerID);
-        if (!worker) {
-            throw new Error('Worker not found.');
-        }
-        if (
-            status === WorkerStatus.Pending ||
-            (worker.status === WorkerStatus.Started &&
-                status === WorkerStatus.Started) ||
-            worker.status === WorkerStatus.Completed
-        ) {
+        if (!worker) throw new Error('Worker not found.');
+
+        const isInputPending = status === WorkerStatus.Pending;
+        const isAlreadyCompleted = worker.status === WorkerStatus.Completed;
+        const isStartedAgain =
+            worker.status === WorkerStatus.Started &&
+            status === WorkerStatus.Started;
+
+        if (isInputPending || isAlreadyCompleted || isStartedAgain) {
             throw new Error('Invalid status transition.');
         }
+
         await repository.updateWorkerStatus(workerID, status);
         const updatedWorker = assertNonNull(
             await repository.getWorker(workerID),

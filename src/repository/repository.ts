@@ -6,6 +6,7 @@ import {
     RunStatus,
     WorkerStatus,
     Executor,
+    Prisma,
 } from '@prisma/client';
 
 import { S3Config, InputMaybe } from '../resolvers/types/generated';
@@ -185,32 +186,29 @@ class PrismaRepository implements Repository {
     async getWorker(workerId: string) {
         return this.db.prisma.worker.findUnique({ where: { id: workerId } });
     }
+
     async updateWorkerStatus(
         workerId: string,
         status: WorkerStatus,
     ): Promise<WorkerStatus> {
-        if (status === WorkerStatus.STARTED) {
-            await this.db.prisma.worker.update({
-                where: { id: workerId },
-                data: {
-                    status,
-                    startedAt: new Date(),
-                },
-            });
-        } else if (status === WorkerStatus.COMPLETED) {
-            await this.db.prisma.worker.update({
-                where: { id: workerId },
-                data: {
-                    status,
-                    completedAt: new Date(),
-                },
-            });
-        } else {
-            await this.db.prisma.worker.update({
-                where: { id: workerId },
-                data: { status },
-            });
+        const isStatusStarted = status === WorkerStatus.STARTED;
+        const isStatusCompleted = status === WorkerStatus.COMPLETED;
+
+        const updateData: Partial<Prisma.WorkerCreateInput> = { status };
+
+        if (isStatusStarted) {
+            updateData.startedAt = new Date();
         }
+
+        if (isStatusCompleted) {
+            updateData.completedAt = new Date();
+        }
+
+        await this.db.prisma.worker.update({
+            where: { id: workerId },
+            data: updateData,
+        });
+
         return status;
     }
 
