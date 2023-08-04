@@ -198,21 +198,21 @@ const resolvers: MutationResolvers = {
             until,
         );
 
-        const run = await repository.getTestRun(testExecution.testRunId);
-        if (!run) {
-            throw new Error('Run not found.');
-        }
-        const allTestExecutionsCompleted = run.testExecutions.every(
-            (execution) =>
-                execution.result === PrismaTestStatus.PASSED ||
-                execution.result === PrismaTestStatus.FAILED,
-        );
-        if (allTestExecutionsCompleted) {
-            await repository.updateTestRunStatus(
-                testExecution.testRunId,
-                PrismaRunStatus.COMPLETED,
-            );
-        }
+        // const run = await repository.getTestRun(testExecution.testRunId);
+        // if (!run) {
+        //     throw new Error('Run not found.');
+        // }
+        // const allTestExecutionsCompleted = run.testExecutions.every(
+        //     (execution) =>
+        //         execution.result === PrismaTestStatus.PASSED ||
+        //         execution.result === PrismaTestStatus.FAILED,
+        // );
+        // if (allTestExecutionsCompleted) {
+        //     await repository.updateTestRunStatus(
+        //         testExecution.testRunId,
+        //         PrismaRunStatus.COMPLETED,
+        //     );
+        // }
         const { testName, featureFile, rerunOfId } = testExecution;
         return {
             __typename: 'TestExecutionStatus',

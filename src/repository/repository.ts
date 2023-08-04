@@ -161,9 +161,14 @@ class PrismaRepository implements Repository {
         id: string,
         status: RunStatus,
     ): Promise<TestRun | null> {
+        const updateData: Partial<Prisma.TestRunCreateInput> = { status };
+        if (status === RunStatus.COMPLETED) {
+            updateData.completedAt = new Date();
+        }
+
         return this.db.prisma.testRun.update({
             where: { id },
-            data: { status },
+            data: updateData,
         });
     }
 
