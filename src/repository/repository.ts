@@ -189,12 +189,31 @@ class PrismaRepository implements Repository {
         workerId: string,
         status: WorkerStatus,
     ): Promise<WorkerStatus> {
-        await this.db.prisma.worker.update({
-            where: { id: workerId },
-            data: { status },
-        });
+        if (status === WorkerStatus.STARTED) {
+            await this.db.prisma.worker.update({
+                where: { id: workerId },
+                data: {
+                    status,
+                    startedAt: new Date(),
+                },
+            });
+        } else if (status === WorkerStatus.COMPLETED) {
+            await this.db.prisma.worker.update({
+                where: { id: workerId },
+                data: {
+                    status,
+                    completedAt: new Date(),
+                },
+            });
+        } else {
+            await this.db.prisma.worker.update({
+                where: { id: workerId },
+                data: { status },
+            });
+        }
         return status;
     }
+
     async getWorkersByRunId(runId: string) {
         return this.db.prisma.worker.findMany({
             where: { testRunId: runId },

@@ -5,6 +5,7 @@ import {
     WorkerStatus as PrismaWorkerStatus,
 } from '@prisma/client';
 
+import { assertNonNull } from '../util/assertNonNull.js';
 import repository from '../repository/repository.js';
 
 import {
@@ -103,12 +104,23 @@ const resolvers: MutationResolvers = {
         if (!worker) {
             throw new Error('Worker not found.');
         }
+        if (
+            status === WorkerStatus.Pending ||
+            (worker.status === WorkerStatus.Started &&
+                status === WorkerStatus.Started) ||
+            worker.status === WorkerStatus.Completed
+        ) {
+            throw new Error('Invalid status transition.');
+        }
         await repository.updateWorkerStatus(workerID, status);
+        const updatedWorker = assertNonNull(
+            await repository.getWorker(workerID),
+        );
         return {
             __typename: 'Worker',
-            ...worker,
-            executor: worker.executor as Executor,
-            status: status,
+            ...updatedWorker,
+            executor: updatedWorker.executor as Executor,
+            status: updatedWorker.status as WorkerStatus,
             testExecutions: [],
         };
     },
