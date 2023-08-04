@@ -49,6 +49,8 @@ const resolvers: MutationResolvers = {
                 id: runID,
                 status: RunStatus.Running,
                 organisationId: auth.organisation.id,
+                createdAt: new Date(),
+                completedAt: null,
             };
             await repository.createTestRun(testRun);
         }
@@ -69,7 +71,7 @@ const resolvers: MutationResolvers = {
     },
     createTestExecution: async (
         _,
-        { runID, testName, featureFile },
+        { runID, testName, featureFile, workerId },
         { auth, repository },
     ): Promise<CreateTestExecutionResponse> => {
         if (!auth) {
@@ -99,6 +101,7 @@ const resolvers: MutationResolvers = {
             testExecutionGroupId,
             testRunId: runID,
             rerunOfId: null,
+            workerId: workerId,
         };
 
         await repository.createTestExecution(

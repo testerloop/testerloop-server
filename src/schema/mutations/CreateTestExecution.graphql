@@ -8,5 +8,6 @@ extend type Mutation {
         runID: String!
         testName: String!
         featureFile: String!
+        workerId: String!
     ): CreateTestExecutionResponse!
 }

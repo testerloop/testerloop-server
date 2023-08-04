@@ -469,6 +469,7 @@ export type MutationCreateTestExecutionArgs = {
   featureFile: Scalars['String'];
   runID: Scalars['String'];
   testName: Scalars['String'];
+  workerId: Scalars['String'];
 };
 
 
@@ -1471,7 +1472,7 @@ export type KeyValuePairResolvers<ContextType = Context, ParentType extends Reso
 
 export type MutationResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
   createApiKey: Resolver<ResolversTypes['CreateApiKeyResponse'], ParentType, ContextType, RequireFields<MutationCreateApiKeyArgs, 'organisationId'>>;
-  createTestExecution: Resolver<ResolversTypes['CreateTestExecutionResponse'], ParentType, ContextType, RequireFields<MutationCreateTestExecutionArgs, 'featureFile' | 'runID' | 'testName'>>;
+  createTestExecution: Resolver<ResolversTypes['CreateTestExecutionResponse'], ParentType, ContextType, RequireFields<MutationCreateTestExecutionArgs, 'featureFile' | 'runID' | 'testName' | 'workerId'>>;
   createTestRun: Resolver<Maybe<ResolversTypes['UploadInfo']>, ParentType, ContextType, RequireFields<MutationCreateTestRunArgs, 'runEnvironmentDetails'>>;
   setTestExecutionStatus: Resolver<ResolversTypes['TestExecutionStatus'], ParentType, ContextType, RequireFields<MutationSetTestExecutionStatusArgs, 'testExecutionId' | 'testStatus'>>;
 };
