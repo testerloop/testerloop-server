@@ -5,7 +5,13 @@ import {
 
 import { decodeId, decodeIdForType } from '../util/id.js';
 
-import { QueryResolvers, RunStatus, TestStatus } from './types/generated.js';
+import {
+    QueryResolvers,
+    RunStatus,
+    TestStatus,
+    WorkerStatus,
+} from './types/generated.js';
+import { Worker, Executor } from './types/generated';
 
 const resolvers: QueryResolvers = {
     async httpNetworkEvent(root, { id }, { dataSources }) {
@@ -86,7 +92,7 @@ const resolvers: QueryResolvers = {
         };
     },
 
-    async getRunStatus(parent, { runId }, { dataSources, auth, repository }) {
+    async getRunStatus(parent, { runId }, { auth, repository }) {
         if (!auth) throw new Error('User is not authenticated.');
 
         const testRun = await repository.getTestRun(runId);
@@ -97,13 +103,6 @@ const resolvers: QueryResolvers = {
             throw new Error(
                 'User does not have permission to access this run result',
             );
-
-        if (testRun.status !== PrismaRunStatus.COMPLETED) {
-            const s3RunStatus =
-                await dataSources.testResults.getTestRunStatusFromS3(runId);
-            if (s3RunStatus.runStatus === RunStatus.Completed)
-                return s3RunStatus;
-        }
 
         const testExecutionStatuses = testRun.testExecutions.map(
             (execution) => {
@@ -133,6 +132,32 @@ const resolvers: QueryResolvers = {
             __typename: 'TestRunStatus',
             runStatus,
             testExecutionStatuses,
+        };
+    },
+
+    async worker(root, { id }, { repository }) {
+        const worker = await repository.getWorker(id);
+        if (!worker) throw new Error(`Worker with id ${id} not found.`);
+
+        const testExecutions = await Promise.all(
+            (await repository.getTestExecutionsByWorkerId(id)).map(
+                async (execution) => ({
+                    __typename: 'TestExecution' as const,
+                    id: execution.id,
+                    testRun: {
+                        __typename: 'TestRun' as const,
+                        id: execution.testRunId,
+                    },
+                }),
+            ),
+        );
+
+        return {
+            __typename: 'Worker',
+            ...worker,
+            status: worker.status as WorkerStatus,
+            executor: worker.executor as Executor,
+            testExecutions,
         };
     },
 

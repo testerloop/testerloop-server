@@ -200,6 +200,11 @@ class PrismaRepository implements Repository {
             where: { testRunId: runId },
         });
     }
+    async getTestExecutionsByWorkerId(workerId: string) {
+        return this.db.prisma.testExecution.findMany({
+            where: { workerId },
+        });
+    }
 }
 
 export default new PrismaRepository();
