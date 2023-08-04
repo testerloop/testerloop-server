@@ -78,9 +78,7 @@ const resolvers: MutationResolvers = {
     ): Promise<Worker[]> => {
         const workerPromises = Array(count)
             .fill(null)
-            .map(() =>
-                repository.createWorker(runID, executor as PrismaExecutor),
-            );
+            .map(() => repository.createWorker(runID, executor));
 
         const workers = await Promise.all(workerPromises);
 
