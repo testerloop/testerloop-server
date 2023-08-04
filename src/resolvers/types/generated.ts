@@ -158,6 +158,11 @@ export type Cookie = {
   readonly value: Scalars['String'];
 };
 
+export type CreateApiKeyResponse = {
+  readonly __typename: 'CreateApiKeyResponse';
+  readonly apiKey: Scalars['String'];
+};
+
 export type CreateTestExecutionResponse = {
   readonly __typename: 'CreateTestExecutionResponse';
   readonly testExecutionGroupId: Scalars['ID'];
@@ -453,12 +458,19 @@ export type KeyValuePair = {
 
 export type Mutation = {
   readonly __typename: 'Mutation';
+  readonly createApiKey: CreateApiKeyResponse;
   readonly createTestExecution: CreateTestExecutionResponse;
   readonly createTestRun: Maybe<UploadInfo>;
   readonly createWorkers: ReadonlyArray<Worker>;
   readonly refreshRunStatus: RunStatus;
   readonly setTestExecutionStatus: TestExecutionStatus;
   readonly setWorkerStatus: Worker;
+};
+
+
+export type MutationCreateApiKeyArgs = {
+  name?: InputMaybe<Scalars['String']>;
+  organisationId: Scalars['String'];
 };
 
 
@@ -966,6 +978,7 @@ export type ResolversTypes = {
   ConsoleLogEvent: ResolverTypeWrapper<ConsoleLogEventModel>;
   ConsoleLogLevel: ConsoleLogLevel;
   Cookie: ResolverTypeWrapper<Cookie>;
+  CreateApiKeyResponse: ResolverTypeWrapper<CreateApiKeyResponse>;
   CreateTestExecutionResponse: ResolverTypeWrapper<CreateTestExecutionResponse>;
   Cursor: ResolverTypeWrapper<Scalars['Cursor']>;
   DateTime: ResolverTypeWrapper<Scalars['DateTime']>;
@@ -1077,6 +1090,7 @@ export type ResolversParentTypes = {
   ConsoleEventFilterInput: ConsoleEventFilterInput;
   ConsoleLogEvent: ConsoleLogEventModel;
   Cookie: Cookie;
+  CreateApiKeyResponse: CreateApiKeyResponse;
   CreateTestExecutionResponse: CreateTestExecutionResponse;
   Cursor: Scalars['Cursor'];
   DateTime: Scalars['DateTime'];
@@ -1274,6 +1288,11 @@ export type CookieResolvers<ContextType = Context, ParentType extends ResolversP
   path: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   secure: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   value: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type CreateApiKeyResponseResolvers<ContextType = Context, ParentType extends ResolversParentTypes['CreateApiKeyResponse'] = ResolversParentTypes['CreateApiKeyResponse']> = {
+  apiKey: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -1507,6 +1526,7 @@ export type KeyValuePairResolvers<ContextType = Context, ParentType extends Reso
 };
 
 export type MutationResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
+  createApiKey: Resolver<ResolversTypes['CreateApiKeyResponse'], ParentType, ContextType, RequireFields<MutationCreateApiKeyArgs, 'organisationId'>>;
   createTestExecution: Resolver<ResolversTypes['CreateTestExecutionResponse'], ParentType, ContextType, RequireFields<MutationCreateTestExecutionArgs, 'featureFile' | 'runID' | 'testName' | 'workerId'>>;
   createTestRun: Resolver<Maybe<ResolversTypes['UploadInfo']>, ParentType, ContextType, RequireFields<MutationCreateTestRunArgs, 'runEnvironmentDetails'>>;
   createWorkers: Resolver<ReadonlyArray<ResolversTypes['Worker']>, ParentType, ContextType, RequireFields<MutationCreateWorkersArgs, 'count' | 'executor' | 'runID'>>;
@@ -1766,6 +1786,7 @@ export type Resolvers<ContextType = Context> = {
   ConsoleEvent: ConsoleEventResolvers<ContextType>;
   ConsoleLogEvent: ConsoleLogEventResolvers<ContextType>;
   Cookie: CookieResolvers<ContextType>;
+  CreateApiKeyResponse: CreateApiKeyResponseResolvers<ContextType>;
   CreateTestExecutionResponse: CreateTestExecutionResponseResolvers<ContextType>;
   Cursor: GraphQLScalarType;
   DateTime: GraphQLScalarType;

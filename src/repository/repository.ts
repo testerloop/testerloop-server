@@ -19,7 +19,8 @@ import {
 type GetBucketAndPathArgs = Auth | InputMaybe<S3Config> | undefined;
 
 interface Repository {
-    getByApiKey: (apiKey: string) => Promise<Organisation | null>;
+    getOrganisationFromApiKey: (key: string) => Promise<Organisation | null>;
+    createApiKey: (organisationId: string, name?: string) => Promise<string>;
     getBucketAndPath: (args: GetBucketAndPathArgs) => S3CustomerConfig;
     getOrganisationIdentifier: (args: GetBucketAndPathArgs) => string;
     createOrganisation: (
@@ -44,8 +45,12 @@ class PrismaRepository implements Repository {
         return auth;
     }
 
-    async getByApiKey(apiKey: string) {
-        return this.db.getByApiKey(apiKey);
+    async getOrganisationFromApiKey(key: string) {
+        return this.db.getOrganisationFromApiKey(key);
+    }
+
+    async createApiKey(organisationId: string, name?: string | null) {
+        return this.db.createApiKey(organisationId, name);
     }
 
     async createOrganisation(args: OrganisationWithoutSlug) {

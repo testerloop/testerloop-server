@@ -7,12 +7,15 @@ import {
     Executor,
 } from '@prisma/client';
 
+import apiKeyService from './ApiKeyService.js';
+
 if (process.env.NODE_ENV === 'production') {
     throw new Error(
         'Seed script should not be called in production environment',
     );
 }
 
+const testApiKey = process.env.TEST_API_KEY as string;
 const prisma = new PrismaClient();
 
 async function main() {
@@ -22,6 +25,7 @@ async function main() {
         },
     });
 
+    const hashedKey = await apiKeyService.hashKey(testApiKey);
     const organisation = await prisma.organisation.create({
         data: {
             name: 'Testerloop',
@@ -31,8 +35,9 @@ async function main() {
             s3Region: 'eu-west-3',
             apiKeys: {
                 create: {
-                    apiKey: 'testApiKey',
-                    isEnabled: true,
+                    hashedKey,
+                    name: 'test',
+                    prefix: 'testApiKey',
                 },
             },
         },

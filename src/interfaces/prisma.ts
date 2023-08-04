@@ -14,6 +14,6 @@ export interface PrismaInterface {
     createWithSlug: (
         data: OrganisationWithoutSlug,
     ) => Promise<Organisation | null>;
-    getByApiKey: (apiKey: string) => Promise<Organisation | null>;
+    getOrganisationFromApiKey: (key: string) => Promise<Organisation | null>;
     getSlug: (slug: string, index?: number) => Promise<string> | null;
 }

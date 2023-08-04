@@ -28,9 +28,9 @@ export type Context = {
 const getAuth = async (apiKey: string | null): Promise<Auth | undefined> => {
     if (!apiKey) throw new Error('API key is required');
 
-    const organisation = await repository.getByApiKey(apiKey);
+    const organisation = await repository.getOrganisationFromApiKey(apiKey);
 
-    if (!organisation) throw new Error('Invalid API key provided');
+    if (!organisation) throw new Error('Organisation not found');
 
     console.log('Valid API key found for: ', organisation.name);
 
