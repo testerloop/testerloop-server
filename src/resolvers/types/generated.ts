@@ -456,7 +456,7 @@ export type Mutation = {
   readonly createTestExecution: CreateTestExecutionResponse;
   readonly createTestRun: Maybe<UploadInfo>;
   readonly createWorkers: ReadonlyArray<Worker>;
-  readonly refreshRunStatus: TestRunStatus;
+  readonly refreshRunStatus: RunStatus;
   readonly setTestExecutionStatus: TestExecutionStatus;
   readonly setWorkerStatus: Worker;
 };
@@ -1510,7 +1510,7 @@ export type MutationResolvers<ContextType = Context, ParentType extends Resolver
   createTestExecution: Resolver<ResolversTypes['CreateTestExecutionResponse'], ParentType, ContextType, RequireFields<MutationCreateTestExecutionArgs, 'featureFile' | 'runID' | 'testName' | 'workerId'>>;
   createTestRun: Resolver<Maybe<ResolversTypes['UploadInfo']>, ParentType, ContextType, RequireFields<MutationCreateTestRunArgs, 'runEnvironmentDetails'>>;
   createWorkers: Resolver<ReadonlyArray<ResolversTypes['Worker']>, ParentType, ContextType, RequireFields<MutationCreateWorkersArgs, 'count' | 'executor' | 'runID'>>;
-  refreshRunStatus: Resolver<ResolversTypes['TestRunStatus'], ParentType, ContextType, RequireFields<MutationRefreshRunStatusArgs, 'runId'>>;
+  refreshRunStatus: Resolver<ResolversTypes['RunStatus'], ParentType, ContextType, RequireFields<MutationRefreshRunStatusArgs, 'runId'>>;
   setTestExecutionStatus: Resolver<ResolversTypes['TestExecutionStatus'], ParentType, ContextType, RequireFields<MutationSetTestExecutionStatusArgs, 'testExecutionId' | 'testStatus'>>;
   setWorkerStatus: Resolver<ResolversTypes['Worker'], ParentType, ContextType, RequireFields<MutationSetWorkerStatusArgs, 'status' | 'workerID'>>;
 };

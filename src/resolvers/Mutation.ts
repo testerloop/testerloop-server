@@ -2,6 +2,7 @@ import { v4 as uuidv4, v5 as uuidv5 } from 'uuid';
 import {
     TestStatus as PrismaTestStatus,
     RunStatus as PrismaRunStatus,
+    WorkerStatus as PrismaWorkerStatus,
 } from '@prisma/client';
 
 import {
@@ -205,6 +206,40 @@ const resolvers: MutationResolvers = {
             rerunOfId,
             testStatus,
         };
+    },
+
+    refreshRunStatus: async (
+        _,
+        { runId },
+        { repository },
+    ): Promise<RunStatus> => {
+        const run = await repository.getTestRun(runId);
+        if (!run) {
+            throw new Error('Run not found.');
+        }
+
+        const workers = await repository.getWorkersByRunId(runId);
+        const allWorkersCompleted = workers.every(
+            (worker) => worker.status === PrismaWorkerStatus.COMPLETED,
+        );
+
+        if (!allWorkersCompleted) {
+            return run.status as RunStatus;
+        }
+
+        const updatedRun = await repository.updateTestRunStatus(
+            runId,
+            PrismaRunStatus.COMPLETED,
+        );
+
+        if (!updatedRun) {
+            console.error(
+                'Failed to update run status. Returning initial status.',
+            );
+            return run.status as RunStatus;
+        }
+
+        return updatedRun.status as RunStatus;
     },
 };
 
