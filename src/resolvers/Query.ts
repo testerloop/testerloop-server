@@ -1,6 +1,7 @@
 import {
     RunStatus as PrismaRunStatus,
     TestStatus as PrismaTestStatus,
+    WorkerStatus as PrismaWorkerStatus,
 } from '@prisma/client';
 
 import { decodeId, decodeIdForType } from '../util/id.js';
@@ -122,6 +123,17 @@ const resolvers: QueryResolvers = {
                 };
             },
         );
+        const workers = await repository.getWorkersByRunId(runId);
+        const totalWorkers = workers.length;
+        const pendingWorkers = workers.filter(
+            (worker) => worker.status === PrismaWorkerStatus.PENDING,
+        ).length;
+        const activeWorkers = workers.filter(
+            (worker) => worker.status === PrismaWorkerStatus.STARTED,
+        ).length;
+        const completedWorkers = workers.filter(
+            (worker) => worker.status === PrismaWorkerStatus.COMPLETED,
+        ).length;
 
         const runStatus =
             testRun.status === PrismaRunStatus.COMPLETED
@@ -131,6 +143,11 @@ const resolvers: QueryResolvers = {
         return {
             __typename: 'TestRunStatus',
             runStatus,
+            totalWorkers,
+            workers,
+            pendingWorkers,
+            activeWorkers,
+            completedWorkers,
             testExecutionStatuses,
         };
     },
