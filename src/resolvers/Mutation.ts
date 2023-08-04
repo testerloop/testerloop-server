@@ -2,6 +2,7 @@ import { v4 as uuidv4, v5 as uuidv5 } from 'uuid';
 import {
     TestStatus as PrismaTestStatus,
     RunStatus as PrismaRunStatus,
+    Executor as PrismaExecutor,
 } from '@prisma/client';
 
 import {
@@ -11,6 +12,9 @@ import {
     TestStatus,
     RunStatus,
     TestExecutionStatus,
+    Worker,
+    Executor,
+    WorkerStatus,
 } from './types/generated.js';
 
 const resolvers: MutationResolvers = {
@@ -66,6 +70,29 @@ const resolvers: MutationResolvers = {
                 })),
         };
     },
+
+    createWorkers: async (
+        _,
+        { runID, count, executor },
+        { repository },
+    ): Promise<Worker[]> => {
+        const workerPromises = Array(count)
+            .fill(null)
+            .map(() =>
+                repository.createWorker(runID, executor as PrismaExecutor),
+            );
+
+        const workers = await Promise.all(workerPromises);
+
+        return workers.map((worker) => ({
+            __typename: 'Worker',
+            ...worker,
+            executor: executor,
+            status: WorkerStatus.Pending,
+            testExecutions: [],
+        }));
+    },
+
     createTestExecution: async (
         _,
         { runID, testName, featureFile, workerId },

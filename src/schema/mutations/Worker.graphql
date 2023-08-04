@@ -1,0 +1,31 @@
+enum WorkerStatus {
+    PENDING
+    STARTED
+    COMPLETED
+}
+
+enum Executor {
+    LOCAL
+    ECS
+    LAMBDA
+}
+
+type Worker {
+    id: ID!
+    status: WorkerStatus!
+    executor: Executor!
+    createdAt: DateTime!
+    startedAt: DateTime
+    completedAt: DateTime
+    testRunId: ID! # TODO - return a test run object
+    testExecutions: [TestExecution]!
+}
+
+extend type Mutation {
+    createWorkers(runID: String!, count: Int!, executor: Executor!): [Worker!]!
+    setWorkerStatus(id: ID!, status: WorkerStatus!): Worker!
+}
+
+extend type Query {
+    worker(id: ID!): Worker!
+}

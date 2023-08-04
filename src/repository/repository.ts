@@ -4,6 +4,8 @@ import {
     TestRun,
     TestStatus,
     RunStatus,
+    WorkerStatus,
+    Executor,
 } from '@prisma/client';
 
 import { S3Config, InputMaybe } from '../resolvers/types/generated';
@@ -161,6 +163,19 @@ class PrismaRepository implements Repository {
 
     async getTestRun(runId: string) {
         return this.db.getTestRun(runId);
+    }
+
+    async createWorker(runId: string, executor: Executor) {
+        return this.db.prisma.worker.create({
+            data: {
+                status: WorkerStatus.PENDING,
+                executor,
+                createdAt: new Date(),
+                startedAt: null,
+                completedAt: null,
+                testRunId: runId,
+            },
+        });
     }
 }
 
