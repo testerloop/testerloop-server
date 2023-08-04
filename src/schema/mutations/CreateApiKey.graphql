@@ -1,0 +1,7 @@
+type CreateApiKeyResponse {
+    apiKey: String!
+}
+
+extend type Mutation {
+    createApiKey(organisationId: String!, name: String): CreateApiKeyResponse!
+}

@@ -4,6 +4,8 @@ import {
     RunStatus as PrismaRunStatus,
 } from '@prisma/client';
 
+import repository from '../repository/repository.js';
+
 import {
     MutationResolvers,
     UploadInfo,
@@ -11,6 +13,7 @@ import {
     TestStatus,
     RunStatus,
     TestExecutionStatus,
+    CreateApiKeyResponse,
 } from './types/generated.js';
 
 const resolvers: MutationResolvers = {
@@ -161,6 +164,16 @@ const resolvers: MutationResolvers = {
             featureFile,
             rerunOfId,
             testStatus,
+        };
+    },
+    createApiKey: async (
+        _,
+        { organisationId, name },
+    ): Promise<CreateApiKeyResponse> => {
+        const apiKey = await repository.createApiKey(organisationId, name);
+        return {
+            __typename: 'CreateApiKeyResponse',
+            apiKey,
         };
     },
 };
