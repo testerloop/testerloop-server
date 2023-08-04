@@ -18,7 +18,7 @@ type Worker {
     startedAt: DateTime
     completedAt: DateTime
     testRunId: ID! # TODO - return a test run object
-    testExecutions: [TestExecution]!
+    testExecutions: [TestExecution]! # TODO - return a connection
 }
 
 extend type Mutation {
