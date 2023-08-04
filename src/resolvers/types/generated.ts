@@ -494,8 +494,8 @@ export type MutationSetTestExecutionStatusArgs = {
 
 
 export type MutationSetWorkerStatusArgs = {
-  id: Scalars['ID'];
   status: WorkerStatus;
+  workerID: Scalars['ID'];
 };
 
 export type NetworkEvent = {
@@ -1512,7 +1512,7 @@ export type MutationResolvers<ContextType = Context, ParentType extends Resolver
   createWorkers: Resolver<ReadonlyArray<ResolversTypes['Worker']>, ParentType, ContextType, RequireFields<MutationCreateWorkersArgs, 'count' | 'executor' | 'runID'>>;
   refreshRunStatus: Resolver<ResolversTypes['TestRunStatus'], ParentType, ContextType, RequireFields<MutationRefreshRunStatusArgs, 'runId'>>;
   setTestExecutionStatus: Resolver<ResolversTypes['TestExecutionStatus'], ParentType, ContextType, RequireFields<MutationSetTestExecutionStatusArgs, 'testExecutionId' | 'testStatus'>>;
-  setWorkerStatus: Resolver<ResolversTypes['Worker'], ParentType, ContextType, RequireFields<MutationSetWorkerStatusArgs, 'id' | 'status'>>;
+  setWorkerStatus: Resolver<ResolversTypes['Worker'], ParentType, ContextType, RequireFields<MutationSetWorkerStatusArgs, 'status' | 'workerID'>>;
 };
 
 export type NetworkEventResolvers<ContextType = Context, ParentType extends ResolversParentTypes['NetworkEvent'] = ResolversParentTypes['NetworkEvent']> = {

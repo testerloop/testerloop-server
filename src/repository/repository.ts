@@ -177,6 +177,19 @@ class PrismaRepository implements Repository {
             },
         });
     }
+    async getWorker(workerId: string) {
+        return this.db.prisma.worker.findUnique({ where: { id: workerId } });
+    }
+    async updateWorkerStatus(
+        workerId: string,
+        status: WorkerStatus,
+    ): Promise<WorkerStatus> {
+        await this.db.prisma.worker.update({
+            where: { id: workerId },
+            data: { status },
+        });
+        return status;
+    }
 }
 
 export default new PrismaRepository();

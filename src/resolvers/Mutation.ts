@@ -2,7 +2,6 @@ import { v4 as uuidv4, v5 as uuidv5 } from 'uuid';
 import {
     TestStatus as PrismaTestStatus,
     RunStatus as PrismaRunStatus,
-    Executor as PrismaExecutor,
 } from '@prisma/client';
 
 import {
@@ -13,8 +12,8 @@ import {
     RunStatus,
     TestExecutionStatus,
     Worker,
-    Executor,
     WorkerStatus,
+    Executor,
 } from './types/generated.js';
 
 const resolvers: MutationResolvers = {
@@ -89,6 +88,25 @@ const resolvers: MutationResolvers = {
             status: WorkerStatus.Pending,
             testExecutions: [],
         }));
+    },
+
+    setWorkerStatus: async (
+        _,
+        { workerID, status },
+        { repository },
+    ): Promise<Worker> => {
+        const worker = await repository.getWorker(workerID);
+        if (!worker) {
+            throw new Error('Worker not found.');
+        }
+        await repository.updateWorkerStatus(workerID, status);
+        return {
+            __typename: 'Worker',
+            ...worker,
+            executor: worker.executor as Executor,
+            status: status,
+            testExecutions: [],
+        };
     },
 
     createTestExecution: async (

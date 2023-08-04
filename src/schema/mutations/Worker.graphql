@@ -23,7 +23,7 @@ type Worker {
 
 extend type Mutation {
     createWorkers(runID: String!, count: Int!, executor: Executor!): [Worker!]!
-    setWorkerStatus(id: ID!, status: WorkerStatus!): Worker!
+    setWorkerStatus(workerID: ID!, status: WorkerStatus!): Worker!
 }
 
 extend type Query {
