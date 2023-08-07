@@ -2,7 +2,6 @@ import {
     S3Client,
     GetObjectCommand,
     ListObjectsV2Command,
-    HeadObjectCommand,
 } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { LRUCache } from 'lru-cache';
