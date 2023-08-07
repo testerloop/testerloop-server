@@ -17,19 +17,24 @@ export class NetworkEvent {
         ReturnType<typeof mapNetworkEvents>
     >((ids) =>
         Promise.all(
-            ids.map(async (testExecutionId) => {
-                const bucketName = config.AWS_BUCKET_NAME;
-                const bucketPath = config.AWS_BUCKET_PATH;
-                const events = await S3Service.getObject(
-                    bucketName,
-                    `${bucketPath}${testExecutionId}/har/network-events.har`,
-                );
-                const mappedEvents = mapNetworkEvents(events, testExecutionId);
-
-                return mappedEvents;
-            }),
+            ids
+                .map(async (testExecutionId) => {
+                    const bucketName = config.AWS_BUCKET_NAME;
+                    const bucketPath = config.AWS_BUCKET_PATH;
+                    const events = await S3Service.getObject(
+                        bucketName,
+                        `${bucketPath}${testExecutionId}/har/network-events.har`,
+                    );
+                    const mappedEvents = mapNetworkEvents(
+                        events,
+                        testExecutionId,
+                    );
+                    return mappedEvents;
+                })
+                .map((promise) => promise.catch((error) => error)),
         ),
     );
+
     async getNetworkEventsByTestExecutionId(testExecutionId: string) {
         return this.networkEventsByTestExecutionIdDataLoader.load(
             testExecutionId,
