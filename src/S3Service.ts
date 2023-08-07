@@ -44,17 +44,9 @@ class S3Service {
 
     async getObject(bucketName: string, key: string) {
         const cacheKey = `${bucketName}/${key}`;
-        try {
-            const result = await this.cache.fetch(cacheKey);
-            if (!result) return null;
-            return result.contents;
-        } catch (error) {
-            console.error(
-                `Error fetching object from bucket "${bucketName}" with key "${key}":`,
-                error,
-            );
-            throw error;
-        }
+        const result = await this.cache.fetch(cacheKey);
+        if (!result) return null;
+        return result.contents;
     }
 
     async listSubFolders(bucketName: string, prefix: string) {
