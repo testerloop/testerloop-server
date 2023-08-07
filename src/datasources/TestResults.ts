@@ -30,27 +30,11 @@ export class TestResults {
         this.context = context;
     }
 
-    errorResult: Results = {
-        status: 'error',
-        startedTestsAt: '',
-        endedTestsAt: '',
-        browserVersion: '',
-        runs: [
-            {
-                tests: [
-                    {
-                        title: [],
-                    },
-                ],
-            },
-        ],
-    };
-
     resultsByTestExecutionIdDataLoader = new DataLoader<string, Results>(
         (ids) =>
             Promise.all(
-                ids.map(async (testExecutionId) => {
-                    try {
+                ids
+                    .map(async (testExecutionId) => {
                         const bucketName = config.AWS_BUCKET_NAME;
                         const bucketPath = config.AWS_BUCKET_PATH;
                         const rawResults = await S3Service.getObject(
@@ -59,14 +43,8 @@ export class TestResults {
                         );
                         const results = ResultsSchema.parse(rawResults);
                         return results;
-                    } catch (error) {
-                        console.error(
-                            `Error fetching files within test execution ID ${testExecutionId}:`,
-                            error,
-                        );
-                        return this.errorResult;
-                    }
-                }),
+                    })
+                    .map((promise) => promise.catch((error) => error)),
             ),
     );
 
