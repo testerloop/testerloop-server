@@ -16,6 +16,7 @@
         "eslint-config-prettier": "^8.8.0",
         "eslint-plugin-import": "^2.27.5",
         "eslint-plugin-prettier": "^5.0.0",
+        "husky": "^8.0.3",
         "jest": "^29.6.1",
         "nodemon": "^2.0.20",
         "prettier": "^3.0.0",
@@ -60,7 +61,8 @@
         "lint:fix": "eslint --fix --ext .ts src",
         "prettier": "npx prettier src --check",
         "prettier:fix": "npm run prettier -- --write",
-        "seed:db": "npx ts-node-esm src/seed.ts"
+        "seed:db": "npx ts-node-esm src/seed.ts",
+        "prepare": "husky install"
     },
     "type": "module"
 }

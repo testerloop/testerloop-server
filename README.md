@@ -155,3 +155,19 @@ To run a specific test file:
 ```bash
     npm test -- generateSlug
 ```
+
+
+### Pre-commit hook
+
+We use husky for our pre-commit hooks. In the pre-commit hook we run prettier and eslint fixes just before committing. 
+
+If any issues have been discovered, you won't be able to commit until you have addressed the issues raised. 
+Once the issues have been fixed, try committing again.
+
+To add another pre-commit hook: 
+
+    npx husky add .husky/pre-commit "npm run lint:fix"
+
+To skip the pre-commit hooks (not recommended) add the `--no-verify` flag:
+
+    git commit -m "yolo!" --no-verify
