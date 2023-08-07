@@ -643,7 +643,7 @@ export type TestExecutionConnection = {
 export type TestExecutionEdge = {
   readonly __typename: 'TestExecutionEdge';
   readonly cursor: Scalars['Cursor'];
-  readonly node: TestExecution;
+  readonly node: Maybe<TestExecution>;
 };
 
 export type TestExecutionEnvironment = {
@@ -1473,7 +1473,7 @@ export type TestExecutionConnectionResolvers<ContextType = Context, ParentType e
 
 export type TestExecutionEdgeResolvers<ContextType = Context, ParentType extends ResolversParentTypes['TestExecutionEdge'] = ResolversParentTypes['TestExecutionEdge']> = {
   cursor: Resolver<ResolversTypes['Cursor'], ParentType, ContextType>;
-  node: Resolver<ResolversTypes['TestExecution'], ParentType, ContextType>;
+  node: Resolver<Maybe<ResolversTypes['TestExecution']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 

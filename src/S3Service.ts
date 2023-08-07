@@ -2,6 +2,7 @@ import {
     S3Client,
     GetObjectCommand,
     ListObjectsV2Command,
+    HeadObjectCommand,
 } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { LRUCache } from 'lru-cache';
@@ -43,9 +44,17 @@ class S3Service {
 
     async getObject(bucketName: string, key: string) {
         const cacheKey = `${bucketName}/${key}`;
-        const result = await this.cache.fetch(cacheKey);
-        if (!result) return null;
-        return result.contents;
+        try {
+            const result = await this.cache.fetch(cacheKey);
+            if (!result) return null;
+            return result.contents;
+        } catch (error) {
+            console.error(
+                `Error fetching object from bucket "${bucketName}" with key "${key}":`,
+                error,
+            );
+            throw error;
+        }
     }
 
     async listSubFolders(bucketName: string, prefix: string) {
@@ -65,6 +74,20 @@ class S3Service {
                 return folder.slice(prefix.length, -1);
             });
         return objects || [];
+    }
+
+    async doesFileExist(bucketName: string, key: string) {
+        try {
+            await this.s3.send(
+                new HeadObjectCommand({
+                    Bucket: bucketName,
+                    Key: key,
+                }),
+            );
+            return true;
+        } catch (error) {
+            return false;
+        }
     }
 
     async listObjects(bucketName: string, prefix: string) {
