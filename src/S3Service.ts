@@ -68,20 +68,6 @@ class S3Service {
         return objects || [];
     }
 
-    async doesFileExist(bucketName: string, key: string) {
-        try {
-            await this.s3.send(
-                new HeadObjectCommand({
-                    Bucket: bucketName,
-                    Key: key,
-                }),
-            );
-            return true;
-        } catch (error) {
-            return false;
-        }
-    }
-
     async listObjects(bucketName: string, prefix: string) {
         const command = new ListObjectsV2Command({
             Bucket: bucketName,
