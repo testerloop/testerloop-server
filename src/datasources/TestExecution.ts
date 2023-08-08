@@ -10,6 +10,9 @@ import {
 import S3Service from '../S3Service.js';
 import getPaginatedData from '../util/getPaginatedData.js';
 
+const bucketName = config.AWS_BUCKET_NAME;
+const bucketPath = config.AWS_BUCKET_PATH;
+
 export class TestExecution {
     context: Context;
 
@@ -24,8 +27,6 @@ export class TestExecution {
             after?: string | null;
         },
     ) {
-        const bucketName = config.AWS_BUCKET_NAME;
-        const bucketPath = config.AWS_BUCKET_PATH;
         const results = await S3Service.listSubFolders(
             bucketName,
             `${bucketPath}${id}/`,
@@ -46,8 +47,6 @@ export class TestExecution {
     }
 
     async getById(id: string) {
-        const bucketName = config.AWS_BUCKET_NAME;
-        const bucketPath = config.AWS_BUCKET_PATH;
         const [runId, requestId] = id.split('/');
         const results = (await S3Service.getObject(
             bucketName,

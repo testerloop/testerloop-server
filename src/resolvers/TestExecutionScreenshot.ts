@@ -4,6 +4,8 @@ import config from '../config.js';
 
 import { TestExecutionScreenshotResolvers } from './types/generated.js';
 
+const bucketName = config.AWS_BUCKET_NAME;
+
 const resolvers: TestExecutionScreenshotResolvers = {
     id({ id }) {
         return encodeId('TestExecutionScreenshot', id);
@@ -13,7 +15,6 @@ const resolvers: TestExecutionScreenshotResolvers = {
         return event.at;
     },
     async url({ id }, _args, { dataSources }) {
-        const bucketName = config.AWS_BUCKET_NAME;
         const event = await dataSources.screenshot.getById(id);
         const url = await S3Service.getSignedUrl(
             bucketName,

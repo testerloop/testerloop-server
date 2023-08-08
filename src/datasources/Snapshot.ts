@@ -5,6 +5,8 @@ import config from '../config.js';
 import S3Service from '../S3Service.js';
 import mapSnapshots from '../maps/mapSnapshots.js';
 
+const bucketName = config.AWS_BUCKET_NAME;
+const bucketPath = config.AWS_BUCKET_PATH;
 export class Snapshot {
     context: Context;
 
@@ -17,19 +19,19 @@ export class Snapshot {
         ReturnType<typeof mapSnapshots>
     >((ids) =>
         Promise.all(
-            ids.map(async (testExecutionId) => {
-                const bucketName = config.AWS_BUCKET_NAME;
-                const bucketPath = config.AWS_BUCKET_PATH;
-                const snapshots = await S3Service.getObject(
-                    bucketName,
-                    `${bucketPath}${testExecutionId}/snapshots/snapshot-metadata.json`,
-                );
-                const mappedSnapshots = mapSnapshots(
-                    snapshots,
-                    testExecutionId,
-                );
-                return mappedSnapshots;
-            }),
+            ids
+                .map(async (testExecutionId) => {
+                    const snapshots = await S3Service.getObject(
+                        bucketName,
+                        `${bucketPath}${testExecutionId}/snapshots/snapshot-metadata.json`,
+                    );
+                    const mappedSnapshots = mapSnapshots(
+                        snapshots,
+                        testExecutionId,
+                    );
+                    return mappedSnapshots;
+                })
+                .map((promise) => promise.catch((error) => error)),
         ),
     );
     async getSnapshotsByTestExecutionId(testExecutionId: string) {
