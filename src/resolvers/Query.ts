@@ -105,10 +105,18 @@ const resolvers: QueryResolvers = {
                 'User does not have permission to access this run result',
             );
 
+        const testStatusMap = {
+            [PrismaTestStatus.PASSED]: TestStatus.Passed,
+            [PrismaTestStatus.FAILED]: TestStatus.Failed,
+            [PrismaTestStatus.IN_PROGRESS]: TestStatus.InProgress,
+        };
+
         const testExecutionStatuses = testRun.testExecutions.map(
             (execution) => {
                 const { id, testName, featureFile, rerunOfId, result } =
                     execution;
+
+                const testStatus = testStatusMap[result];
 
                 return {
                     __typename: 'TestExecutionStatus' as const,
@@ -116,13 +124,11 @@ const resolvers: QueryResolvers = {
                     testName,
                     featureFile,
                     rerunOfId,
-                    testStatus:
-                        result === PrismaTestStatus.PASSED
-                            ? TestStatus.Passed
-                            : TestStatus.Failed,
+                    testStatus,
                 };
             },
         );
+
         const workers = await repository.getWorkersByRunId(runId);
         const totalWorkers = workers.length;
         const pendingWorkers = workers.filter(
