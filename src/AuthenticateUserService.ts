@@ -2,6 +2,7 @@ import { CognitoJwtVerifier } from 'aws-jwt-verify';
 import { PrismaClient, User } from '@prisma/client';
 
 import config from './config.js';
+import { UnauthorisedError } from './errors.js';
 
 const verifier = CognitoJwtVerifier.create({
     userPoolId: config.COGNITO_USER_POOL_ID,
@@ -30,11 +31,26 @@ class AuthenticateUserService {
 
     public async getUser(token: string): Promise<User | null> {
         const payload = await this.decodeToken(token);
-
         if (payload !== null) {
-            return this.prisma.user.findUnique({
+            let user = await this.prisma.user.findUnique({
                 where: { email: payload.email as string },
             });
+
+            if (!user) {
+                throw new UnauthorisedError();
+            }
+            const { given_name, family_name } = payload;
+
+            if (given_name && family_name) {
+                user = await this.prisma.user.update({
+                    where: { id: user.id },
+                    data: {
+                        firstName: given_name as string,
+                        lastName: family_name as string,
+                    },
+                });
+            }
+            return user;
         }
         return null;
     }
