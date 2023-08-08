@@ -5,7 +5,6 @@ import {
     WorkerStatus as PrismaWorkerStatus,
 } from '@prisma/client';
 
-import { assertNonNull } from '../util/assertNonNull.js';
 import repository from '../repository/repository.js';
 
 import {
@@ -113,10 +112,11 @@ const resolvers: MutationResolvers = {
             throw new Error('Invalid status transition.');
         }
 
-        await repository.updateWorkerStatus(workerID, status);
-        const updatedWorker = assertNonNull(
-            await repository.getWorker(workerID),
+        const updatedWorker = await repository.updateWorkerStatus(
+            workerID,
+            status,
         );
+
         return {
             __typename: 'Worker',
             ...updatedWorker,

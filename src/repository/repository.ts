@@ -6,6 +6,7 @@ import {
     WorkerStatus,
     Executor,
     Prisma,
+    Worker,
 } from '@prisma/client';
 
 import { S3Config, InputMaybe } from '../resolvers/types/generated';
@@ -167,9 +168,6 @@ class PrismaRepository {
             data: {
                 status: WorkerStatus.PENDING,
                 executor,
-                createdAt: new Date(),
-                startedAt: null,
-                completedAt: null,
                 testRunId: runId,
             },
         });
@@ -182,7 +180,7 @@ class PrismaRepository {
     async updateWorkerStatus(
         workerId: string,
         status: WorkerStatus,
-    ): Promise<WorkerStatus> {
+    ): Promise<Worker> {
         const isStatusStarted = status === WorkerStatus.STARTED;
         const isStatusCompleted = status === WorkerStatus.COMPLETED;
 
@@ -196,12 +194,10 @@ class PrismaRepository {
             updateData.completedAt = new Date();
         }
 
-        await this.db.prisma.worker.update({
+        return await this.db.prisma.worker.update({
             where: { id: workerId },
             data: updateData,
         });
-
-        return status;
     }
 
     async getWorkersByRunId(runId: string) {
