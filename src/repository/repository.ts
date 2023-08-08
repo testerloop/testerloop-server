@@ -117,7 +117,10 @@ class PrismaRepository {
                 rerunOf: true,
             },
         });
-        return execution?.rerunOf ?? null;
+        if (!execution) {
+            throw new Error('Test Execution not found.');
+        }
+        return execution.rerunOf ?? null;
     }
 
     async getTestExecutionById(id: string): Promise<TestExecution> {
