@@ -41,7 +41,12 @@ class AuthenticateUserService {
             }
             const { given_name, family_name } = payload;
 
-            if (given_name && family_name) {
+            if (
+                given_name &&
+                family_name &&
+                !user.firstName &&
+                !user.lastName
+            ) {
                 user = await this.prisma.user.update({
                     where: { id: user.id },
                     data: {
