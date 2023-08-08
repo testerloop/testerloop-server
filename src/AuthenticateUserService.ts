@@ -16,7 +16,7 @@ type JsonObject = { [name: string]: Json };
 class AuthenticateUserService {
     prisma: PrismaClient = new PrismaClient();
 
-    private async decodeToken(token: string): Promise<JsonObject | null> {
+    private async decodeToken(token: string): Promise<JsonObject> {
         try {
             const payload = await verifier.verify(token, {
                 tokenUse: 'id',
@@ -25,39 +25,32 @@ class AuthenticateUserService {
             return payload;
         } catch (err) {
             console.error('Token is invalid', err);
+            throw new Error('Invalid token');
         }
-        return null;
     }
 
-    public async getUser(token: string): Promise<User | null> {
+    public async getUser(token: string): Promise<User> {
         const payload = await this.decodeToken(token);
-        if (payload !== null) {
-            let user = await this.prisma.user.findUnique({
-                where: { email: payload.email as string },
-            });
+        const { given_name, family_name, email } = payload;
 
-            if (!user) {
-                throw new UnauthorisedError();
-            }
-            const { given_name, family_name } = payload;
+        let user = await this.prisma.user.findUnique({
+            where: { email: email as string },
+        });
 
-            if (
-                given_name &&
-                family_name &&
-                !user.firstName &&
-                !user.lastName
-            ) {
-                user = await this.prisma.user.update({
-                    where: { id: user.id },
-                    data: {
-                        firstName: given_name as string,
-                        lastName: family_name as string,
-                    },
-                });
-            }
-            return user;
+        if (!user) {
+            throw new UnauthorisedError();
         }
-        return null;
+
+        if (given_name && family_name && !user.firstName && !user.lastName) {
+            user = await this.prisma.user.update({
+                where: { id: user.id },
+                data: {
+                    firstName: given_name as string,
+                    lastName: family_name as string,
+                },
+            });
+        }
+        return user;
     }
 }
 
