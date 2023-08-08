@@ -21,6 +21,9 @@ const ResultsSchema = z.object({
     runs: z.array(RunSchema),
 });
 
+const bucketName = config.AWS_BUCKET_NAME;
+const bucketPath = config.AWS_BUCKET_PATH;
+
 type Results = z.infer<typeof ResultsSchema>;
 
 export class TestResults {
@@ -35,8 +38,6 @@ export class TestResults {
             Promise.all(
                 ids
                     .map(async (testExecutionId) => {
-                        const bucketName = config.AWS_BUCKET_NAME;
-                        const bucketPath = config.AWS_BUCKET_PATH;
                         const rawResults = await S3Service.getObject(
                             bucketName,
                             `${bucketPath}${testExecutionId}/cypress/results.json`,

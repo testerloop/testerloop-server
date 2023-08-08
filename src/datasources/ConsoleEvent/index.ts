@@ -6,6 +6,9 @@ import S3Service from '../../S3Service.js';
 
 import { Log, parseLogFile } from './fileSchema.js';
 
+const bucketName = config.AWS_BUCKET_NAME;
+const bucketPath = config.AWS_BUCKET_PATH;
+
 export class ConsoleEvent {
     context: Context;
 
@@ -20,8 +23,6 @@ export class ConsoleEvent {
         Promise.all(
             ids
                 .map(async (testExecutionId) => {
-                    const bucketName = config.AWS_BUCKET_NAME;
-                    const bucketPath = config.AWS_BUCKET_PATH;
                     const json = await S3Service.getObject(
                         bucketName,
                         `${bucketPath}${testExecutionId}/console/console-logs.json`,

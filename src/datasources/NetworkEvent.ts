@@ -5,6 +5,9 @@ import config from '../config.js';
 import mapNetworkEvents from '../maps/mapNetworkEvents.js';
 import S3Service from '../S3Service.js';
 
+const bucketName = config.AWS_BUCKET_NAME;
+const bucketPath = config.AWS_BUCKET_PATH;
+
 export class NetworkEvent {
     context: Context;
 
@@ -19,8 +22,6 @@ export class NetworkEvent {
         Promise.all(
             ids
                 .map(async (testExecutionId) => {
-                    const bucketName = config.AWS_BUCKET_NAME;
-                    const bucketPath = config.AWS_BUCKET_PATH;
                     const events = await S3Service.getObject(
                         bucketName,
                         `${bucketPath}${testExecutionId}/har/network-events.har`,

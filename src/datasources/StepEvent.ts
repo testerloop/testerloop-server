@@ -5,6 +5,8 @@ import config from '../config.js';
 import S3Service from '../S3Service.js';
 import mapSteps from '../maps/mapSteps.js';
 
+const bucketName = config.AWS_BUCKET_NAME;
+const bucketPath = config.AWS_BUCKET_PATH;
 export class StepEvent {
     context: Context;
 
@@ -19,8 +21,6 @@ export class StepEvent {
         Promise.all(
             ids
                 .map(async (testExecutionId) => {
-                    const bucketName = config.AWS_BUCKET_NAME;
-                    const bucketPath = config.AWS_BUCKET_PATH;
                     const [steps, results] = await Promise.all([
                         S3Service.getObject(
                             bucketName,

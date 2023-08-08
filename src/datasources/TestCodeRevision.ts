@@ -20,6 +20,9 @@ const CicdSchema = z.object({
     shortHash: z.string(),
 });
 
+const bucketName = config.AWS_BUCKET_NAME;
+const bucketPath = config.AWS_BUCKET_PATH;
+
 type Cicd = z.infer<typeof CicdSchema>;
 
 export class TestCodeRevision {
@@ -33,8 +36,6 @@ export class TestCodeRevision {
         Promise.all(
             ids
                 .map(async (runId) => {
-                    const bucketName = config.AWS_BUCKET_NAME;
-                    const bucketPath = config.AWS_BUCKET_PATH;
                     const cicdRaw = await S3Service.getObject(
                         bucketName,
                         `${bucketPath}${runId}/logs/cicd.json`,
