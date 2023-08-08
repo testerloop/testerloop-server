@@ -77,9 +77,11 @@ export default class PrismaDB implements PrismaInterface {
     }
 
     async getTestRun(runId: string) {
-        return this.prisma.testRun.findUnique({
+        const testRun = await this.prisma.testRun.findUnique({
             where: { id: runId },
             include: { testExecutions: true },
         });
+        if (!testRun) throw new Error('Run not found.');
+        return testRun;
     }
 }

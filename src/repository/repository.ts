@@ -120,8 +120,14 @@ class PrismaRepository {
         return execution?.rerunOf ?? null;
     }
 
-    async getTestExecutionById(id: string): Promise<TestExecution | null> {
-        return this.db.prisma.testExecution.findUnique({ where: { id } });
+    async getTestExecutionById(id: string): Promise<TestExecution> {
+        const testExecution = await this.db.prisma.testExecution.findUnique({
+            where: { id },
+        });
+        if (!testExecution) {
+            throw new Error('Test Execution not found.');
+        }
+        return testExecution;
     }
 
     async getRerunsByTestId(testExecutionId: string) {
@@ -174,7 +180,11 @@ class PrismaRepository {
     }
 
     async getWorker(workerId: string) {
-        return this.db.prisma.worker.findUnique({ where: { id: workerId } });
+        const worker = await this.db.prisma.worker.findUnique({
+            where: { id: workerId },
+        });
+        if (!worker) throw new Error('Worker not found.');
+        return worker;
     }
 
     async updateWorkerStatus(
@@ -184,15 +194,11 @@ class PrismaRepository {
         const isStatusStarted = status === WorkerStatus.STARTED;
         const isStatusCompleted = status === WorkerStatus.COMPLETED;
 
-        const updateData: Partial<Prisma.WorkerCreateInput> = { status };
-
-        if (isStatusStarted) {
-            updateData.startedAt = new Date();
-        }
-
-        if (isStatusCompleted) {
-            updateData.completedAt = new Date();
-        }
+        const updateData: Partial<Prisma.WorkerCreateInput> = {
+            status,
+            ...(isStatusStarted && { startedAt: new Date() }),
+            ...(isStatusCompleted && { completedAt: new Date() }),
+        };
 
         return await this.db.prisma.worker.update({
             where: { id: workerId },

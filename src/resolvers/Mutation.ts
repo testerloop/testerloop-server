@@ -100,7 +100,6 @@ const resolvers: MutationResolvers = {
         { repository },
     ): Promise<Worker> => {
         const worker = await repository.getWorker(workerID);
-        if (!worker) throw new Error('Worker not found.');
 
         const isInputPending = status === WorkerStatus.Pending;
         const isAlreadyCompleted = worker.status === WorkerStatus.Completed;
@@ -182,9 +181,6 @@ const resolvers: MutationResolvers = {
         const testExecution = await repository.getTestExecutionById(
             testExecutionId,
         );
-        if (!testExecution) {
-            throw new Error('Test Execution not found.');
-        }
 
         const updatedTestStatus =
             testStatus === TestStatus.Passed
@@ -215,9 +211,6 @@ const resolvers: MutationResolvers = {
         { repository },
     ): Promise<RunStatus> => {
         const run = await repository.getTestRun(runId);
-        if (!run) {
-            throw new Error('Run not found.');
-        }
 
         const workers = await repository.getWorkersByRunId(runId);
         const allWorkersCompleted = workers.every(

@@ -154,7 +154,6 @@ const resolvers: QueryResolvers = {
 
     async worker(root, { id }, { repository }) {
         const worker = await repository.getWorker(id);
-        if (!worker) throw new Error(`Worker with id ${id} not found.`);
 
         const testExecutions = await Promise.all(
             (await repository.getTestExecutionsByWorkerId(id)).map(
