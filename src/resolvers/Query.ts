@@ -98,8 +98,6 @@ const resolvers: QueryResolvers = {
 
         const testRun = await repository.getTestRun(runId);
 
-        if (!testRun) throw new Error('Run does not exist.');
-
         if (testRun.organisationId !== auth.organisation.id)
             throw new Error(
                 'User does not have permission to access this run result',
