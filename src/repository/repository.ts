@@ -194,14 +194,13 @@ class PrismaRepository {
         workerId: string,
         status: WorkerStatus,
     ): Promise<Worker> {
-        const statusUpdateMap = {
-            [WorkerStatus.PENDING]: { status },
-            [WorkerStatus.STARTED]: { status, startedAt: new Date() },
-            [WorkerStatus.COMPLETED]: { status, completedAt: new Date() },
+        const updateData: Partial<Prisma.WorkerCreateInput> = {
+            status,
+            ...(status === WorkerStatus.STARTED && { startedAt: new Date() }),
+            ...(status === WorkerStatus.COMPLETED && {
+                completedAt: new Date(),
+            }),
         };
-
-        const updateData: Partial<Prisma.WorkerCreateInput> =
-            statusUpdateMap[status];
 
         return await this.db.prisma.worker.update({
             where: { id: workerId },
