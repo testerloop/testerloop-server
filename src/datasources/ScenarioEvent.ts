@@ -9,12 +9,10 @@ export class ScenarioEvent {
 
     async getScenarioEventByTestExecutionId(id: string) {
         const [steps, results] = await Promise.all([
-            this.context.dataSources.stepEvent
-                .getStepsByTestExecutionId(id)
-                .catch((error) => error),
-            this.context.dataSources.testResults
-                .getResultsByTestExecutionId(id)
-                .catch((error) => error),
+            this.context.dataSources.stepEvent.getStepsByTestExecutionId(id),
+            this.context.dataSources.testResults.getResultsByTestExecutionId(
+                id,
+            ),
         ]);
         const scenarioId = `${id}/scenarioEvent/0`;
 
