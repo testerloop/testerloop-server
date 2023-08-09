@@ -7,31 +7,32 @@ const resolvers: WorkerResolvers = {
         return id;
     },
     async status({ id }, _args, { repository }) {
-        const worker = assertNonNull(await repository.getWorker(id));
+        const worker = assertNonNull(await repository.worker.getWorker(id));
         return worker.status as WorkerStatus;
     },
     async executor({ id }, _args, { repository }) {
-        const worker = assertNonNull(await repository.getWorker(id));
+        const worker = assertNonNull(await repository.worker.getWorker(id));
         return worker.executor as Executor;
     },
     async createdAt({ id }, _args, { repository }) {
-        const worker = assertNonNull(await repository.getWorker(id));
+        const worker = assertNonNull(await repository.worker.getWorker(id));
         return worker.createdAt;
     },
     async startedAt({ id }, _args, { repository }) {
-        const worker = assertNonNull(await repository.getWorker(id));
+        const worker = assertNonNull(await repository.worker.getWorker(id));
         return worker.startedAt || null;
     },
     async completedAt({ id }, _args, { repository }) {
-        const worker = assertNonNull(await repository.getWorker(id));
+        const worker = assertNonNull(await repository.worker.getWorker(id));
         return worker.completedAt || null;
     },
     async testRunId({ id }, _args, { repository }) {
-        const worker = assertNonNull(await repository.getWorker(id));
+        const worker = assertNonNull(await repository.worker.getWorker(id));
         return worker.testRunId;
     },
     async testExecutions({ id }, _args, { repository }) {
-        const testExecutions = await repository.getTestExecutionsByWorkerId(id);
+        const testExecutions =
+            await repository.testExecution.getTestExecutionsByWorkerId(id);
 
         return testExecutions.map((execution) => ({
             __typename: 'TestExecution',
