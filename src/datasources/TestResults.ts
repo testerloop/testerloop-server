@@ -29,6 +29,8 @@ const ResultsSchema = z.object({
 
 export type Results = z.infer<typeof ResultsSchema>;
 export type Test = z.infer<typeof TestSchema>;
+const bucketName = config.AWS_BUCKET_NAME;
+const bucketPath = config.AWS_BUCKET_PATH;
 
 export class TestResults {
     context: Context;
@@ -41,8 +43,6 @@ export class TestResults {
         (ids) =>
             Promise.all(
                 ids.map(async (testExecutionId) => {
-                    const bucketName = config.AWS_BUCKET_NAME;
-                    const bucketPath = config.AWS_BUCKET_PATH;
                     const rawResults = await S3Service.getObject(
                         bucketName,
                         `${bucketPath}${testExecutionId}/cypress/results.json`,
@@ -53,8 +53,6 @@ export class TestResults {
             ),
     );
     async doResultsExist(testExecutionId: string) {
-        const bucketName = config.AWS_BUCKET_NAME;
-        const bucketPath = config.AWS_BUCKET_PATH;
         const s3Key = `${bucketPath}${testExecutionId}/cypress/results.json`;
         return S3Service.doesFileExist(bucketName, s3Key);
     }
