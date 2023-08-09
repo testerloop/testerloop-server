@@ -54,7 +54,7 @@ export class TestResults {
                     .map((promise) => promise.catch((error) => error)),
             ),
     );
-    
+
     async doResultsExist(testExecutionId: string) {
         const s3Key = `${bucketPath}${testExecutionId}/cypress/results.json`;
         return S3Service.doesFileExist(bucketName, s3Key);
