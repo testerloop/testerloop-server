@@ -1,13 +1,14 @@
-import { PrismaClient, Organisation } from '@prisma/client';
+import { PrismaClient, Organisation, Prisma } from '@prisma/client';
 
-import {
-    PrismaInterface,
-    OrganisationWithoutSlug,
-} from './interfaces/prisma.js';
 import { generateSlug } from './util/generateSlug.js';
 import apiKeyService from './ApiKeyService.js';
 
-export default class PrismaDB implements PrismaInterface {
+export type OrganisationWithoutSlug = Omit<
+    Prisma.OrganisationCreateInput,
+    'slug'
+> & { slug?: string };
+
+export default class PrismaDB {
     prisma: PrismaClient = new PrismaClient();
 
     async createWithSlug(data: OrganisationWithoutSlug) {

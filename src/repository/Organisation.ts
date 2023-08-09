@@ -1,4 +1,4 @@
-import { OrganisationWithoutSlug } from '../interfaces/prisma.js';
+import { OrganisationWithoutSlug } from '../db.js';
 import { S3Config, InputMaybe } from '../resolvers/types/generated';
 import { Auth } from '../context.js';
 
