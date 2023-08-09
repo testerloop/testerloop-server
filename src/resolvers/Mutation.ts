@@ -20,6 +20,18 @@ import {
     CreateApiKeyResponse,
 } from './types/generated.js';
 
+const isInvalidTransition = (
+    currentStatus: PrismaWorkerStatus,
+    targetStatus: WorkerStatus,
+) => {
+    return (
+        targetStatus === WorkerStatus.Pending ||
+        currentStatus === WorkerStatus.Completed ||
+        (currentStatus === WorkerStatus.Started &&
+            targetStatus === WorkerStatus.Started)
+    );
+};
+
 const resolvers: MutationResolvers = {
     createTestRun: async (
         _,
@@ -101,15 +113,12 @@ const resolvers: MutationResolvers = {
     ): Promise<Worker> => {
         const worker = await repository.getWorker(workerID);
 
-        const isInputPending = status === WorkerStatus.Pending;
-        const isAlreadyCompleted = worker.status === WorkerStatus.Completed;
-        const isStartedAgain =
-            worker.status === WorkerStatus.Started &&
-            status === WorkerStatus.Started;
-
-        if (isInputPending || isAlreadyCompleted || isStartedAgain) {
+        if (isInvalidTransition(worker.status, status)) {
             throw new Error('Invalid status transition.');
         }
+
+        status === WorkerStatus.Completed &&
+            (await repository.deleteInProgressTestsByWorkerId(workerID));
 
         const updatedWorker = await repository.updateWorkerStatus(
             workerID,
