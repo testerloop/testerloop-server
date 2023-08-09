@@ -2,6 +2,7 @@ import { CognitoJwtVerifier } from 'aws-jwt-verify';
 import { PrismaClient, User } from '@prisma/client';
 
 import config from './config.js';
+import { UnauthorisedError } from './errors.js';
 
 const verifier = CognitoJwtVerifier.create({
     userPoolId: config.COGNITO_USER_POOL_ID,
@@ -15,7 +16,7 @@ type JsonObject = { [name: string]: Json };
 class AuthenticateUserService {
     prisma: PrismaClient = new PrismaClient();
 
-    private async decodeToken(token: string): Promise<JsonObject | null> {
+    private async decodeToken(token: string): Promise<JsonObject> {
         try {
             const payload = await verifier.verify(token, {
                 tokenUse: 'id',
@@ -24,19 +25,32 @@ class AuthenticateUserService {
             return payload;
         } catch (err) {
             console.error('Token is invalid', err);
+            throw new Error('Invalid token');
         }
-        return null;
     }
 
-    public async getUser(token: string): Promise<User | null> {
+    public async getUser(token: string): Promise<User> {
         const payload = await this.decodeToken(token);
+        const { given_name, family_name, email } = payload;
 
-        if (payload !== null) {
-            return this.prisma.user.findUnique({
-                where: { email: payload.email as string },
+        let user = await this.prisma.user.findUnique({
+            where: { email: email as string },
+        });
+
+        if (!user) {
+            throw new UnauthorisedError();
+        }
+
+        if (given_name && family_name && !user.firstName && !user.lastName) {
+            user = await this.prisma.user.update({
+                where: { id: user.id },
+                data: {
+                    firstName: given_name as string,
+                    lastName: family_name as string,
+                },
             });
         }
-        return null;
+        return user;
     }
 }
 

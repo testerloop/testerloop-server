@@ -60,6 +60,8 @@ model User {
   id                String             @id @default(uuid()) @db.Uuid
   email             String             @unique
   userOrganisations UserOrganisation[]
+  firstName         String?
+  lastName          String?
 }
 
 model UserOrganisation {
@@ -69,6 +71,7 @@ model UserOrganisation {
   userId         String       @db.Uuid
   organisation   Organisation @relation(fields: [organisationId], references: [id], onDelete: Cascade)
   organisationId String       @db.Uuid
+  role           String
 }
 
 model TestRun {
