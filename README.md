@@ -14,6 +14,10 @@ This repo can be run locally for local development (instructions are included be
 
 New versions of the backend package are published to NPM using [GitHub Actions](https://github.com/testerloop/testerloop-app/blob/master/.github/workflows/release-package.yml) when new releases are created on GitHub.
 
+This repo can be run locally for local development (instructions are included below), but it is not deployed as a standalone service. It is used as an NPM package by the [Testerloop App](https://github.com/testerloop/testerloop-app), which is deployed as our [staging site](www.otf.overloop.io) in an ECS cluster on AWS Fargate.
+
+New versions of the backend package are published to NPM using [GitHub Actions](https://github.com/testerloop/testerloop-app/blob/master/.github/workflows/release-package.yml) when new releases are created on GitHub.
+
 ## Prerequisites
 
 Before getting started, make sure you have the following installed:

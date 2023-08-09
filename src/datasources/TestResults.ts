@@ -42,16 +42,19 @@ export class TestResults {
     resultsByTestExecutionIdDataLoader = new DataLoader<string, Results>(
         (ids) =>
             Promise.all(
-                ids.map(async (testExecutionId) => {
-                    const rawResults = await S3Service.getObject(
-                        bucketName,
-                        `${bucketPath}${testExecutionId}/cypress/results.json`,
-                    );
-                    const results = ResultsSchema.parse(rawResults);
-                    return results;
-                }),
+                ids
+                    .map(async (testExecutionId) => {
+                        const rawResults = await S3Service.getObject(
+                            bucketName,
+                            `${bucketPath}${testExecutionId}/cypress/results.json`,
+                        );
+                        const results = ResultsSchema.parse(rawResults);
+                        return results;
+                    })
+                    .map((promise) => promise.catch((error) => error)),
             ),
     );
+    
     async doResultsExist(testExecutionId: string) {
         const s3Key = `${bucketPath}${testExecutionId}/cypress/results.json`;
         return S3Service.doesFileExist(bucketName, s3Key);
