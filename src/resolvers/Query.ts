@@ -96,7 +96,7 @@ const resolvers: QueryResolvers = {
     async getRunStatus(parent, { runId }, { auth, repository }) {
         if (!auth) throw new Error('User is not authenticated.');
 
-        const testRun = await repository.getTestRun(runId);
+        const testRun = await repository.testRun.getTestRun(runId);
 
         if (testRun.organisationId !== auth.organisation.id)
             throw new Error(
@@ -127,7 +127,7 @@ const resolvers: QueryResolvers = {
             },
         );
 
-        const workers = await repository.getWorkersByRunId(runId);
+        const workers = await repository.worker.getWorkersByRunId(runId);
         const totalWorkers = workers.length;
         const totalPendingWorkers = workers.filter(
             (worker) => worker.status === PrismaWorkerStatus.PENDING,
@@ -156,19 +156,19 @@ const resolvers: QueryResolvers = {
     },
 
     async worker(root, { id }, { repository }) {
-        const worker = await repository.getWorker(id);
+        const worker = await repository.worker.getWorker(id);
 
         const testExecutions = await Promise.all(
-            (await repository.getTestExecutionsByWorkerId(id)).map(
-                async (execution) => ({
-                    __typename: 'TestExecution' as const,
-                    id: execution.id,
-                    testRun: {
-                        __typename: 'TestRun' as const,
-                        id: execution.testRunId,
-                    },
-                }),
-            ),
+            (
+                await repository.testExecution.getTestExecutionsByWorkerId(id)
+            ).map(async (execution) => ({
+                __typename: 'TestExecution' as const,
+                id: execution.id,
+                testRun: {
+                    __typename: 'TestRun' as const,
+                    id: execution.testRunId,
+                },
+            })),
         );
 
         return {
