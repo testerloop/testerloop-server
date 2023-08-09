@@ -3,9 +3,9 @@ import { TestRunStatusResolvers } from './types/generated.js';
 const resolvers: TestRunStatusResolvers = {
     runStatus: ({ runStatus }) => runStatus,
     totalWorkers: ({ totalWorkers }) => totalWorkers,
-    activeWorkers: ({ activeWorkers }) => activeWorkers,
-    pendingWorkers: ({ pendingWorkers }) => pendingWorkers,
-    completedWorkers: ({ completedWorkers }) => completedWorkers,
+    totalActiveWorkers: ({ totalActiveWorkers }) => totalActiveWorkers,
+    totalPendingWorkers: ({ totalPendingWorkers }) => totalPendingWorkers,
+    totalCompletedWorkers: ({ totalCompletedWorkers }) => totalCompletedWorkers,
     testExecutionStatuses: ({ testExecutionStatuses }) => testExecutionStatuses,
 };
 

@@ -129,13 +129,13 @@ const resolvers: QueryResolvers = {
 
         const workers = await repository.getWorkersByRunId(runId);
         const totalWorkers = workers.length;
-        const pendingWorkers = workers.filter(
+        const totalPendingWorkers = workers.filter(
             (worker) => worker.status === PrismaWorkerStatus.PENDING,
         ).length;
-        const activeWorkers = workers.filter(
+        const totalActiveWorkers = workers.filter(
             (worker) => worker.status === PrismaWorkerStatus.STARTED,
         ).length;
-        const completedWorkers = workers.filter(
+        const totalCompletedWorkers = workers.filter(
             (worker) => worker.status === PrismaWorkerStatus.COMPLETED,
         ).length;
 
@@ -148,10 +148,9 @@ const resolvers: QueryResolvers = {
             __typename: 'TestRunStatus',
             runStatus,
             totalWorkers,
-            workers,
-            pendingWorkers,
-            activeWorkers,
-            completedWorkers,
+            totalPendingWorkers,
+            totalActiveWorkers,
+            totalCompletedWorkers,
             testExecutionStatuses,
         };
     },

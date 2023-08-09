@@ -859,11 +859,11 @@ export type TestRunEdge = {
 
 export type TestRunStatus = {
   readonly __typename: 'TestRunStatus';
-  readonly activeWorkers: Scalars['Int'];
-  readonly completedWorkers: Scalars['Int'];
-  readonly pendingWorkers: Scalars['Int'];
   readonly runStatus: RunStatus;
   readonly testExecutionStatuses: ReadonlyArray<Maybe<TestExecutionStatus>>;
+  readonly totalActiveWorkers: Scalars['Int'];
+  readonly totalCompletedWorkers: Scalars['Int'];
+  readonly totalPendingWorkers: Scalars['Int'];
   readonly totalWorkers: Scalars['Int'];
 };
 
@@ -1747,11 +1747,11 @@ export type TestRunEdgeResolvers<ContextType = Context, ParentType extends Resol
 };
 
 export type TestRunStatusResolvers<ContextType = Context, ParentType extends ResolversParentTypes['TestRunStatus'] = ResolversParentTypes['TestRunStatus']> = {
-  activeWorkers: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  completedWorkers: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  pendingWorkers: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   runStatus: Resolver<ResolversTypes['RunStatus'], ParentType, ContextType>;
   testExecutionStatuses: Resolver<ReadonlyArray<Maybe<ResolversTypes['TestExecutionStatus']>>, ParentType, ContextType>;
+  totalActiveWorkers: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  totalCompletedWorkers: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  totalPendingWorkers: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   totalWorkers: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };

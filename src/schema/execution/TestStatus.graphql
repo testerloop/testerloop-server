@@ -20,9 +20,9 @@ type TestExecutionStatus {
 type TestRunStatus {
     runStatus: RunStatus!
     totalWorkers: Int!
-    pendingWorkers: Int!
-    activeWorkers: Int!
-    completedWorkers: Int!
+    totalPendingWorkers: Int!
+    totalActiveWorkers: Int!
+    totalCompletedWorkers: Int!
     testExecutionStatuses: [TestExecutionStatus]!
 }
 
