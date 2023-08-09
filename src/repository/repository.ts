@@ -207,6 +207,14 @@ class PrismaRepository {
             data: updateData,
         });
     }
+    async deleteInProgressTestsByWorkerId(workerId: string) {
+        return this.db.prisma.testExecution.deleteMany({
+            where: {
+                workerId,
+                result: { equals: TestStatus.IN_PROGRESS },
+            },
+        });
+    }
 
     async getWorkersByRunId(runId: string) {
         return this.db.prisma.worker.findMany({
