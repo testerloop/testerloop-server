@@ -116,7 +116,7 @@ const resolvers: MutationResolvers = {
         }
 
         status === WorkerStatus.Completed &&
-            (await repository.testExecution.deleteInProgressTestsByWorkerId(
+            (await repository.testExecution.deleteInProgressTestExecutionsByWorkerId(
                 workerID,
             ));
 

@@ -101,7 +101,7 @@ class TestExecutionRepository extends PrismaRepository {
         });
     }
 
-    async deleteInProgressTestsByWorkerId(workerId: string) {
+    async deleteInProgressTestExecutionsByWorkerId(workerId: string) {
         return this.db.prisma.testExecution.deleteMany({
             where: {
                 workerId,
