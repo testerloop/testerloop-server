@@ -22,7 +22,7 @@ type TestExecutionConnection {
 
 type TestExecutionEdge {
     cursor: Cursor!
-    node: TestExecution!
+    node: TestExecution # Only null if an error occurred in resolving the TestExecution
 }
 
 input TestExecutionEventFilterInput {
