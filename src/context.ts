@@ -54,7 +54,6 @@ export const createContext = async ({
         const token = req.headers.authorization.replace('Bearer ', '');
         if (!token) throw new Error('Invalid token');
         user = await authenticateUserService.getUser(token);
-        if (!user) throw new Error('Invalid token');
         console.log('Valid user');
     }
 
