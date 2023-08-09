@@ -2,6 +2,7 @@ import { v4 as uuidv4, v5 as uuidv5 } from 'uuid';
 import {
     TestStatus as PrismaTestStatus,
     RunStatus as PrismaRunStatus,
+    WorkerStatus as PrismaWorkerStatus,
 } from '@prisma/client';
 
 import repository from '../repository/repository.js';
@@ -13,6 +14,9 @@ import {
     TestStatus,
     RunStatus,
     TestExecutionStatus,
+    Worker,
+    WorkerStatus,
+    Executor,
     CreateApiKeyResponse,
 } from './types/generated.js';
 
@@ -69,6 +73,58 @@ const resolvers: MutationResolvers = {
                 })),
         };
     },
+
+    createWorkers: async (
+        _,
+        { runID, count, executor },
+        { repository },
+    ): Promise<Worker[]> => {
+        const workerPromises = Array(count)
+            .fill(null)
+            .map(() => repository.createWorker(runID, executor));
+
+        const workers = await Promise.all(workerPromises);
+
+        return workers.map((worker) => ({
+            __typename: 'Worker',
+            ...worker,
+            executor: executor,
+            status: WorkerStatus.Pending,
+            testExecutions: [],
+        }));
+    },
+
+    setWorkerStatus: async (
+        _,
+        { workerID, status },
+        { repository },
+    ): Promise<Worker> => {
+        const worker = await repository.getWorker(workerID);
+
+        const isInputPending = status === WorkerStatus.Pending;
+        const isAlreadyCompleted = worker.status === WorkerStatus.Completed;
+        const isStartedAgain =
+            worker.status === WorkerStatus.Started &&
+            status === WorkerStatus.Started;
+
+        if (isInputPending || isAlreadyCompleted || isStartedAgain) {
+            throw new Error('Invalid status transition.');
+        }
+
+        const updatedWorker = await repository.updateWorkerStatus(
+            workerID,
+            status,
+        );
+
+        return {
+            __typename: 'Worker',
+            ...updatedWorker,
+            executor: updatedWorker.executor as Executor,
+            status: updatedWorker.status as WorkerStatus,
+            testExecutions: [],
+        };
+    },
+
     createTestExecution: async (
         _,
         { runID, testName, featureFile, workerId },
@@ -125,9 +181,6 @@ const resolvers: MutationResolvers = {
         const testExecution = await repository.getTestExecutionById(
             testExecutionId,
         );
-        if (!testExecution) {
-            throw new Error('Test Execution not found.');
-        }
 
         const updatedTestStatus =
             testStatus === TestStatus.Passed
@@ -141,21 +194,6 @@ const resolvers: MutationResolvers = {
             until,
         );
 
-        const run = await repository.getTestRun(testExecution.testRunId);
-        if (!run) {
-            throw new Error('Run not found.');
-        }
-        const allTestExecutionsCompleted = run.testExecutions.every(
-            (execution) =>
-                execution.result === PrismaTestStatus.PASSED ||
-                execution.result === PrismaTestStatus.FAILED,
-        );
-        if (allTestExecutionsCompleted) {
-            await repository.updateTestRunStatus(
-                testExecution.testRunId,
-                PrismaRunStatus.COMPLETED,
-            );
-        }
         const { testName, featureFile, rerunOfId } = testExecution;
         return {
             __typename: 'TestExecutionStatus',
@@ -166,6 +204,38 @@ const resolvers: MutationResolvers = {
             testStatus,
         };
     },
+
+    refreshRunStatus: async (
+        _,
+        { runId },
+        { repository },
+    ): Promise<RunStatus> => {
+        const run = await repository.getTestRun(runId);
+
+        const workers = await repository.getWorkersByRunId(runId);
+        const allWorkersCompleted = workers.every(
+            (worker) => worker.status === PrismaWorkerStatus.COMPLETED,
+        );
+
+        if (!allWorkersCompleted) {
+            return run.status as RunStatus;
+        }
+
+        const updatedRun = await repository.updateTestRunStatus(
+            runId,
+            PrismaRunStatus.COMPLETED,
+        );
+
+        if (!updatedRun) {
+            console.error(
+                'Failed to update run status. Returning initial status.',
+            );
+            return run.status as RunStatus;
+        }
+
+        return updatedRun.status as RunStatus;
+    },
+
     createApiKey: async (
         _,
         { organisationId, name },

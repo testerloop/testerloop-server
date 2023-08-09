@@ -1,11 +1,18 @@
 import {
     RunStatus as PrismaRunStatus,
     TestStatus as PrismaTestStatus,
+    WorkerStatus as PrismaWorkerStatus,
 } from '@prisma/client';
 
 import { decodeId, decodeIdForType } from '../util/id.js';
 
-import { QueryResolvers, RunStatus, TestStatus } from './types/generated.js';
+import {
+    QueryResolvers,
+    RunStatus,
+    TestStatus,
+    WorkerStatus,
+} from './types/generated.js';
+import { Executor } from './types/generated';
 
 const resolvers: QueryResolvers = {
     async httpNetworkEvent(root, { id }, { dataSources }) {
@@ -86,29 +93,28 @@ const resolvers: QueryResolvers = {
         };
     },
 
-    async getRun(parent, { runId }, { dataSources, auth, repository }) {
+    async getRunStatus(parent, { runId }, { auth, repository }) {
         if (!auth) throw new Error('User is not authenticated.');
 
         const testRun = await repository.getTestRun(runId);
-
-        if (!testRun) throw new Error('Run does not exist.');
 
         if (testRun.organisationId !== auth.organisation.id)
             throw new Error(
                 'User does not have permission to access this run result',
             );
 
-        if (testRun.status !== PrismaRunStatus.COMPLETED) {
-            const s3RunStatus =
-                await dataSources.testResults.getTestRunStatusFromS3(runId);
-            if (s3RunStatus.runStatus === RunStatus.Completed)
-                return s3RunStatus;
-        }
+        const testStatusMap = {
+            [PrismaTestStatus.PASSED]: TestStatus.Passed,
+            [PrismaTestStatus.FAILED]: TestStatus.Failed,
+            [PrismaTestStatus.IN_PROGRESS]: TestStatus.InProgress,
+        };
 
         const testExecutionStatuses = testRun.testExecutions.map(
             (execution) => {
                 const { id, testName, featureFile, rerunOfId, result } =
                     execution;
+
+                const testStatus = testStatusMap[result];
 
                 return {
                     __typename: 'TestExecutionStatus' as const,
@@ -116,13 +122,22 @@ const resolvers: QueryResolvers = {
                     testName,
                     featureFile,
                     rerunOfId,
-                    testStatus:
-                        result === PrismaTestStatus.PASSED
-                            ? TestStatus.Passed
-                            : TestStatus.Failed,
+                    testStatus,
                 };
             },
         );
+
+        const workers = await repository.getWorkersByRunId(runId);
+        const totalWorkers = workers.length;
+        const totalPendingWorkers = workers.filter(
+            (worker) => worker.status === PrismaWorkerStatus.PENDING,
+        ).length;
+        const totalActiveWorkers = workers.filter(
+            (worker) => worker.status === PrismaWorkerStatus.STARTED,
+        ).length;
+        const totalCompletedWorkers = workers.filter(
+            (worker) => worker.status === PrismaWorkerStatus.COMPLETED,
+        ).length;
 
         const runStatus =
             testRun.status === PrismaRunStatus.COMPLETED
@@ -132,7 +147,36 @@ const resolvers: QueryResolvers = {
         return {
             __typename: 'TestRunStatus',
             runStatus,
+            totalWorkers,
+            totalPendingWorkers,
+            totalActiveWorkers,
+            totalCompletedWorkers,
             testExecutionStatuses,
+        };
+    },
+
+    async worker(root, { id }, { repository }) {
+        const worker = await repository.getWorker(id);
+
+        const testExecutions = await Promise.all(
+            (await repository.getTestExecutionsByWorkerId(id)).map(
+                async (execution) => ({
+                    __typename: 'TestExecution' as const,
+                    id: execution.id,
+                    testRun: {
+                        __typename: 'TestRun' as const,
+                        id: execution.testRunId,
+                    },
+                }),
+            ),
+        );
+
+        return {
+            __typename: 'Worker',
+            ...worker,
+            status: worker.status as WorkerStatus,
+            executor: worker.executor as Executor,
+            testExecutions,
         };
     },
 

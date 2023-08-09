@@ -59,6 +59,7 @@ import Mutation from './Mutation.js';
 import TestExecutionStatus from './TestExecutionStatus.js';
 import TestRunStatus from './TestRunStatus.js';
 import CreateTestExecutionResponse from './CreateTestExecutionResponse.js';
+import Worker from './Worker.js';
 import CreateApiKeyResponse from './CreateApiKeyResponse.js';
 
 const interfaceResolvers = {
@@ -68,6 +69,7 @@ const interfaceResolvers = {
 };
 
 const resolvers: Resolvers = {
+    Worker,
     CreateTestExecutionResponse,
     UploadInfo,
     TestExecutionStatus,
