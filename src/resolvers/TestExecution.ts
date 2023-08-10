@@ -40,7 +40,7 @@ const resolvers: TestExecutionResolvers = {
     },
     async rerunOf({ id }, _args, { repository, auth }) {
         const rerunTestExecution = auth
-            ? await repository.getRerunOf(id)
+            ? await repository.testExecution.getTestExecutionRerunOf(id)
             : null;
         return rerunTestExecution
             ? {
@@ -56,7 +56,8 @@ const resolvers: TestExecutionResolvers = {
 
     //TODO - MAKE THIS A CONNECTION TYPE
     async reruns({ id }, _args, { repository }) {
-        const reruns = await repository.getRerunsByTestId(id);
+        const reruns =
+            await repository.testExecution.getRerunsByTestExecutionId(id);
 
         return (
             (reruns &&

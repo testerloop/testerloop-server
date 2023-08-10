@@ -5,8 +5,6 @@ import {
     WorkerStatus as PrismaWorkerStatus,
 } from '@prisma/client';
 
-import repository from '../repository/repository.js';
-
 import {
     MutationResolvers,
     UploadInfo,
@@ -42,7 +40,7 @@ const resolvers: MutationResolvers = {
         console.log('Creating run with ID: ', runID);
 
         const { s3BucketName, customerPath } =
-            repository.getBucketAndPath(auth);
+            repository.organisation.getBucketAndPath(auth);
 
         const s3RunPath = `${s3BucketName}/${customerPath}/${runID}`;
 
@@ -68,7 +66,7 @@ const resolvers: MutationResolvers = {
                 createdAt: new Date(),
                 completedAt: null,
             };
-            await repository.createTestRun(testRun);
+            await repository.testRun.createTestRun(testRun);
         }
 
         return {
@@ -93,7 +91,7 @@ const resolvers: MutationResolvers = {
     ): Promise<Worker[]> => {
         const workerPromises = Array(count)
             .fill(null)
-            .map(() => repository.createWorker(runID, executor));
+            .map(() => repository.worker.createWorker(runID, executor));
 
         const workers = await Promise.all(workerPromises);
 
@@ -111,16 +109,18 @@ const resolvers: MutationResolvers = {
         { workerID, status },
         { repository },
     ): Promise<Worker> => {
-        const worker = await repository.getWorker(workerID);
+        const worker = await repository.worker.getWorker(workerID);
 
         if (isInvalidTransition(worker.status, status)) {
             throw new Error('Invalid status transition.');
         }
 
         status === WorkerStatus.Completed &&
-            (await repository.deleteInProgressTestsByWorkerId(workerID));
+            (await repository.testExecution.deleteInProgressTestExecutionsByWorkerId(
+                workerID,
+            ));
 
-        const updatedWorker = await repository.updateWorkerStatus(
+        const updatedWorker = await repository.worker.updateWorkerStatus(
             workerID,
             status,
         );
@@ -143,7 +143,7 @@ const resolvers: MutationResolvers = {
             throw new Error('Failed to verify organisation details.');
         }
         const organisationIdentifier =
-            repository.getOrganisationIdentifier(auth);
+            repository.organisation.getOrganisationIdentifier(auth);
 
         if (!organisationIdentifier) {
             throw new Error(
@@ -169,7 +169,7 @@ const resolvers: MutationResolvers = {
             workerId: workerId,
         };
 
-        await repository.createTestExecution(
+        await repository.testExecution.createTestExecution(
             testExecution,
             testName,
             featureFile,
@@ -187,9 +187,10 @@ const resolvers: MutationResolvers = {
         { testExecutionId, testStatus },
         { repository },
     ): Promise<TestExecutionStatus> => {
-        const testExecution = await repository.getTestExecutionById(
-            testExecutionId,
-        );
+        const testExecution =
+            await repository.testExecution.getTestExecutionById(
+                testExecutionId,
+            );
 
         const updatedTestStatus =
             testStatus === TestStatus.Passed
@@ -197,7 +198,7 @@ const resolvers: MutationResolvers = {
                 : PrismaTestStatus.FAILED;
 
         const until = new Date();
-        await repository.updateTestExecutionResult(
+        await repository.testExecution.updateTestExecutionResult(
             testExecutionId,
             updatedTestStatus,
             until,
@@ -219,9 +220,9 @@ const resolvers: MutationResolvers = {
         { runId },
         { repository },
     ): Promise<RunStatus> => {
-        const run = await repository.getTestRun(runId);
+        const run = await repository.testRun.getTestRun(runId);
 
-        const workers = await repository.getWorkersByRunId(runId);
+        const workers = await repository.worker.getWorkersByRunId(runId);
         const allWorkersCompleted = workers.every(
             (worker) => worker.status === PrismaWorkerStatus.COMPLETED,
         );
@@ -230,7 +231,7 @@ const resolvers: MutationResolvers = {
             return run.status as RunStatus;
         }
 
-        const updatedRun = await repository.updateTestRunStatus(
+        const updatedRun = await repository.testRun.updateTestRunStatus(
             runId,
             PrismaRunStatus.COMPLETED,
         );
@@ -248,8 +249,12 @@ const resolvers: MutationResolvers = {
     createApiKey: async (
         _,
         { organisationId, name },
+        { repository },
     ): Promise<CreateApiKeyResponse> => {
-        const apiKey = await repository.createApiKey(organisationId, name);
+        const apiKey = await repository.apiKey.createApiKey(
+            organisationId,
+            name,
+        );
         return {
             __typename: 'CreateApiKeyResponse',
             apiKey,

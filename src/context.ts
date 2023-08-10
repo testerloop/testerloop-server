@@ -5,7 +5,7 @@ import { Organisation, User } from '@prisma/client';
 import { DataSources, createDataSources } from './datasources/index.js';
 import authenticateUserService from './AuthenticateUserService.js';
 import config from './config.js';
-import repository from './repository/repository.js';
+import repository from './repository/index.js';
 
 interface Request {
     headers: IncomingHttpHeaders;
@@ -28,7 +28,8 @@ export type Context = {
 const getAuth = async (apiKey: string | null): Promise<Auth | undefined> => {
     if (!apiKey) throw new Error('API key is required');
 
-    const organisation = await repository.getOrganisationFromApiKey(apiKey);
+    const organisation =
+        await repository.organisation.getOrganisationFromApiKey(apiKey);
 
     if (!organisation) throw new Error('Organisation not found');
 
