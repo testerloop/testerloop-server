@@ -1,4 +1,4 @@
-import PrismaDB from 'src/db';
+import PrismaDB from '../db.js';
 
 class PrismaRepository {
     protected db: PrismaDB = new PrismaDB();

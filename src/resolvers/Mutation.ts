@@ -16,6 +16,7 @@ import {
     WorkerStatus,
     Executor,
     CreateApiKeyResponse,
+    CreateUserResponse,
 } from './types/generated.js';
 
 const isInvalidTransition = (
@@ -258,6 +259,20 @@ const resolvers: MutationResolvers = {
         return {
             __typename: 'CreateApiKeyResponse',
             apiKey,
+        };
+    },
+
+    createUser: async (_, { jwtToken }): Promise<CreateUserResponse> => {
+        console.log(jwtToken);
+
+        return {
+            __typename: 'CreateUserResponse',
+            user: {
+                __typename: 'User',
+                id: '555',
+                first_name: 'my name',
+                last_name: 'last_name',
+            },
         };
     },
 };

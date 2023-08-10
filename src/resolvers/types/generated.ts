@@ -169,6 +169,11 @@ export type CreateTestExecutionResponse = {
   readonly testExecutionId: Scalars['ID'];
 };
 
+export type CreateUserResponse = {
+  readonly __typename: 'CreateUserResponse';
+  readonly user: User;
+};
+
 export type Event = {
   readonly at: Scalars['DateTime'];
 };
@@ -461,6 +466,7 @@ export type Mutation = {
   readonly createApiKey: CreateApiKeyResponse;
   readonly createTestExecution: CreateTestExecutionResponse;
   readonly createTestRun: Maybe<UploadInfo>;
+  readonly createUser: CreateUserResponse;
   readonly createWorkers: ReadonlyArray<Worker>;
   readonly refreshRunStatus: RunStatus;
   readonly setTestExecutionStatus: TestExecutionStatus;
@@ -484,6 +490,11 @@ export type MutationCreateTestExecutionArgs = {
 
 export type MutationCreateTestRunArgs = {
   runEnvironmentDetails: Scalars['String'];
+};
+
+
+export type MutationCreateUserArgs = {
+  jwtToken: Scalars['String'];
 };
 
 
@@ -881,6 +892,13 @@ export type UploadInfo = {
   readonly url: Maybe<Scalars['String']>;
 };
 
+export type User = {
+  readonly __typename: 'User';
+  readonly first_name: Scalars['String'];
+  readonly id: Scalars['ID'];
+  readonly last_name: Scalars['String'];
+};
+
 export type Worker = {
   readonly __typename: 'Worker';
   readonly completedAt: Maybe<Scalars['DateTime']>;
@@ -984,6 +1002,7 @@ export type ResolversTypes = {
   Cookie: ResolverTypeWrapper<Cookie>;
   CreateApiKeyResponse: ResolverTypeWrapper<CreateApiKeyResponse>;
   CreateTestExecutionResponse: ResolverTypeWrapper<CreateTestExecutionResponse>;
+  CreateUserResponse: ResolverTypeWrapper<CreateUserResponse>;
   Cursor: ResolverTypeWrapper<Scalars['Cursor']>;
   DateTime: ResolverTypeWrapper<Scalars['DateTime']>;
   Event: ResolversTypes['CommandChainEvent'] | ResolversTypes['CommandEvent'] | ResolversTypes['ConsoleLogEvent'] | ResolversTypes['HttpNetworkEvent'] | ResolversTypes['HttpResponseBodyChunk'] | ResolversTypes['NetworkEventTiming'] | ResolversTypes['ScenarioEvent'] | ResolversTypes['StepEvent'] | ResolversTypes['TestExecution'] | ResolversTypes['TestExecutionScreenshot'] | ResolversTypes['TestExecutionSnapshot'];
@@ -1072,6 +1091,7 @@ export type ResolversTypes = {
   TestStatus: TestStatus;
   URL: ResolverTypeWrapper<Scalars['URL']>;
   UploadInfo: ResolverTypeWrapper<UploadInfo>;
+  User: ResolverTypeWrapper<User>;
   Worker: ResolverTypeWrapper<Omit<Worker, 'testExecutions'> & { testExecutions: ReadonlyArray<Maybe<ResolversTypes['TestExecution']>> }>;
   WorkerStatus: WorkerStatus;
 };
@@ -1096,6 +1116,7 @@ export type ResolversParentTypes = {
   Cookie: Cookie;
   CreateApiKeyResponse: CreateApiKeyResponse;
   CreateTestExecutionResponse: CreateTestExecutionResponse;
+  CreateUserResponse: CreateUserResponse;
   Cursor: Scalars['Cursor'];
   DateTime: Scalars['DateTime'];
   Event: ResolversParentTypes['CommandChainEvent'] | ResolversParentTypes['CommandEvent'] | ResolversParentTypes['ConsoleLogEvent'] | ResolversParentTypes['HttpNetworkEvent'] | ResolversParentTypes['HttpResponseBodyChunk'] | ResolversParentTypes['NetworkEventTiming'] | ResolversParentTypes['ScenarioEvent'] | ResolversParentTypes['StepEvent'] | ResolversParentTypes['TestExecution'] | ResolversParentTypes['TestExecutionScreenshot'] | ResolversParentTypes['TestExecutionSnapshot'];
@@ -1175,6 +1196,7 @@ export type ResolversParentTypes = {
   TestRunStatus: TestRunStatus;
   URL: Scalars['URL'];
   UploadInfo: UploadInfo;
+  User: User;
   Worker: Omit<Worker, 'testExecutions'> & { testExecutions: ReadonlyArray<Maybe<ResolversParentTypes['TestExecution']>> };
 };
 
@@ -1303,6 +1325,11 @@ export type CreateApiKeyResponseResolvers<ContextType = Context, ParentType exte
 export type CreateTestExecutionResponseResolvers<ContextType = Context, ParentType extends ResolversParentTypes['CreateTestExecutionResponse'] = ResolversParentTypes['CreateTestExecutionResponse']> = {
   testExecutionGroupId: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   testExecutionId: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type CreateUserResponseResolvers<ContextType = Context, ParentType extends ResolversParentTypes['CreateUserResponse'] = ResolversParentTypes['CreateUserResponse']> = {
+  user: Resolver<ResolversTypes['User'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -1533,6 +1560,7 @@ export type MutationResolvers<ContextType = Context, ParentType extends Resolver
   createApiKey: Resolver<ResolversTypes['CreateApiKeyResponse'], ParentType, ContextType, RequireFields<MutationCreateApiKeyArgs, 'organisationId'>>;
   createTestExecution: Resolver<ResolversTypes['CreateTestExecutionResponse'], ParentType, ContextType, RequireFields<MutationCreateTestExecutionArgs, 'featureFile' | 'runID' | 'testName' | 'workerId'>>;
   createTestRun: Resolver<Maybe<ResolversTypes['UploadInfo']>, ParentType, ContextType, RequireFields<MutationCreateTestRunArgs, 'runEnvironmentDetails'>>;
+  createUser: Resolver<ResolversTypes['CreateUserResponse'], ParentType, ContextType, RequireFields<MutationCreateUserArgs, 'jwtToken'>>;
   createWorkers: Resolver<ReadonlyArray<ResolversTypes['Worker']>, ParentType, ContextType, RequireFields<MutationCreateWorkersArgs, 'count' | 'executor' | 'runID'>>;
   refreshRunStatus: Resolver<ResolversTypes['RunStatus'], ParentType, ContextType, RequireFields<MutationRefreshRunStatusArgs, 'runId'>>;
   setTestExecutionStatus: Resolver<ResolversTypes['TestExecutionStatus'], ParentType, ContextType, RequireFields<MutationSetTestExecutionStatusArgs, 'testExecutionId' | 'testStatus'>>;
@@ -1768,6 +1796,13 @@ export type UploadInfoResolvers<ContextType = Context, ParentType extends Resolv
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type UserResolvers<ContextType = Context, ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']> = {
+  first_name: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  id: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  last_name: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type WorkerResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Worker'] = ResolversParentTypes['Worker']> = {
   completedAt: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
   createdAt: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
@@ -1796,6 +1831,7 @@ export type Resolvers<ContextType = Context> = {
   Cookie: CookieResolvers<ContextType>;
   CreateApiKeyResponse: CreateApiKeyResponseResolvers<ContextType>;
   CreateTestExecutionResponse: CreateTestExecutionResponseResolvers<ContextType>;
+  CreateUserResponse: CreateUserResponseResolvers<ContextType>;
   Cursor: GraphQLScalarType;
   DateTime: GraphQLScalarType;
   Event: EventResolvers<ContextType>;
@@ -1867,6 +1903,7 @@ export type Resolvers<ContextType = Context> = {
   TestRunStatus: TestRunStatusResolvers<ContextType>;
   URL: GraphQLScalarType;
   UploadInfo: UploadInfoResolvers<ContextType>;
+  User: UserResolvers<ContextType>;
   Worker: WorkerResolvers<ContextType>;
 };
 

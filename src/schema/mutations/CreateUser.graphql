@@ -1,0 +1,13 @@
+type User {
+    id: ID!
+    first_name: String!
+    last_name: String!
+}
+
+type CreateUserResponse {
+    user: User!
+}
+
+extend type Mutation {
+    createUser(jwtToken: String!): CreateUserResponse!
+}
