@@ -2,8 +2,9 @@ import { UserResolvers } from './types/generated';
 
 const resolvers: UserResolvers = {
     id: ({ id }) => id,
-    first_name: ({ first_name }) => first_name,
-    last_name: ({ last_name }) => last_name,
+    email: ({ email }) => email,
+    firstName: ({ firstName }) => firstName,
+    lastName: ({ lastName }) => lastName,
 };
 
 export default resolvers;

@@ -1,13 +1,16 @@
 type User {
     id: ID!
-    first_name: String!
-    last_name: String!
+    email: String!
+    firstName: String!
+    lastName: String!
 }
 
-type CreateUserResponse {
-    user: User!
+input UserInput {
+    email: String!
+    firstName: String!
+    lastName: String!
 }
 
 extend type Mutation {
-    createUser(jwtToken: String!): CreateUserResponse!
+    createUser(userinput: UserInput!): User!
 }

@@ -61,7 +61,6 @@ import TestRunStatus from './TestRunStatus.js';
 import CreateTestExecutionResponse from './CreateTestExecutionResponse.js';
 import Worker from './Worker.js';
 import CreateApiKeyResponse from './CreateApiKeyResponse.js';
-import CreateUserResponse from './CreateUserResponse.js';
 import User from './User.js';
 
 const interfaceResolvers = {
@@ -158,7 +157,6 @@ const resolvers: Resolvers = {
     TestExecutionScreenshot,
     SignedURL,
     CreateApiKeyResponse,
-    CreateUserResponse,
     User,
 };
 

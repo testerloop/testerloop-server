@@ -26,12 +26,12 @@ export type Context = {
 };
 
 const getAuth = async (apiKey: string | null): Promise<Auth | undefined> => {
-    if (!apiKey) throw new Error('API key is required');
+    if (!apiKey) return undefined;
 
     const organisation =
         await repository.organisation.getOrganisationFromApiKey(apiKey);
 
-    if (!organisation) throw new Error('Organisation not found');
+    if (!organisation) return undefined;
 
     console.log('Valid API key found for: ', organisation.name);
 
@@ -45,9 +45,11 @@ export const createContext = async ({
 }): Promise<Context> => {
     let dataSources: DataSources | null = null;
     let user: User | null = null;
+
     const apiKey = req.headers['x-api-key']
         ? (req.headers['x-api-key'] as string)
         : null;
+
     const auth = await getAuth(apiKey);
 
     if (req.headers.authorization) {
