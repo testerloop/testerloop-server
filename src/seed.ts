@@ -47,7 +47,7 @@ async function main() {
         data: {
             userId: user.id,
             organisationId: organisation.id,
-            role: 'admin',
+            role: 'ADMIN',
         },
     });
 

@@ -33,6 +33,10 @@ enum Executor {
   LOCAL
 }
 
+enum UserOrganisationRole {
+  ADMIN
+}
+
 model Organisation {
   id                String             @id @default(uuid()) @db.Uuid
   name              String
@@ -65,13 +69,13 @@ model User {
 }
 
 model UserOrganisation {
-  id             String       @id @default(uuid()) @db.Uuid
-  createdAt      DateTime     @default(now())
-  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId         String       @db.Uuid
-  organisation   Organisation @relation(fields: [organisationId], references: [id], onDelete: Cascade)
-  organisationId String       @db.Uuid
-  role           String
+  id             String               @id @default(uuid()) @db.Uuid
+  createdAt      DateTime             @default(now())
+  user           User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId         String               @db.Uuid
+  organisation   Organisation         @relation(fields: [organisationId], references: [id], onDelete: Cascade)
+  organisationId String               @db.Uuid
+  role           UserOrganisationRole
 }
 
 model TestRun {
