@@ -1,25 +1,50 @@
-name: Build & Publish Testerloop Server Package 
+name: Build & Publish Testerloop Server Package
 
 on:
-  release:
-    types: [created]
+    workflow_dispatch:
+    push:
+        tags:
+            - '*'
 
+env:
+    NEW_VERSION: ${{ github.ref_name }}
 jobs:
-  publish-gpr:
-    runs-on: ubuntu-latest
-    permissions:
-      packages: write
-      contents: read
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-        with:
-          node-version: 18
-          registry-url: https://npm.pkg.github.com/
-      - run: |
-          npm ci
-          npm run build
-      - run: npm publish
-        env:
-          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+    publish-npm:
+        runs-on: ubuntu-latest
+        permissions:
+            packages: write
+            contents: write
+        steps:
+            - name: Checkout Repository
+              uses: actions/checkout@v3
+            - name: Set up node
+              uses: actions/setup-node@v3
+              with:
+                  node-version: 18
+                  registry-url: https://npm.pkg.github.com/
+            - name: Install Dependencies
+              run: |
+                  npm ci
+                  npm run build
+            - name: Publish to GitHub Package Registry
+              run: npm publish
+              env:
+                  NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+            - name: Create Release
+              uses: actions/create-release@v1
+              with:
+                  tag_name: '${{ env.NEW_VERSION }}'
+                  release_name: 'Release ${{ env.NEW_VERSION }}'
+                  body: 'Release ${{ env.NEW_VERSION }}'
+                  draft: false
+                  prerelease: true
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            - name: Send Slack notification
+              uses: rtCamp/action-slack-notify@v2
+              env:
+                  SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+                  SLACK_MESSAGE: |
+                      Build & Publish Testerloop Server Package workflow completed.
+
+                      Latest Release: *[ ${{ env.NEW_VERSION }} ]* (https://github.com/${{ github.repository }}/releases/${{ env.NEW_VERSION }})
