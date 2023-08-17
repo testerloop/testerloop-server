@@ -1,0 +1,71 @@
+name: Build & Publish Testerloop CLI NPM Package
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - '*'
+
+env:
+  NEW_VERSION: ${{ github.ref_name }}
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18
+      - run: npm ci
+
+      - name: Run linter
+        run: npm run lint
+
+      - name: Run tests
+        run: npm run test:cov -- --coverageReporters json-summary
+
+  publish-npm:
+    needs: tests
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write
+      contents: write
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Build Changelog
+        id: github_release
+        uses: mikepenz/release-changelog-builder-action@v3
+        env:
+          GITHUB_TOKEN: ${{ secrets.TESTERLOOP_ACCESS_TOKEN }}
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.TESTERLOOP_ACCESS_TOKEN }}
+        with:
+          tag_name: ${{ env.NEW_VERSION }}
+          release_name: ${{ env.NEW_VERSION }}
+          body: ${{ steps.github_release.outputs.changelog }}
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          registry-url: https://npm.pkg.github.com/
+      - run: npm ci
+      - run: npm run build
+      - name: Login to GitHub Package Registry
+        run: echo "//npm.pkg.github.com/:_authToken=${{secrets.secrets.NPM_TOKEN}}" >> ~/.npmrc
+      - run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Send Slack notification
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+          SLACK_MESSAGE: |
+            Build & Publish Testerloop CLI Package workflow completed.
+
+            Latest Release: *[ ${{ env.NEW_VERSION }} ]* (https://github.com/${{ github.repository }}/releases/${{ env.NEW_VERSION }})
