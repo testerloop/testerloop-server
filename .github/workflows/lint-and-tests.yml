@@ -1,6 +1,10 @@
 name: Lint and tests
 
 on:
+  push:
+    branches:
+      - master
+      - multitenant
   pull_request:
     branches:
       - master
