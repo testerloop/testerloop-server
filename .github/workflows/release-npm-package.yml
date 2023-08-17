@@ -22,7 +22,7 @@ jobs:
         run: npm run lint
 
       - name: Run tests
-        run: npm run test:cov -- --coverageReporters json-summary
+        run: npm run test -- --coverageReporters json-summary
 
   publish-npm:
     needs: tests
