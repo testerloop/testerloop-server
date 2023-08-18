@@ -1,13 +1,17 @@
-name: Lint
+name: Lint and tests
 
 on:
+  push:
+    branches:
+      - master
+      - multitenant
   pull_request:
     branches:
       - master
       - multitenant
 
 jobs:
-  lint:
+  lintAndTests:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -15,4 +19,8 @@ jobs:
         with:
           node-version: '18.x'
       - run: npm install
-      - run: npm run lint
+
+      - name: Run linter
+        run: npm run lint
+      - name: Run tests
+        run: npm run test -- --coverageReporters json-summary --passWithNoTests
