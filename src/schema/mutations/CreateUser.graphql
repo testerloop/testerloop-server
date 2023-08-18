@@ -1,16 +1,15 @@
 type User {
     id: ID!
     email: String!
-    firstName: String!
-    lastName: String!
+    cognitoId: String!
+    # userOrganisations: [UserOrganisation!]! TODO - add Organisations to graphql schema
 }
 
 input UserInput {
     email: String!
-    firstName: String!
-    lastName: String!
+    cognitoId: String!
 }
 
 extend type Mutation {
-    createUser(userinput: UserInput!): User!
+    createUser(userInput: UserInput!): User!
 }

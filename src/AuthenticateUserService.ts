@@ -29,27 +29,25 @@ class AuthenticateUserService {
         }
     }
 
-    public async getUser(token: string): Promise<User> {
+    public async getUser(
+        token: string,
+        operationName?: string,
+    ): Promise<User | null> {
         const payload = await this.decodeToken(token);
-        const { given_name, family_name, email } = payload;
-
-        let user = await this.prisma.user.findUnique({
+        const { email, sub } = payload;
+        console.log(sub);
+        const user = await this.prisma.user.findUnique({
             where: { email: email as string },
         });
+
+        if (!user && operationName === 'CreateUser') {
+            return null;
+        }
 
         if (!user) {
             throw new UnauthorisedError();
         }
 
-        if (given_name && family_name && !user.firstName && !user.lastName) {
-            user = await this.prisma.user.update({
-                where: { id: user.id },
-                data: {
-                    firstName: given_name as string,
-                    lastName: family_name as string,
-                },
-            });
-        }
         return user;
     }
 }
