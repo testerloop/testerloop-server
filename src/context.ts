@@ -73,7 +73,7 @@ export const createContext = async ({
         }
     }
 
-    const auth = apiKey ? await getAuth(apiKey)
+    const auth = apiKey ? await getAuth(apiKey) : undefined;
 
     if (!user && !auth && !isCreateUserOperation) {
         throw new Error('Invalid authentication credentials');
