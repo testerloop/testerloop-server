@@ -489,7 +489,7 @@ export type MutationCreateTestRunArgs = {
 
 
 export type MutationCreateUserArgs = {
-  userinput: UserInput;
+  userInput: UserInput;
 };
 
 
@@ -889,16 +889,14 @@ export type UploadInfo = {
 
 export type User = {
   readonly __typename: 'User';
+  readonly cognitoId: Scalars['String'];
   readonly email: Scalars['String'];
-  readonly firstName: Scalars['String'];
   readonly id: Scalars['ID'];
-  readonly lastName: Scalars['String'];
 };
 
 export type UserInput = {
+  readonly cognitoId: Scalars['String'];
   readonly email: Scalars['String'];
-  readonly firstName: Scalars['String'];
-  readonly lastName: Scalars['String'];
 };
 
 export type Worker = {
@@ -1557,7 +1555,7 @@ export type MutationResolvers<ContextType = Context, ParentType extends Resolver
   createApiKey: Resolver<ResolversTypes['CreateApiKeyResponse'], ParentType, ContextType, RequireFields<MutationCreateApiKeyArgs, 'organisationId'>>;
   createTestExecution: Resolver<ResolversTypes['CreateTestExecutionResponse'], ParentType, ContextType, RequireFields<MutationCreateTestExecutionArgs, 'featureFile' | 'runID' | 'testName' | 'workerId'>>;
   createTestRun: Resolver<Maybe<ResolversTypes['UploadInfo']>, ParentType, ContextType, RequireFields<MutationCreateTestRunArgs, 'runEnvironmentDetails'>>;
-  createUser: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<MutationCreateUserArgs, 'userinput'>>;
+  createUser: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<MutationCreateUserArgs, 'userInput'>>;
   createWorkers: Resolver<ReadonlyArray<ResolversTypes['Worker']>, ParentType, ContextType, RequireFields<MutationCreateWorkersArgs, 'count' | 'executor' | 'runID'>>;
   refreshRunStatus: Resolver<ResolversTypes['RunStatus'], ParentType, ContextType, RequireFields<MutationRefreshRunStatusArgs, 'runId'>>;
   setTestExecutionStatus: Resolver<ResolversTypes['TestExecutionStatus'], ParentType, ContextType, RequireFields<MutationSetTestExecutionStatusArgs, 'testExecutionId' | 'testStatus'>>;
@@ -1794,10 +1792,9 @@ export type UploadInfoResolvers<ContextType = Context, ParentType extends Resolv
 };
 
 export type UserResolvers<ContextType = Context, ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']> = {
+  cognitoId: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   email: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  firstName: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   id: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-  lastName: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 

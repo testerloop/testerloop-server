@@ -262,16 +262,15 @@ const resolvers: MutationResolvers = {
         };
     },
 
-    createUser: async (_, { userinput }, { repository }): Promise<User> => {
-        const newUser = await repository.user.createUser(userinput);
-        const { id, email, firstName, lastName } = newUser;
+    createUser: async (_, { userInput }, { repository }): Promise<User> => {
+        const newUser = await repository.user.createUser(userInput);
+        const { id, email, cognitoId } = newUser;
 
         return {
             __typename: 'User',
             id,
             email,
-            firstName,
-            lastName,
+            cognitoId,
         };
     },
 };
