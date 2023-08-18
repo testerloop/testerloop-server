@@ -35,7 +35,7 @@ export type Context = {
     repository: typeof repository;
 };
 
-const getAuth = async (apiKey: string | null): Promise<Auth | undefined> => {
+const getAuth = async (apiKey: string | null): Promise<Auth> => {
     if (!apiKey) throw new Error('API key is required');
 
     const organisation =
@@ -73,7 +73,7 @@ export const createContext = async ({
         }
     }
 
-    const auth = apiKey ? await getAuth(apiKey) : undefined;
+    const auth = apiKey ? await getAuth(apiKey)
 
     if (!user && !auth && !isCreateUserOperation) {
         throw new Error('Invalid authentication credentials');
