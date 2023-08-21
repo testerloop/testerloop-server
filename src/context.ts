@@ -58,8 +58,8 @@ export const createContext = async ({
 
     const { headers, body } = req;
     const apiKey = headers['x-api-key'] as string | null;
-    console.log(body?.operationName);
-    const isCreateUserOperation = body?.operationName === 'CreateUser';
+    const operationName = body?.operationName;
+    const isCreateUserOperation = operationName === 'CreateUser';
 
     if (headers.authorization) {
         const token = headers.authorization.replace('Bearer ', '');
