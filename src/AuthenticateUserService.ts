@@ -1,6 +1,7 @@
 import { CognitoJwtVerifier } from 'aws-jwt-verify';
-import { PrismaClient, User } from '@prisma/client';
+import { User } from '@prisma/client';
 
+import repository from './repository/index.js';
 import config from './config.js';
 import { UnauthorisedError } from './errors.js';
 
@@ -14,8 +15,6 @@ type Json = null | string | number | boolean | Json[] | JsonObject;
 type JsonObject = { [name: string]: Json };
 
 class AuthenticateUserService {
-    prisma: PrismaClient = new PrismaClient();
-
     private async decodeToken(token: string): Promise<JsonObject> {
         try {
             const payload = await verifier.verify(token, {
@@ -29,20 +28,11 @@ class AuthenticateUserService {
         }
     }
 
-    public async getUser(
-        token: string,
-        operationName?: string,
-    ): Promise<User | null> {
+    public async getUser(token: string): Promise<User | null> {
         const payload = await this.decodeToken(token);
-        const { email, sub } = payload;
-        console.log(sub);
-        const user = await this.prisma.user.findUnique({
-            where: { email: email as string },
-        });
+        const { email } = payload;
 
-        if (!user && operationName === 'CreateUser') {
-            return null;
-        }
+        const user = await repository.user.getUserByEmail(email as string);
 
         if (!user) {
             throw new UnauthorisedError();
