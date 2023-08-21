@@ -263,7 +263,25 @@ const resolvers: MutationResolvers = {
     },
 
     createUser: async (_, { userInput }, { repository }): Promise<User> => {
-        const newUser = await repository.user.createUser(userInput);
+        const organisationName = `${userInput.email}'s organisation`;
+
+        const organisation = await repository.organisation.createOrganisation({
+            name: organisationName,
+            s3BucketName: 'otf-lambda-results',
+            s3Region: 'eu-west-3',
+        });
+
+        const newUser = await repository.user.createUser({
+            email: userInput.email,
+            cognitoId: userInput.cognitoId,
+            userOrganisations: {
+                create: {
+                    organisationId: organisation.id,
+                    role: 'ADMIN',
+                },
+            },
+        });
+
         const { id, email, cognitoId } = newUser;
 
         return {
