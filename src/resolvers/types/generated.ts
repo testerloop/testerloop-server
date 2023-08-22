@@ -461,9 +461,9 @@ export type Mutation = {
   readonly createApiKey: CreateApiKeyResponse;
   readonly createTestExecution: CreateTestExecutionResponse;
   readonly createTestRun: Maybe<UploadInfo>;
-  readonly createUser: User;
   readonly createWorkers: ReadonlyArray<Worker>;
   readonly refreshRunStatus: RunStatus;
+  readonly registerClient: User;
   readonly setTestExecutionStatus: TestExecutionStatus;
   readonly setWorkerStatus: Worker;
 };
@@ -488,11 +488,6 @@ export type MutationCreateTestRunArgs = {
 };
 
 
-export type MutationCreateUserArgs = {
-  userInput: UserInput;
-};
-
-
 export type MutationCreateWorkersArgs = {
   count: Scalars['Int'];
   executor: Executor;
@@ -502,6 +497,11 @@ export type MutationCreateWorkersArgs = {
 
 export type MutationRefreshRunStatusArgs = {
   runId: Scalars['ID'];
+};
+
+
+export type MutationRegisterClientArgs = {
+  userInput: UserInput;
 };
 
 
@@ -897,6 +897,7 @@ export type User = {
 export type UserInput = {
   readonly cognitoId: Scalars['String'];
   readonly email: Scalars['String'];
+  readonly firstName: Scalars['String'];
 };
 
 export type Worker = {
@@ -1555,9 +1556,9 @@ export type MutationResolvers<ContextType = Context, ParentType extends Resolver
   createApiKey: Resolver<ResolversTypes['CreateApiKeyResponse'], ParentType, ContextType, RequireFields<MutationCreateApiKeyArgs, 'organisationId'>>;
   createTestExecution: Resolver<ResolversTypes['CreateTestExecutionResponse'], ParentType, ContextType, RequireFields<MutationCreateTestExecutionArgs, 'featureFile' | 'runID' | 'testName' | 'workerId'>>;
   createTestRun: Resolver<Maybe<ResolversTypes['UploadInfo']>, ParentType, ContextType, RequireFields<MutationCreateTestRunArgs, 'runEnvironmentDetails'>>;
-  createUser: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<MutationCreateUserArgs, 'userInput'>>;
   createWorkers: Resolver<ReadonlyArray<ResolversTypes['Worker']>, ParentType, ContextType, RequireFields<MutationCreateWorkersArgs, 'count' | 'executor' | 'runID'>>;
   refreshRunStatus: Resolver<ResolversTypes['RunStatus'], ParentType, ContextType, RequireFields<MutationRefreshRunStatusArgs, 'runId'>>;
+  registerClient: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<MutationRegisterClientArgs, 'userInput'>>;
   setTestExecutionStatus: Resolver<ResolversTypes['TestExecutionStatus'], ParentType, ContextType, RequireFields<MutationSetTestExecutionStatusArgs, 'testExecutionId' | 'testStatus'>>;
   setWorkerStatus: Resolver<ResolversTypes['Worker'], ParentType, ContextType, RequireFields<MutationSetWorkerStatusArgs, 'status' | 'workerID'>>;
 };
