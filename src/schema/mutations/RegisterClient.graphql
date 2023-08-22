@@ -1,0 +1,15 @@
+type User {
+    id: ID!
+    email: String!
+    cognitoId: String!
+}
+
+input UserInput {
+    email: String!
+    firstName: String!
+    cognitoId: String!
+}
+
+extend type Mutation {
+    registerClient(userInput: UserInput!): User!
+}

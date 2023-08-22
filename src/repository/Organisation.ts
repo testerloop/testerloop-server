@@ -1,6 +1,7 @@
 import { OrganisationWithoutSlug } from '../db.js';
 import { S3Config, InputMaybe } from '../resolvers/types/generated';
 import { Auth } from '../context.js';
+import config from '../config.js';
 
 import PrismaRepository from './repository.js';
 
@@ -21,8 +22,20 @@ class OrganisationRepository extends PrismaRepository {
         return this.db.getOrganisationFromApiKey(key);
     }
 
-    async createOrganisation(args: OrganisationWithoutSlug) {
-        return this.db.createWithSlug(args);
+    async createOrganisation(args: Partial<OrganisationWithoutSlug>) {
+        if (!args.name) {
+            throw new Error('Name must be provided for the organisation.');
+        }
+
+        const defaultArgs: OrganisationWithoutSlug = {
+            name: args.name,
+            s3BucketName: config.AWS_BUCKET_NAME,
+            s3Region: config.AWS_BUCKET_REGION,
+            s3CustomPath: config.AWS_BUCKET_PATH,
+            ...args,
+        };
+
+        return this.db.createWithSlug(defaultArgs);
     }
 
     getOrganisationIdentifier(args: GetBucketAndPathArgs) {

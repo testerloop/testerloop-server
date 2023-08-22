@@ -5,11 +5,13 @@
 
 */
 -- AlterTable
+CREATE TYPE "UserOrganisationRole" AS ENUM ('ADMIN');
+
 ALTER TABLE "UserOrganisation" 
-ADD COLUMN "role" TEXT;
+ADD COLUMN "role" "UserOrganisationRole";
 
 UPDATE "UserOrganisation"
-SET "role" = 'admin';
+SET "role" = 'ADMIN';
 
 ALTER TABLE "UserOrganisation"
 ALTER COLUMN "role" SET NOT NULL;

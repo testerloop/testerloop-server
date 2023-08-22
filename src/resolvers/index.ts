@@ -61,6 +61,7 @@ import TestRunStatus from './TestRunStatus.js';
 import CreateTestExecutionResponse from './CreateTestExecutionResponse.js';
 import Worker from './Worker.js';
 import CreateApiKeyResponse from './CreateApiKeyResponse.js';
+import User from './User.js';
 
 const interfaceResolvers = {
     __resolveType<T extends string>(parent: { __typename: T }): T {
@@ -156,6 +157,7 @@ const resolvers: Resolvers = {
     TestExecutionScreenshot,
     SignedURL,
     CreateApiKeyResponse,
+    User,
 };
 
 export default resolvers;

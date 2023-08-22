@@ -463,6 +463,7 @@ export type Mutation = {
   readonly createTestRun: Maybe<UploadInfo>;
   readonly createWorkers: ReadonlyArray<Worker>;
   readonly refreshRunStatus: RunStatus;
+  readonly registerClient: User;
   readonly setTestExecutionStatus: TestExecutionStatus;
   readonly setWorkerStatus: Worker;
 };
@@ -496,6 +497,11 @@ export type MutationCreateWorkersArgs = {
 
 export type MutationRefreshRunStatusArgs = {
   runId: Scalars['ID'];
+};
+
+
+export type MutationRegisterClientArgs = {
+  userInput: UserInput;
 };
 
 
@@ -881,6 +887,19 @@ export type UploadInfo = {
   readonly url: Maybe<Scalars['String']>;
 };
 
+export type User = {
+  readonly __typename: 'User';
+  readonly cognitoId: Scalars['String'];
+  readonly email: Scalars['String'];
+  readonly id: Scalars['ID'];
+};
+
+export type UserInput = {
+  readonly cognitoId: Scalars['String'];
+  readonly email: Scalars['String'];
+  readonly firstName: Scalars['String'];
+};
+
 export type Worker = {
   readonly __typename: 'Worker';
   readonly completedAt: Maybe<Scalars['DateTime']>;
@@ -1072,6 +1091,8 @@ export type ResolversTypes = {
   TestStatus: TestStatus;
   URL: ResolverTypeWrapper<Scalars['URL']>;
   UploadInfo: ResolverTypeWrapper<UploadInfo>;
+  User: ResolverTypeWrapper<User>;
+  UserInput: UserInput;
   Worker: ResolverTypeWrapper<Omit<Worker, 'testExecutions'> & { testExecutions: ReadonlyArray<Maybe<ResolversTypes['TestExecution']>> }>;
   WorkerStatus: WorkerStatus;
 };
@@ -1175,6 +1196,8 @@ export type ResolversParentTypes = {
   TestRunStatus: TestRunStatus;
   URL: Scalars['URL'];
   UploadInfo: UploadInfo;
+  User: User;
+  UserInput: UserInput;
   Worker: Omit<Worker, 'testExecutions'> & { testExecutions: ReadonlyArray<Maybe<ResolversParentTypes['TestExecution']>> };
 };
 
@@ -1535,6 +1558,7 @@ export type MutationResolvers<ContextType = Context, ParentType extends Resolver
   createTestRun: Resolver<Maybe<ResolversTypes['UploadInfo']>, ParentType, ContextType, RequireFields<MutationCreateTestRunArgs, 'runEnvironmentDetails'>>;
   createWorkers: Resolver<ReadonlyArray<ResolversTypes['Worker']>, ParentType, ContextType, RequireFields<MutationCreateWorkersArgs, 'count' | 'executor' | 'runID'>>;
   refreshRunStatus: Resolver<ResolversTypes['RunStatus'], ParentType, ContextType, RequireFields<MutationRefreshRunStatusArgs, 'runId'>>;
+  registerClient: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<MutationRegisterClientArgs, 'userInput'>>;
   setTestExecutionStatus: Resolver<ResolversTypes['TestExecutionStatus'], ParentType, ContextType, RequireFields<MutationSetTestExecutionStatusArgs, 'testExecutionId' | 'testStatus'>>;
   setWorkerStatus: Resolver<ResolversTypes['Worker'], ParentType, ContextType, RequireFields<MutationSetWorkerStatusArgs, 'status' | 'workerID'>>;
 };
@@ -1768,6 +1792,13 @@ export type UploadInfoResolvers<ContextType = Context, ParentType extends Resolv
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type UserResolvers<ContextType = Context, ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']> = {
+  cognitoId: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  email: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  id: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type WorkerResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Worker'] = ResolversParentTypes['Worker']> = {
   completedAt: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
   createdAt: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
@@ -1867,6 +1898,7 @@ export type Resolvers<ContextType = Context> = {
   TestRunStatus: TestRunStatusResolvers<ContextType>;
   URL: GraphQLScalarType;
   UploadInfo: UploadInfoResolvers<ContextType>;
+  User: UserResolvers<ContextType>;
   Worker: WorkerResolvers<ContextType>;
 };
 

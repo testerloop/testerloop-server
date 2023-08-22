@@ -16,6 +16,7 @@ import {
     WorkerStatus,
     Executor,
     CreateApiKeyResponse,
+    User,
 } from './types/generated.js';
 
 const isInvalidTransition = (
@@ -258,6 +259,39 @@ const resolvers: MutationResolvers = {
         return {
             __typename: 'CreateApiKeyResponse',
             apiKey,
+        };
+    },
+
+    registerClient: async (_, { userInput }, { repository }): Promise<User> => {
+        const organisationName = `${userInput.firstName}'s organisation`;
+
+        const organisation = await repository.organisation.createOrganisation({
+            name: organisationName,
+        });
+
+        await repository.apiKey.createApiKey(
+            organisation.id,
+            organisation.name,
+        );
+
+        const newUser = await repository.user.createUser({
+            email: userInput.email,
+            cognitoId: userInput.cognitoId,
+            userOrganisations: {
+                create: {
+                    organisationId: organisation.id,
+                    role: 'ADMIN',
+                },
+            },
+        });
+
+        const { id, email, cognitoId } = newUser;
+
+        return {
+            __typename: 'User',
+            id,
+            email,
+            cognitoId,
         };
     },
 };

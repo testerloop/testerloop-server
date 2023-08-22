@@ -7,8 +7,17 @@ import authenticateUserService from './AuthenticateUserService.js';
 import config from './config.js';
 import repository from './repository/index.js';
 
+interface GraphQLRequestBody {
+    query: string;
+    variables: {
+        [key: string]: string;
+    };
+    operationName: string;
+}
+
 interface Request {
     headers: IncomingHttpHeaders;
+    body?: GraphQLRequestBody | null;
 }
 
 export interface Auth {
@@ -21,11 +30,12 @@ export type Context = {
         req: Request;
     };
     auth?: Auth;
+    user?: User | null;
     config: typeof config;
     repository: typeof repository;
 };
 
-const getAuth = async (apiKey: string | null): Promise<Auth | undefined> => {
+const getAuth = async (apiKey: string | null): Promise<Auth> => {
     if (!apiKey) throw new Error('API key is required');
 
     const organisation =
@@ -45,24 +55,37 @@ export const createContext = async ({
 }): Promise<Context> => {
     let dataSources: DataSources | null = null;
     let user: User | null = null;
-    const apiKey = req.headers['x-api-key']
-        ? (req.headers['x-api-key'] as string)
-        : null;
-    const auth = await getAuth(apiKey);
 
-    if (req.headers.authorization) {
-        const token = req.headers.authorization.replace('Bearer ', '');
-        if (!token) throw new Error('Invalid token');
-        user = await authenticateUserService.getUser(token);
-        console.log('Valid user');
+    const { headers, body } = req;
+    const apiKey = headers['x-api-key'] as string | null;
+    const operationName = body?.operationName;
+    const isCreateUserOperation = operationName === 'CreateUser';
+
+    if (headers.authorization) {
+        const token = headers.authorization.replace('Bearer ', '');
+
+        try {
+            user = await authenticateUserService.getUser(token);
+        } catch (error) {
+            if (!isCreateUserOperation) {
+                throw error;
+            }
+        }
     }
 
-    const context = {
+    const auth = apiKey ? await getAuth(apiKey) : undefined;
+
+    if (!user && !auth && !isCreateUserOperation) {
+        throw new Error('Invalid authentication credentials');
+    }
+
+    const context: Context = {
         get dataSources() {
-            if (dataSources === null)
+            if (dataSources === null) {
                 throw new Error(
                     'DataSources are not available during DataSource initialization.',
                 );
+            }
             return dataSources;
         },
         request: { req },

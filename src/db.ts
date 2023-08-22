@@ -5,8 +5,8 @@ import apiKeyService from './ApiKeyService.js';
 
 export type OrganisationWithoutSlug = Omit<
     Prisma.OrganisationCreateInput,
-    'slug'
-> & { slug?: string };
+    'slug' | 's3CustomPath'
+> & { slug?: string; s3CustomPath?: string };
 
 export default class PrismaDB {
     prisma: PrismaClient = new PrismaClient();
@@ -15,7 +15,7 @@ export default class PrismaDB {
         const slugifiedName = generateSlug(data.name);
         const slug = await this.getSlug(slugifiedName);
         return this.prisma.organisation.create({
-            data: { ...data, slug },
+            data: { ...data, s3CustomPath: slug, slug },
         });
     }
 

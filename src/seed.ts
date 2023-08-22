@@ -22,6 +22,7 @@ async function main() {
     const user = await prisma.user.create({
         data: {
             email: 'testuser@example.com',
+            cognitoId: 'testuser',
         },
     });
 
@@ -47,7 +48,7 @@ async function main() {
         data: {
             userId: user.id,
             organisationId: organisation.id,
-            role: 'admin',
+            role: 'ADMIN',
         },
     });
 
