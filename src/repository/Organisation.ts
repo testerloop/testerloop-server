@@ -2,7 +2,7 @@ import { Organisation } from '@prisma/client';
 
 import { OrganisationWithoutSlug } from '../db.js';
 import { S3Config, InputMaybe } from '../resolvers/types/generated';
-import { Auth } from '../context.js';
+import { Auth } from '../AuthenticateUserService.js';
 import config from '../config.js';
 
 import PrismaRepository from './repository.js';

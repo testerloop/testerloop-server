@@ -1,10 +1,11 @@
 import { CognitoJwtVerifier } from 'aws-jwt-verify';
 import { CognitoIdTokenPayload } from 'aws-jwt-verify/jwt-model.js';
+import { Organisation, User } from '@prisma/client';
 
 import repository from './repository/index.js';
 import config from './config.js';
 import { UnauthorisedError } from './errors.js';
-import { UserWithPayload } from './context.js';
+import { Request } from './context.js';
 
 const verifier = CognitoJwtVerifier.create({
     userPoolId: config.COGNITO_USER_POOL_ID,
@@ -14,6 +15,12 @@ const verifier = CognitoJwtVerifier.create({
 
 type Json = null | string | number | boolean | Json[] | JsonObject;
 type JsonObject = { [name: string]: Json };
+
+export type Auth = APIKeyAuth | JWTAuth;
+type APIKeyAuth = { organisation: Organisation };
+type JWTAuth = { organisation: Organisation; user: UserWithPayload };
+type AuthenticationResult = { auth?: Auth; isRegisterClientOperation: boolean };
+type UserWithPayload = CognitoIdTokenPayload & { user: User };
 
 class AuthenticateUserService {
     private async decodeToken(token: string): Promise<JsonObject> {
@@ -43,6 +50,48 @@ class AuthenticateUserService {
 
         return { ...payload, user };
     }
+    authenticateRequest = async (
+        req: Request,
+    ): Promise<AuthenticationResult> => {
+        const { body, headers } = req;
+
+        const operationName = body?.operationName;
+        console.log('Operation name: ', operationName);
+        const isRegisterClientOperation = operationName === 'RegisterClient';
+
+        const authorizationHeader = req.headers.authorization;
+        const apiKey = headers['x-api-key'] as string | null;
+
+        if (authorizationHeader) {
+            const token = authorizationHeader.replace('Bearer ', '');
+
+            try {
+                const user = await this.getUser(token);
+                if (user === null) throw new Error('User not found');
+                const organisation =
+                    await repository.organisation.getOrganisationWithValidApiKeyForUser(
+                        user.user.id,
+                    );
+                if (!organisation) throw new Error('Organisation not found');
+                return {
+                    auth: { organisation, user },
+                    isRegisterClientOperation,
+                };
+            } catch (error) {
+                throw new Error('Invalid JWT token');
+            }
+        }
+
+        if (apiKey) {
+            const organisation =
+                await repository.organisation.getOrganisationFromApiKey(apiKey);
+            if (!organisation) throw new Error('Organisation not found');
+            console.log('Valid API key found for: ', organisation.name);
+            return { auth: { organisation }, isRegisterClientOperation };
+        }
+
+        throw new Error('No authentication credentials provided');
+    };
 }
 
 export default new AuthenticateUserService();
