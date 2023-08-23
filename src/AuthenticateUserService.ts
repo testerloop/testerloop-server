@@ -1,9 +1,10 @@
 import { CognitoJwtVerifier } from 'aws-jwt-verify';
-import { User } from '@prisma/client';
+import { CognitoIdTokenPayload } from 'aws-jwt-verify/jwt-model.js';
 
 import repository from './repository/index.js';
 import config from './config.js';
 import { UnauthorisedError } from './errors.js';
+import { UserWithPayload } from './context.js';
 
 const verifier = CognitoJwtVerifier.create({
     userPoolId: config.COGNITO_USER_POOL_ID,
@@ -28,8 +29,10 @@ class AuthenticateUserService {
         }
     }
 
-    public async getUser(token: string): Promise<User | null> {
-        const payload = await this.decodeToken(token);
+    public async getUser(token: string): Promise<UserWithPayload | null> {
+        const payload = (await this.decodeToken(
+            token,
+        )) as CognitoIdTokenPayload;
         const { email } = payload;
 
         const user = await repository.user.getUserByEmail(email as string);
@@ -38,7 +41,7 @@ class AuthenticateUserService {
             throw new UnauthorisedError();
         }
 
-        return user;
+        return { ...payload, user };
     }
 }
 

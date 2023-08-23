@@ -1,6 +1,7 @@
 import { IncomingHttpHeaders } from 'http';
 
-import { Organisation, User } from '@prisma/client';
+import { User, Organisation } from '@prisma/client';
+import { CognitoIdTokenPayload } from '@xeedware/cognito-jwt';
 
 import { DataSources, createDataSources } from './datasources/index.js';
 import authenticateUserService from './AuthenticateUserService.js';
@@ -20,9 +21,25 @@ interface Request {
     body?: GraphQLRequestBody | null;
 }
 
-export interface Auth {
+export type Auth = APIKeyAuth | JWTAuth;
+
+export type APIKeyAuth = {
     organisation: Organisation;
-}
+};
+
+export type JWTAuth = {
+    organisation: Organisation;
+    user: UserWithPayload;
+};
+
+type AuthenticationResult = {
+    auth?: Auth;
+    isRegisterClientOperation: boolean;
+};
+
+export type UserWithPayload = CognitoIdTokenPayload & {
+    user: User;
+};
 
 export type Context = {
     dataSources: DataSources;
@@ -35,17 +52,43 @@ export type Context = {
     repository: typeof repository;
 };
 
-const getAuth = async (apiKey: string | null): Promise<Auth> => {
-    if (!apiKey) throw new Error('API key is required');
+const authenticateRequest = async (
+    req: Request,
+): Promise<AuthenticationResult> => {
+    const { body, headers } = req;
 
-    const organisation =
-        await repository.organisation.getOrganisationFromApiKey(apiKey);
+    const operationName = body?.operationName;
+    const isRegisterClientOperation = operationName === 'RegisterClient';
 
-    if (!organisation) throw new Error('Organisation not found');
+    const authorizationHeader = req.headers.authorization;
+    const apiKey = headers['x-api-key'] as string | null;
 
-    console.log('Valid API key found for: ', organisation.name);
+    if (authorizationHeader) {
+        const token = authorizationHeader.replace('Bearer ', '');
 
-    return { organisation };
+        try {
+            const user = await authenticateUserService.getUser(token);
+            if (user === null) throw new Error('User not found');
+            const organisation =
+                await repository.organisation.getOrganisationWithValidApiKeyForUser(
+                    user.user.id,
+                );
+            if (!organisation) throw new Error('Organisation not found');
+            return { auth: { organisation, user }, isRegisterClientOperation };
+        } catch (error) {
+            throw new Error('Invalid JWT token');
+        }
+    }
+
+    if (apiKey) {
+        const organisation =
+            await repository.organisation.getOrganisationFromApiKey(apiKey);
+        if (!organisation) throw new Error('Organisation not found');
+        console.log('Valid API key found for: ', organisation.name);
+        return { auth: { organisation }, isRegisterClientOperation };
+    }
+
+    throw new Error('No authentication credentials provided');
 };
 
 export const createContext = async ({
@@ -54,28 +97,10 @@ export const createContext = async ({
     req: Request;
 }): Promise<Context> => {
     let dataSources: DataSources | null = null;
-    let user: User | null = null;
 
-    const { headers, body } = req;
-    const apiKey = headers['x-api-key'] as string | null;
-    const operationName = body?.operationName;
-    const isRegisterClientOperation = operationName === 'RegisterClient';
-
-    if (headers.authorization) {
-        const token = headers.authorization.replace('Bearer ', '');
-
-        try {
-            user = await authenticateUserService.getUser(token);
-        } catch (error) {
-            if (!isRegisterClientOperation) {
-                throw error;
-            }
-        }
-    }
-
-    const auth = apiKey ? await getAuth(apiKey) : undefined;
-
-    if (!user && !auth && !isRegisterClientOperation) {
+    const { auth, isRegisterClientOperation } = await authenticateRequest(req);
+    console.log('Auth: ', auth);
+    if (!auth && !isRegisterClientOperation) {
         throw new Error('Invalid authentication credentials');
     }
 
@@ -90,7 +115,6 @@ export const createContext = async ({
         },
         request: { req },
         auth,
-        user,
         config,
         repository,
     };
