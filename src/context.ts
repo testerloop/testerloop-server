@@ -59,7 +59,7 @@ export const createContext = async ({
     const { headers, body } = req;
     const apiKey = headers['x-api-key'] as string | null;
     const operationName = body?.operationName;
-    const isCreateUserOperation = operationName === 'CreateUser';
+    const isRegisterClientOperation = operationName === 'RegisterClient';
 
     if (headers.authorization) {
         const token = headers.authorization.replace('Bearer ', '');
@@ -67,7 +67,7 @@ export const createContext = async ({
         try {
             user = await authenticateUserService.getUser(token);
         } catch (error) {
-            if (!isCreateUserOperation) {
+            if (!isRegisterClientOperation) {
                 throw error;
             }
         }
@@ -75,7 +75,7 @@ export const createContext = async ({
 
     const auth = apiKey ? await getAuth(apiKey) : undefined;
 
-    if (!user && !auth && !isCreateUserOperation) {
+    if (!user && !auth && !isRegisterClientOperation) {
         throw new Error('Invalid authentication credentials');
     }
 
