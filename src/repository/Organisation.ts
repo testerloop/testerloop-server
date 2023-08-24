@@ -23,8 +23,8 @@ class OrganisationRepository extends PrismaRepository {
     async getOrganisationWithValidApiKeyForUser(
         userId: string,
     ): Promise<Organisation | null> {
-        const userOrganisations =
-            await this.db.prisma.userOrganisation.findMany({
+        const userOrganisation =
+            await this.db.prisma.userOrganisation.findFirst({
                 where: {
                     userId: userId,
                     organisation: {
@@ -44,9 +44,7 @@ class OrganisationRepository extends PrismaRepository {
                 },
             });
 
-        return userOrganisations.length > 0
-            ? userOrganisations[0].organisation
-            : null;
+        return userOrganisation?.organisation ?? null;
     }
 
     async getOrganisationFromApiKey(key: string) {
