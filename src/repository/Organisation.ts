@@ -1,6 +1,8 @@
+import { Organisation } from '@prisma/client';
+
 import { OrganisationWithoutSlug } from '../db.js';
 import { S3Config, InputMaybe } from '../resolvers/types/generated';
-import { Auth } from '../context.js';
+import { Auth } from '../AuthenticateUserService.js';
 import config from '../config.js';
 
 import PrismaRepository from './repository.js';
@@ -16,6 +18,33 @@ class OrganisationRepository extends PrismaRepository {
         }
 
         return auth;
+    }
+
+    async getOrganisationWithValidApiKeyForUser(
+        userId: string,
+    ): Promise<Organisation | null> {
+        const userOrganisation =
+            await this.db.prisma.userOrganisation.findFirst({
+                where: {
+                    userId: userId,
+                    organisation: {
+                        apiKeys: {
+                            some: {
+                                isEnabled: true,
+                            },
+                        },
+                    },
+                },
+                include: {
+                    organisation: {
+                        include: {
+                            apiKeys: true,
+                        },
+                    },
+                },
+            });
+
+        return userOrganisation?.organisation ?? null;
     }
 
     async getOrganisationFromApiKey(key: string) {
