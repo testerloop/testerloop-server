@@ -39,9 +39,8 @@ export const createContext = async ({
     let dataSources: DataSources | null = null;
 
     const { auth, isRegisterClientOperation } =
-        await authenticateUserService.authenticateRequest(req);
-    console.log('auth: ', auth);
-    console.log('isRegisterClientOperation: ', isRegisterClientOperation);
+        await authenticateUserService.handleAuthentication(req);
+
     if (!auth && !isRegisterClientOperation) {
         throw new Error('Invalid authentication credentials');
     }

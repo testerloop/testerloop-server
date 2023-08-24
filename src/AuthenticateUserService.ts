@@ -50,16 +50,21 @@ class AuthenticateUserService {
 
         return { ...payload, user };
     }
-    authenticateRequest = async (
+
+    handleAuthentication = async (
         req: Request,
     ): Promise<AuthenticationResult> => {
         const { body, headers } = req;
-        const isRegisterClientOperation = /registerClient/g.test(
+        const isRegisterClientOperation = /registerClient/gm.test(
             body && body.query ? body.query : '',
         );
 
         const authorizationHeader = req.headers.authorization;
         const apiKey = headers['x-api-key'] as string | null;
+
+        if (isRegisterClientOperation) {
+            return { auth: undefined, isRegisterClientOperation };
+        }
 
         if (authorizationHeader) {
             const token = authorizationHeader.replace('Bearer ', '');
@@ -88,9 +93,7 @@ class AuthenticateUserService {
             console.log('Valid API key found for: ', organisation.name);
             return { auth: { organisation }, isRegisterClientOperation };
         }
-        if (isRegisterClientOperation) {
-            return { auth: undefined, isRegisterClientOperation };
-        }
+
         throw new Error('No authentication credentials provided');
     };
 }
