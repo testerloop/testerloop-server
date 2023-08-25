@@ -272,6 +272,7 @@ const resolvers: MutationResolvers = {
         await repository.apiKey.createApiKey(
             organisation.id,
             organisation.name,
+            userInput.email,
         );
 
         const newUser = await repository.user.createUser({
