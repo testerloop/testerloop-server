@@ -56,7 +56,7 @@ class AuthenticateUserService {
     ): Promise<AuthenticationResult> => {
         const { body, headers } = req;
         const isRegisterClientOperation = /registerClient/gm.test(
-            body && body.query ? body.query : '',
+            body?.query ?? '',
         );
 
         const authorizationHeader = req.headers.authorization;
