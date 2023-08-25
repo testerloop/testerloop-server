@@ -13,6 +13,12 @@ interface GraphQLRequestBody {
         [key: string]: string;
     };
     operationName: string;
+    extensions: {
+        persistedQuery: {
+            version: number;
+            sha256Hash: string;
+        };
+    };
 }
 
 export interface Request {

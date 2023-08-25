@@ -55,9 +55,21 @@ class AuthenticateUserService {
         req: Request,
     ): Promise<AuthenticationResult> => {
         const { body, headers } = req;
-        const isRegisterClientOperation = /registerClient/gm.test(
+
+        const QUERY_HASHES = {
+            registerClient:
+                'c68c719aad23759e7258f7d1a653a3a7dcd3bc0ae399aebb1b06d2c80d546757',
+        };
+
+        const isRegisterClientOperationByQuery = /registerClient/gm.test(
             body?.query ?? '',
         );
+        const isRegisterClientOperationByHash =
+            body?.extensions?.persistedQuery?.sha256Hash ===
+            QUERY_HASHES.registerClient;
+
+        const isRegisterClientOperation =
+            isRegisterClientOperationByQuery || isRegisterClientOperationByHash;
 
         const authorizationHeader = req.headers.authorization;
         const apiKey = headers['x-api-key'] as string | null;
