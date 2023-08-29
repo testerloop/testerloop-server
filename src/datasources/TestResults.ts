@@ -4,11 +4,6 @@ import * as z from 'zod';
 import config from '../config.js';
 import { Context } from '../context.js';
 import S3Service from '../S3Service.js';
-import {
-    RunStatus,
-    TestStatus,
-    TestExecutionStatus,
-} from '../resolvers/types/generated.js';
 
 const TestSchema = z.object({
     title: z.array(z.string()),
@@ -54,126 +49,6 @@ export class TestResults {
                     .map((promise) => promise.catch((error) => error)),
             ),
     );
-
-    async doResultsExist(testExecutionId: string) {
-        const s3Key = `${bucketPath}${testExecutionId}/cypress/results.json`;
-        return S3Service.doesFileExist(bucketName, s3Key);
-    }
-
-    async checkS3ResultsExistAndGetData(
-        testRunId: string,
-        testExecutionId: string,
-    ): Promise<Results | null> {
-        const s3Path = `${testRunId}/${testExecutionId}`;
-        const fileExists = await this.doResultsExist(s3Path);
-
-        if (!fileExists) {
-            return null;
-        }
-
-        return await this.getById(s3Path);
-    }
-
-    getRunStatusAndOutcome(testResults: Results | null) {
-        if (!testResults) {
-            return {
-                testStatus: TestStatus.InProgress,
-                testName: '',
-            };
-        }
-
-        const testName =
-            testResults.runs[0]?.tests[0]?.title.slice(-1)[0] ?? '';
-        const allTestsPassed = testResults.runs[0]?.tests.every(
-            (test: Test) => test.state === 'passed',
-        );
-
-        const runStatus =
-            testResults.status === 'finished'
-                ? RunStatus.Completed
-                : RunStatus.Running;
-        const testStatus = allTestsPassed
-            ? TestStatus.Passed
-            : TestStatus.Failed;
-
-        return { runStatus, testStatus, testName };
-    }
-
-    async getTestExecutionStatuses(
-        testExecutions: {
-            edges: {
-                cursor: string;
-                node: {
-                    id: string;
-                };
-            }[];
-            totalCount: number;
-            hasPreviousPage: boolean;
-            hasNextPage: boolean;
-        },
-        runId: string,
-    ): Promise<TestExecutionStatus[]> {
-        return await Promise.all(
-            testExecutions.edges.map(async (testExecution) => {
-                const testResults = await this.checkS3ResultsExistAndGetData(
-                    runId,
-                    testExecution.node.id,
-                );
-
-                const currentTestStatus = testResults
-                    ? this.getRunStatusAndOutcome(testResults)
-                    : {
-                          testStatus: TestStatus.InProgress,
-                          testName: '',
-                      };
-
-                const { testStatus, testName } = currentTestStatus;
-
-                return {
-                    __typename: 'TestExecutionStatus' as const,
-                    testStatus,
-                    testName,
-                    featureFile: '',
-                    rerunOfId: null,
-                    id: testExecution.node.id,
-                };
-            }),
-        );
-    }
-
-    async getTestRunStatusFromS3(runId: string) {
-        const testExecutions =
-            await this.context.dataSources.testExecution.getByTestRunId(
-                runId,
-                {},
-            );
-        if (testExecutions.totalCount === 0) {
-            return {
-                __typename: 'TestRunStatus' as const,
-                runStatus: RunStatus.Running,
-                testExecutionStatuses: [],
-            };
-        }
-
-        const testExecutionStatuses = await this.getTestExecutionStatuses(
-            testExecutions,
-            runId,
-        );
-
-        const isRunCompleted = testExecutionStatuses.every(
-            (status) => status.testStatus !== TestStatus.InProgress,
-        );
-
-        const runStatus = isRunCompleted
-            ? RunStatus.Completed
-            : RunStatus.Running;
-
-        return {
-            __typename: 'TestRunStatus' as const,
-            runStatus,
-            testExecutionStatuses,
-        };
-    }
 
     async getResultsByTestExecutionId(testExecutionId: string) {
         return this.resultsByTestExecutionIdDataLoader.load(testExecutionId);

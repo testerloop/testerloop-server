@@ -25,6 +25,7 @@ export class TestExecution {
         args: {
             first?: number | null;
             after?: string | null;
+            organisationId: string | null;
         },
     ) {
         const results = await S3Service.listSubFolders(

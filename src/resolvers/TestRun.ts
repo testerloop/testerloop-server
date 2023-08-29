@@ -9,11 +9,12 @@ const resolvers: TestRunResolvers = {
     async testCodeRevision({ id }, _args, { dataSources }) {
         return dataSources.testCodeRevision.getById(id);
     },
-    async executions({ id }, { first, after }, { dataSources }) {
+    async executions({ id }, { first, after }, { dataSources, auth }) {
         const { edges, hasNextPage, hasPreviousPage, totalCount } =
             await dataSources.testExecution.getByTestRunId(id, {
                 first,
                 after,
+                organisationId: auth?.organisation?.id ?? null,
             });
         return {
             edges: edges.map(({ cursor, node }) => ({
