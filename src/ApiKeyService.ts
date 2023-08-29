@@ -28,7 +28,7 @@ class ApiKeyService {
 
     public async hashKey(key: string): Promise<string> {
         try {
-            return await bcrypt.hash(key, this.saltRounds);
+            return bcrypt.hash(key, this.saltRounds);
         } catch (err) {
             console.error('Error hashing key:', err);
             throw err;
@@ -44,7 +44,7 @@ class ApiKeyService {
 
     public async verifyKey(key: string, hashedKey: string): Promise<boolean> {
         try {
-            return await bcrypt.compare(key, hashedKey);
+            return bcrypt.compare(key, hashedKey);
         } catch (err) {
             console.error('Error verifying API key:', err);
             throw err;
@@ -65,8 +65,8 @@ class ApiKeyService {
 
         try {
             console.log(`Sending email to: ${email}`);
-            const result = await this.ses.send(command);
-            console.log('Email sent:', result);
+            await this.ses.send(command);
+            console.log('Email sent successfully');
         } catch (error) {
             console.error('Failed to send email:', error);
             throw error;
