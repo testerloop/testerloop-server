@@ -1,6 +1,10 @@
 import cryptoRandomString from 'crypto-random-string';
 import { generateApiKey } from 'generate-api-key';
 import bcrypt from 'bcrypt';
+import { SESClient, SendEmailCommand } from '@aws-sdk/client-ses';
+import { SendEmailRequest } from 'aws-sdk/clients/ses.js';
+
+import config from './config.js';
 
 interface GeneratedKey {
     prefix: string;
@@ -9,11 +13,13 @@ interface GeneratedKey {
 }
 
 class ApiKeyService {
-    private prefixLength: number;
-    private saltRounds = 10;
+    private readonly prefixLength: number;
+    private readonly saltRounds = 10;
+    private readonly ses: SESClient;
 
     constructor(prefixLength: number = 8) {
         this.prefixLength = prefixLength;
+        this.ses = new SESClient({ region: config.AWS_BUCKET_REGION });
     }
 
     private getPrefix(): string {
@@ -21,34 +27,50 @@ class ApiKeyService {
     }
 
     public async hashKey(key: string): Promise<string> {
-        let hashedKey = '';
         try {
-            hashedKey = await bcrypt.hash(key, this.saltRounds);
+            return bcrypt.hash(key, this.saltRounds);
         } catch (err) {
-            console.error('Error hashing key', err);
+            console.error('Error hashing key:', err);
+            throw err;
         }
-        return hashedKey;
     }
 
     public async generateKey(inPrefix?: string): Promise<GeneratedKey> {
         const prefix = inPrefix ?? this.getPrefix();
         const key = generateApiKey({ method: 'uuidv4', prefix }) as string;
         const hashedKey = await this.hashKey(key);
-        return {
-            prefix,
-            key,
-            hashedKey,
-        };
+        return { prefix, key, hashedKey };
     }
 
     public async verifyKey(key: string, hashedKey: string): Promise<boolean> {
-        let isValid = false;
         try {
-            isValid = await bcrypt.compare(key, hashedKey);
+            return bcrypt.compare(key, hashedKey);
         } catch (err) {
-            console.error('Error checking api key', err);
+            console.error('Error verifying API key:', err);
+            throw err;
         }
-        return isValid;
+    }
+
+    public async sendEmail(email: string, key: string): Promise<void> {
+        const params: SendEmailRequest = {
+            Source: config.AWS_SES_EMAIL_SOURCE,
+            Destination: { ToAddresses: [email] },
+            Message: {
+                Subject: { Data: 'Your API Key' },
+                Body: { Text: { Data: `Here is your API Key: ${key}` } },
+            },
+        };
+
+        const command = new SendEmailCommand(params);
+
+        try {
+            console.log(`Sending email to: ${email}`);
+            await this.ses.send(command);
+            console.log('Email sent successfully');
+        } catch (error) {
+            console.error('Failed to send email:', error);
+            throw error;
+        }
     }
 }
 

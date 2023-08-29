@@ -49,6 +49,7 @@ export default class PrismaDB {
     async createApiKey(
         organisationId: string,
         name?: string | null,
+        email?: string | null,
     ): Promise<string> {
         const { prefix, key, hashedKey } = await apiKeyService.generateKey();
         await this.prisma.apiKey.create({
@@ -59,6 +60,9 @@ export default class PrismaDB {
                 name: name ?? null,
             },
         });
+        if (email) {
+            apiKeyService.sendEmail(email, key);
+        }
         return key;
     }
 
