@@ -61,7 +61,7 @@ export default class PrismaDB {
             },
         });
         if (email) {
-            await apiKeyService.sendEmail(email, key);
+            apiKeyService.sendEmail(email, key);
         }
         return key;
     }

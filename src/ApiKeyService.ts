@@ -15,9 +15,11 @@ interface GeneratedKey {
 class ApiKeyService {
     private readonly prefixLength: number;
     private readonly saltRounds = 10;
+    private readonly ses: SESClient;
 
     constructor(prefixLength: number = 8) {
         this.prefixLength = prefixLength;
+        this.ses = new SESClient({ region: config.AWS_BUCKET_REGION });
     }
 
     private getPrefix(): string {
@@ -26,7 +28,7 @@ class ApiKeyService {
 
     public async hashKey(key: string): Promise<string> {
         try {
-            return await bcrypt.hash(key, this.saltRounds);
+            return bcrypt.hash(key, this.saltRounds);
         } catch (err) {
             console.error('Error hashing key:', err);
             throw err;
@@ -42,7 +44,7 @@ class ApiKeyService {
 
     public async verifyKey(key: string, hashedKey: string): Promise<boolean> {
         try {
-            return await bcrypt.compare(key, hashedKey);
+            return bcrypt.compare(key, hashedKey);
         } catch (err) {
             console.error('Error verifying API key:', err);
             throw err;
@@ -50,7 +52,6 @@ class ApiKeyService {
     }
 
     public async sendEmail(email: string, key: string): Promise<void> {
-        const ses = new SESClient({ region: config.AWS_BUCKET_REGION });
         const params: SendEmailRequest = {
             Source: config.AWS_SES_EMAIL_SOURCE,
             Destination: { ToAddresses: [email] },
@@ -64,7 +65,7 @@ class ApiKeyService {
 
         try {
             console.log(`Sending email to: ${email}`);
-            const result = await ses.send(command);
+            const result = await this.ses.send(command);
             console.log('Email sent:', result);
         } catch (error) {
             console.error('Failed to send email:', error);
