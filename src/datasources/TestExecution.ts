@@ -9,9 +9,9 @@ import {
 } from '../resolvers/types/generated.js';
 import S3Service from '../S3Service.js';
 import getPaginatedData from '../util/getPaginatedData.js';
+import { isValidUUID } from '../util/isValidUUID.js';
 
-const bucketName = config.AWS_BUCKET_NAME;
-const bucketPath = config.AWS_BUCKET_PATH;
+const { AWS_BUCKET_NAME, AWS_BUCKET_PATH } = config;
 
 export class TestExecution {
     context: Context;
@@ -29,18 +29,12 @@ export class TestExecution {
         },
     ) {
         const results = await S3Service.listSubFolders(
-            bucketName,
-            `${bucketPath}${id}/`,
+            AWS_BUCKET_NAME,
+            `${AWS_BUCKET_PATH}${id}/`,
         );
-
         const testExecutionIds = results
-            .filter((folder) =>
-                /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/.test(
-                    folder,
-                ),
-            )
+            .filter(isValidUUID)
             .map((folder) => ({ id: folder }));
-
         return getPaginatedData(testExecutionIds, {
             first: args.first,
             after: args.after,
@@ -50,8 +44,8 @@ export class TestExecution {
     async getById(id: string) {
         const [runId, requestId] = id.split('/');
         const results = (await S3Service.getObject(
-            bucketName,
-            `${bucketPath}${runId}/${requestId}/cypress/results.json`,
+            AWS_BUCKET_NAME,
+            `${AWS_BUCKET_PATH}${runId}/${requestId}/cypress/results.json`,
         )) as { startedTestsAt: string; endedTestsAt: string };
 
         if (results) {
