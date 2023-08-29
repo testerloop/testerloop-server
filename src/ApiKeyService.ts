@@ -63,7 +63,7 @@ class ApiKeyService {
         const ses = new AWS.SES({ region: config.AWS_BUCKET_REGION });
 
         const params: SendEmailRequest = {
-            Source: 'admin@overloop.io',
+            Source: 'joe.burgess@overloop.io',
             Destination: {
                 ToAddresses: [email],
             },
@@ -73,7 +73,7 @@ class ApiKeyService {
                 },
                 Body: {
                     Text: {
-                        Data: `Here is your API Key: ${prefix}.${key}`,
+                        Data: `Here is your API Key: ${key}`,
                     },
                 },
             },
