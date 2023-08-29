@@ -1,8 +1,8 @@
 import cryptoRandomString from 'crypto-random-string';
 import { generateApiKey } from 'generate-api-key';
 import bcrypt from 'bcrypt';
-import AWS from 'aws-sdk';
-import { SendEmailResponse, SendEmailRequest } from 'aws-sdk/clients/ses.js';
+import { SESClient, SendEmailCommand } from '@aws-sdk/client-ses';
+import { SendEmailRequest } from 'aws-sdk/clients/ses.js';
 
 import config from './config.js';
 
@@ -55,15 +55,11 @@ class ApiKeyService {
         return isValid;
     }
 
-    sendEmail = async (
-        email: string,
-        prefix: string,
-        key: string,
-    ): Promise<SendEmailResponse> => {
-        const ses = new AWS.SES({ region: config.AWS_BUCKET_REGION });
+    public async sendEmail(email: string, key: string): Promise<void> {
+        const ses = new SESClient({ region: config.AWS_BUCKET_REGION });
 
         const params: SendEmailRequest = {
-            Source: 'joe.burgess@overloop.io',
+            Source: config.AWS_SES_EMAIL_SOURCE,
             Destination: {
                 ToAddresses: [email],
             },
@@ -79,14 +75,17 @@ class ApiKeyService {
             },
         };
 
+        const command = new SendEmailCommand(params);
+
         try {
             console.log('Sending email to:', email);
-            return await ses.sendEmail(params).promise();
+            const result = await ses.send(command);
+            console.log('Email sent:', result);
         } catch (error) {
             console.error('Email sending failed:', error);
             throw error;
         }
-    };
+    }
 }
 
 export default new ApiKeyService();
