@@ -1,20 +1,11 @@
 import DataLoader from 'dataloader';
 
-import { Context } from '../context.js';
-import config from '../config.js';
 import S3Service from '../S3Service.js';
 import mapScreenshots from '../maps/mapScreenshots.js';
 
-const bucketName = config.AWS_BUCKET_NAME;
-const bucketPath = config.AWS_BUCKET_PATH;
+import { BaseDataSource } from './BaseDatasource.js';
 
-export class Screenshot {
-    context: Context;
-
-    constructor(context: Context) {
-        this.context = context;
-    }
-
+export class Screenshot extends BaseDataSource {
     screenshotByTestExecutionIdDataLoader = new DataLoader<
         string,
         ReturnType<typeof mapScreenshots>
@@ -23,8 +14,8 @@ export class Screenshot {
             ids
                 .map(async (testExecutionId) => {
                     const screenshots = await S3Service.listObjects(
-                        bucketName,
-                        `${bucketPath}${testExecutionId}/screenshots/`,
+                        this.bucketName,
+                        `${this.bucketPath}/${testExecutionId}/screenshots/`,
                     );
                     return mapScreenshots(screenshots, testExecutionId);
                 })

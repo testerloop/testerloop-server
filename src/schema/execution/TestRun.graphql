@@ -4,11 +4,7 @@ type TestRun implements Node {
     This field may be null if the data was not provided for collection.
     """
     testCodeRevision: SourceCodeManagementRevision
-    executions(
-        first: Int
-        after: Cursor
-        organisationId: String
-    ): TestExecutionConnection!
+    executions(first: Int, after: Cursor): TestExecutionConnection!
 }
 
 type TestRunConnection {

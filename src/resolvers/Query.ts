@@ -47,14 +47,14 @@ const resolvers: QueryResolvers = {
             },
         };
     },
-    async testRun(root, { id }, { dataSources, auth }) {
+    async testRun(root, { id }, { dataSources }) {
         const decodedId = decodeIdForType('TestRun', id);
         if (!decodedId) {
             return null;
         }
         const { totalCount } = await dataSources.testExecution.getByTestRunId(
             decodedId,
-            { organisationId: auth?.organisation?.id ?? null },
+            {},
         );
         if (totalCount === 0) {
             return null;
@@ -64,12 +64,11 @@ const resolvers: QueryResolvers = {
             id: decodedId,
         };
     },
-    async testRuns(root, { first, after }, { dataSources, auth }) {
+    async testRuns(root, { first, after }, { dataSources }) {
         const { edges, hasNextPage, hasPreviousPage, totalCount } =
             await dataSources.testRun.getAll({
                 first,
                 after,
-                organisationId: auth?.organisation?.id ?? null,
             });
 
         return {

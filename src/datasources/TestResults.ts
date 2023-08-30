@@ -1,9 +1,9 @@
 import DataLoader from 'dataloader';
 import * as z from 'zod';
 
-import config from '../config.js';
-import { Context } from '../context.js';
 import S3Service from '../S3Service.js';
+
+import { BaseDataSource } from './BaseDatasource.js';
 
 const TestSchema = z.object({
     title: z.array(z.string()),
@@ -24,24 +24,16 @@ const ResultsSchema = z.object({
 
 export type Results = z.infer<typeof ResultsSchema>;
 export type Test = z.infer<typeof TestSchema>;
-const bucketName = config.AWS_BUCKET_NAME;
-const bucketPath = config.AWS_BUCKET_PATH;
 
-export class TestResults {
-    context: Context;
-
-    constructor(context: Context) {
-        this.context = context;
-    }
-
+export class TestResults extends BaseDataSource {
     resultsByTestExecutionIdDataLoader = new DataLoader<string, Results>(
         (ids) =>
             Promise.all(
                 ids
                     .map(async (testExecutionId) => {
                         const rawResults = await S3Service.getObject(
-                            bucketName,
-                            `${bucketPath}${testExecutionId}/cypress/results.json`,
+                            this.bucketName,
+                            `${this.bucketPath}/${testExecutionId}/cypress/results.json`,
                         );
                         const results = ResultsSchema.parse(rawResults);
                         return results;

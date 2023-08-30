@@ -1,44 +1,26 @@
-import config from '../config.js';
 import S3Service from '../S3Service.js';
 import getPaginatedData from '../util/getPaginatedData.js';
-import { isValidUUID } from '../util/isValidUUID.js';
-import repository from '../repository/index.js';
-import { Context } from '../context.js';
 
-const { AWS_BUCKET_NAME, AWS_BUCKET_PATH } = config;
+import { BaseDataSource } from './BaseDatasource.js';
 
-interface Args {
-    first?: number | null;
-    after?: string | null;
-    organisationId: string | null;
-}
-
-export class TestRun {
-    context: Context;
-
-    constructor(context: Context) {
-        this.context = context;
-    }
-
-    async getAll(args: Args) {
-        const { organisationId, first, after } = args;
-
-        const filteredTestRuns =
-            await repository.testRun.getRunsByOrganisationId(organisationId!);
-        const filteredTestRunIds = new Set(
-            filteredTestRuns.map((run) => run.id),
-        );
-
+export class TestRun extends BaseDataSource {
+    async getAll(args: { first?: number | null; after?: string | null }) {
         const results = await S3Service.listSubFolders(
-            AWS_BUCKET_NAME,
-            `${AWS_BUCKET_PATH}`,
+            this.bucketName,
+            `${this.bucketPath}/`,
         );
 
         const testExecutionIds = results
-            .filter(isValidUUID)
-            .map((folder) => ({ id: folder }))
-            .filter((execution) => filteredTestRunIds.has(execution.id));
+            .filter((folder) =>
+                /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/.test(
+                    folder,
+                ),
+            )
+            .map((folder) => ({ id: folder }));
 
-        return getPaginatedData(testExecutionIds, { first, after });
+        return getPaginatedData(testExecutionIds, {
+            first: args.first,
+            after: args.after,
+        });
     }
 }

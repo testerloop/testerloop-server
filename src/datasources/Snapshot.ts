@@ -1,19 +1,11 @@
 import DataLoader from 'dataloader';
 
-import { Context } from '../context.js';
-import config from '../config.js';
 import S3Service from '../S3Service.js';
 import mapSnapshots from '../maps/mapSnapshots.js';
 
-const bucketName = config.AWS_BUCKET_NAME;
-const bucketPath = config.AWS_BUCKET_PATH;
-export class Snapshot {
-    context: Context;
+import { BaseDataSource } from './BaseDatasource.js';
 
-    constructor(context: Context) {
-        this.context = context;
-    }
-
+export class Snapshot extends BaseDataSource {
     snapshotByTestExecutionIdDataLoader = new DataLoader<
         string,
         ReturnType<typeof mapSnapshots>
@@ -22,8 +14,8 @@ export class Snapshot {
             ids
                 .map(async (testExecutionId) => {
                     const snapshots = await S3Service.getObject(
-                        bucketName,
-                        `${bucketPath}${testExecutionId}/snapshots/snapshot-metadata.json`,
+                        this.bucketName,
+                        `${this.bucketPath}/${testExecutionId}/snapshots/snapshot-metadata.json`,
                     );
                     const mappedSnapshots = mapSnapshots(
                         snapshots,

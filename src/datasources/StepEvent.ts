@@ -1,30 +1,22 @@
 import DataLoader from 'dataloader';
 
-import { Context } from '../context.js';
-import config from '../config.js';
 import S3Service from '../S3Service.js';
 import mapSteps from '../maps/mapSteps.js';
 
-const bucketName = config.AWS_BUCKET_NAME;
-const bucketPath = config.AWS_BUCKET_PATH;
-export class StepEvent {
-    context: Context;
+import { BaseDataSource } from './BaseDatasource.js';
 
-    constructor(context: Context) {
-        this.context = context;
-    }
-
+export class StepEvent extends BaseDataSource {
     stepByTestExecutionIdDataLoader = new DataLoader<
         string,
         ReturnType<typeof mapSteps>
-    >((ids) =>
-        Promise.all(
+    >((ids) => {
+        return Promise.all(
             ids
                 .map(async (testExecutionId) => {
                     const [steps, results] = await Promise.all([
                         S3Service.getObject(
-                            bucketName,
-                            `${bucketPath}${testExecutionId}/cypress/out.json`,
+                            this.bucketName,
+                            `${this.bucketPath}/${testExecutionId}/cypress/out.json`,
                         ),
                         this.context.dataSources.testResults.getResultsByTestExecutionId(
                             testExecutionId,
@@ -39,8 +31,9 @@ export class StepEvent {
                     return mappedSteps;
                 })
                 .map((promise) => promise.catch((error) => error)),
-        ),
-    );
+        );
+    });
+
     async getStepsByTestExecutionId(testExecutionId: string) {
         return this.stepByTestExecutionIdDataLoader.load(testExecutionId);
     }

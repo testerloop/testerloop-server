@@ -848,7 +848,6 @@ export type TestRun = Node & {
 export type TestRunExecutionsArgs = {
   after?: InputMaybe<Scalars['Cursor']>;
   first?: InputMaybe<Scalars['Int']>;
-  organisationId?: InputMaybe<Scalars['String']>;
 };
 
 export type TestRunConnection = {

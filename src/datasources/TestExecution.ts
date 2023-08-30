@@ -1,5 +1,3 @@
-import { Context } from '../context.js';
-import config from '../config.js';
 import {
     CommandEventStatus,
     ConsoleLogLevel,
@@ -11,26 +9,19 @@ import S3Service from '../S3Service.js';
 import getPaginatedData from '../util/getPaginatedData.js';
 import { isValidUUID } from '../util/isValidUUID.js';
 
-const { AWS_BUCKET_NAME, AWS_BUCKET_PATH } = config;
+import { BaseDataSource } from './BaseDatasource.js';
 
-export class TestExecution {
-    context: Context;
-
-    constructor(context: Context) {
-        this.context = context;
-    }
-
+export class TestExecution extends BaseDataSource {
     async getByTestRunId(
         id: string,
         args: {
             first?: number | null;
             after?: string | null;
-            organisationId: string | null;
         },
     ) {
         const results = await S3Service.listSubFolders(
-            AWS_BUCKET_NAME,
-            `${AWS_BUCKET_PATH}${id}/`,
+            this.bucketName,
+            `${this.bucketPath}/${id}/`,
         );
         const testExecutionIds = results
             .filter(isValidUUID)
@@ -44,8 +35,8 @@ export class TestExecution {
     async getById(id: string) {
         const [runId, requestId] = id.split('/');
         const results = (await S3Service.getObject(
-            AWS_BUCKET_NAME,
-            `${AWS_BUCKET_PATH}${runId}/${requestId}/cypress/results.json`,
+            this.bucketName,
+            `${this.bucketPath}/${runId}/${requestId}/cypress/results.json`,
         )) as { startedTestsAt: string; endedTestsAt: string };
 
         if (results) {
