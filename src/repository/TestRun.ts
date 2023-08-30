@@ -11,6 +11,12 @@ class TestRunRepository extends PrismaRepository {
         return this.db.getTestRun(runId);
     }
 
+    async getRunsByOrganisationId(organisationId: string) {
+        return this.db.prisma.testRun.findMany({
+            where: { organisationId },
+        });
+    }
+
     async updateTestRunStatus(
         id: string,
         status: RunStatus,

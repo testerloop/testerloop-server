@@ -1,5 +1,3 @@
-import { Context } from '../context.js';
-import config from '../config.js';
 import {
     CommandEventStatus,
     ConsoleLogLevel,
@@ -9,17 +7,11 @@ import {
 } from '../resolvers/types/generated.js';
 import S3Service from '../S3Service.js';
 import getPaginatedData from '../util/getPaginatedData.js';
+import { isValidUUID } from '../util/isValidUUID.js';
 
-const bucketName = config.AWS_BUCKET_NAME;
-const bucketPath = config.AWS_BUCKET_PATH;
+import { BaseDataSource } from './BaseDatasource.js';
 
-export class TestExecution {
-    context: Context;
-
-    constructor(context: Context) {
-        this.context = context;
-    }
-
+export class TestExecution extends BaseDataSource {
     async getByTestRunId(
         id: string,
         args: {
@@ -28,18 +20,12 @@ export class TestExecution {
         },
     ) {
         const results = await S3Service.listSubFolders(
-            bucketName,
-            `${bucketPath}${id}/`,
+            this.bucketName,
+            `${this.bucketPath}/${id}/`,
         );
-
         const testExecutionIds = results
-            .filter((folder) =>
-                /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/.test(
-                    folder,
-                ),
-            )
+            .filter(isValidUUID)
             .map((folder) => ({ id: folder }));
-
         return getPaginatedData(testExecutionIds, {
             first: args.first,
             after: args.after,
@@ -49,8 +35,8 @@ export class TestExecution {
     async getById(id: string) {
         const [runId, requestId] = id.split('/');
         const results = (await S3Service.getObject(
-            bucketName,
-            `${bucketPath}${runId}/${requestId}/cypress/results.json`,
+            this.bucketName,
+            `${this.bucketPath}/${runId}/${requestId}/cypress/results.json`,
         )) as { startedTestsAt: string; endedTestsAt: string };
 
         if (results) {

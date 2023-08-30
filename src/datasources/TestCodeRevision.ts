@@ -1,9 +1,9 @@
 import DataLoader from 'dataloader';
 import * as z from 'zod';
 
-import config from '../config.js';
-import { Context } from '../context.js';
 import S3Service from '../S3Service.js';
+
+import { BaseDataSource } from './BaseDatasource.js';
 
 const UserSchema = z.object({
     avatarUrl: z.optional(z.string()),
@@ -20,25 +20,16 @@ const CicdSchema = z.object({
     shortHash: z.string(),
 });
 
-const bucketName = config.AWS_BUCKET_NAME;
-const bucketPath = config.AWS_BUCKET_PATH;
-
 type Cicd = z.infer<typeof CicdSchema>;
 
-export class TestCodeRevision {
-    context: Context;
-
-    constructor(context: Context) {
-        this.context = context;
-    }
-
+export class TestCodeRevision extends BaseDataSource {
     cicdDataByRunIdDataLoader = new DataLoader<string, Cicd>((ids) =>
         Promise.all(
             ids
                 .map(async (runId) => {
                     const cicdRaw = await S3Service.getObject(
-                        bucketName,
-                        `${bucketPath}${runId}/logs/cicd.json`,
+                        this.bucketName,
+                        `${this.bucketPath}/${runId}/logs/cicd.json`,
                     );
                     const cicd = CicdSchema.parse(cicdRaw);
                     return cicd;

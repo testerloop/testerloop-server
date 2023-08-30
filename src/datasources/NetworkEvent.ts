@@ -1,20 +1,11 @@
 import DataLoader from 'dataloader';
 
-import { Context } from '../context.js';
-import config from '../config.js';
 import mapNetworkEvents from '../maps/mapNetworkEvents.js';
 import S3Service from '../S3Service.js';
 
-const bucketName = config.AWS_BUCKET_NAME;
-const bucketPath = config.AWS_BUCKET_PATH;
+import { BaseDataSource } from './BaseDatasource.js';
 
-export class NetworkEvent {
-    context: Context;
-
-    constructor(context: Context) {
-        this.context = context;
-    }
-
+export class NetworkEvent extends BaseDataSource {
     networkEventsByTestExecutionIdDataLoader = new DataLoader<
         string,
         ReturnType<typeof mapNetworkEvents>
@@ -23,8 +14,8 @@ export class NetworkEvent {
             ids
                 .map(async (testExecutionId) => {
                     const events = await S3Service.getObject(
-                        bucketName,
-                        `${bucketPath}${testExecutionId}/har/network-events.har`,
+                        this.bucketName,
+                        `${this.bucketPath}/${testExecutionId}/har/network-events.har`,
                     );
                     const mappedEvents = mapNetworkEvents(
                         events,

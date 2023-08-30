@@ -66,7 +66,10 @@ const resolvers: QueryResolvers = {
     },
     async testRuns(root, { first, after }, { dataSources }) {
         const { edges, hasNextPage, hasPreviousPage, totalCount } =
-            await dataSources.testRun.getAll({ first, after });
+            await dataSources.testRun.getAll({
+                first,
+                after,
+            });
 
         return {
             edges: edges.map(({ cursor, node }) => ({
