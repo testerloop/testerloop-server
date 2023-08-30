@@ -38,8 +38,6 @@ export const createContext = async ({
 }: {
     req: Request;
 }): Promise<Context> => {
-    const dataSources: DataSources = {} as DataSources;
-
     const { auth, isRegisterClientOperation } =
         await authenticateUserService.handleAuthentication(req);
 
@@ -47,19 +45,15 @@ export const createContext = async ({
         throw new Error('Invalid authentication credentials');
     }
 
-    const context: Context = {
-        get dataSources() {
-            return dataSources;
-        },
+    const baseContext: Context = {
+        dataSources: {} as DataSources,
         request: { req },
         auth,
         config,
         repository,
     };
 
-    if (!isRegisterClientOperation) {
-        Object.assign(dataSources, createDataSources(context));
-    }
-
-    return context;
+    return !isRegisterClientOperation
+        ? { ...baseContext, dataSources: createDataSources(baseContext) }
+        : baseContext;
 };
