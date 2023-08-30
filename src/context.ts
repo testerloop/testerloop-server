@@ -9,9 +9,7 @@ import authenticateUserService, { Auth } from './AuthenticateUserService.js';
 
 interface GraphQLRequestBody {
     query: string;
-    variables: {
-        [key: string]: string;
-    };
+    variables: { [key: string]: string };
     operationName: string;
     extensions: {
         persistedQuery: {
@@ -28,9 +26,7 @@ export interface Request {
 
 export type Context = {
     dataSources: DataSources;
-    request: {
-        req: Request;
-    };
+    request: { req: Request };
     auth?: Auth;
     user?: User | null;
     config: typeof config;
@@ -42,7 +38,7 @@ export const createContext = async ({
 }: {
     req: Request;
 }): Promise<Context> => {
-    let dataSources: DataSources = {} as DataSources;
+    const dataSources: DataSources = {} as DataSources;
 
     const { auth, isRegisterClientOperation } =
         await authenticateUserService.handleAuthentication(req);
@@ -53,11 +49,6 @@ export const createContext = async ({
 
     const context: Context = {
         get dataSources() {
-            if (dataSources === null && !isRegisterClientOperation) {
-                throw new Error(
-                    'DataSources are not available during DataSource initialization.',
-                );
-            }
             return dataSources;
         },
         request: { req },
@@ -67,7 +58,7 @@ export const createContext = async ({
     };
 
     if (!isRegisterClientOperation) {
-        dataSources = createDataSources(context);
+        Object.assign(dataSources, createDataSources(context));
     }
 
     return context;
