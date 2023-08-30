@@ -10,7 +10,7 @@ export abstract class BaseDataSource {
         if (!context.auth?.organisation) {
             throw new Error('Missing organisation details.');
         }
-        this.bucketName = context.auth?.organisation.s3BucketName;
-        this.bucketPath = context.auth?.organisation.s3CustomPath;
+        this.bucketName = context.auth.organisation.s3BucketName;
+        this.bucketPath = context.auth.organisation.s3CustomPath;
     }
 }
