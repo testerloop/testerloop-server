@@ -38,8 +38,6 @@ export const createContext = async ({
 }: {
     req: Request;
 }): Promise<Context> => {
-    const dataSources: DataSources = {} as DataSources;
-
     const { auth, isRegisterClientOperation } =
         await authenticateUserService.handleAuthentication(req);
 
@@ -57,9 +55,9 @@ export const createContext = async ({
         repository,
     };
 
-    if (!isRegisterClientOperation) {
-        Object.assign(dataSources, createDataSources(context));
-    }
+    const dataSources: DataSources = isRegisterClientOperation
+        ? ({} as DataSources)
+        : createDataSources(context);
 
     return context;
 };
