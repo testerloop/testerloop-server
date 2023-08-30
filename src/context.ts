@@ -42,7 +42,7 @@ export const createContext = async ({
 }: {
     req: Request;
 }): Promise<Context> => {
-    let dataSources: DataSources | null = null;
+    let dataSources: DataSources = {} as DataSources;
 
     const { auth, isRegisterClientOperation } =
         await authenticateUserService.handleAuthentication(req);
@@ -53,7 +53,7 @@ export const createContext = async ({
 
     const context: Context = {
         get dataSources() {
-            if (dataSources === null) {
+            if (dataSources === null && !isRegisterClientOperation) {
                 throw new Error(
                     'DataSources are not available during DataSource initialization.',
                 );
@@ -66,7 +66,9 @@ export const createContext = async ({
         repository,
     };
 
-    dataSources = createDataSources(context);
+    if (!isRegisterClientOperation) {
+        dataSources = createDataSources(context);
+    }
 
     return context;
 };
