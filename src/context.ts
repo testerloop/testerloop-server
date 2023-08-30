@@ -49,16 +49,26 @@ export const createContext = async ({
         throw new Error('Invalid authentication credentials');
     }
 
-    const basicContext: Omit<Context, 'dataSources'> = {
+    const context: Omit<Context, 'dataSources'> = {
         request: { req },
         auth,
         config,
         repository,
     };
 
-    const dataSources = isRegisterClientOperation
+    const dataSources: DataSources = isRegisterClientOperation
         ? ({} as DataSources)
-        : createDataSources(basicContext as Context);
+        : createDataSources(context as Context);
 
-    return { ...basicContext, dataSources } as Context;
+    return {
+        ...context,
+        get dataSources() {
+            if (!isRegisterClientOperation) {
+                throw new Error(
+                    'DataSources are not available during DataSource initialization.',
+                );
+            }
+            return dataSources;
+        },
+    };
 };
