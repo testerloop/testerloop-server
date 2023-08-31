@@ -221,7 +221,7 @@ const resolvers: MutationResolvers = {
         { runId },
         { repository },
     ): Promise<RunStatus> => {
-        const run = await repository.testRun.getTestRun(runId);
+        const run = await repository.testRun.getTestRunWithExecutions(runId);
 
         const workers = await repository.worker.getWorkersByRunId(runId);
         const allWorkersCompleted = workers.every(

@@ -841,6 +841,7 @@ export type TestRun = Node & {
   readonly __typename: 'TestRun';
   readonly executions: TestExecutionConnection;
   readonly id: Scalars['ID'];
+  readonly status: RunStatus;
   /** This field may be null if the data was not provided for collection. */
   readonly testCodeRevision: Maybe<SourceCodeManagementRevision>;
 };
@@ -1755,6 +1756,7 @@ export type TestExecutionStatusResolvers<ContextType = Context, ParentType exten
 export type TestRunResolvers<ContextType = Context, ParentType extends ResolversParentTypes['TestRun'] = ResolversParentTypes['TestRun']> = {
   executions: Resolver<ResolversTypes['TestExecutionConnection'], ParentType, ContextType, Partial<TestRunExecutionsArgs>>;
   id: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  status: Resolver<ResolversTypes['RunStatus'], ParentType, ContextType>;
   testCodeRevision: Resolver<Maybe<ResolversTypes['SourceCodeManagementRevision']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };

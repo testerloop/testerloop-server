@@ -80,13 +80,4 @@ export default class PrismaDB {
 
         return this.getSlug(slug, index + 1);
     }
-
-    async getTestRun(runId: string) {
-        const testRun = await this.prisma.testRun.findUnique({
-            where: { id: runId },
-            include: { testExecutions: true },
-        });
-        if (!testRun) throw new Error('Run not found.');
-        return testRun;
-    }
 }

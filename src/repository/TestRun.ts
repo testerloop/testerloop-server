@@ -7,8 +7,21 @@ class TestRunRepository extends PrismaRepository {
         return this.db.prisma.testRun.create({ data: args });
     }
 
-    async getTestRun(runId: string) {
-        return this.db.getTestRun(runId);
+    async getTestRun(id: string) {
+        const testRun = await this.db.prisma.testRun.findUnique({
+            where: { id },
+        });
+        if (!testRun) throw new Error('Run not found.');
+        return testRun;
+    }
+
+    async getTestRunWithExecutions(id: string) {
+        const testRun = await this.db.prisma.testRun.findUnique({
+            where: { id },
+            include: { testExecutions: true },
+        });
+        if (!testRun) throw new Error('Run not found.');
+        return testRun;
     }
 
     async getRunsByOrganisationId(organisationId: string) {
