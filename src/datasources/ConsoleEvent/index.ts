@@ -1,7 +1,7 @@
 import DataLoader from 'dataloader';
 
 import S3Service from '../../S3Service.js';
-import { BaseDataSource } from '../BaseDatasource.js';
+import { BaseDataSource } from '../BaseDataSource.js';
 
 import { Log, parseLogFile } from './fileSchema.js';
 
