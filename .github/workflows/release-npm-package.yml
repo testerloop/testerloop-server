@@ -1,4 +1,4 @@
-name: Build & Publish Testerloop CLI NPM Package
+name: Build & Publish Testerloop Server NPM Package
 
 on:
     workflow_dispatch:
@@ -68,6 +68,6 @@ jobs:
               env:
                   SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
                   SLACK_MESSAGE: |
-                      Build & Publish Testerloop CLI Package workflow completed.
+                      Build & Publish Testerloop Server Package workflow completed.
 
                       Latest Release: *[ ${{ env.NEW_VERSION }} ]* (https://github.com/${{ github.repository }}/releases/${{ env.NEW_VERSION }})
