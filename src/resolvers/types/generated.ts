@@ -447,7 +447,7 @@ export type InstantaneousEvent = {
 
 export type IntervalEvent = {
   readonly at: Scalars['DateTime'];
-  readonly until: Scalars['DateTime'];
+  readonly until: Maybe<Scalars['DateTime']>;
 };
 
 export type KeyValuePair = {
@@ -727,9 +727,10 @@ export type TestExecution = Event & IntervalEvent & Node & {
   readonly id: Scalars['ID'];
   readonly rerunOf: Maybe<TestExecution>;
   readonly reruns: ReadonlyArray<TestExecution>;
+  readonly status: TestStatus;
   readonly testRun: TestRun;
   readonly title: Scalars['String'];
-  readonly until: Scalars['DateTime'];
+  readonly until: Maybe<Scalars['DateTime']>;
 };
 
 
@@ -1685,9 +1686,10 @@ export type TestExecutionResolvers<ContextType = Context, ParentType extends Res
   id: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   rerunOf: Resolver<Maybe<ResolversTypes['TestExecution']>, ParentType, ContextType>;
   reruns: Resolver<ReadonlyArray<ResolversTypes['TestExecution']>, ParentType, ContextType>;
+  status: Resolver<ResolversTypes['TestStatus'], ParentType, ContextType>;
   testRun: Resolver<ResolversTypes['TestRun'], ParentType, ContextType>;
   title: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  until: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
+  until: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
