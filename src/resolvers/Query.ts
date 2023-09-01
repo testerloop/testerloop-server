@@ -26,14 +26,13 @@ const resolvers: QueryResolvers = {
         }
         return event;
     },
-    async testExecution(root, { id }, { dataSources }) {
+    async testExecution(root, { id }, { repository }) {
         const decodedId = decodeIdForType('TestExecution', id);
         if (!decodedId) {
             return null;
         }
-        const testExecution = await dataSources.testExecution.getById(
-            decodedId,
-        );
+        const testExecution =
+            await repository.testExecution.getTestExecutionById(decodedId);
         if (!testExecution) {
             return null;
         }
@@ -47,16 +46,14 @@ const resolvers: QueryResolvers = {
             },
         };
     },
-    async testRun(root, { id }, { dataSources }) {
+    async testRun(root, { id }, { repository }) {
         const decodedId = decodeIdForType('TestRun', id);
         if (!decodedId) {
             return null;
         }
-        const { totalCount } = await dataSources.testExecution.getByTestRunId(
-            decodedId,
-            {},
-        );
-        if (totalCount === 0) {
+        const testExecutions =
+            await repository.testExecution.getTestExecutionsbyRunId(decodedId);
+        if (!testExecutions) {
             return null;
         }
         return {

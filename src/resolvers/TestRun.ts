@@ -1,3 +1,4 @@
+import getPaginatedData from '../util/getPaginatedData.js';
 import { encodeId } from '../util/id.js';
 
 import { RunStatus, TestRunResolvers } from './types/generated.js';
@@ -8,7 +9,10 @@ const resolvers: TestRunResolvers = {
     },
 
     async testCodeRevision({ id }, _args, { dataSources }) {
-        return dataSources.testCodeRevision.getById(id);
+        const testCodeRevisionData = await dataSources.testCodeRevision.getById(
+            id,
+        );
+        return testCodeRevisionData || null;
     },
 
     async status({ id }, _args, { repository }) {
@@ -16,12 +20,13 @@ const resolvers: TestRunResolvers = {
         return testRun.status as RunStatus;
     },
 
-    async executions({ id }, { first, after }, { dataSources }) {
+    async executions({ id }, { first, after }, { repository }) {
+        const testExecutions =
+            await repository.testExecution.getTestExecutionsbyRunId(id);
+
         const { edges, hasNextPage, hasPreviousPage, totalCount } =
-            await dataSources.testExecution.getByTestRunId(id, {
-                first,
-                after,
-            });
+            getPaginatedData(testExecutions, { first, after });
+
         return {
             edges: edges.map(({ cursor, node }) => ({
                 cursor,
