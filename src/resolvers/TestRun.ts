@@ -21,6 +21,7 @@ const resolvers: TestRunResolvers = {
     },
 
     async executions({ id }, { first, after }, { repository }) {
+        console.log(id);
         const testExecutions =
             await repository.testExecution.getTestExecutionsbyRunId(id);
 

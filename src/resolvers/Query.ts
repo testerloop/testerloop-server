@@ -31,15 +31,18 @@ const resolvers: QueryResolvers = {
         if (!decodedId) {
             return null;
         }
+        const [runId, testExecutionId] = decodedId.split('/');
+
         const testExecution =
-            await repository.testExecution.getTestExecutionById(decodedId);
+            await repository.testExecution.getTestExecutionById(
+                testExecutionId,
+            );
         if (!testExecution) {
             return null;
         }
-        const [runId, _] = id.split('/');
         return {
             __typename: 'TestExecution',
-            id: testExecution.id,
+            id: decodedId,
             testRun: {
                 __typename: 'TestRun',
                 id: runId,
