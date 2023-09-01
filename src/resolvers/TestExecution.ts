@@ -22,7 +22,6 @@ const resolvers: TestExecutionResolvers = {
         });
     },
     async until({ id }, _args, { repository }) {
-        console.log('until Id', id);
         const [_, testExecutionId] = id.split('/');
         const testExecution =
             await repository.testExecution.getTestExecutionById(
@@ -31,7 +30,6 @@ const resolvers: TestExecutionResolvers = {
         return testExecution.until;
     },
     async title({ id }, _args, { repository }) {
-        console.log('title Id', id);
         const [_, testExecutionId] = id.split('/');
         const testExecution =
             await repository.testExecution.getTestExecutionById(
