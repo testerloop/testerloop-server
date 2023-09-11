@@ -5,6 +5,8 @@ import {
     WorkerStatus as PrismaWorkerStatus,
 } from '@prisma/client';
 
+import { pubsub } from '../pubsub.js';
+
 import {
     MutationResolvers,
     UploadInfo,
@@ -18,6 +20,8 @@ import {
     CreateApiKeyResponse,
     User,
 } from './types/generated.js';
+
+export const SET_TEST_EXECUTION_STATUS = 'SET_TEST_EXECUTION_STATUS';
 
 const isInvalidTransition = (
     currentStatus: PrismaWorkerStatus,
@@ -206,14 +210,21 @@ const resolvers: MutationResolvers = {
         );
 
         const { testName, featureFile, rerunOfId } = testExecution;
-        return {
-            __typename: 'TestExecutionStatus',
+
+        const result = {
+            __typename: 'TestExecutionStatus' as const,
             id: testExecutionId,
             testName,
             featureFile,
             rerunOfId,
             testStatus,
         };
+
+        pubsub.publish(SET_TEST_EXECUTION_STATUS, {
+            testExecutionStatusUpdated: result,
+        });
+
+        return result;
     },
 
     refreshRunStatus: async (

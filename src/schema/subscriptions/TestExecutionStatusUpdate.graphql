@@ -1,0 +1,8 @@
+extend type Subscription {
+    testExecutionStatusUpdated(id: ID!): TestExecutionStatusUpdate!
+}
+
+type TestExecutionStatusUpdate {
+    id: ID!
+    status: TestStatus!
+}
