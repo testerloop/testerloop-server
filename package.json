@@ -43,6 +43,7 @@
         "graphql": "^17.0.0-alpha.2",
         "graphql-date-scalars": "^0.2.0",
         "graphql-subscriptions": "^2.0.0",
+        "graphql-ws": "^5.14.0",
         "http": "^0.0.1-security",
         "jest-mock-extended": "^3.0.4",
         "lru-cache": "^8.0.4",

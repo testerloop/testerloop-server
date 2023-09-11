@@ -62,6 +62,8 @@ import CreateTestExecutionResponse from './CreateTestExecutionResponse.js';
 import Worker from './Worker.js';
 import CreateApiKeyResponse from './CreateApiKeyResponse.js';
 import User from './User.js';
+import Subscription from './Subscription.js';
+import TestExecutionStatusUpdate from './TestExecutionStatusUpdate.js';
 
 const interfaceResolvers = {
     __resolveType<T extends string>(parent: { __typename: T }): T {
@@ -70,6 +72,8 @@ const interfaceResolvers = {
 };
 
 const resolvers: Resolvers = {
+    TestExecutionStatusUpdate,
+    Subscription,
     Worker,
     CreateTestExecutionResponse,
     UploadInfo,
