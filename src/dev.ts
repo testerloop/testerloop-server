@@ -6,18 +6,19 @@ import bodyParser from 'body-parser';
 import { expressMiddleware } from '@apollo/server/express4';
 
 import config from './config.js';
-import server from './server.js';
+import { createApolloServer } from './server.js';
 
 async function startExpressServer() {
     try {
         const app = express();
         const httpServer = http.createServer(app);
 
+        const server = createApolloServer(httpServer);
+
         await server.start();
 
         app.use(cors());
         app.use(bodyParser.json());
-
         app.use('/graphql', expressMiddleware(server));
 
         await new Promise<void>((resolve) =>
