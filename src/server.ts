@@ -1,12 +1,17 @@
 import { ApolloServer } from '@apollo/server';
+import { Request } from 'express';
 
 import schema from './schema.js';
 import resolvers from './resolvers/index.js';
-import { Context } from './context.js';
+import { createContext, Context } from './context.js';
 
-const server = new ApolloServer<Context>({
+const apolloConfig = {
     typeDefs: schema,
     resolvers,
-});
+    context: async ({ req }: { req: Request }): Promise<Context> => {
+        return createContext({ req });
+    },
+};
 
+const server = new ApolloServer(apolloConfig);
 export default server;
