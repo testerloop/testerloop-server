@@ -21,8 +21,6 @@ import {
     User,
 } from './types/generated.js';
 
-export const SET_TEST_EXECUTION_STATUS = 'SET_TEST_EXECUTION_STATUS';
-
 const isInvalidTransition = (
     currentStatus: PrismaWorkerStatus,
     targetStatus: WorkerStatus,
@@ -220,7 +218,7 @@ const resolvers: MutationResolvers = {
             testStatus,
         };
 
-        pubsub.publish(SET_TEST_EXECUTION_STATUS, {
+        pubsub.publish('SET_TEST_EXECUTION_STATUS', {
             testExecutionStatusUpdated: result,
         });
 
