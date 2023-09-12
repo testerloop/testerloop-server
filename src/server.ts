@@ -17,7 +17,7 @@ export function createApolloServer(httpServer: http.Server) {
 
     const wsServer = new WebSocketServer({
         server: httpServer,
-        path: '/api',
+        path: '/',
     });
 
     const wsCleanup = useServer({ schema: executableSchema }, wsServer);

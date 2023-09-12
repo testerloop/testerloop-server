@@ -24,12 +24,12 @@ async function startExpressServer() {
 
         app.use(cors());
         app.use(bodyParser.json());
-        app.use('/api', expressMiddleware(server, context));
+        app.use('/', expressMiddleware(server, context));
 
         await new Promise<void>((resolve) =>
             httpServer.listen({ port: config.PORT }, () => {
                 console.log(
-                    `Server started at http://localhost:${config.PORT}/api`,
+                    `Server started at http://localhost:${config.PORT}/`,
                 );
                 resolve();
             }),
