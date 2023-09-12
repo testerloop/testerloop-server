@@ -218,9 +218,10 @@ const resolvers: MutationResolvers = {
             testStatus,
         };
 
-        pubsub.publish('SET_TEST_EXECUTION_STATUS', {
-            testExecutionStatusUpdated: result,
-        });
+        pubsub.publish('TEST_EXECUTION_UPDATED', { testExecutionId });
+        console.log(
+            `Published to TEST_EXECUTION_UPDATED with ID: ${testExecutionId}`,
+        );
 
         return result;
     },

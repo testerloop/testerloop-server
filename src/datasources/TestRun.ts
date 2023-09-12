@@ -1,6 +1,6 @@
 import getPaginatedData from '../util/getPaginatedData.js';
 
-import { BaseDataSource } from './BaseDatasource.js';
+import { BaseDataSource } from './BaseDataSource.js';
 
 export class TestRun extends BaseDataSource {
     async getAll(args: { first?: number | null; after?: string | null }) {

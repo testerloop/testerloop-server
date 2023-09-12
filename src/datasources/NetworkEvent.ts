@@ -3,7 +3,7 @@ import DataLoader from 'dataloader';
 import mapNetworkEvents from '../maps/mapNetworkEvents.js';
 import S3Service from '../S3Service.js';
 
-import { BaseDataSource } from './BaseDatasource.js';
+import { BaseDataSource } from './BaseDataSource.js';
 
 export class NetworkEvent extends BaseDataSource {
     networkEventsByTestExecutionIdDataLoader = new DataLoader<

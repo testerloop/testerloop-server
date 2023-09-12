@@ -3,7 +3,7 @@ import DataLoader from 'dataloader';
 import S3Service from '../S3Service.js';
 import mapScreenshots from '../maps/mapScreenshots.js';
 
-import { BaseDataSource } from './BaseDatasource.js';
+import { BaseDataSource } from './BaseDataSource.js';
 
 export class Screenshot extends BaseDataSource {
     screenshotByTestExecutionIdDataLoader = new DataLoader<

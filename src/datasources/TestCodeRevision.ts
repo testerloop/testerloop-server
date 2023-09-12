@@ -3,7 +3,7 @@ import * as z from 'zod';
 
 import S3Service from '../S3Service.js';
 
-import { BaseDataSource } from './BaseDatasource.js';
+import { BaseDataSource } from './BaseDataSource.js';
 
 const UserSchema = z.object({
     avatarUrl: z.optional(z.string()),

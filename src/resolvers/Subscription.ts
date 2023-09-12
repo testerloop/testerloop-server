@@ -1,14 +1,35 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
+import repository from '../repository/index.js';
 import { pubsub } from '../pubsub.js';
 
-import { SubscriptionResolvers } from './types/generated.js';
+import {
+    SubscriptionResolvers,
+    TestExecution,
+    TestExecutionUpdatedEvent,
+} from './types/generated.js';
 
 const resolvers: SubscriptionResolvers = {
-    testExecutionStatusUpdated: {
+    testExecutionUpdated: {
         subscribe: () =>
-            pubsub.asyncIterator([
-                'SET_TEST_EXECUTION_STATUS',
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            ]) as unknown as AsyncIterable<any>,
+            pubsub.asyncIterator(
+                'TEST_EXECUTION_UPDATED',
+            ) as unknown as AsyncIterable<any>,
+        resolve: async (payload: any): Promise<TestExecutionUpdatedEvent> => {
+            const testExecution =
+                await repository.testExecution.getTestExecutionById(
+                    payload.testExecutionId,
+                );
+
+            if (!testExecution) {
+                throw new Error('Test Execution not found');
+            }
+
+            return {
+                __typename: 'TestExecutionUpdatedEvent',
+                testExecution: testExecution as unknown as TestExecution,
+            };
+        },
     },
 };
 

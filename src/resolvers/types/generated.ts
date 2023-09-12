@@ -721,11 +721,11 @@ export type StepEventEdge = {
 
 export type Subscription = {
   readonly __typename: 'Subscription';
-  readonly testExecutionStatusUpdated: TestExecutionStatusUpdate;
+  readonly testExecutionUpdated: TestExecutionUpdatedEvent;
 };
 
 
-export type SubscriptionTestExecutionStatusUpdatedArgs = {
+export type SubscriptionTestExecutionUpdatedArgs = {
   id: Scalars['ID'];
 };
 
@@ -847,10 +847,9 @@ export type TestExecutionStatus = {
   readonly testStatus: TestStatus;
 };
 
-export type TestExecutionStatusUpdate = {
-  readonly __typename: 'TestExecutionStatusUpdate';
-  readonly id: Scalars['ID'];
-  readonly status: TestStatus;
+export type TestExecutionUpdatedEvent = {
+  readonly __typename: 'TestExecutionUpdatedEvent';
+  readonly testExecution: TestExecution;
 };
 
 export type TestRun = Node & {
@@ -1103,7 +1102,7 @@ export type ResolversTypes = {
   TestExecutionScreenshot: ResolverTypeWrapper<TestExecutionScreenshotModel>;
   TestExecutionSnapshot: ResolverTypeWrapper<TestExecutionSnapshotModel>;
   TestExecutionStatus: ResolverTypeWrapper<TestExecutionStatus>;
-  TestExecutionStatusUpdate: ResolverTypeWrapper<TestExecutionStatusUpdate>;
+  TestExecutionUpdatedEvent: ResolverTypeWrapper<Omit<TestExecutionUpdatedEvent, 'testExecution'> & { testExecution: ResolversTypes['TestExecution'] }>;
   TestRun: ResolverTypeWrapper<TestRunModel>;
   TestRunConnection: ResolverTypeWrapper<TestRunConnectionModel>;
   TestRunEdge: ResolverTypeWrapper<TestRunEdgeModel>;
@@ -1211,7 +1210,7 @@ export type ResolversParentTypes = {
   TestExecutionScreenshot: TestExecutionScreenshotModel;
   TestExecutionSnapshot: TestExecutionSnapshotModel;
   TestExecutionStatus: TestExecutionStatus;
-  TestExecutionStatusUpdate: TestExecutionStatusUpdate;
+  TestExecutionUpdatedEvent: Omit<TestExecutionUpdatedEvent, 'testExecution'> & { testExecution: ResolversParentTypes['TestExecution'] };
   TestRun: TestRunModel;
   TestRunConnection: TestRunConnectionModel;
   TestRunEdge: TestRunEdgeModel;
@@ -1701,7 +1700,7 @@ export type StepEventEdgeResolvers<ContextType = Context, ParentType extends Res
 };
 
 export type SubscriptionResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Subscription'] = ResolversParentTypes['Subscription']> = {
-  testExecutionStatusUpdated: SubscriptionResolver<ResolversTypes['TestExecutionStatusUpdate'], "testExecutionStatusUpdated", ParentType, ContextType, RequireFields<SubscriptionTestExecutionStatusUpdatedArgs, 'id'>>;
+  testExecutionUpdated: SubscriptionResolver<ResolversTypes['TestExecutionUpdatedEvent'], "testExecutionUpdated", ParentType, ContextType, RequireFields<SubscriptionTestExecutionUpdatedArgs, 'id'>>;
 };
 
 export type TestExecutionResolvers<ContextType = Context, ParentType extends ResolversParentTypes['TestExecution'] = ResolversParentTypes['TestExecution']> = {
@@ -1777,9 +1776,8 @@ export type TestExecutionStatusResolvers<ContextType = Context, ParentType exten
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type TestExecutionStatusUpdateResolvers<ContextType = Context, ParentType extends ResolversParentTypes['TestExecutionStatusUpdate'] = ResolversParentTypes['TestExecutionStatusUpdate']> = {
-  id: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-  status: Resolver<ResolversTypes['TestStatus'], ParentType, ContextType>;
+export type TestExecutionUpdatedEventResolvers<ContextType = Context, ParentType extends ResolversParentTypes['TestExecutionUpdatedEvent'] = ResolversParentTypes['TestExecutionUpdatedEvent']> = {
+  testExecution: Resolver<ResolversTypes['TestExecution'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -1927,7 +1925,7 @@ export type Resolvers<ContextType = Context> = {
   TestExecutionScreenshot: TestExecutionScreenshotResolvers<ContextType>;
   TestExecutionSnapshot: TestExecutionSnapshotResolvers<ContextType>;
   TestExecutionStatus: TestExecutionStatusResolvers<ContextType>;
-  TestExecutionStatusUpdate: TestExecutionStatusUpdateResolvers<ContextType>;
+  TestExecutionUpdatedEvent: TestExecutionUpdatedEventResolvers<ContextType>;
   TestRun: TestRunResolvers<ContextType>;
   TestRunConnection: TestRunConnectionResolvers<ContextType>;
   TestRunEdge: TestRunEdgeResolvers<ContextType>;

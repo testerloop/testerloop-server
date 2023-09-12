@@ -9,7 +9,7 @@ import S3Service from '../S3Service.js';
 import getPaginatedData from '../util/getPaginatedData.js';
 import { isValidUUID } from '../util/isValidUUID.js';
 
-import { BaseDataSource } from './BaseDatasource.js';
+import { BaseDataSource } from './BaseDataSource.js';
 
 export class TestExecution extends BaseDataSource {
     async getByTestRunId(
