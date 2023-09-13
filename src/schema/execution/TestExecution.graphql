@@ -1,7 +1,7 @@
 type TestExecution implements Node & Event & IntervalEvent {
     id: ID!
     at: DateTime!
-    until: DateTime!
+    until: DateTime
     title: String!
     testRun: TestRun!
     environment: TestExecutionEnvironment!
@@ -12,6 +12,7 @@ type TestExecution implements Node & Event & IntervalEvent {
         after: Cursor
         filter: TestExecutionEventFilterInput
     ): TestExecutionEventConnection!
+    status: TestStatus!
 }
 
 type TestExecutionConnection {

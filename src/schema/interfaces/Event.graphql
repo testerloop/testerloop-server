@@ -8,5 +8,5 @@ interface InstantaneousEvent implements Event {
 
 interface IntervalEvent implements Event {
     at: DateTime!
-    until: DateTime!
+    until: DateTime
 }

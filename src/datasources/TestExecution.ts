@@ -62,7 +62,6 @@ export class TestExecution extends BaseDataSource {
         const consoleFilters = filters?.consoleFilter;
         const networkFilters = filters?.networkFilter;
         const commandFilters = filters?.commandFilter;
-
         const data = (
             await Promise.all(
                 Object.entries({

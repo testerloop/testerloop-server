@@ -5,6 +5,7 @@ type TestRun implements Node {
     """
     testCodeRevision: SourceCodeManagementRevision
     executions(first: Int, after: Cursor): TestExecutionConnection!
+    status: RunStatus!
 }
 
 type TestRunConnection {

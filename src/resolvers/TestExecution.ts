@@ -1,13 +1,17 @@
-import { assertNonNull } from '../util/assertNonNull.js';
 import { encodeId } from '../util/id.js';
 
-import { TestExecutionResolvers } from './types/generated.js';
+import { TestExecutionResolvers, TestStatus } from './types/generated.js';
 
 const resolvers: TestExecutionResolvers = {
-    async at({ id }, _args, { dataSources }) {
-        const testExecution = assertNonNull(
-            await dataSources.testExecution.getById(id),
-        );
+    id({ id }) {
+        return encodeId('TestExecution', id);
+    },
+    async at({ id }, _args, { repository }) {
+        const [_, testExecutionId] = id.split('/');
+        const testExecution =
+            await repository.testExecution.getTestExecutionById(
+                testExecutionId,
+            );
         return testExecution.at;
     },
     events({ id }, { after, first, filter }, { dataSources }) {
@@ -17,18 +21,17 @@ const resolvers: TestExecutionResolvers = {
             filter,
         });
     },
-    id({ id }) {
-        return encodeId('TestExecution', id);
+    async until({ id }, _args, { repository }) {
+        const [_, testExecutionId] = id.split('/');
+        return (
+            await repository.testExecution.getTestExecutionById(testExecutionId)
+        ).until;
     },
-    async until({ id }, _args, { dataSources }) {
-        const testExecution = assertNonNull(
-            await dataSources.testExecution.getById(id),
-        );
-        return testExecution.until;
-    },
-    async title({ id }, _args, { dataSources }) {
-        const results = await dataSources.testResults.getById(id);
-        return results.runs[0].tests[0].title.slice(-1)[0];
+    async title({ id }, _args, { repository }) {
+        const [_, testExecutionId] = id.split('/');
+        return (
+            await repository.testExecution.getTestExecutionById(testExecutionId)
+        ).testName;
     },
     async testRun({ id }, _args) {
         const [runId, _] = id.split('/');
@@ -85,6 +88,12 @@ const resolvers: TestExecutionResolvers = {
                 patch,
             },
         };
+    },
+    async status({ id }, _args, { repository }) {
+        const [_, testExecutionId] = id.split('/');
+        return (
+            await repository.testExecution.getTestExecutionById(testExecutionId)
+        ).result as TestStatus;
     },
 };
 

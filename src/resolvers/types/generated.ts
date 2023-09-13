@@ -447,7 +447,7 @@ export type InstantaneousEvent = {
 
 export type IntervalEvent = {
   readonly at: Scalars['DateTime'];
-  readonly until: Scalars['DateTime'];
+  readonly until: Maybe<Scalars['DateTime']>;
 };
 
 export type KeyValuePair = {
@@ -727,9 +727,10 @@ export type TestExecution = Event & IntervalEvent & Node & {
   readonly id: Scalars['ID'];
   readonly rerunOf: Maybe<TestExecution>;
   readonly reruns: ReadonlyArray<TestExecution>;
+  readonly status: TestStatus;
   readonly testRun: TestRun;
   readonly title: Scalars['String'];
-  readonly until: Scalars['DateTime'];
+  readonly until: Maybe<Scalars['DateTime']>;
 };
 
 
@@ -840,6 +841,7 @@ export type TestRun = Node & {
   readonly __typename: 'TestRun';
   readonly executions: TestExecutionConnection;
   readonly id: Scalars['ID'];
+  readonly status: RunStatus;
   /** This field may be null if the data was not provided for collection. */
   readonly testCodeRevision: Maybe<SourceCodeManagementRevision>;
 };
@@ -1685,9 +1687,10 @@ export type TestExecutionResolvers<ContextType = Context, ParentType extends Res
   id: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   rerunOf: Resolver<Maybe<ResolversTypes['TestExecution']>, ParentType, ContextType>;
   reruns: Resolver<ReadonlyArray<ResolversTypes['TestExecution']>, ParentType, ContextType>;
+  status: Resolver<ResolversTypes['TestStatus'], ParentType, ContextType>;
   testRun: Resolver<ResolversTypes['TestRun'], ParentType, ContextType>;
   title: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  until: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
+  until: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -1753,6 +1756,7 @@ export type TestExecutionStatusResolvers<ContextType = Context, ParentType exten
 export type TestRunResolvers<ContextType = Context, ParentType extends ResolversParentTypes['TestRun'] = ResolversParentTypes['TestRun']> = {
   executions: Resolver<ResolversTypes['TestExecutionConnection'], ParentType, ContextType, Partial<TestRunExecutionsArgs>>;
   id: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  status: Resolver<ResolversTypes['RunStatus'], ParentType, ContextType>;
   testCodeRevision: Resolver<Maybe<ResolversTypes['SourceCodeManagementRevision']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
