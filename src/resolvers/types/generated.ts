@@ -721,7 +721,7 @@ export type StepEventEdge = {
 
 export type Subscription = {
   readonly __typename: 'Subscription';
-  readonly testExecutionUpdated: TestExecutionStatus;
+  readonly testExecutionUpdated: TestExecutionStatusUpdatedEvent;
 };
 
 
@@ -845,6 +845,11 @@ export type TestExecutionStatus = {
   readonly rerunOfId: Maybe<Scalars['ID']>;
   readonly testName: Scalars['String'];
   readonly testStatus: TestStatus;
+};
+
+export type TestExecutionStatusUpdatedEvent = {
+  readonly __typename: 'TestExecutionStatusUpdatedEvent';
+  readonly testExecution: TestExecution;
 };
 
 export type TestRun = Node & {
@@ -1097,6 +1102,7 @@ export type ResolversTypes = {
   TestExecutionScreenshot: ResolverTypeWrapper<TestExecutionScreenshotModel>;
   TestExecutionSnapshot: ResolverTypeWrapper<TestExecutionSnapshotModel>;
   TestExecutionStatus: ResolverTypeWrapper<TestExecutionStatus>;
+  TestExecutionStatusUpdatedEvent: ResolverTypeWrapper<Omit<TestExecutionStatusUpdatedEvent, 'testExecution'> & { testExecution: ResolversTypes['TestExecution'] }>;
   TestRun: ResolverTypeWrapper<TestRunModel>;
   TestRunConnection: ResolverTypeWrapper<TestRunConnectionModel>;
   TestRunEdge: ResolverTypeWrapper<TestRunEdgeModel>;
@@ -1204,6 +1210,7 @@ export type ResolversParentTypes = {
   TestExecutionScreenshot: TestExecutionScreenshotModel;
   TestExecutionSnapshot: TestExecutionSnapshotModel;
   TestExecutionStatus: TestExecutionStatus;
+  TestExecutionStatusUpdatedEvent: Omit<TestExecutionStatusUpdatedEvent, 'testExecution'> & { testExecution: ResolversParentTypes['TestExecution'] };
   TestRun: TestRunModel;
   TestRunConnection: TestRunConnectionModel;
   TestRunEdge: TestRunEdgeModel;
@@ -1693,7 +1700,7 @@ export type StepEventEdgeResolvers<ContextType = Context, ParentType extends Res
 };
 
 export type SubscriptionResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Subscription'] = ResolversParentTypes['Subscription']> = {
-  testExecutionUpdated: SubscriptionResolver<ResolversTypes['TestExecutionStatus'], "testExecutionUpdated", ParentType, ContextType, RequireFields<SubscriptionTestExecutionUpdatedArgs, 'id'>>;
+  testExecutionUpdated: SubscriptionResolver<ResolversTypes['TestExecutionStatusUpdatedEvent'], "testExecutionUpdated", ParentType, ContextType, RequireFields<SubscriptionTestExecutionUpdatedArgs, 'id'>>;
 };
 
 export type TestExecutionResolvers<ContextType = Context, ParentType extends ResolversParentTypes['TestExecution'] = ResolversParentTypes['TestExecution']> = {
@@ -1766,6 +1773,11 @@ export type TestExecutionStatusResolvers<ContextType = Context, ParentType exten
   rerunOfId: Resolver<Maybe<ResolversTypes['ID']>, ParentType, ContextType>;
   testName: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   testStatus: Resolver<ResolversTypes['TestStatus'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type TestExecutionStatusUpdatedEventResolvers<ContextType = Context, ParentType extends ResolversParentTypes['TestExecutionStatusUpdatedEvent'] = ResolversParentTypes['TestExecutionStatusUpdatedEvent']> = {
+  testExecution: Resolver<ResolversTypes['TestExecution'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -1913,6 +1925,7 @@ export type Resolvers<ContextType = Context> = {
   TestExecutionScreenshot: TestExecutionScreenshotResolvers<ContextType>;
   TestExecutionSnapshot: TestExecutionSnapshotResolvers<ContextType>;
   TestExecutionStatus: TestExecutionStatusResolvers<ContextType>;
+  TestExecutionStatusUpdatedEvent: TestExecutionStatusUpdatedEventResolvers<ContextType>;
   TestRun: TestRunResolvers<ContextType>;
   TestRunConnection: TestRunConnectionResolvers<ContextType>;
   TestRunEdge: TestRunEdgeResolvers<ContextType>;

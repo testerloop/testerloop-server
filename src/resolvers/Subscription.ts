@@ -14,10 +14,9 @@ const resolvers: SubscriptionResolvers = {
             ) as unknown as AsyncIterable<any>,
         resolve: (payload: PrismaTestExecution) => {
             return {
-                __typename: 'TestExecutionUpdatedEvent' as const,
+                __typename: 'TestExecutionStatusUpdatedEvent' as const,
                 testExecution: {
                     __typename: 'TestExecution',
-                    status: payload.result,
                     ...payload,
                 } as unknown as TestExecution,
             };
