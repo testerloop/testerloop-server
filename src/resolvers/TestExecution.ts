@@ -23,19 +23,15 @@ const resolvers: TestExecutionResolvers = {
     },
     async until({ id }, _args, { repository }) {
         const [_, testExecutionId] = id.split('/');
-        const testExecution =
-            await repository.testExecution.getTestExecutionById(
-                testExecutionId,
-            );
-        return testExecution.until;
+        return (
+            await repository.testExecution.getTestExecutionById(testExecutionId)
+        ).until;
     },
     async title({ id }, _args, { repository }) {
         const [_, testExecutionId] = id.split('/');
-        const testExecution =
-            await repository.testExecution.getTestExecutionById(
-                testExecutionId,
-            );
-        return testExecution.testName;
+        return (
+            await repository.testExecution.getTestExecutionById(testExecutionId)
+        ).testName;
     },
     async testRun({ id }, _args) {
         const [runId, _] = id.split('/');
@@ -95,11 +91,9 @@ const resolvers: TestExecutionResolvers = {
     },
     async status({ id }, _args, { repository }) {
         const [_, testExecutionId] = id.split('/');
-        const testExecution =
-            await repository.testExecution.getTestExecutionById(
-                testExecutionId,
-            );
-        return testExecution.result as TestStatus;
+        return (
+            await repository.testExecution.getTestExecutionById(testExecutionId)
+        ).result as TestStatus;
     },
 };
 
