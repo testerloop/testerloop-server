@@ -219,7 +219,7 @@ const resolvers: MutationResolvers = {
             testStatus,
         };
         // const encodedId = encodeId('TestExecution', testExecutionId);
-        pubsub.publish('TEST_EXECUTION_UPDATED', testExecution);
+        pubsub.publish('TEST_EXECUTION_UPDATED', { testExecutionId });
 
         return result;
     },

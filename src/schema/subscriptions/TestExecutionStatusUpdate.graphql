@@ -1,7 +1,3 @@
 extend type Subscription {
-    testExecutionUpdated(id: ID!): TestExecutionStatusUpdatedEvent!
-}
-
-type TestExecutionStatusUpdatedEvent {
-    testExecution: TestExecution!
+    testExecutionUpdated(id: ID!): TestExecutionEdge!
 }

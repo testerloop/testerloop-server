@@ -1,10 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-
-import { TestExecution as PrismaTestExecution } from '@prisma/client';
-
 import { pubsub } from '../pubsub.js';
+import repository from '../repository/index.js';
 
-import { SubscriptionResolvers, TestExecution } from './types/generated.js';
+import { SubscriptionResolvers } from './types/generated.js';
+import { TestExecutionEdgeModel } from './types/mappers.js';
 
 const resolvers: SubscriptionResolvers = {
     testExecutionUpdated: {
@@ -12,13 +11,32 @@ const resolvers: SubscriptionResolvers = {
             pubsub.asyncIterator(
                 'TEST_EXECUTION_UPDATED',
             ) as unknown as AsyncIterable<any>,
-        resolve: (payload: PrismaTestExecution) => {
+        resolve: async (payload: {
+            testExecutionId: string;
+        }): Promise<TestExecutionEdgeModel> => {
+            const testExecution =
+                await repository.testExecution.getTestExecutionById(
+                    payload.testExecutionId,
+                );
+
+            if (!testExecution) {
+                throw new Error(
+                    `TestExecution with ID ${payload.testExecutionId} not found`,
+                );
+            }
+
+            const cursor = payload.testExecutionId;
+
             return {
-                __typename: 'TestExecutionStatusUpdatedEvent' as const,
-                testExecution: {
+                cursor,
+                node: {
+                    ...testExecution,
                     __typename: 'TestExecution',
-                    ...payload,
-                } as unknown as TestExecution,
+                    testRun: {
+                        __typename: 'TestRun',
+                        id: testExecution.testRunId,
+                    },
+                },
             };
         },
     },
