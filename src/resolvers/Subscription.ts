@@ -1,9 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { pubsub } from '../pubsub.js';
-import repository from '../repository/index.js';
+import { encodeId } from '../util/id.js';
 
 import { SubscriptionResolvers } from './types/generated.js';
-import { TestExecutionEdgeModel } from './types/mappers.js';
 
 const resolvers: SubscriptionResolvers = {
     testExecutionUpdated: {
@@ -11,30 +10,17 @@ const resolvers: SubscriptionResolvers = {
             pubsub.asyncIterator(
                 'TEST_EXECUTION_UPDATED',
             ) as unknown as AsyncIterable<any>,
-        resolve: async (payload: {
-            testExecutionId: string;
-        }): Promise<TestExecutionEdgeModel> => {
-            const testExecution =
-                await repository.testExecution.getTestExecutionById(
-                    payload.testExecutionId,
-                );
-
-            if (!testExecution) {
-                throw new Error(
-                    `TestExecution with ID ${payload.testExecutionId} not found`,
-                );
-            }
-
-            const cursor = payload.testExecutionId;
-
+        resolve: async (payload: { id: string; runId: string; at: Date }) => {
+            const { id, runId, at } = payload;
             return {
-                cursor,
-                node: {
-                    ...testExecution,
-                    __typename: 'TestExecution',
+                __typename: 'TestExecutionStatusUpdatedEvent' as const,
+                at,
+                testExecution: {
+                    __typename: 'TestExecution' as const,
+                    id: encodeId('TestExecution', id),
                     testRun: {
-                        __typename: 'TestRun',
-                        id: testExecution.testRunId,
+                        __typename: 'TestRun' as const,
+                        id: encodeId('TestRun', runId),
                     },
                 },
             };

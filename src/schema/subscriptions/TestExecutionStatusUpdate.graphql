@@ -1,3 +1,8 @@
 extend type Subscription {
-    testExecutionUpdated(id: ID!): TestExecutionEdge!
+    testExecutionUpdated(id: ID!): TestExecutionStatusUpdatedEvent!
+}
+
+type TestExecutionStatusUpdatedEvent implements Event & InstantaneousEvent {
+    at: DateTime!
+    testExecution: TestExecution!
 }

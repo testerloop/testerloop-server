@@ -5,7 +5,6 @@ import {
     WorkerStatus as PrismaWorkerStatus,
 } from '@prisma/client';
 
-// import { encodeId } from '../util/id.js';
 import { pubsub } from '../pubsub.js';
 
 import {
@@ -218,8 +217,12 @@ const resolvers: MutationResolvers = {
             rerunOfId,
             testStatus,
         };
-        // const encodedId = encodeId('TestExecution', testExecutionId);
-        pubsub.publish('TEST_EXECUTION_UPDATED', { testExecutionId });
+
+        pubsub.publish('TEST_EXECUTION_UPDATED', {
+            id: testExecution.id,
+            runId: testExecution.testRunId,
+            at: new Date(),
+        });
 
         return result;
     },

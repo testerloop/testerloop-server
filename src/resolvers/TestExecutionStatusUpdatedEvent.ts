@@ -1,7 +1,8 @@
-// import { TestExecutionStatusUpdatedEventResolvers } from './types/generated.js';
+import { TestExecutionStatusUpdatedEventResolvers } from './types/generated.js';
 
-// const resolvers: TestExecutionStatusUpdatedEventResolvers = {
-//     testExecution: ({ testExecution }) => testExecution,
-// };
+const resolvers: TestExecutionStatusUpdatedEventResolvers = {
+    at: ({ at }) => at,
+    testExecution: ({ testExecution }) => testExecution,
+};
 
-// export default resolvers;
+export default resolvers;
