@@ -8,6 +8,7 @@ import { useServer } from 'graphql-ws/lib/use/ws';
 
 import schema from './schema.js';
 import resolvers from './resolvers/index.js';
+import { createContext } from './context.js';
 
 export function createApolloServer(httpServer: http.Server) {
     const executableSchema = makeExecutableSchema({
@@ -20,7 +21,15 @@ export function createApolloServer(httpServer: http.Server) {
         path: '/',
     });
 
-    const wsCleanup = useServer({ schema: executableSchema }, wsServer);
+    const wsCleanup = useServer(
+        {
+            schema: executableSchema,
+            context(ctx) {
+                return createContext({ req: ctx.extra.request });
+            },
+        },
+        wsServer,
+    );
 
     return new ApolloServer({
         schema: executableSchema,
