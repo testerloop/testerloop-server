@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { pubsub } from '../pubsub.js';
-import { encodeId } from '../util/id.js';
 
 import { SubscriptionResolvers } from './types/generated.js';
 
@@ -12,15 +11,16 @@ const resolvers: SubscriptionResolvers = {
             ) as unknown as AsyncIterable<any>,
         resolve: async (payload: { id: string; runId: string; at: Date }) => {
             const { id, runId, at } = payload;
+
             return {
                 __typename: 'TestExecutionStatusUpdatedEvent' as const,
                 at,
                 testExecution: {
                     __typename: 'TestExecution' as const,
-                    id: encodeId('TestExecution', id),
+                    id: `${runId}/${id}`,
                     testRun: {
                         __typename: 'TestRun' as const,
-                        id: encodeId('TestRun', runId),
+                        id: runId,
                     },
                 },
             };
