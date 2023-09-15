@@ -109,6 +109,22 @@ class TestExecutionRepository extends PrismaRepository {
             },
         });
     }
+
+    async isOwnedByOrganisation(
+        testExecutionId: string,
+        organisationId: string,
+    ): Promise<boolean> {
+        const count = await this.db.prisma.testExecution.count({
+            where: {
+                id: testExecutionId,
+                testRun: {
+                    organisationId,
+                },
+            },
+        });
+
+        return count > 0;
+    }
 }
 
 export default TestExecutionRepository;

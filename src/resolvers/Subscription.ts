@@ -1,14 +1,34 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { withFilter } from 'graphql-subscriptions';
+
 import { pubsub, PubSubChannels } from '../pubsub.js';
 
 import { SubscriptionResolvers } from './types/generated.js';
 
-const resolvers: SubscriptionResolvers = {
+const resolvers = {
     testExecutionUpdated: {
-        subscribe: () =>
-            pubsub.asyncIterator(
-                PubSubChannels.TestExecutionUpdated,
-            ) as unknown as AsyncIterable<any>,
+        subscribe: withFilter(
+            () => pubsub.asyncIterator(PubSubChannels.TestExecutionUpdated),
+            async (payload, variables, { auth, repository }) => {
+                const { id } = payload;
+
+                if (id !== variables.id) {
+                    return false;
+                }
+
+                const hasPermission =
+                    await repository.testExecution.isOwnedByOrganisation(
+                        id,
+                        auth.organisation.id,
+                    );
+
+                if (!hasPermission) {
+                    console.log('Not owned by organisation');
+                }
+
+                return hasPermission;
+            },
+        ),
         resolve: async (payload: { id: string; runId: string; at: Date }) => {
             const { id, runId, at } = payload;
 
@@ -65,6 +85,6 @@ const resolvers: SubscriptionResolvers = {
             };
         },
     },
-};
+} as unknown as SubscriptionResolvers;
 
 export default resolvers;
