@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { pubsub } from '../pubsub.js';
+import { pubsub, PubSubChannels } from '../pubsub.js';
 
 import { SubscriptionResolvers } from './types/generated.js';
 
@@ -7,7 +7,7 @@ const resolvers: SubscriptionResolvers = {
     testExecutionUpdated: {
         subscribe: () =>
             pubsub.asyncIterator(
-                'TEST_EXECUTION_UPDATED',
+                PubSubChannels.TestExecutionUpdated,
             ) as unknown as AsyncIterable<any>,
         resolve: async (payload: { id: string; runId: string; at: Date }) => {
             const { id, runId, at } = payload;
@@ -29,7 +29,7 @@ const resolvers: SubscriptionResolvers = {
     testExecutionCreated: {
         subscribe: () =>
             pubsub.asyncIterator(
-                'TEST_EXECUTION_CREATED',
+                PubSubChannels.TestExecutionCreated,
             ) as unknown as AsyncIterable<any>,
         resolve: async (payload: { id: string; runId: string; at: Date }) => {
             const { id, runId, at } = payload;
@@ -51,7 +51,7 @@ const resolvers: SubscriptionResolvers = {
     testRunStatusUpdated: {
         subscribe: () =>
             pubsub.asyncIterator(
-                'RUN_STATUS_UPDATED',
+                PubSubChannels.TestRunStatusUpdated,
             ) as unknown as AsyncIterable<any>,
         resolve: async (payload: { id: string; at: Date }) => {
             const { id, at } = payload;
