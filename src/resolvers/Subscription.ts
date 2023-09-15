@@ -22,10 +22,6 @@ const resolvers = {
                         auth.organisation.id,
                     );
 
-                if (!hasPermission) {
-                    throw new Error('Not owned by organisation');
-                }
-
                 return hasPermission;
             },
         ),
