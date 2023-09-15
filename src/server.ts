@@ -25,11 +25,22 @@ export function createApolloServer(httpServer: http.Server) {
         {
             schema: executableSchema,
             context(ctx) {
-                const authHeader = ctx.connectionParams?.Authorization;
+                const authorization = ctx.connectionParams?.Authorization as
+                    | string
+                    | undefined;
+
+                const existingHeaders = ctx.extra.request?.headers;
+
+                const request = {
+                    ...ctx.extra.request,
+                    headers: {
+                        ...existingHeaders,
+                        authorization,
+                    },
+                };
+
                 return createContext({
-                    req: ctx.extra.request,
-                    wsAuthHeader:
-                        typeof authHeader === 'string' ? authHeader : undefined,
+                    req: request,
                 });
             },
         },
