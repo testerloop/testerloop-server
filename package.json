@@ -58,7 +58,6 @@
     },
     "scripts": {
         "build": "rm -rf ./dist && tsc --project tsconfig.json && cp -r src/schema/ dist/schema/ && cp -r prisma/ dist/prisma/",
-        "build:check": "rm -rf ./dist && tsc --project tsconfig.json && cp -r src/schema/ dist/schema/ && cp -r prisma/ dist/prisma/ && rm -rf ./dist",
         "dev": "concurrently -k \"nodemon src/dev.ts\" \"graphql-codegen --watch\"",
         "generate": "graphql-codegen",
         "test": "npx jest",
