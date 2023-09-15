@@ -23,7 +23,7 @@ const resolvers = {
                     );
 
                 if (!hasPermission) {
-                    console.log('Not owned by organisation');
+                    throw new Error('Not owned by organisation');
                 }
 
                 return hasPermission;
