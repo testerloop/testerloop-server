@@ -261,6 +261,11 @@ const resolvers: MutationResolvers = {
             return run.status as RunStatus;
         }
 
+        pubsub.publish('RUN_STATUS_UPDATED', {
+            id: runId,
+            at: new Date(),
+        });
+
         return updatedRun.status as RunStatus;
     },
 

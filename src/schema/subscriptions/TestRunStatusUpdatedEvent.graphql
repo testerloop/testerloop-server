@@ -1,0 +1,8 @@
+extend type Subscription {
+    testRunStatusUpdated(id: ID!): TestRunStatusUpdatedEvent!
+}
+
+type TestRunStatusUpdatedEvent implements Event & InstantaneousEvent {
+    at: DateTime!
+    testRun: TestRun!
+}

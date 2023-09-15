@@ -48,6 +48,23 @@ const resolvers: SubscriptionResolvers = {
             };
         },
     },
+    testRunStatusUpdated: {
+        subscribe: () =>
+            pubsub.asyncIterator(
+                'RUN_STATUS_UPDATED',
+            ) as unknown as AsyncIterable<any>,
+        resolve: async (payload: { id: string; at: Date }) => {
+            const { id, at } = payload;
+            return {
+                __typename: 'TestRunStatusUpdatedEvent' as const,
+                at,
+                testRun: {
+                    __typename: 'TestRun' as const,
+                    id,
+                },
+            };
+        },
+    },
 };
 
 export default resolvers;
