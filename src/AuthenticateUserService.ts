@@ -53,6 +53,7 @@ class AuthenticateUserService {
 
     handleAuthentication = async (
         req: Request,
+        wsAuthHeader?: string,
     ): Promise<AuthenticationResult> => {
         const { body, headers } = req;
 
@@ -71,7 +72,7 @@ class AuthenticateUserService {
         const isRegisterClientOperation =
             isRegisterClientOperationByQuery || isRegisterClientOperationByHash;
 
-        const authorizationHeader = req.headers.authorization;
+        const authorizationHeader = req.headers.authorization || wsAuthHeader;
         const apiKey = headers['x-api-key'] as string | null;
 
         if (isRegisterClientOperation) {

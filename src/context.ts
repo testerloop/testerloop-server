@@ -35,11 +35,13 @@ export type Context = {
 
 export const createContext = async ({
     req,
+    wsAuthHeader,
 }: {
     req: Request;
+    wsAuthHeader?: string;
 }): Promise<Context> => {
     const { auth, isRegisterClientOperation } =
-        await authenticateUserService.handleAuthentication(req);
+        await authenticateUserService.handleAuthentication(req, wsAuthHeader);
 
     if (!auth && !isRegisterClientOperation) {
         throw new Error('Invalid authentication credentials');
