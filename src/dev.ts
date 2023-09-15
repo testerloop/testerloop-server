@@ -1,7 +1,6 @@
 import http from 'http';
 
 import express, { Request } from 'express';
-import cors from 'cors';
 import bodyParser from 'body-parser';
 import { expressMiddleware } from '@apollo/server/express4';
 
@@ -22,7 +21,6 @@ async function startExpressServer() {
         };
         await server.start();
 
-        app.use(cors());
         app.use(bodyParser.json());
         app.use('/', expressMiddleware(server, context));
 
