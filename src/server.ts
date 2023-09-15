@@ -29,6 +29,10 @@ export function createApolloServer(httpServer: http.Server) {
                     | string
                     | undefined;
 
+                const apiKey = ctx.connectionParams?.['x-api-key'] as
+                    | string
+                    | undefined;
+
                 const existingHeaders = ctx.extra.request?.headers;
 
                 const request = {
@@ -36,6 +40,7 @@ export function createApolloServer(httpServer: http.Server) {
                     headers: {
                         ...existingHeaders,
                         authorization,
+                        'x-api-key': apiKey,
                     },
                 };
 
