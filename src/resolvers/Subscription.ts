@@ -26,6 +26,28 @@ const resolvers: SubscriptionResolvers = {
             };
         },
     },
+    testExecutionCreated: {
+        subscribe: () =>
+            pubsub.asyncIterator(
+                'TEST_EXECUTION_CREATED',
+            ) as unknown as AsyncIterable<any>,
+        resolve: async (payload: { id: string; runId: string; at: Date }) => {
+            const { id, runId, at } = payload;
+
+            return {
+                __typename: 'TestExecutionCreatedEvent' as const,
+                at,
+                testExecution: {
+                    __typename: 'TestExecution' as const,
+                    id: `${runId}/${id}`,
+                    testRun: {
+                        __typename: 'TestRun' as const,
+                        id: runId,
+                    },
+                },
+            };
+        },
+    },
 };
 
 export default resolvers;

@@ -64,6 +64,7 @@ import CreateApiKeyResponse from './CreateApiKeyResponse.js';
 import User from './User.js';
 import Subscription from './Subscription.js';
 import TestExecutionStatusUpdatedEvent from './TestExecutionStatusUpdatedEvent.js';
+import TestExecutionCreatedEvent from './TestExecutionCreatedEvent.js';
 
 const interfaceResolvers = {
     __resolveType<T extends string>(parent: { __typename: T }): T {
@@ -72,6 +73,7 @@ const interfaceResolvers = {
 };
 
 const resolvers: Resolvers = {
+    TestExecutionCreatedEvent,
     TestExecutionStatusUpdatedEvent,
     Subscription,
     Worker,

@@ -178,6 +178,12 @@ const resolvers: MutationResolvers = {
             featureFile,
         );
 
+        pubsub.publish('TEST_EXECUTION_CREATED', {
+            id: testExecutionId,
+            runId: runID,
+            at: new Date(),
+        });
+
         return {
             __typename: 'CreateTestExecutionResponse',
             testExecutionId,
