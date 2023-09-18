@@ -29,13 +29,13 @@ const resolvers = {
             const { id, runId, at } = payload;
 
             return {
-                __typename: 'TestExecutionStatusUpdatedEvent' as const,
+                __typename: 'TestExecutionStatusUpdatedEvent',
                 at,
                 testExecution: {
-                    __typename: 'TestExecution' as const,
+                    __typename: 'TestExecution',
                     id: `${runId}/${id}`,
                     testRun: {
-                        __typename: 'TestRun' as const,
+                        __typename: 'TestRun',
                         id: runId,
                     },
                 },
@@ -44,20 +44,18 @@ const resolvers = {
     },
     testExecutionCreated: {
         subscribe: () =>
-            pubsub.asyncIterator(
-                PubSubChannels.TestExecutionCreated,
-            ) as unknown as AsyncIterable<any>,
+            pubsub.asyncIterator(PubSubChannels.TestExecutionCreated),
         resolve: async (payload: { id: string; runId: string; at: Date }) => {
             const { id, runId, at } = payload;
 
             return {
-                __typename: 'TestExecutionCreatedEvent' as const,
+                __typename: 'TestExecutionCreatedEvent',
                 at,
                 testExecution: {
-                    __typename: 'TestExecution' as const,
+                    __typename: 'TestExecution',
                     id: `${runId}/${id}`,
                     testRun: {
-                        __typename: 'TestRun' as const,
+                        __typename: 'TestRun',
                         id: runId,
                     },
                 },
@@ -66,16 +64,14 @@ const resolvers = {
     },
     testRunStatusUpdated: {
         subscribe: () =>
-            pubsub.asyncIterator(
-                PubSubChannels.TestRunStatusUpdated,
-            ) as unknown as AsyncIterable<any>,
+            pubsub.asyncIterator(PubSubChannels.TestRunStatusUpdated),
         resolve: async (payload: { id: string; at: Date }) => {
             const { id, at } = payload;
             return {
-                __typename: 'TestRunStatusUpdatedEvent' as const,
+                __typename: 'TestRunStatusUpdatedEvent',
                 at,
                 testRun: {
-                    __typename: 'TestRun' as const,
+                    __typename: 'TestRun',
                     id,
                 },
             };
