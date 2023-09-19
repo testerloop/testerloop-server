@@ -1,0 +1,8 @@
+extend type Subscription {
+    testExecutionCreated: TestExecutionCreatedEvent!
+}
+
+type TestExecutionCreatedEvent implements Event & InstantaneousEvent {
+    at: DateTime!
+    testExecution: TestExecution!
+}

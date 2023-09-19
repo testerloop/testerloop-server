@@ -1,12 +1,70 @@
+import http from 'http';
+
 import { ApolloServer } from '@apollo/server';
+import { ApolloServerPluginDrainHttpServer } from '@apollo/server/plugin/drainHttpServer';
+import { makeExecutableSchema } from '@graphql-tools/schema';
+import { WebSocketServer } from 'ws';
+import { useServer } from 'graphql-ws/lib/use/ws';
 
 import schema from './schema.js';
 import resolvers from './resolvers/index.js';
-import { Context } from './context.js';
+import { createContext } from './context.js';
 
-const server = new ApolloServer<Context>({
-    typeDefs: schema,
-    resolvers,
-});
+export function createApolloServer(httpServer: http.Server) {
+    const executableSchema = makeExecutableSchema({
+        typeDefs: schema,
+        resolvers,
+    });
 
-export default server;
+    const wsServer = new WebSocketServer({
+        server: httpServer,
+        path: '/',
+    });
+
+    const wsCleanup = useServer(
+        {
+            schema: executableSchema,
+            context(ctx) {
+                const authorization = ctx.connectionParams?.Authorization as
+                    | string
+                    | undefined;
+
+                const apiKey = ctx.connectionParams?.['x-api-key'] as
+                    | string
+                    | undefined;
+
+                const existingHeaders = ctx.extra.request?.headers;
+
+                const request = {
+                    ...ctx.extra.request,
+                    headers: {
+                        ...existingHeaders,
+                        authorization,
+                        'x-api-key': apiKey,
+                    },
+                };
+
+                return createContext({
+                    req: request,
+                });
+            },
+        },
+        wsServer,
+    );
+
+    return new ApolloServer({
+        schema: executableSchema,
+        plugins: [
+            ApolloServerPluginDrainHttpServer({ httpServer }),
+            {
+                async serverWillStart() {
+                    return {
+                        async drainServer() {
+                            await wsCleanup.dispose();
+                        },
+                    };
+                },
+            },
+        ],
+    });
+}

@@ -71,7 +71,8 @@ class AuthenticateUserService {
         const isRegisterClientOperation =
             isRegisterClientOperationByQuery || isRegisterClientOperationByHash;
 
-        const authorizationHeader = req.headers.authorization;
+        const authorizationHeader = headers.authorization;
+
         const apiKey = headers['x-api-key'] as string | null;
 
         if (isRegisterClientOperation) {

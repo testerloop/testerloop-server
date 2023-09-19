@@ -5,6 +5,8 @@ import {
     WorkerStatus as PrismaWorkerStatus,
 } from '@prisma/client';
 
+import pubsub from '../pubsub.js';
+
 import {
     MutationResolvers,
     UploadInfo,
@@ -176,6 +178,8 @@ const resolvers: MutationResolvers = {
             featureFile,
         );
 
+        pubsub.publishTestExecutionCreated(testExecutionId, runID);
+
         return {
             __typename: 'CreateTestExecutionResponse',
             testExecutionId,
@@ -206,14 +210,22 @@ const resolvers: MutationResolvers = {
         );
 
         const { testName, featureFile, rerunOfId } = testExecution;
-        return {
-            __typename: 'TestExecutionStatus',
+
+        const result = {
+            __typename: 'TestExecutionStatus' as const,
             id: testExecutionId,
             testName,
             featureFile,
             rerunOfId,
             testStatus,
         };
+
+        pubsub.publishTestExecutionUpdated(
+            testExecution.id,
+            testExecution.testRunId,
+        );
+
+        return result;
     },
 
     refreshRunStatus: async (
@@ -243,6 +255,8 @@ const resolvers: MutationResolvers = {
             );
             return run.status as RunStatus;
         }
+
+        pubsub.publishTestRunStatusUpdated(runId);
 
         return updatedRun.status as RunStatus;
     },

@@ -719,6 +719,23 @@ export type StepEventEdge = {
   readonly node: StepEvent;
 };
 
+export type Subscription = {
+  readonly __typename: 'Subscription';
+  readonly testExecutionCreated: TestExecutionCreatedEvent;
+  readonly testExecutionUpdated: TestExecutionStatusUpdatedEvent;
+  readonly testRunStatusUpdated: TestRunStatusUpdatedEvent;
+};
+
+
+export type SubscriptionTestExecutionUpdatedArgs = {
+  id: Scalars['ID'];
+};
+
+
+export type SubscriptionTestRunStatusUpdatedArgs = {
+  id: Scalars['ID'];
+};
+
 export type TestExecution = Event & IntervalEvent & Node & {
   readonly __typename: 'TestExecution';
   readonly at: Scalars['DateTime'];
@@ -745,6 +762,12 @@ export type TestExecutionConnection = {
   readonly edges: ReadonlyArray<TestExecutionEdge>;
   readonly pageInfo: PageInfo;
   readonly totalCount: Scalars['Int'];
+};
+
+export type TestExecutionCreatedEvent = Event & InstantaneousEvent & {
+  readonly __typename: 'TestExecutionCreatedEvent';
+  readonly at: Scalars['DateTime'];
+  readonly testExecution: TestExecution;
 };
 
 export type TestExecutionEdge = {
@@ -837,6 +860,12 @@ export type TestExecutionStatus = {
   readonly testStatus: TestStatus;
 };
 
+export type TestExecutionStatusUpdatedEvent = Event & InstantaneousEvent & {
+  readonly __typename: 'TestExecutionStatusUpdatedEvent';
+  readonly at: Scalars['DateTime'];
+  readonly testExecution: TestExecution;
+};
+
 export type TestRun = Node & {
   readonly __typename: 'TestRun';
   readonly executions: TestExecutionConnection;
@@ -873,6 +902,12 @@ export type TestRunStatus = {
   readonly totalCompletedWorkers: Scalars['Int'];
   readonly totalPendingWorkers: Scalars['Int'];
   readonly totalWorkers: Scalars['Int'];
+};
+
+export type TestRunStatusUpdatedEvent = Event & InstantaneousEvent & {
+  readonly __typename: 'TestRunStatusUpdatedEvent';
+  readonly at: Scalars['DateTime'];
+  readonly testRun: TestRun;
 };
 
 export enum TestStatus {
@@ -1007,7 +1042,7 @@ export type ResolversTypes = {
   CreateTestExecutionResponse: ResolverTypeWrapper<CreateTestExecutionResponse>;
   Cursor: ResolverTypeWrapper<Scalars['Cursor']>;
   DateTime: ResolverTypeWrapper<Scalars['DateTime']>;
-  Event: ResolversTypes['CommandChainEvent'] | ResolversTypes['CommandEvent'] | ResolversTypes['ConsoleLogEvent'] | ResolversTypes['HttpNetworkEvent'] | ResolversTypes['HttpResponseBodyChunk'] | ResolversTypes['NetworkEventTiming'] | ResolversTypes['ScenarioEvent'] | ResolversTypes['StepEvent'] | ResolversTypes['TestExecution'] | ResolversTypes['TestExecutionScreenshot'] | ResolversTypes['TestExecutionSnapshot'];
+  Event: ResolversTypes['CommandChainEvent'] | ResolversTypes['CommandEvent'] | ResolversTypes['ConsoleLogEvent'] | ResolversTypes['HttpNetworkEvent'] | ResolversTypes['HttpResponseBodyChunk'] | ResolversTypes['NetworkEventTiming'] | ResolversTypes['ScenarioEvent'] | ResolversTypes['StepEvent'] | ResolversTypes['TestExecution'] | ResolversTypes['TestExecutionCreatedEvent'] | ResolversTypes['TestExecutionScreenshot'] | ResolversTypes['TestExecutionSnapshot'] | ResolversTypes['TestExecutionStatusUpdatedEvent'] | ResolversTypes['TestRunStatusUpdatedEvent'];
   Executor: Executor;
   Field: ResolverTypeWrapper<Field>;
   GherkinStepKeyword: GherkinStepKeyword;
@@ -1044,7 +1079,7 @@ export type ResolversTypes = {
   HttpResponseBody: ResolverTypeWrapper<HttpResponseBody>;
   HttpResponseBodyChunk: ResolverTypeWrapper<HttpResponseBodyChunk>;
   ID: ResolverTypeWrapper<Scalars['ID']>;
-  InstantaneousEvent: ResolversTypes['ConsoleLogEvent'] | ResolversTypes['HttpResponseBodyChunk'] | ResolversTypes['TestExecutionScreenshot'] | ResolversTypes['TestExecutionSnapshot'];
+  InstantaneousEvent: ResolversTypes['ConsoleLogEvent'] | ResolversTypes['HttpResponseBodyChunk'] | ResolversTypes['TestExecutionCreatedEvent'] | ResolversTypes['TestExecutionScreenshot'] | ResolversTypes['TestExecutionSnapshot'] | ResolversTypes['TestExecutionStatusUpdatedEvent'] | ResolversTypes['TestRunStatusUpdatedEvent'];
   Int: ResolverTypeWrapper<Scalars['Int']>;
   IntervalEvent: ResolversTypes['CommandChainEvent'] | ResolversTypes['CommandEvent'] | ResolversTypes['HttpNetworkEvent'] | ResolversTypes['NetworkEventTiming'] | ResolversTypes['ScenarioEvent'] | ResolversTypes['StepEvent'] | ResolversTypes['TestExecution'];
   KeyValuePair: ResolverTypeWrapper<KeyValuePair>;
@@ -1074,8 +1109,10 @@ export type ResolversTypes = {
   StepEventConnection: ResolverTypeWrapper<StepEventConnectionModel>;
   StepEventEdge: ResolverTypeWrapper<StepEventEdgeModel>;
   String: ResolverTypeWrapper<Scalars['String']>;
+  Subscription: ResolverTypeWrapper<unknown>;
   TestExecution: ResolverTypeWrapper<TestExecutionModel>;
   TestExecutionConnection: ResolverTypeWrapper<TestExecutionConnectionModel>;
+  TestExecutionCreatedEvent: ResolverTypeWrapper<Omit<TestExecutionCreatedEvent, 'testExecution'> & { testExecution: ResolversTypes['TestExecution'] }>;
   TestExecutionEdge: ResolverTypeWrapper<TestExecutionEdgeModel>;
   TestExecutionEnvironment: ResolverTypeWrapper<Omit<TestExecutionEnvironment, 'browser'> & { browser: ResolversTypes['BrowserVersion'] }>;
   TestExecutionEvent: ResolversTypes['CommandChainEvent'] | ResolversTypes['CommandEvent'] | ResolversTypes['ConsoleLogEvent'] | ResolversTypes['HttpNetworkEvent'] | ResolversTypes['ScenarioEvent'] | ResolversTypes['StepEvent'] | ResolversTypes['TestExecutionScreenshot'] | ResolversTypes['TestExecutionSnapshot'];
@@ -1086,10 +1123,12 @@ export type ResolversTypes = {
   TestExecutionScreenshot: ResolverTypeWrapper<TestExecutionScreenshotModel>;
   TestExecutionSnapshot: ResolverTypeWrapper<TestExecutionSnapshotModel>;
   TestExecutionStatus: ResolverTypeWrapper<TestExecutionStatus>;
+  TestExecutionStatusUpdatedEvent: ResolverTypeWrapper<Omit<TestExecutionStatusUpdatedEvent, 'testExecution'> & { testExecution: ResolversTypes['TestExecution'] }>;
   TestRun: ResolverTypeWrapper<TestRunModel>;
   TestRunConnection: ResolverTypeWrapper<TestRunConnectionModel>;
   TestRunEdge: ResolverTypeWrapper<TestRunEdgeModel>;
   TestRunStatus: ResolverTypeWrapper<TestRunStatus>;
+  TestRunStatusUpdatedEvent: ResolverTypeWrapper<Omit<TestRunStatusUpdatedEvent, 'testRun'> & { testRun: ResolversTypes['TestRun'] }>;
   TestStatus: TestStatus;
   URL: ResolverTypeWrapper<Scalars['URL']>;
   UploadInfo: ResolverTypeWrapper<UploadInfo>;
@@ -1121,7 +1160,7 @@ export type ResolversParentTypes = {
   CreateTestExecutionResponse: CreateTestExecutionResponse;
   Cursor: Scalars['Cursor'];
   DateTime: Scalars['DateTime'];
-  Event: ResolversParentTypes['CommandChainEvent'] | ResolversParentTypes['CommandEvent'] | ResolversParentTypes['ConsoleLogEvent'] | ResolversParentTypes['HttpNetworkEvent'] | ResolversParentTypes['HttpResponseBodyChunk'] | ResolversParentTypes['NetworkEventTiming'] | ResolversParentTypes['ScenarioEvent'] | ResolversParentTypes['StepEvent'] | ResolversParentTypes['TestExecution'] | ResolversParentTypes['TestExecutionScreenshot'] | ResolversParentTypes['TestExecutionSnapshot'];
+  Event: ResolversParentTypes['CommandChainEvent'] | ResolversParentTypes['CommandEvent'] | ResolversParentTypes['ConsoleLogEvent'] | ResolversParentTypes['HttpNetworkEvent'] | ResolversParentTypes['HttpResponseBodyChunk'] | ResolversParentTypes['NetworkEventTiming'] | ResolversParentTypes['ScenarioEvent'] | ResolversParentTypes['StepEvent'] | ResolversParentTypes['TestExecution'] | ResolversParentTypes['TestExecutionCreatedEvent'] | ResolversParentTypes['TestExecutionScreenshot'] | ResolversParentTypes['TestExecutionSnapshot'] | ResolversParentTypes['TestExecutionStatusUpdatedEvent'] | ResolversParentTypes['TestRunStatusUpdatedEvent'];
   Field: Field;
   GitActor: ResolversParentTypes['GitHubActor'];
   GitBranch: ResolversParentTypes['GitHubBranch'];
@@ -1153,7 +1192,7 @@ export type ResolversParentTypes = {
   HttpResponseBody: HttpResponseBody;
   HttpResponseBodyChunk: HttpResponseBodyChunk;
   ID: Scalars['ID'];
-  InstantaneousEvent: ResolversParentTypes['ConsoleLogEvent'] | ResolversParentTypes['HttpResponseBodyChunk'] | ResolversParentTypes['TestExecutionScreenshot'] | ResolversParentTypes['TestExecutionSnapshot'];
+  InstantaneousEvent: ResolversParentTypes['ConsoleLogEvent'] | ResolversParentTypes['HttpResponseBodyChunk'] | ResolversParentTypes['TestExecutionCreatedEvent'] | ResolversParentTypes['TestExecutionScreenshot'] | ResolversParentTypes['TestExecutionSnapshot'] | ResolversParentTypes['TestExecutionStatusUpdatedEvent'] | ResolversParentTypes['TestRunStatusUpdatedEvent'];
   Int: Scalars['Int'];
   IntervalEvent: ResolversParentTypes['CommandChainEvent'] | ResolversParentTypes['CommandEvent'] | ResolversParentTypes['HttpNetworkEvent'] | ResolversParentTypes['NetworkEventTiming'] | ResolversParentTypes['ScenarioEvent'] | ResolversParentTypes['StepEvent'] | ResolversParentTypes['TestExecution'];
   KeyValuePair: KeyValuePair;
@@ -1181,8 +1220,10 @@ export type ResolversParentTypes = {
   StepEventConnection: StepEventConnectionModel;
   StepEventEdge: StepEventEdgeModel;
   String: Scalars['String'];
+  Subscription: unknown;
   TestExecution: TestExecutionModel;
   TestExecutionConnection: TestExecutionConnectionModel;
+  TestExecutionCreatedEvent: Omit<TestExecutionCreatedEvent, 'testExecution'> & { testExecution: ResolversParentTypes['TestExecution'] };
   TestExecutionEdge: TestExecutionEdgeModel;
   TestExecutionEnvironment: Omit<TestExecutionEnvironment, 'browser'> & { browser: ResolversParentTypes['BrowserVersion'] };
   TestExecutionEvent: ResolversParentTypes['CommandChainEvent'] | ResolversParentTypes['CommandEvent'] | ResolversParentTypes['ConsoleLogEvent'] | ResolversParentTypes['HttpNetworkEvent'] | ResolversParentTypes['ScenarioEvent'] | ResolversParentTypes['StepEvent'] | ResolversParentTypes['TestExecutionScreenshot'] | ResolversParentTypes['TestExecutionSnapshot'];
@@ -1192,10 +1233,12 @@ export type ResolversParentTypes = {
   TestExecutionScreenshot: TestExecutionScreenshotModel;
   TestExecutionSnapshot: TestExecutionSnapshotModel;
   TestExecutionStatus: TestExecutionStatus;
+  TestExecutionStatusUpdatedEvent: Omit<TestExecutionStatusUpdatedEvent, 'testExecution'> & { testExecution: ResolversParentTypes['TestExecution'] };
   TestRun: TestRunModel;
   TestRunConnection: TestRunConnectionModel;
   TestRunEdge: TestRunEdgeModel;
   TestRunStatus: TestRunStatus;
+  TestRunStatusUpdatedEvent: Omit<TestRunStatusUpdatedEvent, 'testRun'> & { testRun: ResolversParentTypes['TestRun'] };
   URL: Scalars['URL'];
   UploadInfo: UploadInfo;
   User: User;
@@ -1340,7 +1383,7 @@ export interface DateTimeScalarConfig extends GraphQLScalarTypeConfig<ResolversT
 }
 
 export type EventResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Event'] = ResolversParentTypes['Event']> = {
-  __resolveType: TypeResolveFn<'CommandChainEvent' | 'CommandEvent' | 'ConsoleLogEvent' | 'HttpNetworkEvent' | 'HttpResponseBodyChunk' | 'NetworkEventTiming' | 'ScenarioEvent' | 'StepEvent' | 'TestExecution' | 'TestExecutionScreenshot' | 'TestExecutionSnapshot', ParentType, ContextType>;
+  __resolveType: TypeResolveFn<'CommandChainEvent' | 'CommandEvent' | 'ConsoleLogEvent' | 'HttpNetworkEvent' | 'HttpResponseBodyChunk' | 'NetworkEventTiming' | 'ScenarioEvent' | 'StepEvent' | 'TestExecution' | 'TestExecutionCreatedEvent' | 'TestExecutionScreenshot' | 'TestExecutionSnapshot' | 'TestExecutionStatusUpdatedEvent' | 'TestRunStatusUpdatedEvent', ParentType, ContextType>;
 };
 
 export type FieldResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Field'] = ResolversParentTypes['Field']> = {
@@ -1541,7 +1584,7 @@ export type HttpResponseBodyChunkResolvers<ContextType = Context, ParentType ext
 };
 
 export type InstantaneousEventResolvers<ContextType = Context, ParentType extends ResolversParentTypes['InstantaneousEvent'] = ResolversParentTypes['InstantaneousEvent']> = {
-  __resolveType: TypeResolveFn<'ConsoleLogEvent' | 'HttpResponseBodyChunk' | 'TestExecutionScreenshot' | 'TestExecutionSnapshot', ParentType, ContextType>;
+  __resolveType: TypeResolveFn<'ConsoleLogEvent' | 'HttpResponseBodyChunk' | 'TestExecutionCreatedEvent' | 'TestExecutionScreenshot' | 'TestExecutionSnapshot' | 'TestExecutionStatusUpdatedEvent' | 'TestRunStatusUpdatedEvent', ParentType, ContextType>;
 };
 
 export type IntervalEventResolvers<ContextType = Context, ParentType extends ResolversParentTypes['IntervalEvent'] = ResolversParentTypes['IntervalEvent']> = {
@@ -1680,6 +1723,12 @@ export type StepEventEdgeResolvers<ContextType = Context, ParentType extends Res
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type SubscriptionResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Subscription'] = ResolversParentTypes['Subscription']> = {
+  testExecutionCreated: SubscriptionResolver<ResolversTypes['TestExecutionCreatedEvent'], "testExecutionCreated", ParentType, ContextType>;
+  testExecutionUpdated: SubscriptionResolver<ResolversTypes['TestExecutionStatusUpdatedEvent'], "testExecutionUpdated", ParentType, ContextType, RequireFields<SubscriptionTestExecutionUpdatedArgs, 'id'>>;
+  testRunStatusUpdated: SubscriptionResolver<ResolversTypes['TestRunStatusUpdatedEvent'], "testRunStatusUpdated", ParentType, ContextType, RequireFields<SubscriptionTestRunStatusUpdatedArgs, 'id'>>;
+};
+
 export type TestExecutionResolvers<ContextType = Context, ParentType extends ResolversParentTypes['TestExecution'] = ResolversParentTypes['TestExecution']> = {
   at: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   environment: Resolver<ResolversTypes['TestExecutionEnvironment'], ParentType, ContextType>;
@@ -1698,6 +1747,12 @@ export type TestExecutionConnectionResolvers<ContextType = Context, ParentType e
   edges: Resolver<ReadonlyArray<ResolversTypes['TestExecutionEdge']>, ParentType, ContextType>;
   pageInfo: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>;
   totalCount: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type TestExecutionCreatedEventResolvers<ContextType = Context, ParentType extends ResolversParentTypes['TestExecutionCreatedEvent'] = ResolversParentTypes['TestExecutionCreatedEvent']> = {
+  at: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
+  testExecution: Resolver<ResolversTypes['TestExecution'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -1753,6 +1808,12 @@ export type TestExecutionStatusResolvers<ContextType = Context, ParentType exten
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type TestExecutionStatusUpdatedEventResolvers<ContextType = Context, ParentType extends ResolversParentTypes['TestExecutionStatusUpdatedEvent'] = ResolversParentTypes['TestExecutionStatusUpdatedEvent']> = {
+  at: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
+  testExecution: Resolver<ResolversTypes['TestExecution'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type TestRunResolvers<ContextType = Context, ParentType extends ResolversParentTypes['TestRun'] = ResolversParentTypes['TestRun']> = {
   executions: Resolver<ResolversTypes['TestExecutionConnection'], ParentType, ContextType, Partial<TestRunExecutionsArgs>>;
   id: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
@@ -1781,6 +1842,12 @@ export type TestRunStatusResolvers<ContextType = Context, ParentType extends Res
   totalCompletedWorkers: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   totalPendingWorkers: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   totalWorkers: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type TestRunStatusUpdatedEventResolvers<ContextType = Context, ParentType extends ResolversParentTypes['TestRunStatusUpdatedEvent'] = ResolversParentTypes['TestRunStatusUpdatedEvent']> = {
+  at: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
+  testRun: Resolver<ResolversTypes['TestRun'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -1886,8 +1953,10 @@ export type Resolvers<ContextType = Context> = {
   StepEvent: StepEventResolvers<ContextType>;
   StepEventConnection: StepEventConnectionResolvers<ContextType>;
   StepEventEdge: StepEventEdgeResolvers<ContextType>;
+  Subscription: SubscriptionResolvers<ContextType>;
   TestExecution: TestExecutionResolvers<ContextType>;
   TestExecutionConnection: TestExecutionConnectionResolvers<ContextType>;
+  TestExecutionCreatedEvent: TestExecutionCreatedEventResolvers<ContextType>;
   TestExecutionEdge: TestExecutionEdgeResolvers<ContextType>;
   TestExecutionEnvironment: TestExecutionEnvironmentResolvers<ContextType>;
   TestExecutionEvent: TestExecutionEventResolvers<ContextType>;
@@ -1896,10 +1965,12 @@ export type Resolvers<ContextType = Context> = {
   TestExecutionScreenshot: TestExecutionScreenshotResolvers<ContextType>;
   TestExecutionSnapshot: TestExecutionSnapshotResolvers<ContextType>;
   TestExecutionStatus: TestExecutionStatusResolvers<ContextType>;
+  TestExecutionStatusUpdatedEvent: TestExecutionStatusUpdatedEventResolvers<ContextType>;
   TestRun: TestRunResolvers<ContextType>;
   TestRunConnection: TestRunConnectionResolvers<ContextType>;
   TestRunEdge: TestRunEdgeResolvers<ContextType>;
   TestRunStatus: TestRunStatusResolvers<ContextType>;
+  TestRunStatusUpdatedEvent: TestRunStatusUpdatedEventResolvers<ContextType>;
   URL: GraphQLScalarType;
   UploadInfo: UploadInfoResolvers<ContextType>;
   User: UserResolvers<ContextType>;
