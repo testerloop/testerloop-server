@@ -1,6 +1,6 @@
 {
     "name": "@testerloop/server",
-    "version": "0.2.6",
+    "version": "0.2.7",
     "devDependencies": {
         "@graphql-codegen/cli": "^2.16.4",
         "@graphql-codegen/typescript": "^2.8.7",
@@ -32,6 +32,7 @@
         "@aws-sdk/client-ses": "^3.398.0",
         "@aws-sdk/s3-presigned-post": "^3.293.0",
         "@aws-sdk/s3-request-presigner": "^3.293.0",
+        "@graphql-tools/schema": "^10.0.0",
         "@prisma/client": "^4.16.2",
         "@types/bcrypt": "^5.0.0",
         "aws-jwt-verify": "^4.0.0",
@@ -43,6 +44,7 @@
         "graphql": "^17.0.0-alpha.2",
         "graphql-date-scalars": "^0.2.0",
         "graphql-subscriptions": "^2.0.0",
+        "graphql-ws": "^5.14.0",
         "http": "^0.0.1-security",
         "jest-mock-extended": "^3.0.4",
         "lru-cache": "^8.0.4",
