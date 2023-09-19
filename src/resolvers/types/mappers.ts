@@ -10,6 +10,11 @@ export interface StackTraceModel {
     id: string;
 }
 
+export interface OrganisationModel {
+    __typename: 'Organisation';
+    id: string;
+}
+
 export interface HttpNetworkEventModel {
     __typename: 'HttpNetworkEvent';
     id: string;

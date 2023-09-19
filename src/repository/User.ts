@@ -4,8 +4,12 @@ import PrismaRepository from './repository.js';
 
 class UserRepository extends PrismaRepository {
     async createUser(data: Prisma.UserCreateInput) {
-        const newUser = this.db.prisma.user.create({ data });
-        return newUser;
+        return this.db.prisma.user.create({
+            data,
+            include: {
+                userOrganisations: true,
+            },
+        });
     }
     async getUserByEmail(email: string) {
         const user = this.db.prisma.user.findUnique({

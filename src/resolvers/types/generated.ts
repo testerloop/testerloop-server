@@ -553,6 +553,17 @@ export enum OrderDirection {
   Descending = 'DESCENDING'
 }
 
+export type Organisation = {
+  readonly __typename: 'Organisation';
+  readonly id: Scalars['ID'];
+  readonly name: Scalars['String'];
+  readonly s3BucketName: Maybe<Scalars['String']>;
+  readonly s3CustomPath: Maybe<Scalars['String']>;
+  readonly s3Region: Maybe<Scalars['String']>;
+  readonly slug: Scalars['String'];
+  readonly userOrganisations: ReadonlyArray<UserOrganisation>;
+};
+
 /**
  * The PageInfo type as specified in The Relay Connection Spec.
  *
@@ -574,9 +585,11 @@ export type Query = {
   readonly getRunStatus: TestRunStatus;
   readonly httpNetworkEvent: Maybe<HttpNetworkEvent>;
   readonly node: Maybe<Node>;
+  readonly organisation: Maybe<Organisation>;
   readonly testExecution: Maybe<TestExecution>;
   readonly testRun: Maybe<TestRun>;
   readonly testRuns: TestRunConnection;
+  readonly user: Maybe<User>;
   readonly worker: Worker;
 };
 
@@ -601,6 +614,11 @@ export type QueryNodeArgs = {
 };
 
 
+export type QueryOrganisationArgs = {
+  id: Scalars['ID'];
+};
+
+
 export type QueryTestExecutionArgs = {
   id: Scalars['ID'];
 };
@@ -614,6 +632,11 @@ export type QueryTestRunArgs = {
 export type QueryTestRunsArgs = {
   after?: InputMaybe<Scalars['Cursor']>;
   first?: InputMaybe<Scalars['Int']>;
+};
+
+
+export type QueryUserArgs = {
+  id: Scalars['ID'];
 };
 
 
@@ -929,6 +952,7 @@ export type User = {
   readonly cognitoId: Scalars['String'];
   readonly email: Scalars['String'];
   readonly id: Scalars['ID'];
+  readonly userOrganisations: ReadonlyArray<UserOrganisation>;
 };
 
 export type UserInput = {
@@ -936,6 +960,16 @@ export type UserInput = {
   readonly email: Scalars['String'];
   readonly firstName: Scalars['String'];
 };
+
+export type UserOrganisation = {
+  readonly __typename: 'UserOrganisation';
+  readonly organisation: Organisation;
+  readonly role: UserOrganisationRole;
+};
+
+export enum UserOrganisationRole {
+  Admin = 'ADMIN'
+}
 
 export type Worker = {
   readonly __typename: 'Worker';
@@ -1090,6 +1124,7 @@ export type ResolversTypes = {
   NetworkEventTiming: ResolverTypeWrapper<NetworkEventTiming>;
   Node: ResolversTypes['CommandEvent'] | ResolversTypes['ConsoleLogEvent'] | ResolversTypes['StepEvent'] | ResolversTypes['TestExecution'] | ResolversTypes['TestExecutionScreenshot'] | ResolversTypes['TestRun'];
   OrderDirection: OrderDirection;
+  Organisation: ResolverTypeWrapper<Organisation>;
   PageInfo: ResolverTypeWrapper<PageInfo>;
   Query: ResolverTypeWrapper<unknown>;
   RunStatus: RunStatus;
@@ -1134,6 +1169,8 @@ export type ResolversTypes = {
   UploadInfo: ResolverTypeWrapper<UploadInfo>;
   User: ResolverTypeWrapper<User>;
   UserInput: UserInput;
+  UserOrganisation: ResolverTypeWrapper<UserOrganisation>;
+  UserOrganisationRole: UserOrganisationRole;
   Worker: ResolverTypeWrapper<Omit<Worker, 'testExecutions'> & { testExecutions: ReadonlyArray<Maybe<ResolversTypes['TestExecution']>> }>;
   WorkerStatus: WorkerStatus;
 };
@@ -1202,6 +1239,7 @@ export type ResolversParentTypes = {
   NetworkEventResponseStatusFilterInput: NetworkEventResponseStatusFilterInput;
   NetworkEventTiming: NetworkEventTiming;
   Node: ResolversParentTypes['CommandEvent'] | ResolversParentTypes['ConsoleLogEvent'] | ResolversParentTypes['StepEvent'] | ResolversParentTypes['TestExecution'] | ResolversParentTypes['TestExecutionScreenshot'] | ResolversParentTypes['TestRun'];
+  Organisation: Organisation;
   PageInfo: PageInfo;
   Query: unknown;
   S3Config: S3Config;
@@ -1243,6 +1281,7 @@ export type ResolversParentTypes = {
   UploadInfo: UploadInfo;
   User: User;
   UserInput: UserInput;
+  UserOrganisation: UserOrganisation;
   Worker: Omit<Worker, 'testExecutions'> & { testExecutions: ReadonlyArray<Maybe<ResolversParentTypes['TestExecution']>> };
 };
 
@@ -1622,6 +1661,17 @@ export type NodeResolvers<ContextType = Context, ParentType extends ResolversPar
   __resolveType: TypeResolveFn<'CommandEvent' | 'ConsoleLogEvent' | 'StepEvent' | 'TestExecution' | 'TestExecutionScreenshot' | 'TestRun', ParentType, ContextType>;
 };
 
+export type OrganisationResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Organisation'] = ResolversParentTypes['Organisation']> = {
+  id: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  name: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  s3BucketName: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  s3CustomPath: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  s3Region: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  slug: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  userOrganisations: Resolver<ReadonlyArray<ResolversTypes['UserOrganisation']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type PageInfoResolvers<ContextType = Context, ParentType extends ResolversParentTypes['PageInfo'] = ResolversParentTypes['PageInfo']> = {
   endCursor: Resolver<Maybe<ResolversTypes['Cursor']>, ParentType, ContextType>;
   hasNextPage: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
@@ -1635,9 +1685,11 @@ export type QueryResolvers<ContextType = Context, ParentType extends ResolversPa
   getRunStatus: Resolver<ResolversTypes['TestRunStatus'], ParentType, ContextType, RequireFields<QueryGetRunStatusArgs, 'runId'>>;
   httpNetworkEvent: Resolver<Maybe<ResolversTypes['HttpNetworkEvent']>, ParentType, ContextType, RequireFields<QueryHttpNetworkEventArgs, 'id'>>;
   node: Resolver<Maybe<ResolversTypes['Node']>, ParentType, ContextType, RequireFields<QueryNodeArgs, 'id'>>;
+  organisation: Resolver<Maybe<ResolversTypes['Organisation']>, ParentType, ContextType, RequireFields<QueryOrganisationArgs, 'id'>>;
   testExecution: Resolver<Maybe<ResolversTypes['TestExecution']>, ParentType, ContextType, RequireFields<QueryTestExecutionArgs, 'id'>>;
   testRun: Resolver<Maybe<ResolversTypes['TestRun']>, ParentType, ContextType, RequireFields<QueryTestRunArgs, 'id'>>;
   testRuns: Resolver<ResolversTypes['TestRunConnection'], ParentType, ContextType, Partial<QueryTestRunsArgs>>;
+  user: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, RequireFields<QueryUserArgs, 'id'>>;
   worker: Resolver<ResolversTypes['Worker'], ParentType, ContextType, RequireFields<QueryWorkerArgs, 'id'>>;
 };
 
@@ -1867,6 +1919,13 @@ export type UserResolvers<ContextType = Context, ParentType extends ResolversPar
   cognitoId: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   email: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   id: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  userOrganisations: Resolver<ReadonlyArray<ResolversTypes['UserOrganisation']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type UserOrganisationResolvers<ContextType = Context, ParentType extends ResolversParentTypes['UserOrganisation'] = ResolversParentTypes['UserOrganisation']> = {
+  organisation: Resolver<ResolversTypes['Organisation'], ParentType, ContextType>;
+  role: Resolver<ResolversTypes['UserOrganisationRole'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -1937,6 +1996,7 @@ export type Resolvers<ContextType = Context> = {
   NetworkEvent: NetworkEventResolvers<ContextType>;
   NetworkEventTiming: NetworkEventTimingResolvers<ContextType>;
   Node: NodeResolvers<ContextType>;
+  Organisation: OrganisationResolvers<ContextType>;
   PageInfo: PageInfoResolvers<ContextType>;
   Query: QueryResolvers<ContextType>;
   ScenarioDefinition: ScenarioDefinitionResolvers<ContextType>;
@@ -1974,6 +2034,7 @@ export type Resolvers<ContextType = Context> = {
   URL: GraphQLScalarType;
   UploadInfo: UploadInfoResolvers<ContextType>;
   User: UserResolvers<ContextType>;
+  UserOrganisation: UserOrganisationResolvers<ContextType>;
   Worker: WorkerResolvers<ContextType>;
 };
 

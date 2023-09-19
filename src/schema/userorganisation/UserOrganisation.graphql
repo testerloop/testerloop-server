@@ -1,0 +1,30 @@
+type User {
+    id: ID!
+    email: String!
+    cognitoId: String
+    userOrganisations: [UserOrganisation!]!
+}
+
+type Organisation {
+    id: ID!
+    name: String!
+    slug: String!
+    s3CustomPath: String
+    s3BucketName: String
+    s3Region: String
+    userOrganisations: [UserOrganisation!]!
+}
+
+enum UserOrganisationRole {
+    ADMIN
+}
+
+type UserOrganisation {
+    role: UserOrganisationRole!
+    organisation: Organisation!
+}
+
+extend type Query {
+    user(id: ID!): User
+    organisation(id: ID!): Organisation
+}

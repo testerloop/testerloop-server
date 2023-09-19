@@ -308,13 +308,21 @@ const resolvers: MutationResolvers = {
             },
         });
 
-        const { id, email, cognitoId } = newUser;
+        const { id, email, cognitoId, userOrganisations } = newUser;
 
         return {
             __typename: 'User',
             id,
             email,
             cognitoId,
+            userOrganisations: userOrganisations.map((userOrganisation) => ({
+                __typename: 'UserOrganisation',
+                ...userOrganisation,
+                organisation: {
+                    __typename: 'Organisation',
+                    id: userOrganisation.organisationId,
+                },
+            })),
         };
     },
 };
