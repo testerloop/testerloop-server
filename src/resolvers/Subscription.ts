@@ -16,13 +16,10 @@ const resolvers = {
                     return false;
                 }
 
-                const hasPermission =
-                    await repository.testExecution.isOwnedByOrganisation(
-                        id,
-                        auth.organisation.id,
-                    );
-
-                return hasPermission;
+                return repository.testExecution.isOwnedByOrganisation(
+                    id,
+                    auth.organisation.id,
+                );
             },
         ),
         resolve: async (payload: { id: string; runId: string; at: Date }) => {
