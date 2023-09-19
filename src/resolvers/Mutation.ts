@@ -5,7 +5,7 @@ import {
     WorkerStatus as PrismaWorkerStatus,
 } from '@prisma/client';
 
-import { pubsub, PubSubChannels } from '../pubsub.js';
+import { publishEvent, PubSubChannels } from '../pubsub.js';
 
 import {
     MutationResolvers,
@@ -178,10 +178,9 @@ const resolvers: MutationResolvers = {
             featureFile,
         );
 
-        pubsub.publish(PubSubChannels.TestExecutionCreated, {
+        publishEvent(PubSubChannels.TestExecutionCreated, {
             id: testExecutionId,
             runId: runID,
-            at: new Date(),
         });
 
         return {
@@ -224,10 +223,9 @@ const resolvers: MutationResolvers = {
             testStatus,
         };
 
-        pubsub.publish(PubSubChannels.TestExecutionUpdated, {
+        publishEvent(PubSubChannels.TestExecutionUpdated, {
             id: testExecution.id,
             runId: testExecution.testRunId,
-            at: new Date(),
         });
 
         return result;
@@ -261,9 +259,8 @@ const resolvers: MutationResolvers = {
             return run.status as RunStatus;
         }
 
-        pubsub.publish(PubSubChannels.TestRunStatusUpdated, {
+        publishEvent(PubSubChannels.TestRunStatusUpdated, {
             id: runId,
-            at: new Date(),
         });
 
         return updatedRun.status as RunStatus;
