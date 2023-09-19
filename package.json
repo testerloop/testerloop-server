@@ -1,6 +1,6 @@
 {
     "name": "@testerloop/server",
-    "version": "0.2.5",
+    "version": "0.2.6",
     "devDependencies": {
         "@graphql-codegen/cli": "^2.16.4",
         "@graphql-codegen/typescript": "^2.8.7",
@@ -49,6 +49,7 @@
         "prisma": "^4.16.2",
         "slugify": "^1.6.6",
         "uuid": "^9.0.0",
+        "ws": "^8.14.1",
         "zod": "^3.20.2"
     },
     "overrides": {
