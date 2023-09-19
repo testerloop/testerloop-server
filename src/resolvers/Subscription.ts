@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { withFilter } from 'graphql-subscriptions';
 
 import { pubsubClient, PubSubChannels } from '../pubsub.js';
