@@ -1,4 +1,4 @@
-import { PubSub } from 'graphql-subscriptions';
+import { PubSub as GraphQLPubSub } from 'graphql-subscriptions';
 
 export enum PubSubChannels {
     TestExecutionUpdated = 'TEST_EXECUTION_UPDATED',
@@ -6,16 +6,34 @@ export enum PubSubChannels {
     TestRunStatusUpdated = 'RUN_STATUS_UPDATED',
 }
 
-type PublishPayload = {
-    id: string;
-    runId?: string;
+export const pubsubClient = new GraphQLPubSub();
+
+const pubsub = {
+    publishTestExecutionCreated: (testExecutionId: string, runID: string) => {
+        const timestamp = new Date();
+        pubsubClient.publish(PubSubChannels.TestExecutionCreated, {
+            id: testExecutionId,
+            runId: runID,
+            at: timestamp,
+        });
+    },
+
+    publishTestExecutionUpdated: (testExecutionId: string, runID: string) => {
+        const timestamp = new Date();
+        pubsubClient.publish(PubSubChannels.TestExecutionUpdated, {
+            id: testExecutionId,
+            runId: runID,
+            at: timestamp,
+        });
+    },
+
+    publishTestRunStatusUpdated: (runId: string) => {
+        const timestamp = new Date();
+        pubsubClient.publish(PubSubChannels.TestRunStatusUpdated, {
+            id: runId,
+            at: timestamp,
+        });
+    },
 };
 
-export const publishEvent = (
-    channel: PubSubChannels,
-    payload: PublishPayload,
-): void => {
-    pubsub.publish(channel, { ...payload, at: new Date() });
-};
-
-export const pubsub = new PubSub();
+export default pubsub;

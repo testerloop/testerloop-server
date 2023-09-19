@@ -1,14 +1,15 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { withFilter } from 'graphql-subscriptions';
 
-import { pubsub, PubSubChannels } from '../pubsub.js';
+import { pubsubClient, PubSubChannels } from '../pubsub.js';
 
 import { SubscriptionResolvers } from './types/generated.js';
 
 const resolvers = {
     testExecutionUpdated: {
         subscribe: withFilter(
-            () => pubsub.asyncIterator(PubSubChannels.TestExecutionUpdated),
+            () =>
+                pubsubClient.asyncIterator(PubSubChannels.TestExecutionUpdated),
             async (payload, variables, { auth, repository }) => {
                 const { id } = payload;
 
@@ -41,7 +42,7 @@ const resolvers = {
     },
     testExecutionCreated: {
         subscribe: () =>
-            pubsub.asyncIterator(PubSubChannels.TestExecutionCreated),
+            pubsubClient.asyncIterator(PubSubChannels.TestExecutionCreated),
         resolve: async (payload: { id: string; runId: string; at: Date }) => {
             const { id, runId, at } = payload;
 
@@ -61,7 +62,7 @@ const resolvers = {
     },
     testRunStatusUpdated: {
         subscribe: () =>
-            pubsub.asyncIterator(PubSubChannels.TestRunStatusUpdated),
+            pubsubClient.asyncIterator(PubSubChannels.TestRunStatusUpdated),
         resolve: async (payload: { id: string; at: Date }) => {
             const { id, at } = payload;
             return {
