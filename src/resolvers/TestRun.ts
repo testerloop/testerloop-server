@@ -9,9 +9,8 @@ const resolvers: TestRunResolvers = {
     },
 
     async testCodeRevision({ id }, _args, { dataSources }) {
-        const testCodeRevisionData = await dataSources.testCodeRevision.getById(
-            id,
-        );
+        const testCodeRevisionData =
+            await dataSources.testCodeRevision.getById(id);
         return testCodeRevisionData || null;
     },
 
