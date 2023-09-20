@@ -18,7 +18,6 @@ export function createApolloServer(httpServer: http.Server) {
 
     const wsServer = new WebSocketServer({
         server: httpServer,
-        path: process.env.GRAPHQL_WS_PATH,
     });
 
     const wsCleanup = useServer(
