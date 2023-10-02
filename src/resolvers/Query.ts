@@ -4,6 +4,7 @@ import {
     WorkerStatus as PrismaWorkerStatus,
 } from '@prisma/client';
 
+import { isValidUUID } from '../util/isValidUUID.js';
 import { decodeId, decodeIdForType } from '../util/id.js';
 
 import {
@@ -27,11 +28,7 @@ const resolvers: QueryResolvers = {
         return event;
     },
     async testExecution(root, { id }, { repository }) {
-        const decodedId = decodeIdForType('TestExecution', id);
-        if (!decodedId) {
-            return null;
-        }
-        const [runId, testExecutionId] = decodedId.split('/');
+        const [runId, testExecutionId] = id.split('/');
 
         const testExecution =
             await repository.testExecution.getTestExecutionById(
@@ -42,7 +39,7 @@ const resolvers: QueryResolvers = {
         }
         return {
             __typename: 'TestExecution',
-            id: decodedId,
+            id: testExecutionId,
             testRun: {
                 __typename: 'TestRun',
                 id: runId,
@@ -50,18 +47,14 @@ const resolvers: QueryResolvers = {
         };
     },
     async testRun(root, { id }, { repository }) {
-        const decodedId = decodeIdForType('TestRun', id);
-        if (!decodedId) {
-            return null;
-        }
         const testExecutions =
-            await repository.testExecution.getTestExecutionsbyRunId(decodedId);
+            await repository.testExecution.getTestExecutionsbyRunId(id);
         if (!testExecutions) {
             return null;
         }
         return {
             __typename: 'TestRun',
-            id: decodedId,
+            id,
         };
     },
     async testRuns(root, { first, after }, { dataSources }) {
@@ -185,17 +178,27 @@ const resolvers: QueryResolvers = {
     },
 
     async node(root, { id }, context, info) {
+        const idParts = id.split('/');
+
+        if (idParts.length === 1 && isValidUUID(idParts[0])) {
+            return resolvers.testRun(root, { id }, context, info);
+        }
+
+        if (
+            idParts.length === 2 &&
+            isValidUUID(idParts[0]) &&
+            isValidUUID(idParts[1])
+        ) {
+            return resolvers.testExecution(root, { id }, context, info);
+        }
+
         const decodedId = decodeId(id);
         if (!decodedId) {
             return null;
         }
-        const [typename, _internalId] = decodedId;
 
+        const [typename, _internalId] = decodedId;
         switch (typename) {
-            case 'TestExecution':
-                return resolvers.testExecution(root, { id }, context, info);
-            case 'TestRun':
-                return resolvers.testRun(root, { id }, context, info);
             case 'ConsoleLogEvent':
                 return resolvers.consoleLogEvent(root, { id }, context, info);
             default:

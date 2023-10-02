@@ -67,11 +67,11 @@ const resolvers: StepEventResolvers = {
             keyword: event.name,
         };
     },
-    async testExecution({ _id }, _args) {
-        const [runId, _] = _id.split('/');
+    async testExecution({ id }, _args) {
+        const [runId, testId] = id.split('/');
         return {
             __typename: 'TestExecution',
-            id: _id,
+            id: testId,
             testRun: {
                 __typename: 'TestRun',
                 id: runId,

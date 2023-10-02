@@ -57,10 +57,10 @@ const resolvers: ConsoleLogEventResolvers = {
         };
     },
     async testExecution({ id }, _args) {
-        const [runId, testExecutionId] = id.split('/');
+        const [runId, testId] = id.split('/');
         return {
             __typename: 'TestExecution',
-            id: `${runId}/${testExecutionId}`,
+            id: testId,
             testRun: {
                 __typename: 'TestRun',
                 id: runId,

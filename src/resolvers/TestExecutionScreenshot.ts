@@ -27,10 +27,10 @@ const resolvers: TestExecutionScreenshotResolvers = {
         };
     },
     async testExecution({ testExecutionId }) {
-        const [runId, _] = testExecutionId.split('/');
+        const [runId, testId] = testExecutionId.split('/');
         return {
             __typename: 'TestExecution',
-            id: testExecutionId,
+            id: testId,
             testRun: {
                 __typename: 'TestRun',
                 id: runId,

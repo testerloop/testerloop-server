@@ -23,10 +23,10 @@ const resolvers: ScenarioEventResolvers = {
         };
     },
     async testExecution({ id }, _args) {
-        const [runId, _] = id.split('/');
+        const [runId, testId] = id.split('/');
         return {
             __typename: 'TestExecution',
-            id,
+            id: testId,
             testRun: {
                 __typename: 'TestRun',
                 id: runId,

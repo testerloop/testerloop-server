@@ -1,11 +1,10 @@
-import { encodeId } from '../util/id.js';
-
 import { TestExecutionResolvers, TestStatus } from './types/generated.js';
 
 const resolvers: TestExecutionResolvers = {
-    id({ id }) {
-        return encodeId('TestExecution', id);
+    id: ({ id }) => {
+        return id.split('/')[1];
     },
+
     async at({ id }, _args, { repository }) {
         const [_, testExecutionId] = id.split('/');
         const testExecution =

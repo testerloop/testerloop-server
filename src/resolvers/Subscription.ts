@@ -30,7 +30,7 @@ const resolvers = {
                 at,
                 testExecution: {
                     __typename: 'TestExecution',
-                    id: `${runId}/${id}`,
+                    id,
                     testRun: {
                         __typename: 'TestRun',
                         id: runId,
@@ -50,7 +50,7 @@ const resolvers = {
                 at,
                 testExecution: {
                     __typename: 'TestExecution',
-                    id: `${runId}/${id}`,
+                    id,
                     testRun: {
                         __typename: 'TestRun',
                         id: runId,

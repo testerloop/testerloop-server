@@ -1,12 +1,9 @@
 import getPaginatedData from '../util/getPaginatedData.js';
-import { encodeId } from '../util/id.js';
 
 import { RunStatus, TestRunResolvers } from './types/generated.js';
 
 const resolvers: TestRunResolvers = {
-    id({ id }) {
-        return encodeId('TestRun', id);
-    },
+    id: ({ id }) => id,
 
     async testCodeRevision({ id }, _args, { dataSources }) {
         const testCodeRevisionData =
@@ -31,7 +28,7 @@ const resolvers: TestRunResolvers = {
                 cursor,
                 node: {
                     __typename: 'TestExecution',
-                    id: `${id}/${node.id}`,
+                    id: node.id,
                     testRun: {
                         __typename: 'TestRun',
                         id,
