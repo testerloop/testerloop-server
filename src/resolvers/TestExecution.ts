@@ -8,8 +8,16 @@ const resolvers: TestExecutionResolvers = {
             await repository.testExecution.getTestExecutionById(id);
         return testExecution.at;
     },
-    events({ id }, { after, first, filter }, { dataSources }) {
-        return dataSources.testExecution.getEvents(id, {
+    async events(
+        { id },
+        { after, first, filter },
+        { dataSources, repository },
+    ) {
+        const testRunId = (
+            await repository.testExecution.getTestExecutionById(id)
+        ).testRunId;
+        const testAndRunId = `${testRunId}/${id}`;
+        return dataSources.testExecution.getEvents(testAndRunId, {
             after,
             first,
             filter,
