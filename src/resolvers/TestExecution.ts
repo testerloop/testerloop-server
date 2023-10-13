@@ -1,16 +1,11 @@
 import { TestExecutionResolvers, TestStatus } from './types/generated.js';
 
 const resolvers: TestExecutionResolvers = {
-    id: ({ id }) => {
-        return id.split('/')[1];
-    },
+    id: ({ id }) => id,
 
     async at({ id }, _args, { repository }) {
-        const [_, testExecutionId] = id.split('/');
         const testExecution =
-            await repository.testExecution.getTestExecutionById(
-                testExecutionId,
-            );
+            await repository.testExecution.getTestExecutionById(id);
         return testExecution.at;
     },
     events({ id }, { after, first, filter }, { dataSources }) {
@@ -21,19 +16,15 @@ const resolvers: TestExecutionResolvers = {
         });
     },
     async until({ id }, _args, { repository }) {
-        const [_, testExecutionId] = id.split('/');
-        return (
-            await repository.testExecution.getTestExecutionById(testExecutionId)
-        ).until;
+        return (await repository.testExecution.getTestExecutionById(id)).until;
     },
     async title({ id }, _args, { repository }) {
-        const [_, testExecutionId] = id.split('/');
-        return (
-            await repository.testExecution.getTestExecutionById(testExecutionId)
-        ).testName;
+        return (await repository.testExecution.getTestExecutionById(id))
+            .testName;
     },
-    async testRun({ id }, _args) {
-        const [runId, _] = id.split('/');
+    async testRun({ id }, _args, { repository }) {
+        const runId = (await repository.testExecution.getTestExecutionById(id))
+            .testRunId;
         return {
             __typename: 'TestRun',
             id: runId,
@@ -89,10 +80,8 @@ const resolvers: TestExecutionResolvers = {
         };
     },
     async status({ id }, _args, { repository }) {
-        const [_, testExecutionId] = id.split('/');
-        return (
-            await repository.testExecution.getTestExecutionById(testExecutionId)
-        ).result as TestStatus;
+        return (await repository.testExecution.getTestExecutionById(id))
+            .result as TestStatus;
     },
 };
 

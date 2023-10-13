@@ -22,7 +22,6 @@ const resolvers: TestRunResolvers = {
 
         const { edges, hasNextPage, hasPreviousPage, totalCount } =
             getPaginatedData(testExecutions, { first, after });
-
         return {
             edges: edges.map(({ cursor, node }) => ({
                 cursor,
