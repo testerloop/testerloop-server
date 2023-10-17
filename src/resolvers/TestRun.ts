@@ -6,8 +6,9 @@ const resolvers: TestRunResolvers = {
     id: ({ id }) => id,
 
     async testCodeRevision({ id }, _args, { dataSources }) {
-        const testCodeRevisionData =
-            await dataSources.testCodeRevision.getById(id);
+        const testCodeRevisionData = await dataSources.testCodeRevision.getById(
+            id,
+        );
         return testCodeRevisionData || null;
     },
 

@@ -92,8 +92,9 @@ const resolvers: QueryResolvers = {
     async getRunStatus(parent, { runId }, { auth, repository }) {
         if (!auth) throw new Error('User is not authenticated.');
 
-        const testRun =
-            await repository.testRun.getTestRunWithExecutions(runId);
+        const testRun = await repository.testRun.getTestRunWithExecutions(
+            runId,
+        );
 
         if (testRun.organisationId !== auth.organisation.id)
             throw new Error(
