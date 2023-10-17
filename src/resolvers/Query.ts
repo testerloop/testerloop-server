@@ -182,17 +182,12 @@ const resolvers: QueryResolvers = {
         }
 
         const decodedId = decodeId(id);
-        if (!decodedId) {
-            return null;
-        }
+        if (!decodedId) return null;
 
-        const [typename, _internalId] = decodedId;
-        switch (typename) {
-            case 'ConsoleLogEvent':
-                return resolvers.consoleLogEvent(root, { id }, context, info);
-            default:
-                return null;
-        }
+        const [typename] = decodedId;
+        return typename === 'ConsoleLogEvent'
+            ? resolvers.consoleLogEvent(root, { id }, context, info)
+            : null;
     },
 };
 
