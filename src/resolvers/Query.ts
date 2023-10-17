@@ -27,16 +27,9 @@ const resolvers: QueryResolvers = {
         }
         return event;
     },
-    async testExecution(root, { id }, { repository }) {
+    async testExecution(root, { id }) {
         const [runId, testExecutionId] = id.split('/');
 
-        const testExecution =
-            await repository.testExecution.getTestExecutionById(
-                testExecutionId,
-            );
-        if (!testExecution) {
-            return null;
-        }
         return {
             __typename: 'TestExecution',
             id: testExecutionId,
@@ -46,12 +39,7 @@ const resolvers: QueryResolvers = {
             },
         };
     },
-    async testRun(root, { id }, { repository }) {
-        const testExecutions =
-            await repository.testExecution.getTestExecutionsbyRunId(id);
-        if (!testExecutions) {
-            return null;
-        }
+    async testRun(root, { id }) {
         return {
             __typename: 'TestRun',
             id,
