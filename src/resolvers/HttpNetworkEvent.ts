@@ -36,10 +36,10 @@ const resolvers: HttpNetworkEventResolvers = {
         return event.timings;
     },
     async testExecution({ id }, _args) {
-        const [runId, testId] = id.split('/');
+        const [runId, testExecutionId] = id.split('/');
         return {
             __typename: 'TestExecution',
-            id: testId,
+            id: testExecutionId,
             testRun: {
                 __typename: 'TestRun',
                 id: runId,

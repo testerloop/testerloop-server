@@ -103,10 +103,10 @@ const resolvers: CommandEventResolvers = {
         };
     },
     async testExecution({ id }, _args) {
-        const [runId, requestId, _] = id.split('/');
+        const [runId, testExecutionId, _] = id.split('/');
         return {
             __typename: 'TestExecution',
-            id: requestId,
+            id: testExecutionId,
             testRun: {
                 __typename: 'TestRun',
                 id: runId,
