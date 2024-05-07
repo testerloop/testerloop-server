@@ -427,6 +427,12 @@ export type IntervalEvent = {
   readonly until: Scalars['DateTime'];
 };
 
+export type JobStatus = {
+  readonly __typename: 'JobStatus';
+  readonly fileName: Scalars['String'];
+  readonly status: Scalars['String'];
+};
+
 export type KeyValuePair = {
   readonly __typename: 'KeyValuePair';
   readonly key: Scalars['String'];
@@ -488,6 +494,7 @@ export type PageInfo = {
 export type Query = {
   readonly __typename: 'Query';
   readonly consoleLogEvent: Maybe<ConsoleLogEvent>;
+  readonly getAllStatuses: ReadonlyArray<Maybe<JobStatus>>;
   readonly httpNetworkEvent: Maybe<HttpNetworkEvent>;
   readonly node: Maybe<Node>;
   readonly test: Scalars['Boolean'];
@@ -871,6 +878,7 @@ export type ResolversTypes = {
   InstantaneousEvent: ResolversTypes['ConsoleLogEvent'] | ResolversTypes['HttpResponseBodyChunk'] | ResolversTypes['TestExecutionScreenshot'] | ResolversTypes['TestExecutionSnapshot'];
   Int: ResolverTypeWrapper<Scalars['Int']>;
   IntervalEvent: ResolversTypes['CommandChainEvent'] | ResolversTypes['CommandEvent'] | ResolversTypes['HttpNetworkEvent'] | ResolversTypes['NetworkEventTiming'] | ResolversTypes['ScenarioEvent'] | ResolversTypes['StepEvent'] | ResolversTypes['TestExecution'];
+  JobStatus: ResolverTypeWrapper<JobStatus>;
   KeyValuePair: ResolverTypeWrapper<KeyValuePair>;
   NetworkEvent: ResolversTypes['HttpNetworkEvent'];
   NetworkEventFilterInput: NetworkEventFilterInput;
@@ -966,6 +974,7 @@ export type ResolversParentTypes = {
   InstantaneousEvent: ResolversParentTypes['ConsoleLogEvent'] | ResolversParentTypes['HttpResponseBodyChunk'] | ResolversParentTypes['TestExecutionScreenshot'] | ResolversParentTypes['TestExecutionSnapshot'];
   Int: Scalars['Int'];
   IntervalEvent: ResolversParentTypes['CommandChainEvent'] | ResolversParentTypes['CommandEvent'] | ResolversParentTypes['HttpNetworkEvent'] | ResolversParentTypes['NetworkEventTiming'] | ResolversParentTypes['ScenarioEvent'] | ResolversParentTypes['StepEvent'] | ResolversParentTypes['TestExecution'];
+  JobStatus: JobStatus;
   KeyValuePair: KeyValuePair;
   NetworkEvent: ResolversParentTypes['HttpNetworkEvent'];
   NetworkEventFilterInput: NetworkEventFilterInput;
@@ -1333,6 +1342,12 @@ export type IntervalEventResolvers<ContextType = Context, ParentType extends Res
   __resolveType: TypeResolveFn<'CommandChainEvent' | 'CommandEvent' | 'HttpNetworkEvent' | 'NetworkEventTiming' | 'ScenarioEvent' | 'StepEvent' | 'TestExecution', ParentType, ContextType>;
 };
 
+export type JobStatusResolvers<ContextType = Context, ParentType extends ResolversParentTypes['JobStatus'] = ResolversParentTypes['JobStatus']> = {
+  fileName: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  status: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type KeyValuePairResolvers<ContextType = Context, ParentType extends ResolversParentTypes['KeyValuePair'] = ResolversParentTypes['KeyValuePair']> = {
   key: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   value: Resolver<ResolversTypes['String'], ParentType, ContextType>;
@@ -1363,6 +1378,7 @@ export type PageInfoResolvers<ContextType = Context, ParentType extends Resolver
 
 export type QueryResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
   consoleLogEvent: Resolver<Maybe<ResolversTypes['ConsoleLogEvent']>, ParentType, ContextType, RequireFields<QueryConsoleLogEventArgs, 'id'>>;
+  getAllStatuses: Resolver<ReadonlyArray<Maybe<ResolversTypes['JobStatus']>>, ParentType, ContextType>;
   httpNetworkEvent: Resolver<Maybe<ResolversTypes['HttpNetworkEvent']>, ParentType, ContextType, RequireFields<QueryHttpNetworkEventArgs, 'id'>>;
   node: Resolver<Maybe<ResolversTypes['Node']>, ParentType, ContextType, RequireFields<QueryNodeArgs, 'id'>>;
   test: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
@@ -1585,6 +1601,7 @@ export type Resolvers<ContextType = Context> = {
   HttpResponseBodyChunk: HttpResponseBodyChunkResolvers<ContextType>;
   InstantaneousEvent: InstantaneousEventResolvers<ContextType>;
   IntervalEvent: IntervalEventResolvers<ContextType>;
+  JobStatus: JobStatusResolvers<ContextType>;
   KeyValuePair: KeyValuePairResolvers<ContextType>;
   NetworkEvent: NetworkEventResolvers<ContextType>;
   NetworkEventTiming: NetworkEventTimingResolvers<ContextType>;

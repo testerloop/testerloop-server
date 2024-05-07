@@ -1,4 +1,5 @@
 import { decodeId, decodeIdForType } from '../util/id.js';
+import { getAllStatuses } from '../util/jobStatus.js';
 
 import { QueryResolvers } from './types/generated.js';
 
@@ -99,6 +100,10 @@ const resolvers: QueryResolvers = {
             default:
                 return null;
         }
+    },
+    async getAllStatuses() {
+        const response = getAllStatuses();
+        return JSON.parse(await response);
     },
 };
 
