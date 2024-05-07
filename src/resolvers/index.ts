@@ -2,7 +2,7 @@ import { DateTimeScalar } from 'graphql-date-scalars';
 
 import { edgeResolvers } from '../util/connection.js';
 
-import { ResolverTypeWrapper, Resolvers } from './types/generated.js';
+import { Resolvers } from './types/generated.js';
 import Cursor from './scalars/Cursor.js';
 import ConsoleLogEvent from './ConsoleLogEvent.js';
 import Query from './Query.js';
