@@ -2,7 +2,7 @@ import { DateTimeScalar } from 'graphql-date-scalars';
 
 import { edgeResolvers } from '../util/connection.js';
 
-import { Resolvers } from './types/generated.js';
+import { ResolverTypeWrapper, Resolvers } from './types/generated.js';
 import Cursor from './scalars/Cursor.js';
 import ConsoleLogEvent from './ConsoleLogEvent.js';
 import Query from './Query.js';
@@ -53,6 +53,7 @@ import GitHubRevisionFileLine from './GitHubRevisionFileLine.js';
 import GitHubRevisionFileLineColumn from './GitHubRevisionFileLineColumn.js';
 import TestExecutionScreenshot from './TestExecutionScreenshot.js';
 import SignedURL from './SignedURL.js';
+import JobStatus from './JobStatus.js';
 
 const interfaceResolvers = {
     __resolveType<T extends string>(parent: { __typename: T }): T {
@@ -140,6 +141,7 @@ const resolvers: Resolvers = {
     TestExecutionSnapshot,
     TestExecutionScreenshot,
     SignedURL,
+    JobStatus
 };
 
 export default resolvers;

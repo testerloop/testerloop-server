@@ -1,0 +1,8 @@
+type JobStatus {
+    fileName: String!
+    status: String!
+}
+
+type Query {
+    getAllStatuses: [JobStatus]!
+}
