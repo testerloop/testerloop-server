@@ -1,7 +1,7 @@
 import { decodeId, decodeIdForType } from '../util/id.js';
+import { getAllStatuses } from '../util/jobStatus.js';
 
 import { QueryResolvers } from './types/generated.js';
-import { getAllStatuses } from '../util/jobStatus.js'
 
 const resolvers: QueryResolvers = {
     test: () => true,
@@ -55,7 +55,8 @@ const resolvers: QueryResolvers = {
         };
     },
     async testRuns(root, { first, after }, { dataSources }) {
-        const { edges, hasNextPage, hasPreviousPage, totalCount } = await dataSources.testRun.getAll({ first, after });
+        const { edges, hasNextPage, hasPreviousPage, totalCount } =
+            await dataSources.testRun.getAll({ first, after });
 
         return {
             edges: edges.map(({ cursor, node }) => ({
@@ -103,7 +104,7 @@ const resolvers: QueryResolvers = {
     async getAllStatuses() {
         const response = getAllStatuses();
         return JSON.parse(await response);
-    }
+    },
 };
 
 export default resolvers;

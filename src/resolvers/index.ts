@@ -141,7 +141,7 @@ const resolvers: Resolvers = {
     TestExecutionSnapshot,
     TestExecutionScreenshot,
     SignedURL,
-    JobStatus
+    JobStatus,
 };
 
 export default resolvers;
