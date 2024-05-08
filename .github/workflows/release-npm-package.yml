@@ -1,5 +1,5 @@
 name: Build & Publish Testerloop CLI NPM Package
-
+permissions: write-all
 on:
   workflow_dispatch:
   push:
@@ -30,21 +30,21 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Build Changelog
-        id: github_release
-        uses: mikepenz/release-changelog-builder-action@v3
-        env:
-          GITHUB_TOKEN: ${{ secrets.TESTERLOOP_ACCESS_TOKEN }}
+      # - name: Build Changelog
+      #   id: github_release
+      #   uses: mikepenz/release-changelog-builder-action@v3
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.TESTERLOOP_ACCESS_TOKEN }}
 
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.TESTERLOOP_ACCESS_TOKEN }}
-        with:
-          tag_name: ${{ env.NEW_VERSION }}
-          release_name: ${{ env.NEW_VERSION }}
-          body: ${{ steps.github_release.outputs.changelog }}
+      # - name: Create Release
+      #   id: create_release
+      #   uses: actions/create-release@v1
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.TESTERLOOP_ACCESS_TOKEN }}
+      #   with:
+      #     tag_name: ${{ env.NEW_VERSION }}
+      #     release_name: ${{ env.NEW_VERSION }}
+      #     body: ${{ steps.github_release.outputs.changelog }}
 
       - uses: actions/setup-node@v3
         with:
