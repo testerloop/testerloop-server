@@ -430,6 +430,7 @@ export type IntervalEvent = {
 export type JobStatus = {
   readonly __typename: 'JobStatus';
   readonly fileName: Scalars['String'];
+  readonly lastRun: Scalars['String'];
   readonly status: Scalars['String'];
 };
 
@@ -1344,6 +1345,7 @@ export type IntervalEventResolvers<ContextType = Context, ParentType extends Res
 
 export type JobStatusResolvers<ContextType = Context, ParentType extends ResolversParentTypes['JobStatus'] = ResolversParentTypes['JobStatus']> = {
   fileName: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  lastRun: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   status: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
