@@ -77,6 +77,22 @@ class S3Service {
         return objects || [];
     }
 
+    async listObjectsWithDate(bucketName: string, prefix: string) {
+        const command = new ListObjectsV2Command({
+            Bucket: bucketName,
+            Prefix: prefix,
+        });
+        const response = await this.s3.send(command);
+        const objects = response.Contents?.filter(
+            (object) => object.Key !== undefined || object.Key !== '',
+        ).map((object) => ({
+            fileName: object.Key || '',
+            lastRun: object.LastModified || '',
+        }));
+
+        return objects || [];
+    }
+
     async getSignedUrl(
         bucketName: string,
         key: string,

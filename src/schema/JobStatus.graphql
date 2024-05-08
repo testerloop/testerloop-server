@@ -1,6 +1,7 @@
 type JobStatus {
     fileName: String!
     status: String!
+    lastRun: String!
 }
 
 type Query {
