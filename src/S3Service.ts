@@ -38,6 +38,8 @@ class S3Service {
         this.s3 = new S3Client({
             region: config.AWS_BUCKET_REGION,
             credentials: config.AWS_CREDENTIALS,
+            endpoint: 'http://localhost:4566',
+            forcePathStyle: true,
         });
     }
 

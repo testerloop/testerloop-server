@@ -9,6 +9,7 @@ export const envFormat = z.object({
     AWS_BUCKET_NAME: z.string(),
     AWS_BUCKET_PATH: z.string().optional(),
     EXPIRES_IN: z.coerce.number(),
+    NODE_ENV: z.string(),
 });
 
 const config = envFormat.parse(process.env);
@@ -29,6 +30,9 @@ if (config.AWS_BUCKET_PATH?.length && !config.AWS_BUCKET_PATH.endsWith('/')) {
     );
 }
 
+// const awsEndpoint =
+//     config.NODE_ENV === 'development' ? 'http://localhost:4566' : null;
+//
 export default {
     PORT: config.PORT,
     AWS_BUCKET_REGION: config.AWS_BUCKET_REGION,
@@ -36,4 +40,6 @@ export default {
     AWS_BUCKET_PATH: config.AWS_BUCKET_PATH || '',
     EXPIRES_IN: config.EXPIRES_IN,
     AWS_CREDENTIALS: awsCredentials,
+    NODE_ENV: config.NODE_ENV,
+    AWS_ENDPOINT: 'http://localhost:4566',
 };
